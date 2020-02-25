@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>14-SNAPSHOT</version>
+		<version>15-SNAPSHOT</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
@@ -16,13 +16,14 @@
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.release>11</maven.compiler.release>
 		<oscal.commit>master</oscal.commit>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>gov.nist.secauto.metaschema</groupId>
-			<artifactId>binding</artifactId>
+			<artifactId>metaschema-java-binding</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
