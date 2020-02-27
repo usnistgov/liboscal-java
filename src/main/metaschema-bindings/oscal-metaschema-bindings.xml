@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metaschema-bindings xmlns="https://csrc.nist.gov/ns/metaschema-binding/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://csrc.nist.gov/ns/metaschema-binding/1.0 file:/C:/Users/davidwal/git/github/david-waltermire-nist/metaschema/toolchains/java/codegen/src/main/xsd/metaschema-binding.xsd">
+    <model-binding namespace="http://csrc.nist.gov/ns/oscal/1.0">
+        <java>
+            <use-package-name>gov.nist.secauto.oscal.lib</use-package-name>
+        </java>
+    </model-binding>
+    <metaschema-binding href="../../../target/download/metaschema/oscal_component_metaschema.xml">
+        <define-assembly-binding name="component">
+            <java>
+                <use-class-name>ComponentData</use-class-name>
+                <implement-interface>gov.nist.int</implement-interface>
+            </java>
+        </define-assembly-binding>
+        <define-assembly-binding name="implemented-requirement">
+            <java>
+                <use-class-name>ImplementedRequirementByComponent</use-class-name>
+            </java>
+        </define-assembly-binding>
+    </metaschema-binding>
+    <metaschema-binding href="../../../target/download/metaschema/oscal_profile_metaschema.xml">
+        <define-assembly-binding name="set-parameter">
+            <java>
+                <use-class-name>ProfiledSetParameter</use-class-name>
+            </java>
+        </define-assembly-binding>
+    </metaschema-binding>
+</metaschema-bindings>

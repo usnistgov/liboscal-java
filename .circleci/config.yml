@@ -1,0 +1,83 @@
+version: 2.1
+
+executors:
+  maven-executor:
+    docker:
+      - image: circleci/openjdk:8u171-jdk
+jobs:
+  build-and-test:
+    executor: maven-executor
+    steps:
+      - checkout
+      - restore_cache:
+          key: maven-m2-{{ checksum "pom.xml" }}
+      - configure-gpg
+      - run:
+          command: mvn -Prelease verify
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+      - store_artifacts:
+          path: oss-build-support/target
+          destination: artifacts/oss-build-support
+      - store_artifacts:
+          path: oss-parent/target
+          destination: artifacts/oss-parent
+      - store_artifacts:
+          path: reflow-maven-skin/target
+          destination: artifacts/reflow-maven-skin
+  deploy-release:
+    executor: maven-executor
+    steps:
+      - deploy
+
+commands:
+  configure-gpg:
+    steps:
+      - run:
+          name: Configure GPG private key for signing project artifacts in OSS Sonatype
+          command: |
+            echo $SECRING_GPG_ASC_BASE64 | base64 --decode | gpg --batch --no-tty --import --yes
+  deploy:
+    steps:
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          key: maven-m2-{{ checksum "pom.xml" }}
+      - configure-gpg
+      - run:
+          name: Release new version to Maven Central
+          command: |
+            mvn -s .circleci/maven-release-settings.xml -Prelease deploy
+            mvn -s .circleci/maven-release-settings.xml -Prelease nexus-staging:close -DstagingDescription="closing to release"
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: maven-m2-{{ checksum "pom.xml" }}
+workflows:
+  releases:
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              ignore: /.*/
+            # only act on version tags
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*.*/
+      - deploy-release:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              ignore: /.*/
+            # only act on version tags
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*.*/
+  tests:
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              ignore: nist-pages
+ 
