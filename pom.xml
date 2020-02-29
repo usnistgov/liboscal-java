@@ -257,6 +257,9 @@
 						</goals>
 						<configuration>
 							<metaschemaDir>${project.build.directory}/download/metaschema</metaschemaDir>
+							<configs>
+								<config>src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
+							</configs>
 							<includes>
 								<include>oscal_*_metaschema.xml</include>
 							</includes>

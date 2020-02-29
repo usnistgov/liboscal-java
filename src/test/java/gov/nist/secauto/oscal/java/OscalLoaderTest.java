@@ -27,13 +27,13 @@ package gov.nist.secauto.oscal.java;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import gov.nist.csrc.ns.oscal._1.Catalog;
 import gov.nist.secauto.metaschema.binding.BindingContext;
 import gov.nist.secauto.metaschema.binding.BindingException;
 import gov.nist.secauto.metaschema.binding.Format;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
+import gov.nist.secauto.oscal.java.objects.Catalog;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
