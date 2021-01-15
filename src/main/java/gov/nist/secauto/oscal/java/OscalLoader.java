@@ -1,4 +1,4 @@
-/**
+/*
  * Portions of this software was developed by employees of the National Institute
  * of Standards and Technology (NIST), an agency of the Federal Government and is
  * being made available as a public service. Pursuant to title 17 United States
@@ -38,7 +38,7 @@ import gov.nist.secauto.metaschema.binding.io.Configuration;
 import gov.nist.secauto.metaschema.binding.io.Deserializer;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
-import gov.nist.secauto.metaschema.binding.io.json.parser.JsonUtil;
+import gov.nist.secauto.metaschema.binding.io.json.JsonUtil;
 import gov.nist.secauto.oscal.java.objects.Catalog;
 import gov.nist.secauto.oscal.java.objects.ComponentDefinition;
 import gov.nist.secauto.oscal.java.objects.Profile;
@@ -129,7 +129,7 @@ public class OscalLoader {
   private Class<?> detectModelJson(JsonParser parser) throws BindingException {
     Class<?> retval = null;
     try {
-      JsonUtil.readNextToken(parser, JsonToken.START_OBJECT);
+      JsonUtil.consumeAndAssert(parser, JsonToken.START_OBJECT);
       outer: while (JsonToken.FIELD_NAME.equals(parser.nextToken())) {
         String name = parser.getCurrentName();
         switch (name) {
@@ -158,9 +158,9 @@ public class OscalLoader {
     return retval;
   }
 
-  private <CLASS> Deserializer<CLASS> getDeserializer(Class<CLASS> clazz, Format format, Configuration config)
+  private Deserializer getDeserializer(Class<?> clazz, Format format, Configuration config)
       throws BindingException {
-    Deserializer<CLASS> retval = getBindingContext().newDeserializer(format, clazz, config);
+    Deserializer retval = getBindingContext().newDeserializer(format, clazz, config);
     return retval;
   }
 
@@ -191,7 +191,7 @@ public class OscalLoader {
         }
 
         MutableConfiguration config = new MutableConfiguration().enableFeature(Feature.DESERIALIZE_ROOT);
-        Deserializer<CLASS> deserializer = getDeserializer(clazz, format, config);
+        Deserializer deserializer = getDeserializer(clazz, format, config);
         CLASS retval = deserializer.deserialize(file);
         return retval;
       case INCONCLUSIVE:

@@ -1,4 +1,4 @@
-/**
+/*
  * Portions of this software was developed by employees of the National Institute
  * of Standards and Technology (NIST), an agency of the Federal Government and is
  * being made available as a public service. Pursuant to title 17 United States
@@ -43,7 +43,7 @@ public class ContentUtil {
 
   public static DataFormatMatcher detectFormat(InputStream is) throws IOException {
 
-    DataFormatDetector det = new DataFormatDetector(new JsonFactory[] { jsonFactory, xmlFactory, yamlFactory });
+    DataFormatDetector det = new DataFormatDetector(new JsonFactory[] { jsonFactory, yamlFactory, xmlFactory });
     det = det.withMinimalMatch(MatchStrength.WEAK_MATCH).withOptimalMatch(MatchStrength.SOLID_MATCH);
 
     DataFormatMatcher matcher = det.findFormat(is);

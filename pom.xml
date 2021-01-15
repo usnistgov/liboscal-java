@@ -6,15 +6,15 @@
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>15-SNAPSHOT</version>
+		<version>17</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
 	<artifactId>liboscal-java</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.8.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Metaschema Framework Parent</name>
+	<name>OSCAL Java Library</name>
 	<description>A Java library that parses XML, JSON, and YAML data formatted acording to a Metaschema-based model.</description>
 	<url>https://github.com/usnistgov/liboscal-java</url>
 
@@ -95,6 +95,8 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.release>11</maven.compiler.release>
+		<dependency.metaschema-framework.version>0.4.0-SNAPSHOT</dependency.metaschema-framework.version>
+		<version.plugin.license>4.0.rc1</version.plugin.license>
 		<oscal.commit>master</oscal.commit>
 	</properties>
 
@@ -102,7 +104,7 @@
 		<dependency>
 			<groupId>gov.nist.secauto.metaschema</groupId>
 			<artifactId>metaschema-java-binding</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${dependency.metaschema-framework.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -134,90 +136,13 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>download-metadata-metaschema</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/src/metaschema/oscal_metadata_metaschema.xml</url>
-							<outputDirectory>${project.build.directory}/download/metaschema</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-control-common-metaschema</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>https://raw.githubusercontent.com/usnistgov/OSCAL/master/src/metaschema/oscal_control-common_metaschema.xml</url>
-							<outputDirectory>${project.build.directory}/download/metaschema</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-catalog-metaschema</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/src/metaschema/oscal_catalog_metaschema.xml</url>
-							<outputDirectory>${project.build.directory}/download/metaschema</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-profile-metaschema</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/src/metaschema/oscal_profile_metaschema.xml</url>
-							<outputDirectory>${project.build.directory}/download/metaschema</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-implementation-common-metaschema</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/src/metaschema/oscal_implementation-common_metaschema.xml</url>
-							<outputDirectory>${project.build.directory}/download/metaschema</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-ssp-metaschema</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/src/metaschema/oscal_ssp_metaschema.xml</url>
-							<outputDirectory>${project.build.directory}/download/metaschema</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-component-metaschema</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/src/metaschema/oscal_component_metaschema.xml</url>
-							<outputDirectory>${project.build.directory}/download/metaschema</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
 						<id>download-catalog-xml</id>
 						<phase>generate-test-resources</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/content/nist.gov/SP800-53/rev4/xml/NIST_SP-800-53_rev4_catalog.xml</url>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml</uri>
 							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
@@ -228,7 +153,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json</url>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json</uri>
 							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
@@ -239,7 +164,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>https://github.com/usnistgov/OSCAL/raw/${oscal.commit}/content/nist.gov/SP800-53/rev4/yaml/NIST_SP-800-53_rev4_catalog.yaml</url>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml</uri>
 							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
@@ -248,7 +173,7 @@
 			<plugin>
 				<groupId>gov.nist.secauto.metaschema</groupId>
 				<artifactId>metaschema-maven-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${dependency.metaschema-framework.version}</version>
 				<executions>
 					<execution>
 						<id>generate-model-sources</id>
@@ -256,7 +181,7 @@
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
-							<metaschemaDir>${project.build.directory}/download/metaschema</metaschemaDir>
+							<metaschemaDir>${project.basedir}/OSCAL/src/metaschema</metaschemaDir>
 							<configs>
 								<config>src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
 							</configs>
@@ -267,7 +192,40 @@
 					</execution>
 				</executions>
 			</plugin>
+							<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>${version.plugin.license}</version>
+					<configuration>
+						<licenseSets>
+							<licenseSet>
+								<header>license/nist/license.txt</header>
+								<includes>
+									<include>**/*.java</include>
+								</includes>
+							</licenseSet>
+						</licenseSets>
+						<failIfMissing>true</failIfMissing>
+					</configuration>
+					<executions>
+						<execution>
+							<id>check-license</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>gov.nist.secauto</groupId>
+							<artifactId>oss-build-support</artifactId>
+							<version>17</version>
+							<scope>compile</scope>
+						</dependency>
+					</dependencies>
+				</plugin>
+			
 		</plugins>
 	</build>
-
 </project>

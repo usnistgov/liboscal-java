@@ -1,4 +1,4 @@
-/**
+/*
  * Portions of this software was developed by employees of the National Institute
  * of Standards and Technology (NIST), an agency of the Federal Government and is
  * being made available as a public service. Pursuant to title 17 United States
@@ -23,7 +23,6 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
-
 package gov.nist.secauto.oscal.java;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,7 +50,7 @@ import java.nio.file.Path;
 class TestContent {
   private static final Logger logger = LogManager.getLogger(TestContent.class);
 
-  private static <CLASS> CLASS measureDeserializer(String format, File file, Deserializer<CLASS> deserializer,
+  private static <CLASS> CLASS measureDeserializer(String format, File file, Deserializer deserializer,
       int iterations) throws  BindingException, FileNotFoundException {
     CLASS retval = null;
     long totalTime = 0;
@@ -70,7 +69,7 @@ class TestContent {
     return retval;
   }
 
-  private static <CLASS> void measureSerializer(CLASS root, String format, File file, Serializer<CLASS> serializer,
+  private static <CLASS> void measureSerializer(CLASS root, String format, File file, Serializer serializer,
       int iterations) throws BindingException, FileNotFoundException {
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
@@ -97,31 +96,31 @@ class TestContent {
 
     // XML
     {
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz, config);
+      Deserializer deserializer = context.newDeserializer(Format.XML, clazz, config);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
 
       File out = new File(tempDir.toFile(), "out.xml");
-      Serializer<CLASS> serializer = context.newSerializer(Format.XML, clazz, config);
+      Serializer serializer = context.newSerializer(Format.XML, clazz, config);
       measureSerializer(obj, "XML", out, serializer, iterations);
     }
 
     // JSON
     {
       File out = new File(tempDir.toFile(), "out.json");
-      Serializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz, config);
+      Serializer serializer = context.newSerializer(Format.JSON, clazz, config);
       measureSerializer(obj, "JSON", out, serializer, iterations);
 
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz, config);
+      Deserializer deserializer = context.newDeserializer(Format.JSON, clazz, config);
       obj = measureDeserializer("JSON", out, deserializer, iterations);
     }
 
     // YAML
     {
       File out = new File(tempDir.toFile(), "out.yml");
-      Serializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz, config);
+      Serializer serializer = context.newSerializer(Format.YAML, clazz, config);
       measureSerializer(obj, "YAML", out, serializer, iterations);
 
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz, config);
+      Deserializer deserializer = context.newDeserializer(Format.YAML, clazz, config);
       obj = measureDeserializer("YAML", out, deserializer, iterations);
     }
   }
@@ -129,7 +128,7 @@ class TestContent {
   @Test
   public void testReadWriteOSCALCatalog(@TempDir Path tempDir) throws IOException, BindingException {
 
-    File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev4_catalog.xml");
+    File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
     logger.info("Testing XML file: {}", catalogSourceXml.getName());
     assertTrue(catalogSourceXml.exists());
 
@@ -143,7 +142,7 @@ class TestContent {
   @Disabled
   public void testOSCALCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
 
-    File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev4_catalog.xml");
+    File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
     logger.info("Testing XML file: {}", catalogSourceXml.getName());
     assertTrue(catalogSourceXml.exists());
 

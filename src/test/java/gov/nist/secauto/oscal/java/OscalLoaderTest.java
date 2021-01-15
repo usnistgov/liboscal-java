@@ -1,4 +1,4 @@
-/**
+/*
  * Portions of this software was developed by employees of the National Institute
  * of Standards and Technology (NIST), an agency of the Federal Government and is
  * being made available as a public service. Pursuant to title 17 United States
@@ -54,14 +54,14 @@ class OscalLoaderTest {
   @Test
   void testLoadCatalogYaml(@TempDir Path tempDir) throws BindingException, IOException {
     // the YAML catalog is currently malformed, this will create a proper one for this test
-    Catalog catalog = loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev4_catalog.xml").getCanonicalFile());
+    Catalog catalog = loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile());
 
     File out = new File(tempDir.toFile(), "out.yaml");
     BindingContext context = BindingContext.newInstance();
     MutableConfiguration config
         = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
 
-    Serializer<Catalog> serializer = context.newSerializer(Format.YAML, Catalog.class, config);
+    Serializer serializer = context.newSerializer(Format.YAML, Catalog.class, config);
     serializer.serialize(catalog, out);
 
     assertNotNull(loader.loadCatalog(out));
@@ -71,12 +71,12 @@ class OscalLoaderTest {
   
   @Test
   void testLoadCatalogJson() throws BindingException, IOException {
-    assertNotNull(loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev4_catalog.json").getCanonicalFile()));
+    assertNotNull(loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev5_catalog.json").getCanonicalFile()));
   }
   
   @Test
   void testLoadCatalogXml() throws BindingException, IOException {
-    assertNotNull(loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev4_catalog.xml").getCanonicalFile()));
+    assertNotNull(loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile()));
   }
 
 }

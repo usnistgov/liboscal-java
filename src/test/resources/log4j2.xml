@@ -13,6 +13,9 @@
 		<Logger name="gov.nist.secauto.metaschema" level="info" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>
+		<Logger name="gov.nist.secauto.metaschema.binding" level="debug" additivity="false">
+			<AppenderRef ref="console" />
+		</Logger>
 		<Root level="info">
 			<AppenderRef ref="console" />
 		</Root>
