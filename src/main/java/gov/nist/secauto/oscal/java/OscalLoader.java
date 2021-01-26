@@ -32,23 +32,27 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.format.DataFormatMatcher;
 
 import gov.nist.secauto.metaschema.binding.BindingContext;
-import gov.nist.secauto.metaschema.binding.BindingException;
-import gov.nist.secauto.metaschema.binding.Format;
+import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Configuration;
 import gov.nist.secauto.metaschema.binding.io.Deserializer;
 import gov.nist.secauto.metaschema.binding.io.Feature;
+import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.json.JsonUtil;
-import gov.nist.secauto.oscal.java.objects.Catalog;
-import gov.nist.secauto.oscal.java.objects.ComponentDefinition;
-import gov.nist.secauto.oscal.java.objects.Profile;
-import gov.nist.secauto.oscal.java.objects.SystemSecurityPlan;
+import gov.nist.secauto.oscal.java.AssessmentPlan;
+import gov.nist.secauto.oscal.java.AssessmentResults;
+import gov.nist.secauto.oscal.java.Catalog;
+import gov.nist.secauto.oscal.java.ComponentDefinition;
+import gov.nist.secauto.oscal.java.PlanOfActionAndMilestones;
+import gov.nist.secauto.oscal.java.Profile;
+import gov.nist.secauto.oscal.java.SystemSecurityPlan;
 
 import org.codehaus.stax2.XMLEventReader2;
 import org.codehaus.stax2.XMLInputFactory2;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,16 +66,55 @@ import javax.xml.stream.events.StartElement;
 public class OscalLoader {
   private final BindingContext bindingContext;
 
+  /**
+   * Construct a new OSCAL loader instance.
+   */
   public OscalLoader() {
     this(BindingContext.newInstance());
   }
 
+  /**
+   * Construct a new OSCAL loader instance, using the provided {@link BindingContext}.
+   * 
+   * @param bindingContext
+   *          the Metaschema binding context to use to load Java types
+   */
   public OscalLoader(BindingContext bindingContext) {
     this.bindingContext = bindingContext;
   }
 
+  /**
+   * Get the configured Metaschema binding context to use to load Java types.
+   * 
+   * @return the binding context
+   */
   protected BindingContext getBindingContext() {
     return bindingContext;
+  }
+
+  public <CLASS> CLASS load(File file) throws FileNotFoundException, IOException, BindingException {
+    Class<?> clazz = detectModel(file);
+    @SuppressWarnings("unchecked")
+    CLASS retval = (CLASS) load(clazz, file);
+    return retval;
+  }
+
+  private Class<?> detectModel(File file) throws FileNotFoundException, IOException, BindingException {
+    DataFormatMatcher matcher = ContentUtil.detectFormat(new FileInputStream(file));
+
+    Class<?> retval;
+    switch (matcher.getMatchedFormatName()) {
+    case "XML":
+      retval = detectModelXml(file);
+      break;
+    case "JSON":
+    case "YAML":
+      retval = detectModelJson(matcher.createParserWithMatch());
+      break;
+    default:
+      throw new IOException("Unsupported format: " + matcher.getMatchedFormatName());
+    }
+    return retval;
   }
 
   private Class<?> detectModelXml(File file) throws BindingException {
@@ -110,6 +153,15 @@ public class OscalLoader {
           case "component-definition":
             retval = ComponentDefinition.class;
             break;
+          case "assessment-plan":
+            retval = AssessmentPlan.class;
+            break;
+          case "assessment-results":
+            retval = AssessmentResults.class;
+            break;
+          case "plan-of-action-and-milestones":
+            retval = PlanOfActionAndMilestones.class;
+            break;
           default:
             throw new UnsupportedOperationException("Unrecognized element name: " + qname.toString());
           }
@@ -145,8 +197,17 @@ public class OscalLoader {
         case "component-definition":
           retval = ComponentDefinition.class;
           break outer;
+        case "assessment-plan":
+          retval = AssessmentPlan.class;
+          break outer;
+        case "assessment-results":
+          retval = AssessmentResults.class;
+          break outer;
+        case "plan-of-action-and-milestones":
+          retval = PlanOfActionAndMilestones.class;
+          break outer;
         case "$schema":
-          JsonUtil.skipValue(parser);
+          JsonUtil.skipNextValue(parser);
           break;
         default:
           throw new UnsupportedOperationException("Unrecognized field name: " + name);
@@ -158,13 +219,31 @@ public class OscalLoader {
     return retval;
   }
 
-  private Deserializer getDeserializer(Class<?> clazz, Format format, Configuration config)
+  private <CLASS> Deserializer<CLASS> getDeserializer(Class<CLASS> clazz, Format format, Configuration config)
       throws BindingException {
-    Deserializer retval = getBindingContext().newDeserializer(format, clazz, config);
+    Deserializer<CLASS> retval = getBindingContext().newDeserializer(format, clazz, config);
     return retval;
   }
 
-  public <CLASS> CLASS load(Class<CLASS> clazz, File file) throws BindingException {
+  /**
+   * Load the specified data file as the specified Java class.
+   * 
+   * @param <CLASS>
+   *          the Java type to load data into
+   * @param clazz
+   *          the class for the java type
+   * @param file
+   *          the file to load
+   * @return the loaded instance data
+   * @throws BindingException
+   *           if a binding error occurred while loading the data in the specified file
+   * @throws FileNotFoundException
+   *           if the specified file does not exist
+   */
+  public <CLASS> CLASS load(Class<CLASS> clazz, File file) throws BindingException, FileNotFoundException {
+    if (!file.exists()) {
+      throw new FileNotFoundException(file.getAbsolutePath());
+    }
     try (InputStream is = new FileInputStream(file)) {
 
       DataFormatMatcher matcher = ContentUtil.detectFormat(is);
@@ -191,7 +270,7 @@ public class OscalLoader {
         }
 
         MutableConfiguration config = new MutableConfiguration().enableFeature(Feature.DESERIALIZE_ROOT);
-        Deserializer deserializer = getDeserializer(clazz, format, config);
+        Deserializer<CLASS> deserializer = getDeserializer(clazz, format, config);
         CLASS retval = deserializer.deserialize(file);
         return retval;
       case INCONCLUSIVE:
@@ -205,19 +284,32 @@ public class OscalLoader {
     }
   }
 
-  public Catalog loadCatalog(File file) throws BindingException {
+  public Catalog loadCatalog(File file) throws BindingException, FileNotFoundException {
     return load(Catalog.class, file);
   }
 
-  public Profile loadProfile(File file) throws BindingException {
+  public Profile loadProfile(File file) throws BindingException, FileNotFoundException {
     return load(Profile.class, file);
   }
 
-  public SystemSecurityPlan loadSystemSecurityPlan(File file) throws BindingException {
+  public SystemSecurityPlan loadSystemSecurityPlan(File file) throws BindingException, FileNotFoundException {
     return load(SystemSecurityPlan.class, file);
   }
 
-  public ComponentDefinition loadComponentDefinition(File file) throws BindingException {
+  public ComponentDefinition loadComponentDefinition(File file) throws BindingException, FileNotFoundException {
     return load(ComponentDefinition.class, file);
+  }
+
+  public AssessmentPlan loadAssessmentPlan(File file) throws BindingException, FileNotFoundException {
+    return load(AssessmentPlan.class, file);
+  }
+
+  public AssessmentResults loadAssessmentResults(File file) throws BindingException, FileNotFoundException {
+    return load(AssessmentResults.class, file);
+  }
+
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(File file)
+      throws BindingException, FileNotFoundException {
+    return load(PlanOfActionAndMilestones.class, file);
   }
 }

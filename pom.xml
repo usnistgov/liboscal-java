@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>17</version>
+		<version>18-SNAPSHOT</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
 	<artifactId>liboscal-java</artifactId>
-	<version>0.8.0-SNAPSHOT</version>
+	<version>1.0.0rc1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>OSCAL Java Library</name>
@@ -101,8 +101,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<dependency.metaschema-framework.version>0.4.0-SNAPSHOT</dependency.metaschema-framework.version>
-		<version.plugin.license>4.0.rc1</version.plugin.license>
-		<oscal.commit>master</oscal.commit>
+		<dependency.jackson.version>2.12.1</dependency.jackson.version>
+
+		<oscal-content.commit>master</oscal-content.commit>
 	</properties>
 
 	<dependencies>
@@ -114,18 +115,16 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>2.10.1</version>
+			<version>${dependency.jackson.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.6.0</version>
-			<scope>test</scope>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.junit.jupiter</groupId> -->
+<!-- 			<artifactId>junit-jupiter-api</artifactId> -->
+<!-- 			<scope>test</scope> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.6.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -147,7 +146,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml</uri>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml</uri>
 							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
@@ -158,7 +157,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json</uri>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json</uri>
 							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
@@ -169,7 +168,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml</uri>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml</uri>
 							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
@@ -186,7 +185,10 @@
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
-							<metaschemaDir>${project.basedir}/OSCAL/src/metaschema</metaschemaDir>
+							<metaschemaDir>${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<configs>
+								<config>${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
+							</configs>
 							<configs>
 								<config>src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
 							</configs>
@@ -198,39 +200,15 @@
 				</executions>
 			</plugin>
 							<plugin>
-					<groupId>com.mycila</groupId>
-					<artifactId>license-maven-plugin</artifactId>
-					<version>${version.plugin.license}</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
 					<configuration>
-						<licenseSets>
-							<licenseSet>
-								<header>license/nist/license.txt</header>
-								<includes>
-									<include>**/*.java</include>
-								</includes>
-							</licenseSet>
-						</licenseSets>
-						<failIfMissing>true</failIfMissing>
+					<sourceDirectories>
+						<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+						<sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+					</sourceDirectories>
 					</configuration>
-					<executions>
-						<execution>
-							<id>check-license</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>check</goal>
-							</goals>
-						</execution>
-					</executions>
-					<dependencies>
-						<dependency>
-							<groupId>gov.nist.secauto</groupId>
-							<artifactId>oss-build-support</artifactId>
-							<version>17</version>
-							<scope>compile</scope>
-						</dependency>
-					</dependencies>
 				</plugin>
-			
 		</plugins>
 	</build>
 </project>

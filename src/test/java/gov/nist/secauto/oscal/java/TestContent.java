@@ -23,15 +23,16 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.java;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.nist.secauto.metaschema.binding.BindingContext;
-import gov.nist.secauto.metaschema.binding.BindingException;
-import gov.nist.secauto.metaschema.binding.Format;
+import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Deserializer;
 import gov.nist.secauto.metaschema.binding.io.Feature;
+import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
 import gov.nist.secauto.oscal.java.objects.Catalog;
@@ -50,7 +51,7 @@ import java.nio.file.Path;
 class TestContent {
   private static final Logger logger = LogManager.getLogger(TestContent.class);
 
-  private static <CLASS> CLASS measureDeserializer(String format, File file, Deserializer deserializer,
+  private static <CLASS> CLASS measureDeserializer(String format, File file, Deserializer<CLASS> deserializer,
       int iterations) throws  BindingException, FileNotFoundException {
     CLASS retval = null;
     long totalTime = 0;
@@ -69,7 +70,7 @@ class TestContent {
     return retval;
   }
 
-  private static <CLASS> void measureSerializer(CLASS root, String format, File file, Serializer serializer,
+  private static <CLASS> void measureSerializer(CLASS root, String format, File file, Serializer<CLASS> serializer,
       int iterations) throws BindingException, FileNotFoundException {
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
@@ -96,36 +97,37 @@ class TestContent {
 
     // XML
     {
-      Deserializer deserializer = context.newDeserializer(Format.XML, clazz, config);
+      Deserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz, config);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
 
       File out = new File(tempDir.toFile(), "out.xml");
-      Serializer serializer = context.newSerializer(Format.XML, clazz, config);
+      Serializer<CLASS> serializer = context.newSerializer(Format.XML, clazz, config);
       measureSerializer(obj, "XML", out, serializer, iterations);
     }
 
     // JSON
     {
       File out = new File(tempDir.toFile(), "out.json");
-      Serializer serializer = context.newSerializer(Format.JSON, clazz, config);
+      Serializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz, config);
       measureSerializer(obj, "JSON", out, serializer, iterations);
 
-      Deserializer deserializer = context.newDeserializer(Format.JSON, clazz, config);
+      Deserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz, config);
       obj = measureDeserializer("JSON", out, deserializer, iterations);
     }
 
     // YAML
     {
       File out = new File(tempDir.toFile(), "out.yml");
-      Serializer serializer = context.newSerializer(Format.YAML, clazz, config);
+      Serializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz, config);
       measureSerializer(obj, "YAML", out, serializer, iterations);
 
-      Deserializer deserializer = context.newDeserializer(Format.YAML, clazz, config);
+      Deserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz, config);
       obj = measureDeserializer("YAML", out, deserializer, iterations);
     }
   }
 
   @Test
+  @Disabled
   public void testReadWriteOSCALCatalog(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");

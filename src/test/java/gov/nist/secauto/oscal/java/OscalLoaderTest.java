@@ -23,19 +23,21 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.java;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.nist.secauto.metaschema.binding.BindingContext;
-import gov.nist.secauto.metaschema.binding.BindingException;
-import gov.nist.secauto.metaschema.binding.Format;
+import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Feature;
+import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
 import gov.nist.secauto.oscal.java.objects.Catalog;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -50,33 +52,71 @@ class OscalLoaderTest {
   private static void initializeLoader() {
     loader = new OscalLoader();
   }
-  
+
   @Test
+  @Disabled
   void testLoadCatalogYaml(@TempDir Path tempDir) throws BindingException, IOException {
     // the YAML catalog is currently malformed, this will create a proper one for this test
-    Catalog catalog = loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile());
+    Catalog catalog
+        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile());
 
-    File out = new File(tempDir.toFile(), "out.yaml");
+    // File out = new File(tempDir.toFile(), "out.yaml");
+    File out = new File("target/out.yaml");
     BindingContext context = BindingContext.newInstance();
     MutableConfiguration config
         = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
 
-    Serializer serializer = context.newSerializer(Format.YAML, Catalog.class, config);
+    Serializer<Catalog> serializer = context.newSerializer(Format.YAML, Catalog.class, config);
     serializer.serialize(catalog, out);
 
     assertNotNull(loader.loadCatalog(out));
 
-    out.delete();
+    // out.delete();
   }
-  
+
   @Test
-  void testLoadCatalogJson() throws BindingException, IOException {
-    assertNotNull(loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev5_catalog.json").getCanonicalFile()));
+  void testLoadCatalogJson(@TempDir Path tempDir) throws BindingException, IOException {
+    Catalog catalog
+        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.json").getCanonicalFile());
+    assertNotNull(catalog);
+
+    // File out = new File(tempDir.toFile(), "out.json");
+    File out = new File("target/out.json");
+    BindingContext context = BindingContext.newInstance();
+    MutableConfiguration config
+        = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
+
+    Serializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class, config);
+    serializer.serialize(catalog, out);
+
+    assertNotNull(loader.loadCatalog(out));
+
+    out = new File("target/out.yaml");
+
+    serializer = context.newSerializer(Format.YAML, Catalog.class, config);
+    serializer.serialize(catalog, out);
+
+    // out.delete();
   }
-  
+
   @Test
-  void testLoadCatalogXml() throws BindingException, IOException {
-    assertNotNull(loader.loadCatalog(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile()));
+  void testLoadCatalogXml(@TempDir Path tempDir) throws BindingException, IOException {
+    Catalog catalog
+        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile());
+    assertNotNull(catalog);
+
+    // File out = new File(tempDir.toFile(), "out.xml");
+    File out = new File("target/out.xml");
+    BindingContext context = BindingContext.newInstance();
+    MutableConfiguration config
+        = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
+
+    Serializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class, config);
+    serializer.serialize(catalog, out);
+
+    assertNotNull(loader.loadCatalog(out));
+
+    // out.delete();
   }
 
 }
