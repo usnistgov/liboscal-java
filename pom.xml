@@ -205,16 +205,6 @@
 				</executions>
 			</plugin>
 							<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-					<configuration>
-					<sourceDirectories>
-						<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-						<sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-					</sourceDirectories>
-					</configuration>
-				</plugin>
-			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<configuration>
