@@ -117,6 +117,11 @@
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>${dependency.jackson.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>org.junit.jupiter</groupId> -->
 <!-- 			<artifactId>junit-jupiter-api</artifactId> -->
@@ -209,6 +214,38 @@
 					</sourceDirectories>
 					</configuration>
 				</plugin>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<licenseSets>
+						<licenseSet>
+							<header>license/nist/license.txt</header>
+							<includes>
+								<include>**/*.java</include>
+							</includes>
+						</licenseSet>
+					</licenseSets>
+					<failIfMissing>true</failIfMissing>
+				</configuration>
+				<executions>
+					<execution>
+						<id>check-license</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>gov.nist.secauto</groupId>
+						<artifactId>oss-build-support</artifactId>
+						<version>17</version>
+						<scope>compile</scope>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 </project>
