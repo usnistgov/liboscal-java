@@ -119,6 +119,8 @@
 		<dependency.metaschema-framework.version>0.5.0</dependency.metaschema-framework.version>
 		<dependency.jackson.version>2.12.1</dependency.jackson.version>
 
+    <plugin.license.version>4.0.rc1</plugin.license.version>
+
 		<oscal-content.commit>master</oscal-content.commit>
 	</properties>
 
