@@ -39,13 +39,13 @@ import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.json.JsonUtil;
-import gov.nist.secauto.oscal.java.AssessmentPlan;
-import gov.nist.secauto.oscal.java.AssessmentResults;
-import gov.nist.secauto.oscal.java.Catalog;
-import gov.nist.secauto.oscal.java.ComponentDefinition;
-import gov.nist.secauto.oscal.java.PlanOfActionAndMilestones;
-import gov.nist.secauto.oscal.java.Profile;
-import gov.nist.secauto.oscal.java.SystemSecurityPlan;
+import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
+import gov.nist.secauto.oscal.lib.model.AssessmentResults;
+import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
+import gov.nist.secauto.oscal.lib.model.PlanOfActionAndMilestones;
+import gov.nist.secauto.oscal.lib.model.Profile;
+import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
 import org.codehaus.stax2.XMLEventReader2;
 import org.codehaus.stax2.XMLInputFactory2;
@@ -97,6 +97,65 @@ public class OscalLoader {
     @SuppressWarnings("unchecked")
     CLASS retval = (CLASS) load(clazz, file);
     return retval;
+  }
+
+  /**
+   * Load the specified data file as the specified Java class.
+   * 
+   * @param <CLASS>
+   *          the Java type to load data into
+   * @param clazz
+   *          the class for the java type
+   * @param file
+   *          the file to load
+   * @return the loaded instance data
+   * @throws BindingException
+   *           if a binding error occurred while loading the data in the specified file
+   * @throws FileNotFoundException
+   *           if the specified file does not exist
+   */
+  public <CLASS> CLASS load(Class<CLASS> clazz, File file) throws BindingException, FileNotFoundException {
+    if (!file.exists()) {
+      throw new FileNotFoundException(file.getAbsolutePath());
+    }
+    try (InputStream is = new FileInputStream(file)) {
+
+      DataFormatMatcher matcher = ContentUtil.detectFormat(is);
+      switch (matcher.getMatchStrength()) {
+      case FULL_MATCH:
+      case SOLID_MATCH:
+      case WEAK_MATCH:
+        Class<?> modelClass;
+        if ("XML".equals(matcher.getMatchedFormatName())) {
+          is.close();
+          modelClass = detectModelXml(file);
+        } else {
+          modelClass = detectModelJson(matcher.createParserWithMatch());
+          is.close();
+        }
+        if (!clazz.isAssignableFrom(modelClass)) {
+          throw new UnsupportedOperationException(String.format(
+              "The detected model class '%s' is not assignable to '%s'", modelClass.getName(), clazz.getName()));
+        }
+        Format format = Format.valueOf(matcher.getMatchedFormatName());
+        if (format == null) {
+          is.close();
+          throw new UnsupportedOperationException("Unsupported source format: " + matcher.getMatchedFormatName());
+        }
+
+        MutableConfiguration config = new MutableConfiguration().enableFeature(Feature.DESERIALIZE_ROOT);
+        Deserializer<CLASS> deserializer = getDeserializer(clazz, format, config);
+        CLASS retval = deserializer.deserialize(file);
+        return retval;
+      case INCONCLUSIVE:
+      case NO_MATCH:
+      default:
+        is.close();
+        throw new UnsupportedOperationException("Unable to identify format for file: " + file.getPath());
+      }
+    } catch (IOException ex) {
+      throw new BindingException(ex);
+    }
   }
 
   private Class<?> detectModel(File file) throws FileNotFoundException, IOException, BindingException {
@@ -223,65 +282,6 @@ public class OscalLoader {
       throws BindingException {
     Deserializer<CLASS> retval = getBindingContext().newDeserializer(format, clazz, config);
     return retval;
-  }
-
-  /**
-   * Load the specified data file as the specified Java class.
-   * 
-   * @param <CLASS>
-   *          the Java type to load data into
-   * @param clazz
-   *          the class for the java type
-   * @param file
-   *          the file to load
-   * @return the loaded instance data
-   * @throws BindingException
-   *           if a binding error occurred while loading the data in the specified file
-   * @throws FileNotFoundException
-   *           if the specified file does not exist
-   */
-  public <CLASS> CLASS load(Class<CLASS> clazz, File file) throws BindingException, FileNotFoundException {
-    if (!file.exists()) {
-      throw new FileNotFoundException(file.getAbsolutePath());
-    }
-    try (InputStream is = new FileInputStream(file)) {
-
-      DataFormatMatcher matcher = ContentUtil.detectFormat(is);
-      switch (matcher.getMatchStrength()) {
-      case FULL_MATCH:
-      case SOLID_MATCH:
-      case WEAK_MATCH:
-        Class<?> modelClass;
-        if ("XML".equals(matcher.getMatchedFormatName())) {
-          is.close();
-          modelClass = detectModelXml(file);
-        } else {
-          modelClass = detectModelJson(matcher.createParserWithMatch());
-          is.close();
-        }
-        if (!clazz.isAssignableFrom(modelClass)) {
-          throw new UnsupportedOperationException(String.format(
-              "The detected model class '%s' is not assignable to '%s'", modelClass.getName(), clazz.getName()));
-        }
-        Format format = Format.valueOf(matcher.getMatchedFormatName());
-        if (format == null) {
-          is.close();
-          throw new UnsupportedOperationException("Unsupported source format: " + matcher.getMatchedFormatName());
-        }
-
-        MutableConfiguration config = new MutableConfiguration().enableFeature(Feature.DESERIALIZE_ROOT);
-        Deserializer<CLASS> deserializer = getDeserializer(clazz, format, config);
-        CLASS retval = deserializer.deserialize(file);
-        return retval;
-      case INCONCLUSIVE:
-      case NO_MATCH:
-      default:
-        is.close();
-        throw new UnsupportedOperationException("Unable to identify format for file: " + file.getPath());
-      }
-    } catch (IOException ex) {
-      throw new BindingException(ex);
-    }
   }
 
   public Catalog loadCatalog(File file) throws BindingException, FileNotFoundException {

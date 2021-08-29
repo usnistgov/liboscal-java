@@ -23,7 +23,8 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
-package gov.nist.secauto.oscal.lib;
+
+package gov.nist.secauto.oscal.lib.model;
 
 import gov.nist.secauto.metaschema.binding.DeserializationHandler;
 
@@ -39,7 +40,8 @@ public abstract class AbstractControl implements DeserializationHandler {
   }
 
   @Override
-  public void beforeDeserialize(Object parent) { }
+  public void beforeDeserialize(Object parent) {
+  }
 
   @Override
   public void afterDeserialize(Object parent) {

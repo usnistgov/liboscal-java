@@ -34,7 +34,7 @@ import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
-import gov.nist.secauto.oscal.java.objects.Catalog;
+import gov.nist.secauto.oscal.lib.model.Catalog;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;

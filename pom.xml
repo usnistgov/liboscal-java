@@ -194,9 +194,6 @@
 							<configs>
 								<config>${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
 							</configs>
-							<configs>
-								<config>src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
-							</configs>
 							<includes>
 								<include>oscal_complete_metaschema.xml</include>
 							</includes>

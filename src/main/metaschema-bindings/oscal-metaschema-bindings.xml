@@ -4,7 +4,7 @@
 	<model-binding
 		namespace="http://csrc.nist.gov/ns/oscal/1.0">
         <java>
-            <use-package-name>gov.nist.secauto.oscal.java.objects</use-package-name>
+            <use-package-name>gov.nist.secauto.oscal.lib.model</use-package-name>
         </java>
     </model-binding>
 	<metaschema-binding
