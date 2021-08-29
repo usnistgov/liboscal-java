@@ -46,7 +46,7 @@ public abstract class AbstractControl implements DeserializationHandler {
   @Override
   public void afterDeserialize(Object parent) {
     if (parent instanceof Control) {
-      this.parent = (Control)parent;
+      this.parent = (Control) parent;
     }
   }
 }
