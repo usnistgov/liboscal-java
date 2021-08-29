@@ -1,0 +1,50 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    branches:
+      - main
+name: Deploy Website
+env:
+  # the name of the repo
+  HOME_REPO: usnistgov/liboscal-java
+  HOME_BRANCH_RELEASE: main
+  HOME_BRANCH_DEVELOPMENT: develop
+  # paths
+  REPO_PATH: git-content/liboscal-java
+jobs:
+  deploy-website:
+    name: Build and Publish Website
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        if: ${{ github.repository == env.HOME_REPO && github.ref == format('refs/heads/{0}',env.HOME_BRANCH_RELEASE) }}
+        with:
+          path: ${{ env.REPO_PATH }}
+          submodules: recursive
+          token: ${{ secrets.COMMIT_TOKEN }}
+      # -------------------------
+      # Java JDK 11
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2-
+      # -------------------------
+      # Maven Deploy Website
+      - name: Build Website
+        run: |
+            mvn -Preporting -Prelease package site site:stage
+        working-directory: ${{ env.REPO_PATH }}
+      - name: Run deploy script
+        run: |
+          touch target/staging/.nojekyll
+          bash build/deploy.sh --push-only -v -m "Deploying website [ci skip]"
+        working-directory: ${{ env.REPO_PATH }}
