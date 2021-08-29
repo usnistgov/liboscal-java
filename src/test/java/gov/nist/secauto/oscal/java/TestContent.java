@@ -39,7 +39,6 @@ import gov.nist.secauto.oscal.java.objects.Catalog;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -52,7 +51,7 @@ class TestContent {
   private static final Logger logger = LogManager.getLogger(TestContent.class);
 
   private static <CLASS> CLASS measureDeserializer(String format, File file, Deserializer<CLASS> deserializer,
-      int iterations) throws  BindingException, FileNotFoundException {
+      int iterations) throws BindingException, FileNotFoundException {
     CLASS retval = null;
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
@@ -79,9 +78,12 @@ class TestContent {
       long endTime = System.nanoTime();
       long timeElapsed = (endTime - startTime) / 1000000;
       logger.info(String.format("%s written in %d milliseconds to %s", format, timeElapsed, file));
-      totalTime += timeElapsed;
+      if (iterations == 1 || i > 0) {
+        totalTime += timeElapsed;
+      }
     }
-    long average = totalTime / iterations;
+
+    long average = totalTime / (iterations == 1 ? 1 : iterations - 1);
     if (iterations > 1) {
       logger.info(String.format("%s written in %d milliseconds (on average) to %s", format, average, file));
     }
@@ -127,7 +129,6 @@ class TestContent {
   }
 
   @Test
-  @Disabled
   public void testReadWriteOSCALCatalog(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
@@ -141,7 +142,6 @@ class TestContent {
   }
 
   @Test
-  @Disabled
   public void testOSCALCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");

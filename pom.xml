@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>18-SNAPSHOT</version>
+		<version>19</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
 	<artifactId>liboscal-java</artifactId>
-	<version>1.0.0rc1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>OSCAL Java Library</name>
@@ -100,7 +100,7 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.4.0-SNAPSHOT</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>0.5.0</dependency.metaschema-framework.version>
 		<dependency.jackson.version>2.12.1</dependency.jackson.version>
 
 		<oscal-content.commit>master</oscal-content.commit>
@@ -198,7 +198,7 @@
 								<config>src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
 							</configs>
 							<includes>
-								<include>oscal_*_metaschema.xml</include>
+								<include>oscal_complete_metaschema.xml</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -231,7 +231,7 @@
 					<dependency>
 						<groupId>gov.nist.secauto</groupId>
 						<artifactId>oss-build-support</artifactId>
-						<version>17</version>
+						<version>19-SNAPSHOT</version>
 						<scope>compile</scope>
 					</dependency>
 				</dependencies>
