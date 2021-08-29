@@ -25,8 +25,8 @@
 
 	<scm>
 		<url>https://github.com/usnistgov/liboscal-java</url>
-		<connection>scm:git:git@github.com/usnistgov/liboscal-java.git</connection>
-		<developerConnection>scm:git:git@github.com/usnistgov/liboscal-java.git</developerConnection>
+		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git</connection>
+		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
