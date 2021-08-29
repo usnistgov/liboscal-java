@@ -25,7 +25,7 @@
 
 	<scm>
 		<url>https://github.com/usnistgov/liboscal-java</url>
-		<connection>scm:git:https://github.com/usnistgov/liboscal-java.git</connection>
+		<connection>scm:git:ssh://git@github.com:usnistgov/liboscal-java.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com:usnistgov/liboscal-java.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
@@ -40,8 +40,8 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<site>
-			<id>site_scm</id>
-			<url>scm:git:ssh://git@github.com:usnistgov/liboscal-java.git</url>
+			<id>nist-pages</id>
+			<url>${site.url}</url>
 		</site>
 	</distributionManagement>
 
@@ -92,6 +92,22 @@
 	</mailingLists>
 
 	<properties>
+		<!-- site configuration -->
+		<site.url>https://pages.nist.gov/liboscal-java/</site.url>
+		<scm.url>https://github.com/usnistgov/liboscal-java</scm.url>
+		<issueManagement.url>https://github.com/usnistgov/liboscal-java/issues</issueManagement.url>
+		<!-- ================================================================================ -->
+		<!-- Web dependencies version -->
+		<!-- ================================================================================ -->
+		<anchorJsVesrion>3.2.2</anchorJsVesrion>
+		<bootstrapVersion>4.4.1</bootstrapVersion>
+		<bootswatchVersion>4.4.1</bootswatchVersion>
+		<highlightJsVersion>9.15.7</highlightJsVersion>
+		<highlightJsTheme>github</highlightJsTheme>
+		<jqueryVersion>3.4.1</jqueryVersion>
+		<fontawesomeVersion>5.12.1</fontawesomeVersion>
+		<popperVersion>1.16.0</popperVersion>
+
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.release>11</maven.compiler.release>
@@ -122,11 +138,11 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.junit.jupiter</groupId> -->
-<!-- 			<artifactId>junit-jupiter-api</artifactId> -->
-<!-- 			<scope>test</scope> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.junit.jupiter</groupId> -->
+		<!-- <artifactId>junit-jupiter-api</artifactId> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
@@ -134,6 +150,52 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.1.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.2.0</version>
+					<configuration>
+						<!-- this is a hack to fix a javadoc bug -->
+						<detectJavaApiLink>false</detectJavaApiLink>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>${plugin.license.version}</version>
+					<configuration>
+						<licenseSets>
+							<licenseSet>
+								<header>license/nist/license.txt</header>
+								<includes>
+									<include>src/**/*.java</include>
+								</includes>
+							</licenseSet>
+						</licenseSets>
+						<failIfMissing>true</failIfMissing>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<configuration>
+						<topSiteURL>${site.url}</topSiteURL>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
@@ -201,38 +263,119 @@
 					</execution>
 				</executions>
 			</plugin>
-							<plugin>
-				<groupId>com.mycila</groupId>
-				<artifactId>license-maven-plugin</artifactId>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
-					<licenseSets>
-						<licenseSet>
-							<header>license/nist/license.txt</header>
-							<includes>
-								<include>**/*.java</include>
-							</includes>
-						</licenseSet>
-					</licenseSets>
-					<failIfMissing>true</failIfMissing>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<inherited>false</inherited>
 				<executions>
 					<execution>
-						<id>check-license</id>
-						<phase>verify</phase>
+						<id>attach-descriptor</id>
 						<goals>
-							<goal>check</goal>
+							<goal>attach-descriptor</goal>
 						</goals>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>gov.nist.secauto</groupId>
-						<artifactId>oss-build-support</artifactId>
-						<version>19-SNAPSHOT</version>
-						<scope>compile</scope>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-enforcer-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>enforce-java</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>enforce</goal>
+								</goals>
+								<configuration>
+									<fail>true</fail>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>reporting</id>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-project-info-reports-plugin</artifactId>
+						<reportSets>
+							<reportSet>
+								<reports>
+									<report>summary</report>
+									<report>licenses</report>
+									<report>modules</report>
+									<report>team</report>
+									<report>mailing-lists</report>
+									<report>scm</report>
+									<report>issue-management</report>
+									<report>dependencies</report>
+									<report>dependency-info</report>
+									<report>dependency-convergence</report>
+									<report>dependency-management</report>
+									<report>plugins</report>
+								</reports>
+							</reportSet>
+						</reportSets>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jxr-plugin</artifactId>
+						<version>${version.plugin.jxr}</version>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<version>${version.plugin.pmd}</version>
+					</plugin>
+				</plugins>
+			</reporting>
+		</profile>
+		<profile>
+			<id>gpg</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${version.plugin.gpg}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<skip>false</skip>
+									<gpgArguments>
+										<arg>--pinentry-mode</arg>
+										<arg>loopback</arg>
+									</gpgArguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
