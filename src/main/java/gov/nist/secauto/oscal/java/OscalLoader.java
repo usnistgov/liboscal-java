@@ -65,6 +65,7 @@ import javax.xml.stream.events.StartElement;
 
 public class OscalLoader {
   private final BindingContext bindingContext;
+  private final MutableConfiguration configuration;
 
   /**
    * Construct a new OSCAL loader instance.
@@ -81,6 +82,24 @@ public class OscalLoader {
    */
   public OscalLoader(BindingContext bindingContext) {
     this.bindingContext = bindingContext;
+    configuration = new MutableConfiguration().enableFeature(Feature.DESERIALIZE_ROOT);
+  }
+
+
+  public void enableFeature(Feature feature) {
+    configuration.enableFeature(feature);
+  }
+
+  public void disableFeature(Feature feature) {
+    configuration.disableFeature(feature);
+  }
+
+  public boolean isFeatureEnabled(Feature feature) {
+    return configuration.isFeatureEnabled(feature, false);
+  }
+  
+  protected Configuration getConfiguration() {
+    return configuration;
   }
 
   /**
@@ -143,8 +162,7 @@ public class OscalLoader {
           throw new UnsupportedOperationException("Unsupported source format: " + matcher.getMatchedFormatName());
         }
 
-        MutableConfiguration config = new MutableConfiguration().enableFeature(Feature.DESERIALIZE_ROOT);
-        Deserializer<CLASS> deserializer = getDeserializer(clazz, format, config);
+        Deserializer<CLASS> deserializer = getDeserializer(clazz, format, getConfiguration());
         CLASS retval = deserializer.deserialize(file);
         return retval;
       case INCONCLUSIVE:
