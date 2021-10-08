@@ -27,16 +27,21 @@
 package gov.nist.secauto.oscal.java;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
+import gov.nist.secauto.metaschema.binding.io.BoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Feature;
-import gov.nist.secauto.metaschema.binding.metapath.INodeContext;
-import gov.nist.secauto.metaschema.binding.metapath.MetaschemaPathEvaluationVisitor;
-import gov.nist.secauto.metaschema.binding.metapath.TerminalNodeContext;
-import gov.nist.secauto.metaschema.binding.metapath.type.INodeItem;
-import gov.nist.secauto.metaschema.datatypes.metaschema.IMetapathResult;
-import gov.nist.secauto.metaschema.model.common.metapath.Metapath;
+import gov.nist.secauto.metaschema.binding.metapath.xdm.IXdmFactory;
+import gov.nist.secauto.metaschema.model.common.metapath.INodeContext;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathFactory;
+import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
+import gov.nist.secauto.metaschema.model.common.metapath.evaluate.IExpressionEvaluationVisitor;
+import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
+import gov.nist.secauto.metaschema.model.common.metapath.evaluate.MetaschemaPathEvaluationVisitor;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IValueItem;
+import gov.nist.secauto.oscal.lib.model.Profile;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -47,27 +52,57 @@ class MetaschemaVisitorTest {
 
   @Test
   void test() throws FileNotFoundException, IOException, BindingException {
-    OscalLoader loader = new OscalLoader();
+    OscalBindingContext bindingContext = new OscalBindingContext();
+    BoundLoader loader = bindingContext.newBoundLoader();
     loader.enableFeature(Feature.DESERIALIZE_VALIDATE);
-    
-    Catalog catalog
-        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile());
 
-    // MetapathExpression path = Metapath.parseMetapathString("2 eq 1 + 1[/catalog]");
-//    MetapathExpression path = Metapath.parseMetapathString("/catalog/back-matter/resource[rlink/@href='https://doi.org/10.6028/NIST.SP.800-53r5']");
-//    MetapathExpression path = Metapath.parseMetapathString("/catalog//@id");
-//    MetapathExpression path = Metapath.parseMetapathString("(/catalog//control[@id='ac-1'])");
-//    System.out.println(path.toString());
-//    MetaschemaPathEvaluationVisitor visitor = new MetaschemaPathEvaluationVisitor();
-//    INodeContext context = new TerminalNodeContext(INodeItem.newRootNodeItem(catalog, loader.getBindingContext()),
-//        loader.getBindingContext());
-//
-//    // catalog, loader.getBindingContext();
-//    IMetapathResult result = visitor.visit(path.getASTNode(), context);
-//    System.out.println("Result: ");
-//    result.toSequence().asStream().map(x -> (INodeItem)x).forEach(x -> {
-//      System.out.println("item: "+x.getMetapath());
-//    });
+    StaticContext staticContext = new StaticContext();
+    staticContext.setDocumentLoader(loader);
+    staticContext.setBaseUri(new File("").getAbsoluteFile().toURI());
+
+    MetaschemaPathEvaluationVisitor visitor = new MetaschemaPathEvaluationVisitor(staticContext.newDynamicContext());
+
+    File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
+    @NotNull
+    Profile profile = loader.load(file);
+
+    IDocumentNodeItem nodeItem
+        = IXdmFactory.INSTANCE.newDocumentNodeItem(profile, bindingContext, file.toURI());
+
+    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/(profile, catalog)//control/@id"), nodeItem, visitor);
+//    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem, visitor);
+//    evaluatePath(
+//        MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified - /catalog/metadata/last-modified"),
+//        nodeItem, visitor);
+//    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified + duration('PT1H')"), nodeItem,
+//        visitor);
+//    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified,/catalog/metadata/last-modified"),
+//        nodeItem, visitor);
+//    evaluatePath(MetapathFactory.parseMetapathString("doc('target/download/content/NIST_SP-800-53_rev5_catalog.xml')"),
+//        nodeItem, visitor);
+    // evaluatePath(Metapath.parseMetapathString("2 eq 1 + 1[/catalog]"), nodeContext, visitor);
+    // evaluatePath(Metapath.parseMetapathString("/catalog/back-matter/resource[rlink/@href='https://doi.org/10.6028/NIST.SP.800-53r5']"),
+    // nodeItem, visitor);
+    // evaluatePath(MetapathFactory.parseMetapathString("/catalog//(@id,@uuid)"), nodeItem, visitor);
+    // evaluatePath(MetapathFactory.parseMetapathString("exists(/catalog//(@id,@uuid))"), nodeItem,
+    // visitor);
+    // evaluatePath(MetapathFactory.parseMetapathString("/catalog//control//prop/@name"), nodeItem,
+    // visitor);
+    // evaluatePath(Metapath.parseMetapathString("(/catalog//control[@id='ac-1'])"), nodeItem,
+    // visitor);
   }
 
+  private void evaluatePath(@NotNull MetapathExpression path, @NotNull INodeContext context, @NotNull IExpressionEvaluationVisitor visitor) {
+    System.out.println("Path: " + path.getPath());
+    System.out.println("Compiled Path: " + path.toString());
+
+    ISequence<?> result = visitor.visit(path.getASTNode(), context);
+    System.out.println("Result: ");
+    result.asStream().forEachOrdered(x -> {
+      if (x instanceof IValueItem) {
+        Object value = ((IValueItem)x).getValue();
+        System.out.println(String.format("  %s: %s", x.getItemName(), value));
+      }
+    });
+  }
 }

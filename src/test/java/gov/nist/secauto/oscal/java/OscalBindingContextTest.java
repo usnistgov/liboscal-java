@@ -30,15 +30,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.nist.secauto.metaschema.binding.BindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
+import gov.nist.secauto.metaschema.binding.io.BoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -46,16 +45,18 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-class OscalLoaderTest {
-  private static OscalLoader loader;
+class OscalBindingContextTest {
+  private static OscalBindingContext bindingContext;
+  private static BoundLoader loader;
 
   @BeforeAll
-  private static void initializeLoader() {
-    loader = new OscalLoader();
+  private static void initialize() {
+    bindingContext = new OscalBindingContext();
+    loader = bindingContext.newBoundLoader();
+    loader.enableFeature(Feature.DESERIALIZE_VALIDATE);
   }
 
   @Test
-  @Disabled
   void testLoadCatalogYaml(@TempDir Path tempDir) throws BindingException, IOException {
     // the YAML catalog is currently malformed, this will create a proper one for this test
     Catalog catalog
@@ -63,14 +64,12 @@ class OscalLoaderTest {
 
     // File out = new File(tempDir.toFile(), "out.yaml");
     File out = new File("target/out.yaml");
-    BindingContext context = BindingContext.newInstance();
-    MutableConfiguration config
-        = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
 
-    Serializer<Catalog> serializer = context.newSerializer(Format.YAML, Catalog.class, config);
+    Serializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
+    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
-    assertNotNull(loader.loadCatalog(out));
+    assertNotNull(bindingContext.loadCatalog(out));
 
     // out.delete();
   }
@@ -84,18 +83,12 @@ class OscalLoaderTest {
     // File out = new File(tempDir.toFile(), "out.json");
     File out = new File("target/out.json");
     BindingContext context = BindingContext.newInstance();
-    MutableConfiguration config
-        = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
 
-    Serializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class, config);
+    Serializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class);
+    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
-    assertNotNull(loader.loadCatalog(out));
-
-    out = new File("target/out.yaml");
-
-    serializer = context.newSerializer(Format.YAML, Catalog.class, config);
-    serializer.serialize(catalog, out);
+    assertNotNull(bindingContext.loadCatalog(out));
 
     // out.delete();
   }
@@ -109,13 +102,12 @@ class OscalLoaderTest {
     // File out = new File(tempDir.toFile(), "out.xml");
     File out = new File("target/out.xml");
     BindingContext context = BindingContext.newInstance();
-    MutableConfiguration config
-        = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
 
-    Serializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class, config);
+    Serializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
+    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
-    assertNotNull(loader.loadCatalog(out));
+    assertNotNull(bindingContext.loadCatalog(out));
 
     // out.delete();
   }

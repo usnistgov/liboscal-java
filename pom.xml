@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -114,7 +116,7 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.4.1-SNAPSHOT</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>0.5.1-SNAPSHOT</dependency.metaschema-framework.version>
 		<dependency.jackson.version>2.12.1</dependency.jackson.version>
 
 		<plugin.license.version>4.0.rc1</plugin.license.version>
@@ -130,11 +132,7 @@
 			<artifactId>metaschema-java-binding</artifactId>
 			<version>${dependency.metaschema-framework.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>${dependency.jackson.version}</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
@@ -152,6 +150,14 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>${project.build.directory}/oscal-resources</directory>
+			</resource>
+		</resources>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -225,6 +231,41 @@
 		</pluginManagement>
 		<plugins>
 			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-oscal-xml-schema</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/oscal-resources/schema/xml</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/oscal/xml/schema</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-oscal-json-schema</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/oscal-resources/schema/json</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/oscal/json/schema</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
 				<version>1.4.2</version>
@@ -267,7 +308,18 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>download-profile-json</id>
+						<id>download-low-profile-xml</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_LOW-baseline_profile.xml</uri>
+							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>download-moderate-profile-json</id>
 						<phase>generate-test-resources</phase>
 						<goals>
 							<goal>wget</goal>

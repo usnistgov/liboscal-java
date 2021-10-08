@@ -33,12 +33,12 @@ import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Deserializer;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -92,43 +92,48 @@ class TestContent {
   private static <CLASS> void chainReadWrite(File xmlSource, Class<CLASS> clazz, Path tempDir, int iterations)
       throws BindingException, FileNotFoundException, IOException {
     BindingContext context = BindingContext.newInstance();
-    MutableConfiguration config
-        = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
 
     CLASS obj;
 
     // XML
     {
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz, config);
+      Deserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz);
+      deserializer.enableFeature(Feature.DESERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_VALIDATE);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
 
       File out = new File(tempDir.toFile(), "out.xml");
-      Serializer<CLASS> serializer = context.newSerializer(Format.XML, clazz, config);
+      Serializer<CLASS> serializer = context.newSerializer(Format.XML, clazz);
+      serializer.enableFeature(Feature.SERIALIZE_ROOT);
       measureSerializer(obj, "XML", out, serializer, iterations);
     }
 
     // JSON
     {
       File out = new File(tempDir.toFile(), "out.json");
-      Serializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz, config);
+      Serializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz);
+      serializer.enableFeature(Feature.SERIALIZE_ROOT);
       measureSerializer(obj, "JSON", out, serializer, iterations);
 
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz, config);
+      Deserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
+      deserializer.enableFeature(Feature.DESERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_VALIDATE);
       obj = measureDeserializer("JSON", out, deserializer, iterations);
     }
 
     // YAML
     {
       File out = new File(tempDir.toFile(), "out.yml");
-      Serializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz, config);
+      Serializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz);
+      serializer.enableFeature(Feature.SERIALIZE_ROOT);
       measureSerializer(obj, "YAML", out, serializer, iterations);
 
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz, config);
+      Deserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
+      deserializer.enableFeature(Feature.DESERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_VALIDATE);
       obj = measureDeserializer("YAML", out, deserializer, iterations);
     }
   }
 
   @Test
+  @Disabled
   public void testReadWriteOSCALCatalog(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
