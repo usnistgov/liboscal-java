@@ -23,30 +23,18 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+package gov.nist.secauto.oscal.lib.model.metadata;
 
-package gov.nist.secauto.oscal.lib.model;
+import gov.nist.secauto.oscal.lib.model.BackMatter;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 
-import gov.nist.secauto.metaschema.binding.DeserializationHandler;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractControl implements DeserializationHandler {
-  private Control parent;
+import java.util.List;
+import java.util.UUID;
 
-  protected Control getParent() {
-    return parent;
-  }
+public interface IBackMatter {
+  List<Resource> getResources();
 
-  protected void setParent(Control parent) {
-    this.parent = parent;
-  }
-
-  @Override
-  public void beforeDeserialize(Object parent) {
-  }
-
-  @Override
-  public void afterDeserialize(Object parent) {
-    if (parent instanceof Control) {
-      this.parent = (Control) parent;
-    }
-  }
+  Resource getResourceByUuid(@NotNull UUID uuid);
 }

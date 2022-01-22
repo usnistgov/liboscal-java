@@ -24,7 +24,7 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.java;
+package gov.nist.secauto.oscal.lib;
 
 import gov.nist.secauto.metaschema.binding.DefaultBindingContext;
 import gov.nist.secauto.metaschema.binding.IBindingMatcher;
@@ -37,6 +37,8 @@ import gov.nist.secauto.oscal.lib.model.PlanOfActionAndMilestones;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,42 +46,63 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 public class OscalBindingContext extends DefaultBindingContext {
+  private static OscalBindingContext instance;
+
+  @NotNull
+  public static synchronized OscalBindingContext instance() {
+    if (instance == null) {
+      instance = new OscalBindingContext();
+    }
+    return instance;
+  }
+
   /**
    * Construct a new OSCAL-flavored binding context.
    */
-  public OscalBindingContext() {
+  protected OscalBindingContext() {
     registerBindingMatcher(new Matcher());
   }
 
-  public Catalog loadCatalog(File file) throws BindingException, FileNotFoundException, IOException {
+  @NotNull
+  public Catalog loadCatalog(@NotNull File file) throws BindingException, FileNotFoundException, IOException {
     return newBoundLoader().load(Catalog.class, file);
   }
 
-  public Profile loadProfile(File file) throws BindingException, FileNotFoundException, IOException {
+  @NotNull
+  public Profile loadProfile(@NotNull File file) throws BindingException, FileNotFoundException, IOException {
     return newBoundLoader().load(Profile.class, file);
   }
 
-  public SystemSecurityPlan loadSystemSecurityPlan(File file) throws BindingException, FileNotFoundException, IOException {
+  @NotNull
+  public SystemSecurityPlan loadSystemSecurityPlan(@NotNull File file)
+      throws BindingException, FileNotFoundException, IOException {
     return newBoundLoader().load(SystemSecurityPlan.class, file);
   }
 
-  public ComponentDefinition loadComponentDefinition(File file) throws BindingException, FileNotFoundException, IOException {
+  @NotNull
+  public ComponentDefinition loadComponentDefinition(@NotNull File file)
+      throws BindingException, FileNotFoundException, IOException {
     return newBoundLoader().load(ComponentDefinition.class, file);
   }
 
-  public AssessmentPlan loadAssessmentPlan(File file) throws BindingException, FileNotFoundException, IOException {
+  @NotNull
+  public AssessmentPlan loadAssessmentPlan(@NotNull File file)
+      throws BindingException, FileNotFoundException, IOException {
     return newBoundLoader().load(AssessmentPlan.class, file);
   }
 
-  public AssessmentResults loadAssessmentResults(File file) throws BindingException, FileNotFoundException, IOException {
+  @NotNull
+  public AssessmentResults loadAssessmentResults(@NotNull File file)
+      throws BindingException, FileNotFoundException, IOException {
     return newBoundLoader().load(AssessmentResults.class, file);
   }
 
-  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(File file)
+  @NotNull
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NotNull File file)
       throws BindingException, FileNotFoundException, IOException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, file);
   }
-  
+
   private class Matcher implements IBindingMatcher {
 
     @Override
@@ -145,6 +168,6 @@ public class OscalBindingContext extends DefaultBindingContext {
       }
       return retval;
     }
-    
+
   }
 }

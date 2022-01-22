@@ -1,0 +1,14 @@
+profile
+base2-test
+base-test
+exclude-call-test
+full-test
+import-twice
+include-all-no-children-test
+include-all-test
+include-call-with-children-test
+include-loose-param-test
+include-match-test
+merge-implicit-keep
+merge-keep-resources
+#modify-adds

@@ -30,10 +30,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.nist.secauto.metaschema.binding.BindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.BoundLoader;
+import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
 
@@ -47,11 +48,11 @@ import java.nio.file.Path;
 
 class OscalBindingContextTest {
   private static OscalBindingContext bindingContext;
-  private static BoundLoader loader;
+  private static IBoundLoader loader;
 
   @BeforeAll
   private static void initialize() {
-    bindingContext = new OscalBindingContext();
+    bindingContext = OscalBindingContext.instance();
     loader = bindingContext.newBoundLoader();
     loader.enableFeature(Feature.DESERIALIZE_VALIDATE);
   }

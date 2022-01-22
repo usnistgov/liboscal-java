@@ -27,9 +27,9 @@
 package gov.nist.secauto.oscal.java;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.BoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Feature;
-import gov.nist.secauto.metaschema.binding.metapath.xdm.IXdmFactory;
+import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
+import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.INodeContext;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathFactory;
@@ -38,7 +38,9 @@ import gov.nist.secauto.metaschema.model.common.metapath.evaluate.IExpressionEva
 import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.evaluate.MetaschemaPathEvaluationVisitor;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IValueItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IValuedItem;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
+import gov.nist.secauto.oscal.lib.metapath.function.library.ResolveProfile;
 import gov.nist.secauto.oscal.lib.model.Profile;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,29 +49,36 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 
 class MetaschemaVisitorTest {
 
   @Test
   void test() throws FileNotFoundException, IOException, BindingException {
-    OscalBindingContext bindingContext = new OscalBindingContext();
-    BoundLoader loader = bindingContext.newBoundLoader();
+    OscalBindingContext bindingContext = OscalBindingContext.instance();
+    IBoundLoader loader = bindingContext.newBoundLoader();
     loader.enableFeature(Feature.DESERIALIZE_VALIDATE);
 
     StaticContext staticContext = new StaticContext();
-    staticContext.setDocumentLoader(loader);
-    staticContext.setBaseUri(new File("").getAbsoluteFile().toURI());
+    @SuppressWarnings("null")
+    @NotNull
+    URI baseUri = new File("").getAbsoluteFile().toURI();
+    staticContext.setBaseUri(baseUri);
+    DynamicContext dynamicContext = staticContext.newDynamicContext();
+    dynamicContext.setDocumentLoader(loader);
 
-    MetaschemaPathEvaluationVisitor visitor = new MetaschemaPathEvaluationVisitor(staticContext.newDynamicContext());
+    MetaschemaPathEvaluationVisitor visitor = new MetaschemaPathEvaluationVisitor(dynamicContext);
 
     File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
+    IDocumentNodeItem nodeItem = loader.loadAsNodeItem(file);
+
     @NotNull
-    Profile profile = loader.load(file);
+    Profile profile = IBoundLoader.toBoundObject(nodeItem);
+    
+    IDocumentNodeItem resolvedProfile = ResolveProfile.resolveProfile(nodeItem, dynamicContext);
 
-    IDocumentNodeItem nodeItem
-        = IXdmFactory.INSTANCE.newDocumentNodeItem(profile, bindingContext, file.toURI());
-
-    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/(profile, catalog)//control/@id"), nodeItem, visitor);
+//    evaluatePath(MetapathFactory.parseMetapathString("resolve-profile(doc(resolve-uri(/profile/import/@href, document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem, visitor);
+    evaluatePath(MetapathFactory.parseMetapathString("//control/@id"), resolvedProfile, visitor);
 //    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem, visitor);
 //    evaluatePath(
 //        MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified - /catalog/metadata/last-modified"),
@@ -92,15 +101,16 @@ class MetaschemaVisitorTest {
     // visitor);
   }
 
-  private void evaluatePath(@NotNull MetapathExpression path, @NotNull INodeContext context, @NotNull IExpressionEvaluationVisitor visitor) {
+  private void evaluatePath(@NotNull MetapathExpression path, @NotNull INodeContext context,
+      @NotNull IExpressionEvaluationVisitor visitor) {
     System.out.println("Path: " + path.getPath());
     System.out.println("Compiled Path: " + path.toString());
 
     ISequence<?> result = visitor.visit(path.getASTNode(), context);
     System.out.println("Result: ");
     result.asStream().forEachOrdered(x -> {
-      if (x instanceof IValueItem) {
-        Object value = ((IValueItem)x).getValue();
+      if (x instanceof IValuedItem) {
+        Object value = ((IValuedItem) x).getValue();
         System.out.println(String.format("  %s: %s", x.getItemName(), value));
       }
     });

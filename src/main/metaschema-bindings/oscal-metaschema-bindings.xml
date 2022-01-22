@@ -3,50 +3,108 @@
 	xmlns="https://csrc.nist.gov/ns/metaschema-binding/1.0">
 	<model-binding
 		namespace="http://csrc.nist.gov/ns/oscal/1.0">
-        <java>
-            <use-package-name>gov.nist.secauto.oscal.lib.model</use-package-name>
-        </java>
-    </model-binding>
+		<java>
+			<use-package-name>gov.nist.secauto.oscal.lib.model</use-package-name>
+		</java>
+	</model-binding>
+	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_metadata_metaschema.xml">
+		<define-assembly-binding name="property">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty</extend-base-class>
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="back-matter">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.metadata.AbstractBackMatter</extend-base-class>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
+	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_control-common_metaschema.xml">
+		<define-assembly-binding name="parameter">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.AbstractParameter</extend-base-class>
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="part">
+			<java>
+				<use-class-name>ControlPart</use-class-name>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.AbstractPart</extend-base-class>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
+	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_catalog_metaschema.xml">
+		<define-assembly-binding name="catalog">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractOscalInstance</extend-base-class>
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="group">
+			<java>
+				<use-class-name>CatalogGroup</use-class-name>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.catalog.AbstractCatalogGroup</extend-base-class>
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="control">
+			<java>
+				<use-class-name>Control</use-class-name>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.catalog.AbstractControl</extend-base-class>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
+	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_profile_metaschema.xml">
+		<define-assembly-binding name="profile">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractOscalInstance</extend-base-class>
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="import">
+			<java>
+				<use-class-name>ProfileImport</use-class-name>
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="group">
+			<java>
+				<use-class-name>ProfileGroup</use-class-name>
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="select-control-by-id">
+			<java>
+				<use-class-name>ProfileSelectControlById</use-class-name>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.profile.AbstractProfileSelectControlById</extend-base-class>
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="set-parameter">
+			<java>
+				<use-class-name>ProfileSetParameter</use-class-name>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
 	<metaschema-binding
 		href="../../../oscal/src/metaschema/oscal_component_metaschema.xml">
-        <define-assembly-binding name="component">
-            <java>
-                <use-class-name>ComponentData</use-class-name>
-            </java>
-        </define-assembly-binding>
+		<define-assembly-binding name="component">
+			<java>
+				<use-class-name>ComponentData</use-class-name>
+			</java>
+		</define-assembly-binding>
 		<define-assembly-binding
 			name="implemented-requirement">
-            <java>
+			<java>
 				<use-class-name>ComponentImplementedRequirement</use-class-name>
-            </java>
-        </define-assembly-binding>
-		<define-assembly-binding
-			name="control-implementation">
+			</java>
+		</define-assembly-binding>
+		<define-assembly-binding name="control-implementation">
 			<java>
 				<use-class-name>ComponentControlImplementation</use-class-name>
-				<extend-base-class>gov.nist.secauto.oscal.lib.AbstractControl</extend-base-class>
+				<!-- <extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractControl</extend-base-class> -->
 			</java>
 		</define-assembly-binding>
 		<define-assembly-binding name="statement">
 			<java>
 				<use-class-name>ComponentStatement</use-class-name>
-			</java>
-		</define-assembly-binding>
-    </metaschema-binding>
-	<metaschema-binding
-		href="../../../oscal/src/metaschema/oscal_profile_metaschema.xml">
-        <define-assembly-binding name="set-parameter">
-            <java>
-                <use-class-name>ProfiledSetParameter</use-class-name>
-            </java>
-        </define-assembly-binding>
-    </metaschema-binding>
-	<metaschema-binding
-		href="../../../oscal/src/metaschema/oscal_catalog_metaschema.xml">
-		<define-assembly-binding name="control">
-			<java>
-				<use-class-name>Control</use-class-name>
-				<extend-base-class>gov.nist.secauto.oscal.lib.AbstractControl</extend-base-class>
 			</java>
 		</define-assembly-binding>
 	</metaschema-binding>
