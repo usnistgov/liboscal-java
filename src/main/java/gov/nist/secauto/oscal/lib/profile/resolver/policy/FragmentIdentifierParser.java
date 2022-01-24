@@ -25,25 +25,19 @@
  */
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-
 import org.jetbrains.annotations.NotNull;
 
-public interface IReferencePolicy<TYPE> {
-  @NotNull
-  public static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+public class FragmentIdentifierParser
+    extends AbstractPatternIdentifierParser {
 
-    @Override
-    public boolean handleReference(@NotNull Object type, @NotNull Index index) {
-      return true;
-    }
-  };
-
-  @SuppressWarnings("unchecked")
-  @NotNull
-  public static <TYPE> IReferencePolicy<TYPE> ignore() {
-    return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
+  public FragmentIdentifierParser() {
+    super("^(#)([^#]+)(#.*)?$", 2);
   }
 
-  boolean handleReference(@NotNull TYPE type, @NotNull Index index);
+  @Override
+  public @NotNull String replaceReference(@NotNull Match match, @NotNull String newIdentifier) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

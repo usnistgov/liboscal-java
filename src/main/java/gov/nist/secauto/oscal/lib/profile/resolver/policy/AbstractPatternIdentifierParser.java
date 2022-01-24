@@ -25,25 +25,49 @@
  */
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-
 import org.jetbrains.annotations.NotNull;
 
-public interface IReferencePolicy<TYPE> {
-  @NotNull
-  public static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    @Override
-    public boolean handleReference(@NotNull Object type, @NotNull Index index) {
-      return true;
-    }
-  };
-
-  @SuppressWarnings("unchecked")
-  @NotNull
-  public static <TYPE> IReferencePolicy<TYPE> ignore() {
-    return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
+public abstract class AbstractPatternIdentifierParser implements IIdentifierParser {
+  private final Pattern pattern;
+  private final int identifierGroup;
+  
+  @SuppressWarnings("null")
+  public AbstractPatternIdentifierParser(@NotNull String pattern, int identifierGroup) {
+    this(Pattern.compile(Objects.requireNonNull(pattern, "pattern")), identifierGroup);
   }
 
-  boolean handleReference(@NotNull TYPE type, @NotNull Index index);
+  @SuppressWarnings("null")
+  public AbstractPatternIdentifierParser(@NotNull Pattern pattern, int identifierGroup) {
+    this.pattern = Objects.requireNonNull(pattern, "pattern");
+    this.identifierGroup = identifierGroup;
+  }
+  
+
+  public Pattern getPattern() {
+    return pattern;
+  }
+
+  
+  public int getIdentifierGroup() {
+    return identifierGroup;
+  }
+
+  @Override
+  public Match match(@NotNull String reference) {
+    Matcher matcher = getPattern().matcher(reference);
+
+    Match retval;
+    if (matcher.matches()) {
+      retval = new Match(reference, matcher.group(getIdentifierGroup()), true);
+    } else {
+      retval = new Match(reference, matcher.group(getIdentifierGroup()), true);
+    }
+    return retval;
+  }
+
+
 }

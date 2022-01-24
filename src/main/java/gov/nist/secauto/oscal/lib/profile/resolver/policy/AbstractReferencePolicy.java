@@ -26,28 +26,30 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferencePolicy.NonMatchPolicy;
+import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public abstract class AbstractReferencePolicy<TYPE> implements IReferencePolicy<TYPE> {
 
   @NotNull
   private final IIdentifierParser identifierParser;
   @NotNull
-  private final NonMatchPolicy nonMatchPolicy;
+  private final List<@NotNull IReferencePolicyHandler<TYPE>> handlers;
 
   @SuppressWarnings("null")
   protected AbstractReferencePolicy(@NotNull IIdentifierParser identifierParser,
-      @NotNull NonMatchPolicy nonMatchPolicy) {
+      @NotNull List<@NotNull IReferencePolicyHandler<TYPE>> handlers) {
     this.identifierParser = Objects.requireNonNull(identifierParser, "identifierParser");
-    this.nonMatchPolicy = Objects.requireNonNull(nonMatchPolicy, "nonMatchPolicy");
+    this.handlers = CollectionUtil.requireNonEmpty(Objects.requireNonNull(handlers, "handlers"), "handlers");
   }
 
   @NotNull
@@ -55,61 +57,65 @@ public abstract class AbstractReferencePolicy<TYPE> implements IReferencePolicy<
     return identifierParser;
   }
 
+  public List<IReferencePolicyHandler<TYPE>> getReferencePolicyHandlers() {
+    return handlers;
+  }
+
   @NotNull
-  protected abstract ItemType getEntityItemType(@NotNull TYPE type);
+  protected abstract Set<@NotNull ItemType> getEntityItemTypes(@NotNull TYPE type);
 
   protected abstract String getReference(@NotNull TYPE type);
 
-  protected boolean handleMatch(EntityItem item, @NotNull TYPE type, @NotNull Index index) {
-    item.incrementReferenceCount();
-    return true;
+  protected boolean handleIndexHit(EntityItem item, @NotNull TYPE type, @NotNull Index index) {
+    return getReferencePolicyHandlers().stream()
+        .map(handler -> handler.handleIndexHit(item, type, index))
+        .filter(result -> result)
+        .findFirst().orElse(false);
   }
 
-  protected boolean handleNonMatch(@NotNull TYPE type, @NotNull ItemType itemType, @NotNull String identifier,
+  protected boolean handleIndexMiss(@NotNull TYPE type, @NotNull Set<ItemType> itemTypes, @NotNull Match match,
       @NotNull Index index) {
-    boolean retval = false;
-    switch (nonMatchPolicy) {
-    case IGNORE:
-      retval = true;
-      break;
-    case ERROR:
-      retval = handleNonMatchError(type, itemType, identifier, index);
-      break;
-    case WARN:
-      retval = handleNonMatchWarning(type, itemType, identifier, index);
-      break;
-    default:
-      break;
-    }
-    return retval;
+    return getReferencePolicyHandlers().stream()
+        .map(handler -> handler.handleIndexMiss(type, itemTypes, match, index))
+        .filter(result -> result)
+        .findFirst().orElse(false);
   }
 
-  protected abstract boolean handleNonMatchWarning(@NotNull TYPE type, @NotNull ItemType itemType,
-      @NotNull String identifier,
-      @NotNull Index index);
+  protected boolean handleIdentifierNonMatch(@NotNull TYPE type, @NotNull Match match,
+      @NotNull Index index) {
+    return getReferencePolicyHandlers().stream()
+        .map(handler -> handler.handleIdentifierNonMatch(type, match, index))
+        .filter(result -> result)
+        .findFirst().orElse(false);
+  }
 
-  protected abstract boolean handleNonMatchError(@NotNull TYPE type, @NotNull ItemType itemType,
-      @NotNull String identifier, @NotNull Index index);
-
+  @SuppressWarnings("null")
   public boolean handleReference(@NotNull TYPE type, @NotNull Index index) {
     String reference = getReference(type);
 
     boolean handled = false;
     if (reference != null) {
-      Pair<@NotNull Boolean, @NotNull String> result = getIdentifierParser().match(reference);
-      if (result.getLeft()) {
-        @SuppressWarnings("null")
-        String identifier = result.getRight();
-  
-        ItemType itemType = getEntityItemType(type);
-        EntityItem item = index.getEntity(itemType, identifier);
-        if (item != null) {
-          handled = handleMatch(item, type, index);
-        } else {
-          // enforce the non-match policy
-          handled = handleNonMatch(type, itemType, identifier, index);
+      IIdentifierParser.Match result = getIdentifierParser().match(reference);
+      if (result.isMatch()) {
+        String identifier = result.getIdentifier();
+
+        Set<ItemType> itemTypes = getEntityItemTypes(type);
+        EntityItem item = null;
+        for (ItemType itemType : itemTypes) {
+          item = index.getEntity(itemType, identifier);
+          if (item != null) {
+            break;
+          }
         }
-      } // else ignore
+
+        if (item != null) {
+          handled = handleIndexHit(item, type, index);
+        } else {
+          handled = handleIndexMiss(type, itemTypes, result, index);
+        }
+      } else {
+        handled = handleIdentifierNonMatch(type, result, index);
+      }
     }
 
     return handled;

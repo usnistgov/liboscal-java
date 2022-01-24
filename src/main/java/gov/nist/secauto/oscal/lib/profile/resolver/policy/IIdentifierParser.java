@@ -25,21 +25,55 @@
  */
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 public interface IIdentifierParser {
   @NotNull
-  public static final IIdentifierParser FRAGMENT_PARSER = new PatternIdentifierParser("^#(.+)$");
+  public static final IIdentifierParser FRAGMENT_PARSER = new FragmentIdentifierParser();
   @NotNull
   public static final IIdentifierParser IDENTITY_PARSER = new IIdentifierParser() {
 
     @Override
-    public Pair<@NotNull Boolean, @NotNull String> match(@NotNull String identifier) {
-      return Pair.of(true, identifier);
+    public Match match(@NotNull String identifier) {
+      return new Match(identifier, identifier, true);
+    }
+
+    @Override
+    public String replaceReference(Match match, String replacement) {
+      return replacement;
     }
     
   };
   
-  Pair<@NotNull Boolean, @NotNull String> match(@NotNull String identifier);
+  @NotNull
+  Match match(@NotNull String identifier);
+
+  @NotNull
+  String replaceReference(@NotNull Match match, @NotNull String newIdentifier);
+  
+  public class Match {
+    @NotNull
+    private final String reference;
+    @NotNull
+    private final String identifier;
+    private final boolean match;
+
+    public Match(@NotNull String reference, @NotNull String identifier, boolean match) {
+      this.reference = reference;
+      this.identifier = identifier;
+      this.match = match;
+    }
+    
+    public String getReference() {
+      return reference;
+    }
+
+    public String getIdentifier() {
+      return identifier;
+    }
+
+    public boolean isMatch() {
+      return match;
+    }
+  }
 }

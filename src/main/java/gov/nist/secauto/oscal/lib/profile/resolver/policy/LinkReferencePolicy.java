@@ -26,35 +26,52 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.model.Link;
-import gov.nist.secauto.oscal.lib.model.Property;
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferencePolicy.NonMatchPolicy;
+import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
+import gov.nist.secauto.oscal.lib.util.CustomCollectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URI;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class LinkReferencePolicy
-    extends AbstractReferencePolicy<Link> {
+    extends AbstractStaticItemTypesReferencePolicy<Link> {
   private static final Logger log = LogManager.getLogger(LinkReferencePolicy.class);
-
   @NotNull
-  private final ItemType itemType;
+  private static final IReferencePolicyHandler<Link> INDEX_MISS_HANDLER = new IndexMissHandler();
+  @NotNull
+  private static final IReferencePolicyHandler<Link> INDEX_HIT_UNSELECTED_HANDLER = new IndexHitUnselectedHandler();
+  @NotNull
+  private static final IReferencePolicyHandler<Link> INDEX_HIT_INCREMENT_HANDLER
+      = IReferencePolicyHandler.incrementCountIndexHitPolicy();
 
   @SuppressWarnings("null")
-  public LinkReferencePolicy(@NotNull IIdentifierParser identifierParser, @NotNull NonMatchPolicy nonMatchPolicy,
-      @NotNull ItemType itemType) {
-    super(identifierParser, Objects.requireNonNull(nonMatchPolicy, "nonMatchPolicy"));
-    this.itemType = Objects.requireNonNull(itemType, "itemType");
+  @NotNull
+  public static LinkReferencePolicy create(@NotNull ItemType itemType) {
+    return create(Set.of(itemType));
   }
 
-  @Override
-  protected ItemType getEntityItemType(@NotNull Link link) {
-    return itemType;
+  @NotNull
+  public static LinkReferencePolicy create(Set<ItemType> itemTypes) {
+    return new LinkReferencePolicy(CollectionUtil.requireNonEmpty(Objects.requireNonNull(itemTypes, "itemTypes"), "itemTypes"));
+  }
+
+  @SuppressWarnings("null")
+  public LinkReferencePolicy(@NotNull Set<ItemType> itemTypes) {
+    super(IIdentifierParser.FRAGMENT_PARSER,
+        List.of(INDEX_MISS_HANDLER,
+            INDEX_HIT_UNSELECTED_HANDLER,
+            INDEX_HIT_INCREMENT_HANDLER),
+        itemTypes);
   }
 
   @Override
@@ -62,26 +79,32 @@ public class LinkReferencePolicy
     return link.getHref().toString();
   }
 
-  @Override
-  protected boolean handleNonMatchWarning(@NotNull Link link, @NotNull ItemType itemType,
-      @NotNull String identifier, @NotNull Index index) {
-    log.atWarn().log(
-        "link with rel '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
-        link.getRel(),
-        itemType.name().toLowerCase(),
-        identifier);
-    return true;
+  private static class IndexHitUnselectedHandler
+      extends AbstractIndexHitUnselectedPolicyHandler<Link> {
+    protected boolean handleUnselected(EntityItem item, @NotNull Link link) {
+      URI linkHref = link.getHref();
+      URI sourceUri = item.getSource();
+
+      URI resolved = sourceUri.resolve(linkHref);
+      log.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      link.setHref(resolved);
+      return true;
+    }
   }
 
-  @Override
-  protected boolean handleNonMatchError(@NotNull Link link, @NotNull ItemType itemType,
-      @NotNull String identifier,
-      @NotNull Index index) {
-    log.atError().log(
-        "link with rel '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
-        link.getRel(),
-        itemType.name().toLowerCase(),
-        identifier);
-    return true;
+  private static class IndexMissHandler
+      extends AbstractIndexMissPolicyHandler<Link> {
+
+    @Override
+    public boolean handleIndexMiss(@NotNull Link link, @NotNull Set<ItemType> itemTypes,
+        @NotNull Match match, @NotNull Index index) {
+      log.atWarn().log(
+          "link with rel '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
+          link.getRel(),
+          itemTypes.stream().map(en -> en.name().toLowerCase()).collect(CustomCollectors.joiningWithOxfordComma("or")),
+          match.getIdentifier());
+      return true;
+    }
+
   }
 }

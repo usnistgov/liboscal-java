@@ -94,7 +94,7 @@ public class ProfileResolver {
 
   public @NotNull Catalog resolve(@NotNull INodeItem profile, @NotNull Stack<@NotNull URI> importHistory)
       throws IOException {
-    Object profileObject = IBoundLoader.toBoundObject(profile);
+    Object profileObject = profile.toBoundObject();
 
     Catalog retval;
     if (profileObject instanceof Catalog) {

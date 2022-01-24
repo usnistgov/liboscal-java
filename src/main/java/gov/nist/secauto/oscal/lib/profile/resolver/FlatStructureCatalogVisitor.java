@@ -44,13 +44,6 @@ public class FlatStructureCatalogVisitor {
   }
 
   public void visitCatalog(@NotNull Catalog catalog) {
-    System.out.println("Catalog: " + catalog.getUuid());
-
-//    // append in-scope parameters
-//    List<Parameter> parameters = listOrEmpty(catalog.getParams());
-//    
-//    parameters.stream().forEachOrdered(param -> inScopeParameters.put(param.getId(), param));
-
     // process children
     for (Iterator<CatalogGroup> iter = CollectionUtil.listOrEmpty(catalog.getGroups()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
@@ -61,7 +54,6 @@ public class FlatStructureCatalogVisitor {
       // remove this group and promote its contents
       iter.remove();
       result.apply(catalog);
-      System.out.println("  Removing group: " + child.getId());
     }
 
     for (Iterator<Control> iter = CollectionUtil.listOrEmpty(catalog.getControls()).iterator(); iter.hasNext();) {
@@ -76,8 +68,6 @@ public class FlatStructureCatalogVisitor {
   }
 
   public Result visitGroup(@NotNull CatalogGroup group) {
-    System.out.println("  Group: " + group.getId());
-
     // process children
     Result retval = new Result();
 
@@ -110,8 +100,6 @@ public class FlatStructureCatalogVisitor {
   }
 
   public Result visitControl(@NotNull Control control) {
-    System.out.println("    Control: " + control.getId());
-
     Result result = new Result();
 
     List<Control> controlChildren = CollectionUtil.listOrEmpty(control.getControls());
@@ -127,7 +115,6 @@ public class FlatStructureCatalogVisitor {
         result.promoteControl(child);
         result.append(childResult);
         iter.remove();
-        System.out.println("      Promoting control: " + child.getId());
       }
     }
 

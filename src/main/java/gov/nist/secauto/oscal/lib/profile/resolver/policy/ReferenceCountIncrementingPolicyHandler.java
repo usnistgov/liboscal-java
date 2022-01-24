@@ -25,25 +25,17 @@
  */
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface IReferencePolicy<TYPE> {
-  @NotNull
-  public static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+public class ReferenceCountIncrementingPolicyHandler implements IReferencePolicyHandler<Object> {
 
-    @Override
-    public boolean handleReference(@NotNull Object type, @NotNull Index index) {
-      return true;
-    }
-  };
-
-  @SuppressWarnings("unchecked")
-  @NotNull
-  public static <TYPE> IReferencePolicy<TYPE> ignore() {
-    return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
+  @Override
+  public boolean handleIndexHit(EntityItem item, @NotNull Object type, @NotNull Index index) {
+    item.incrementReferenceCount();
+    return true;
   }
 
-  boolean handleReference(@NotNull TYPE type, @NotNull Index index);
 }

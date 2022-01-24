@@ -28,6 +28,7 @@ package gov.nist.secauto.oscal.java;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Feature;
+import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.INodeContext;
@@ -41,6 +42,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IValuedItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.metapath.function.library.ResolveProfile;
+import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +52,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class MetaschemaVisitorTest {
 
@@ -73,9 +76,13 @@ class MetaschemaVisitorTest {
     IDocumentNodeItem nodeItem = loader.loadAsNodeItem(file);
 
     @NotNull
-    Profile profile = IBoundLoader.toBoundObject(nodeItem);
+    Profile profile = nodeItem.toBoundObject();
     
     IDocumentNodeItem resolvedProfile = ResolveProfile.resolveProfile(nodeItem, dynamicContext);
+    OscalBindingContext.instance().validate(resolvedProfile.toBoundObject(), file.toURI());
+    evaluatePath(MetapathFactory.parseMetapathString("//control[part[@name='assessment' and not(prop[@name='method'])]]/@id"), resolvedProfile, visitor);
+    
+    OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class).serialize(resolvedProfile.toBoundObject(), System.out);
 
 //    evaluatePath(MetapathFactory.parseMetapathString("resolve-profile(doc(resolve-uri(/profile/import/@href, document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem, visitor);
     evaluatePath(MetapathFactory.parseMetapathString("//control/@id"), resolvedProfile, visitor);
@@ -108,11 +115,14 @@ class MetaschemaVisitorTest {
 
     ISequence<?> result = visitor.visit(path.getASTNode(), context);
     System.out.println("Result: ");
+    AtomicInteger count = new AtomicInteger();
     result.asStream().forEachOrdered(x -> {
       if (x instanceof IValuedItem) {
         Object value = ((IValuedItem) x).getValue();
         System.out.println(String.format("  %s: %s", x.getItemName(), value));
       }
+      count.incrementAndGet();
     });
+    System.out.println(String.format("  %d items",count.get()));
   }
 }

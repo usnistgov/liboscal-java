@@ -26,7 +26,9 @@
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Location;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Party;
@@ -38,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import java.net.URI;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -45,11 +48,16 @@ import java.util.UUID;
 public class Index {
   @NotNull
   private final Map<ItemType, ItemGroup> entityMap;
-  
+  @NotNull
+  private final Map<String, CatalogGroup> selectedGroups;
+  @NotNull
+  private final Map<String, Control> selectedControls;
   
   @SuppressWarnings("null")
   public Index() {
     this.entityMap = new EnumMap<>(ItemType.class);
+    this.selectedGroups = new HashMap<>();
+    this.selectedControls = new HashMap<>();
   }
 
 
@@ -110,7 +118,25 @@ public class Index {
   }
 
   @SuppressWarnings("null")
-  public EntityItem addControl(@NotNull Control control, @NotNull URI source) {
+  public EntityItem addGroup(@NotNull CatalogGroup catalogGroup, @NotNull URI source, boolean selected) {
+    if (selected) {
+      selectedGroups.put(catalogGroup.getId(), catalogGroup);
+    }
+
+    ItemGroup group = getItemGroup(ItemType.GROUP);
+    return group.add(EntityItem.builder()
+        .itemType(ItemType.GROUP)
+        .instance(catalogGroup, catalogGroup.getId())
+        .source(source)
+        .build());
+  }
+
+  @SuppressWarnings("null")
+  public EntityItem addControl(@NotNull Control control, @NotNull URI source, boolean selected) {
+    if (selected) {
+      selectedControls.put(control.getId(), control);
+    }
+
     ItemGroup group = getItemGroup(ItemType.CONTROL);
     return group.add(EntityItem.builder()
         .itemType(ItemType.CONTROL)
@@ -130,6 +156,16 @@ public class Index {
   }
 
   @SuppressWarnings("null")
+  public EntityItem addPart(@NotNull ControlPart part, @NotNull URI source) {
+    ItemGroup group = getItemGroup(ItemType.PART);
+    return group.add(EntityItem.builder()
+        .itemType(ItemType.PART)
+        .instance(part, part.getId())
+        .source(source)
+        .build());
+  }
+
+  @SuppressWarnings("null")
   public EntityItem addResource(@NotNull Resource resource, @NotNull URI source) {
     ItemGroup group = getItemGroup(ItemType.RESOURCE);
     return group.add(EntityItem.builder()
@@ -137,6 +173,14 @@ public class Index {
         .instance(resource, resource.getUuid())
         .source(source)
         .build());
+  }
+
+  public boolean isGroupSelected(String identifier) {
+    return selectedGroups.containsKey(identifier);
+  }
+
+  public boolean isControlSelected(String identifier) {
+    return selectedControls.containsKey(identifier);
   }
 
 //

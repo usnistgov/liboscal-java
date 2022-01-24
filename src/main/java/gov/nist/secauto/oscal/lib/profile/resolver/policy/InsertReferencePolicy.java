@@ -29,32 +29,46 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.insertanchor.InsertAnchorNode;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferencePolicy.NonMatchPolicy;
+import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 public class InsertReferencePolicy
     extends AbstractReferencePolicy<InsertAnchorNode> {
   private static final Logger log = LogManager.getLogger(InsertReferencePolicy.class);
 
-  public InsertReferencePolicy(@NotNull IIdentifierParser identifierParser, @NotNull NonMatchPolicy nonMatchPolicy) {
-    super(identifierParser, nonMatchPolicy);
+  @NotNull
+  private static final IReferencePolicyHandler<InsertAnchorNode> INDEX_MISS_HANDLER = new IndexMissHandler();
+  @NotNull
+  private static final IReferencePolicyHandler<InsertAnchorNode> INDEX_HIT_INCREMENT_HANDLER
+      = IReferencePolicyHandler.incrementCountIndexHitPolicy();
+
+  @SuppressWarnings("null")
+  public InsertReferencePolicy() {
+    super(IIdentifierParser.IDENTITY_PARSER,
+        List.of(INDEX_MISS_HANDLER,
+            INDEX_HIT_INCREMENT_HANDLER));
   }
 
+  @SuppressWarnings("null")
   @Override
-  protected ItemType getEntityItemType(@NotNull InsertAnchorNode insert) {
+  protected Set<ItemType> getEntityItemTypes(@NotNull InsertAnchorNode insert) {
     String type = insert.getType().toString();
-    ItemType itemType;
+    Set<ItemType> itemTypes;
     switch (type) {
     case "param":
-      itemType = ItemType.PARAMETER;
+      itemTypes = Collections.singleton(ItemType.PARAMETER);
       break;
     default:
       throw new UnsupportedOperationException("unrecognized insert type: " + type);
     }
-    return itemType;
+    return itemTypes;
   }
 
   @Override
@@ -62,25 +76,18 @@ public class InsertReferencePolicy
     return insert.getIdReference().toString();
   }
 
-  @Override
-  protected boolean handleNonMatchWarning(@NotNull InsertAnchorNode insert, @NotNull ItemType itemType,
-      @NotNull String identifier, @NotNull Index index) {
-    log.atWarn().log(
-        "the insert of type '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
-        insert.getType().toString(),
-        itemType.name().toLowerCase(),
-        identifier);
-    return true;
-  }
+  private static class IndexMissHandler
+      extends AbstractIndexMissPolicyHandler<InsertAnchorNode> {
 
-  @Override
-  protected boolean handleNonMatchError(@NotNull InsertAnchorNode insert, @NotNull ItemType itemType,
-      @NotNull String identifier, @NotNull Index index) {
-    log.atError().log(
-        "the insert of type '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
-        insert.getType().toString(),
-        itemType.name().toLowerCase(),
-        identifier);
-    return true;
+    @Override
+    public boolean handleIndexMiss(@NotNull InsertAnchorNode insert, @NotNull Set<ItemType> itemTypes,
+        @NotNull Match match, @NotNull Index index) {
+      log.atError().log(
+          "the insert of type '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
+          insert.getType().toString(),
+          itemTypes.iterator().next().name().toLowerCase(),
+          match.getIdentifier());
+      return true;
+    }
   }
 }

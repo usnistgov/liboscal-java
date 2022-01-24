@@ -103,7 +103,7 @@ public class ResolveProfile {
   
   @NotNull
   public static IDocumentNodeItem resolveProfile(@NotNull IDocumentNodeItem profile, @NotNull DynamicContext dynamicContext) {
-    Object profileObject = IBoundLoader.toBoundObject(profile);
+    Object profileObject = profile.toBoundObject();
 
     IDocumentNodeItem retval;
     if (profileObject instanceof Catalog) {

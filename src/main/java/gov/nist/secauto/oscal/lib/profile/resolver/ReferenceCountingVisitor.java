@@ -52,9 +52,7 @@ import gov.nist.secauto.oscal.lib.model.Role;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver.ResolutionData;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.AnchorReferencePolicy;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferencePolicy;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferencePolicy.NonMatchPolicy;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.InsertReferencePolicy;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.LinkReferencePolicy;
 
@@ -63,12 +61,14 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
@@ -86,22 +86,22 @@ public class ReferenceCountingVisitor {
   @NotNull
   private static final Map<String, IReferencePolicy<Link>> linkPolicies;
   @NotNull
-  private static final InsertReferencePolicy insertPolicy
-      = new InsertReferencePolicy(IIdentifierParser.IDENTITY_PARSER,
-          IReferencePolicy.NonMatchPolicy.ERROR);
+  private static final InsertReferencePolicy insertPolicy = new InsertReferencePolicy();
   @NotNull
-  private static final AnchorReferencePolicy anchorPolicy
-      = new AnchorReferencePolicy();
+  private static final AnchorReferencePolicy anchorPolicy = new AnchorReferencePolicy();
 
   static {
     propertyPolicies = new HashMap<>();
     propertyPolicies.put(Property.qname(Property.OSCAL_NAMESPACE, "resolution-tool"), PROPERTY_POLICY_IGNORE);
     propertyPolicies.put(Property.qname(Property.OSCAL_NAMESPACE, "label"), PROPERTY_POLICY_IGNORE);
+    propertyPolicies.put(Property.qname(Property.OSCAL_NAMESPACE, "sort-id"), PROPERTY_POLICY_IGNORE);
 
     linkPolicies = new HashMap<>();
     linkPolicies.put("source-profile", LINK_POLICY_IGNORE);
-    linkPolicies.put("citation",
-        new LinkReferencePolicy(IIdentifierParser.FRAGMENT_PARSER, NonMatchPolicy.IGNORE, ItemType.RESOURCE));
+    linkPolicies.put("citation", LinkReferencePolicy.create(ItemType.RESOURCE));
+    linkPolicies.put("reference", LinkReferencePolicy.create(ItemType.RESOURCE));
+    linkPolicies.put("related", LinkReferencePolicy.create(ItemType.CONTROL));
+    linkPolicies.put("required", LinkReferencePolicy.create(ItemType.CONTROL));
   }
 
   @NotNull
@@ -162,7 +162,6 @@ public class ReferenceCountingVisitor {
 
   @SuppressWarnings("null")
   public void visitCatalog(@NotNull Catalog catalog) {
-    System.out.println("Catalog: " + catalog.getUuid());
 
     // track in-scope parameters
     List<Parameter> parameters = CollectionUtil.listOrEmpty(catalog.getParams());
@@ -205,8 +204,8 @@ public class ReferenceCountingVisitor {
       Parameter childParam = parameterIter.next();
 
       EntityItem item = getIndex().getEntity(ItemType.PARAMETER, childParam.getId());
-      if (item.getReferenceCount() == 0) {
-        log.atInfo().log("Removing parameter '{}'", childParam.getId());
+      if (item == null || item.getReferenceCount() == 0) {
+        log.atTrace().log("Removing parameter '{}'", childParam.getId());
         parameterIter.remove();
       }
     }
@@ -382,7 +381,7 @@ public class ReferenceCountingVisitor {
 
       EntityItem item = getIndex().getEntity(ItemType.PARAMETER, childParam.getId());
       if (item.getReferenceCount() == 0) {
-        log.atInfo().log("Removing parameter '{}'", childParam.getId());
+        log.atTrace().log("Removing parameter '{}'", childParam.getId());
         parameterIter.remove();
       }
     }
@@ -434,7 +433,7 @@ public class ReferenceCountingVisitor {
 
       EntityItem item = getIndex().getEntity(ItemType.PARAMETER, childParam.getId());
       if (item == null || item.getReferenceCount() == 0) {
-        log.atInfo().log("Removing parameter '{}'", childParam.getId());
+        log.atTrace().log("Removing parameter '{}'", childParam.getId());
         parameterIter.remove();
       }
     }

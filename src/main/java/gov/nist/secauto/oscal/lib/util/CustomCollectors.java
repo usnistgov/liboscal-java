@@ -23,27 +23,38 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
-
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
+package gov.nist.secauto.oscal.lib.util;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface IReferencePolicy<TYPE> {
-  @NotNull
-  public static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-    @Override
-    public boolean handleReference(@NotNull Object type, @NotNull Index index) {
-      return true;
-    }
-  };
-
-  @SuppressWarnings("unchecked")
-  @NotNull
-  public static <TYPE> IReferencePolicy<TYPE> ignore() {
-    return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
+public class CustomCollectors {
+  private CustomCollectors() {
+    // disable
   }
 
-  boolean handleReference(@NotNull TYPE type, @NotNull Index index);
+  public static Collector<CharSequence, ?, String> joiningWithOxfordComma(@NotNull String conjunction) {
+    return Collectors.collectingAndThen(Collectors.toList(), withOxfordComma(conjunction));
+  }
+
+  private static Function<List<CharSequence>, String> withOxfordComma(@NotNull String conjunction) {
+    return list -> {
+      int size = list.size();
+      if (size < 2) {
+        return String.join("", list);
+      } 
+      if (size == 2) {
+        return String.join(" "+conjunction+" ", list);
+      }
+      // else there are 3 or more
+      int last = size - 1;
+      return String.join(", "+conjunction+" ",
+          String.join(", ", list.subList(0, last)),
+          list.get(last));
+    };
+  }
 }

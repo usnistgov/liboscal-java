@@ -27,27 +27,46 @@
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import com.vladsch.flexmark.ast.InlineLinkNode;
+import com.vladsch.flexmark.util.sequence.CharSubSequence;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.insertanchor.InsertAnchorNode;
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferencePolicy.NonMatchPolicy;
+import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
+import gov.nist.secauto.oscal.lib.util.CustomCollectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URI;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 public class AnchorReferencePolicy
     extends AbstractReferencePolicy<InlineLinkNode> {
   private static final Logger log = LogManager.getLogger(AnchorReferencePolicy.class);
 
+  @NotNull
+  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_MISS_HANDLER = new IndexMissHandler();
+  @NotNull
+  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_HIT_UNSELECTED_HANDLER = new IndexHitUnselectedHandler();
+  @NotNull
+  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_HIT_INCREMENT_HANDLER = IReferencePolicyHandler.incrementCountIndexHitPolicy();
+
+  @SuppressWarnings("null")
   public AnchorReferencePolicy() {
-    super(IIdentifierParser.FRAGMENT_PARSER, NonMatchPolicy.ERROR);
+    super(IIdentifierParser.FRAGMENT_PARSER,
+        List.of(INDEX_MISS_HANDLER,
+            INDEX_HIT_UNSELECTED_HANDLER,
+            INDEX_HIT_INCREMENT_HANDLER));
   }
 
+  @SuppressWarnings("null")
   @Override
-  protected ItemType getEntityItemType(@NotNull InlineLinkNode link) {
-    return ItemType.RESOURCE;
+  protected Set<ItemType> getEntityItemTypes(@NotNull InlineLinkNode link) {
+    return EnumSet.of(ItemType.RESOURCE, ItemType.CONTROL, ItemType.PART, ItemType.GROUP);
   }
 
   @Override
@@ -55,23 +74,31 @@ public class AnchorReferencePolicy
     return link.getUrl().toString();
   }
 
-  @Override
-  protected boolean handleNonMatchWarning(@NotNull InlineLinkNode link, @NotNull ItemType itemType,
-      @NotNull String identifier, @NotNull Index index) {
-    log.atWarn().log(
-        "the anchor should reference a {} identified by '{}', but the identifier was not found in the index.",
-        itemType.name().toLowerCase(),
-        identifier);
-    return true;
+  private static class IndexHitUnselectedHandler
+      extends AbstractIndexHitUnselectedPolicyHandler<InlineLinkNode> {
+    protected boolean handleUnselected(EntityItem item, @NotNull InlineLinkNode link) {
+      URI linkHref = URI.create(link.getUrl().toString());
+      URI sourceUri = item.getSource();
+
+      URI resolved = sourceUri.resolve(linkHref);
+      log.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      link.setUrl(CharSubSequence.of(resolved.toString()));
+      return true;
+    }
   }
 
-  @Override
-  protected boolean handleNonMatchError(@NotNull InlineLinkNode link, @NotNull ItemType itemType,
-      @NotNull String identifier, @NotNull Index index) {
-    log.atError().log(
-        "the anchor should reference a {} identified by '{}', but the identifier was not found in the index.",
-        itemType.name().toLowerCase(),
-        identifier);
-    return true;
+  private static class IndexMissHandler
+      extends AbstractIndexMissPolicyHandler<InlineLinkNode> {
+
+    @Override
+    public boolean handleIndexMiss(@NotNull InlineLinkNode type, @NotNull Set<ItemType> itemTypes,
+        @NotNull Match match, @NotNull Index index) {
+      log.atError().log(
+          "the anchor should reference a {} identified by '{}', but the identifier was not found in the index.",
+          itemTypes.stream().map(en -> en.name().toLowerCase()).collect(CustomCollectors.joiningWithOxfordComma("or")),
+          match.getIdentifier());
+      return true;
+    }
+
   }
 }

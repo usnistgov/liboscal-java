@@ -32,6 +32,7 @@ import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Location;
 import gov.nist.secauto.oscal.lib.model.Metadata;
 import gov.nist.secauto.oscal.lib.model.Parameter;
@@ -70,8 +71,6 @@ public class ImportCatalogVisitor {
   }
 
   public void visitCatalog(@NotNull Catalog catalog, @NotNull IControlFilter filter) {
-    System.out.println("Catalog: " + catalog.getUuid());
-
     Result result = new Result();
 
     // process children
@@ -103,7 +102,6 @@ public class ImportCatalogVisitor {
       CatalogGroup child = iter.next();
       Result childResult = visitGroup(child, filter);
       if (!childResult.isChildSelected()) {
-        System.out.println("  Removing group: " + child.getId());
         iter.remove();
       }
 
@@ -117,7 +115,6 @@ public class ImportCatalogVisitor {
       Control child = iter.next();
       Result childResult = visitControl(child, filter, false);
       if (!result.isSelected()) {
-        System.out.println("  Removing control: " + child.getId());
         iter.remove();
       }
 
@@ -221,8 +218,6 @@ public class ImportCatalogVisitor {
   }
 
   public Result visitGroup(@NotNull CatalogGroup group, @NotNull IControlFilter filter) {
-    System.out.println("  Group: " + group.getId());
-
     Result result = new Result();
 
     // process children
@@ -232,7 +227,6 @@ public class ImportCatalogVisitor {
       CatalogGroup child = iter.next();
       Result childResult = visitGroup(child, filter);
       if (!childResult.isChildSelected()) {
-        System.out.println("    Removing group: " + child.getId());
         iter.remove();
       }
 
@@ -246,22 +240,11 @@ public class ImportCatalogVisitor {
       Control child = iter.next();
       Result childResult = visitControl(child, filter, false);
       if (!childResult.isSelected()) {
-        System.out.println("    Removing control: " + child.getId());
         iter.remove();
       }
 
       // apply result to current context
       result.append(childResult);
-    }
-
-    for (Iterator<Parameter> parameterIter = CollectionUtil.listOrEmpty(group.getParams()).iterator(); parameterIter
-        .hasNext();) {
-
-      @SuppressWarnings("null")
-      @NotNull
-      Parameter childParam = parameterIter.next();
-
-      visitParameter(childParam);
     }
 
     if (result.isChildSelected()) {
@@ -276,25 +259,63 @@ public class ImportCatalogVisitor {
 
       result = new Result();
       result.setChildSelected(true);
-//    } else {
-//      // push up the result
-//      for (Iterator<Parameter> parameterIter = CollectionUtil.listOrEmpty(group.getParams()).iterator(); parameterIter
-//          .hasNext();) {
-//        Parameter childParam = parameterIter.next();
-//
-//        String childParameterId = childParam.getId();
-//
-//        if (getIndex().getParameterReferenceCount(childParameterId) == 0) {
-//          // the parameter is unused
-//          parameterIter.remove();
-//        } else if (!result.isChildSelected()) {
-//          // the parameter is used, but we will drop this group, so promote the parameter
-//          result.promoteParameter(childParam);
-//        }
-//      }
+      // } else {
+      // // push up the result
+      // for (Iterator<Parameter> parameterIter =
+      // CollectionUtil.listOrEmpty(group.getParams()).iterator(); parameterIter
+      // .hasNext();) {
+      // Parameter childParam = parameterIter.next();
+      //
+      // String childParameterId = childParam.getId();
+      //
+      // if (getIndex().getParameterReferenceCount(childParameterId) == 0) {
+      // // the parameter is unused
+      // parameterIter.remove();
+      // } else if (!result.isChildSelected()) {
+      // // the parameter is used, but we will drop this group, so promote the parameter
+      // result.promoteParameter(childParam);
+      // }
+      // }
     }
 
+    for (Iterator<Parameter> parameterIter = CollectionUtil.listOrEmpty(group.getParams()).iterator(); parameterIter
+        .hasNext();) {
+
+      @SuppressWarnings("null")
+      @NotNull
+      Parameter childParam = parameterIter.next();
+
+      visitParameter(childParam);
+    }
+
+    for (ControlPart partChild : CollectionUtil.listOrEmpty(group.getParts())) {
+      visitPart(partChild);
+    }
+
+    // index the group
+    getIndex().addGroup(group, getSource(), result.isChildSelected());
+
     return result;
+  }
+
+  public void visitPart(@NotNull ControlPart part) {
+    EntityItem item = getIndex().addPart(part, getSource());
+    if (item != null) {
+      String entityType = item.getItemType().toString().toLowerCase();
+
+      log.atWarn().log("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
+          entityType,
+          part.getId(),
+          getSource(),
+          entityType,
+          item.getIdentifier(),
+          item.getSource(),
+          entityType);
+    }
+
+    for (ControlPart partChild : CollectionUtil.listOrEmpty(part.getParts())) {
+      visitPart(partChild);
+    }
   }
 
   public Result visitControl(@NotNull Control control, @NotNull IControlFilter filter, boolean defaultMatch) {
@@ -304,23 +325,12 @@ public class ImportCatalogVisitor {
     @SuppressWarnings("null")
     boolean isWithChildren = matchResult.getRight();
 
-    System.out.println(String.format("    Control: %s (%s:%s)", control.getId(), isMatch, isWithChildren));
+    // index the control
+    getIndex().addControl(control, getSource(), isMatch);
 
     Result result = new Result(isMatch);
 
     boolean defaultChildMatch = isMatch && isWithChildren;
-
-    if (isMatch) {
-      // // manage referenced parameters
-      // Set<@NotNull String> referencedParameterIds =
-      // control.getReferencedParameterIds().collect(Collectors.toSet());
-      //
-      // // add them to the reference count index
-      // referencedParameterIds.stream().forEach(pId -> getIndex().incrementParameterReferenceCount(pId));
-
-      // index the control
-      getIndex().addControl(control, getSource());
-    }
 
     for (Iterator<Control> controlIter = CollectionUtil.listOrEmpty(control.getControls()).iterator(); controlIter
         .hasNext();) {
@@ -329,7 +339,6 @@ public class ImportCatalogVisitor {
       Control child = controlIter.next();
       Result childResult = visitControl(child, filter, defaultChildMatch);
       if (!childResult.isSelected()) {
-        System.out.println("      Removing control: " + child.getId());
         controlIter.remove();
       }
 
@@ -346,8 +355,6 @@ public class ImportCatalogVisitor {
         = CollectionUtil.listOrEmpty(control.getParams()).iterator(); parameterIter.hasNext();) {
       Parameter childParam = parameterIter.next();
 
-      visitParameter(childParam);
-
       String childParameterId = childParam.getId();
 
       // if (getIndex().getParameterReferenceCount(childParameterId) == 0) {
@@ -356,9 +363,15 @@ public class ImportCatalogVisitor {
       // } else if (!isMatch) {
       if (!isMatch) {
         // the parameter is used, but we will drop this control, so promote the parameter
-        log.atDebug().log("Promoting parameter '{}'", childParameterId);
+        log.atTrace().log("Promoting parameter '{}'", childParameterId);
         result.promoteParameter(childParam);
+      } else {
+        visitParameter(childParam);
       }
+    }
+
+    for (ControlPart partChild : CollectionUtil.listOrEmpty(control.getParts())) {
+      visitPart(partChild);
     }
 
     return result;

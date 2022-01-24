@@ -23,41 +23,23 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import org.apache.commons.lang3.tuple.Pair;
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.Index;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
 
-public class PatternIdentifierParser implements IIdentifierParser {
-  private final Pattern pattern;
-  
-  public PatternIdentifierParser(@NotNull String pattern) {
-    this(Pattern.compile(Objects.requireNonNull(pattern, "pattern")));
-  }
+public abstract class AbstractIndexMissPolicyHandler<TYPE> implements IReferencePolicyHandler<TYPE> {
 
-  public PatternIdentifierParser(@NotNull Pattern pattern) {
-    this.pattern = Objects.requireNonNull(pattern, "pattern");
-  }
-  
-
-  public Pattern getPattern() {
-    return pattern;
+  public AbstractIndexMissPolicyHandler() {
   }
 
   @Override
-  public Pair<@NotNull Boolean, @NotNull String> match(@NotNull String identifier) {
-    Matcher matcher = getPattern().matcher(identifier);
-
-    Pair<@NotNull Boolean, @NotNull String> retval;
-    if (matcher.matches()) {
-      retval = Pair.of(true, matcher.group(1));
-    } else {
-      retval = Pair.of(false, identifier);
-    }
-    return retval;
-  }
+  public abstract boolean handleIndexMiss(@NotNull TYPE type, @NotNull Set<ItemType> itemTypes,
+      @NotNull IIdentifierParser.Match match,
+      @NotNull Index index);
 }

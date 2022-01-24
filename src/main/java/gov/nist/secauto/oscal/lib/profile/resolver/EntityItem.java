@@ -28,7 +28,6 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.Objects;
 import java.util.UUID;
@@ -39,7 +38,9 @@ public class EntityItem {
     ROLE,
     LOCATION,
     PARTY,
+    GROUP,
     CONTROL,
+    PART,
     PARAMETER,
     RESOURCE;
   }

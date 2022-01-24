@@ -25,25 +25,33 @@
  */
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface IReferencePolicy<TYPE> {
-  @NotNull
-  public static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+public abstract class AbstractIndexHitUnselectedPolicyHandler<TYPE> implements IReferencePolicyHandler<TYPE> {
 
-    @Override
-    public boolean handleReference(@NotNull Object type, @NotNull Index index) {
-      return true;
+  @Override
+  public boolean handleIndexHit(EntityItem item, @NotNull TYPE type, @NotNull Index index) {
+    boolean handled = false;
+
+    switch (item.getItemType()) {
+    case CONTROL:
+      if (!index.isControlSelected(item.getIdentifier())) {
+        handled = handleUnselected(item, type);
+      }
+      break;
+    case GROUP:
+      if (!index.isGroupSelected(item.getIdentifier())) {
+        handled = handleUnselected(item, type);
+      }
+      break;
+    default:
+      // do nothing
     }
-  };
-
-  @SuppressWarnings("unchecked")
-  @NotNull
-  public static <TYPE> IReferencePolicy<TYPE> ignore() {
-    return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
+    return handled;
   }
 
-  boolean handleReference(@NotNull TYPE type, @NotNull Index index);
+  protected abstract boolean handleUnselected(EntityItem item, @NotNull TYPE type);
 }

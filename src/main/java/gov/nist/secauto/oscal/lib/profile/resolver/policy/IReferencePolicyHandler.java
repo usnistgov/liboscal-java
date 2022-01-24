@@ -23,27 +23,56 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
+import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface IReferencePolicy<TYPE> {
+import java.util.Set;
+
+public interface IReferencePolicyHandler<TYPE> {
   @NotNull
-  public static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+  public static IReferencePolicyHandler<?> IGNORE_INDEX_MISS_POLICY = new AbstractIndexMissPolicyHandler<>() {
 
     @Override
-    public boolean handleReference(@NotNull Object type, @NotNull Index index) {
+    public boolean handleIndexMiss(@NotNull Object type, @NotNull Set<ItemType> itemTypes,
+        IIdentifierParser.@NotNull Match match, @NotNull Index index) {
+      // do nothing
+      return true;
+    }
+  }; 
+  
+  public static IReferencePolicyHandler<?> INCREMENT_COUNT_INDEX_HIT_POLICY = new IReferencePolicyHandler<>() {
+
+    @Override
+    public boolean handleIndexHit(EntityItem item, @NotNull Object type, @NotNull Index index) {
+      item.incrementReferenceCount();
       return true;
     }
   };
-
+  
   @SuppressWarnings("unchecked")
   @NotNull
-  public static <TYPE> IReferencePolicy<TYPE> ignore() {
-    return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
+  public static <T>  IReferencePolicyHandler<T> incrementCountIndexHitPolicy() {
+    return (@NotNull IReferencePolicyHandler<T>)INCREMENT_COUNT_INDEX_HIT_POLICY;
   }
 
-  boolean handleReference(@NotNull TYPE type, @NotNull Index index);
+  default boolean handleIdentifierNonMatch(@NotNull TYPE type, @NotNull Match match,
+      @NotNull Index index) {
+    return false;
+  }
+
+  default boolean handleIndexMiss(@NotNull TYPE type, @NotNull Set<EntityItem.ItemType> itemTypes,
+      @NotNull Match match, @NotNull Index index) {
+    return false;
+  }
+
+  default boolean handleIndexHit(EntityItem item, @NotNull TYPE type, @NotNull Index index) {
+    return false;
+  }
 }

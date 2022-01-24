@@ -25,25 +25,30 @@
  */
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface IReferencePolicy<TYPE> {
-  @NotNull
-  public static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-    @Override
-    public boolean handleReference(@NotNull Object type, @NotNull Index index) {
-      return true;
-    }
-  };
+public abstract class AbstractStaticItemTypesReferencePolicy<TYPE>
+    extends AbstractReferencePolicy<TYPE> {
 
-  @SuppressWarnings("unchecked")
   @NotNull
-  public static <TYPE> IReferencePolicy<TYPE> ignore() {
-    return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
+  private final Set<@NotNull ItemType> itemTypes;
+
+  public AbstractStaticItemTypesReferencePolicy(@NotNull IIdentifierParser identifierParser,
+      @NotNull List<@NotNull IReferencePolicyHandler<TYPE>> handlers,
+      @NotNull Set<@NotNull ItemType> itemTypes) {
+    super(identifierParser, handlers);
+    this.itemTypes = CollectionUtil.requireNonEmpty(Objects.requireNonNull(itemTypes, "itemTypes"), "itemTypes");
   }
 
-  boolean handleReference(@NotNull TYPE type, @NotNull Index index);
+  @Override
+  protected Set<@NotNull ItemType> getEntityItemTypes(@NotNull TYPE type) {
+    return itemTypes;
+  }
 }
