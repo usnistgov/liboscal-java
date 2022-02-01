@@ -109,8 +109,7 @@ class OscalBindingContextTest {
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
-
-    // out.delete();
+    out.delete();
   }
 
   @Test
@@ -122,17 +121,17 @@ class OscalBindingContextTest {
     // File out = new File(tempDir.toFile(), "out.json");
     File out = new File("target/out-profile.json");
     BindingContext context = BindingContext.newInstance();
-    MutableConfiguration config
-        = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
 
-    Serializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class, config);
+    Serializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class);
+    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(profile, out);
 
-    assertNotNull(loader.loadProfile(out));
+    assertNotNull(loader.load(out));
 
     out = new File("target/out-profile.yaml");
 
-    serializer = context.newSerializer(Format.YAML, Profile.class, config);
+    serializer = context.newSerializer(Format.YAML, Profile.class);
+    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(profile, out);
 
     // out.delete();

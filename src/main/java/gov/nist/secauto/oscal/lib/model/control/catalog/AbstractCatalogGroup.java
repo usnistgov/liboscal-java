@@ -26,36 +26,9 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-import java.util.stream.Stream;
-
-public abstract class AbstractCatalogGroup implements ICatalogGroup {
+public abstract class AbstractCatalogGroup extends AbstractControlContainer implements ICatalogGroup {
 
   public AbstractCatalogGroup() {
     // TODO Auto-generated constructor stub
   }
-
-  @SuppressWarnings("null")
-  @NotNull
-  public Stream<@NotNull String> getReferencedParameterIds() {
-
-    // get parameters referenced by the control's parts
-    Stream<@NotNull String> insertIds = CollectionUtil.listOrEmpty(getParts()).stream()
-        .flatMap(part -> part.getInserts(insert -> "param".equals(insert.getType().toStringOrNull()), true))
-        .map(insert -> insert.getIdReference().toStringOrNull())
-        .filter(id -> id != null);
-
-    // get parameters referenced by the control's parameters
-    Stream<@NotNull String> parameterReferencedIds = CollectionUtil.listOrEmpty(getParams()).stream()
-        .filter(Objects::nonNull)
-        .flatMap(param -> param.getParameterReferences());
-
-    return Stream.concat(insertIds, parameterReferencedIds)
-        .distinct();
-  }
-
 }

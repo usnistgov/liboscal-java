@@ -26,24 +26,5 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.oscal.lib.model.ControlPart;
-import gov.nist.secauto.oscal.lib.model.Parameter;
-import gov.nist.secauto.oscal.lib.model.Property;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.stream.Stream;
-
-public interface ICatalogGroup {
-
-  String getId();
-
-  List<ControlPart> getParts();
-
-  List<Parameter> getParams();
-
-  List<Property> getProps();
-
-  Stream<@NotNull String> getReferencedParameterIds();
+public interface ICatalogGroup extends IControlContainer {
 }

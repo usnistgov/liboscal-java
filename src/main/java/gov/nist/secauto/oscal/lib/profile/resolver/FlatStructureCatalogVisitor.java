@@ -35,7 +35,6 @@ import gov.nist.secauto.oscal.lib.model.Parameter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class FlatStructureCatalogVisitor {
@@ -49,7 +48,7 @@ public class FlatStructureCatalogVisitor {
       @SuppressWarnings("null")
       @NotNull
       CatalogGroup child = iter.next();
-      Result result = visitGroup(child);
+      ControlResult result = visitGroup(child);
 
       // remove this group and promote its contents
       iter.remove();
@@ -60,23 +59,23 @@ public class FlatStructureCatalogVisitor {
       @SuppressWarnings("null")
       @NotNull
       Control child = iter.next();
-      Result result = visitControl(child);
+      ControlResult result = visitControl(child);
 
       // apply result to current context
       result.apply(catalog);
     }
   }
 
-  public Result visitGroup(@NotNull CatalogGroup group) {
+  public ControlResult visitGroup(@NotNull CatalogGroup group) {
     // process children
-    Result retval = new Result();
+    ControlResult retval = new ControlResult();
 
     // groups
     for (Iterator<CatalogGroup> iter = CollectionUtil.listOrEmpty(group.getGroups()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
       @NotNull
       CatalogGroup child = iter.next();
-      Result result = visitGroup(child);
+      ControlResult result = visitGroup(child);
       retval.append(result);
     }
 
@@ -92,15 +91,15 @@ public class FlatStructureCatalogVisitor {
       @NotNull
       Control child = iter.next();
       retval.promoteControl(child);
-      Result result = visitControl(child);
+      ControlResult result = visitControl(child);
       retval.append(result);
     }
 
     return retval;
   }
 
-  public Result visitControl(@NotNull Control control) {
-    Result result = new Result();
+  public ControlResult visitControl(@NotNull Control control) {
+    ControlResult result = new ControlResult();
 
     List<Control> controlChildren = CollectionUtil.listOrEmpty(control.getControls());
     if (!controlChildren.isEmpty()) {
@@ -109,7 +108,7 @@ public class FlatStructureCatalogVisitor {
         @SuppressWarnings("null")
         @NotNull
         Control child = iter.next();
-        Result childResult = visitControl(child);
+        ControlResult childResult = visitControl(child);
 
         // promote and remove this control as a child
         result.promoteControl(child);
@@ -119,64 +118,5 @@ public class FlatStructureCatalogVisitor {
     }
 
     return result;
-  }
-
-  public static class Result {
-    private final List<Parameter> promotedParameters;
-    private final List<Control> promotedControls;
-
-    public Result() {
-      this.promotedParameters = new LinkedList<>();
-      this.promotedControls = new LinkedList<>();
-    }
-
-    public List<Parameter> getPromotedParameters() {
-      return promotedParameters;
-    }
-
-    public List<Control> getPromotedControls() {
-      return promotedControls;
-    }
-
-    public void promoteParameter(Parameter param) {
-      promotedParameters.add(param);
-    }
-
-    public void promoteControl(Control control) {
-      promotedControls.add(control);
-    }
-
-    public void apply(@NotNull Catalog catalog) {
-      List<Parameter> promotedParams = getPromotedParameters();
-      if (!promotedParams.isEmpty()) {
-        List<Parameter> params = catalog.getParams();
-        if (params == null) {
-          params = new LinkedList<>();
-          catalog.setParams(params);
-        }
-
-        for (Parameter param : promotedParams) {
-          params.add(param);
-        }
-      }
-
-      List<Control> promotedControls = getPromotedControls();
-      if (!promotedControls.isEmpty()) {
-        List<Control> controls = catalog.getControls();
-        if (controls == null) {
-          controls = new LinkedList<>();
-          catalog.setControls(controls);
-        }
-
-        for (Control control : promotedControls) {
-          controls.add(control);
-        }
-      }
-    }
-
-    public void append(Result that) {
-      promotedParameters.addAll(that.getPromotedParameters());
-      promotedControls.addAll(that.getPromotedControls());
-    }
   }
 }

@@ -34,11 +34,4 @@ public class FragmentIdentifierParser
   public FragmentIdentifierParser() {
     super("^(#)([^#]+)(#.*)?$", 2);
   }
-
-  @Override
-  public @NotNull String replaceReference(@NotNull Match match, @NotNull String newIdentifier) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 }

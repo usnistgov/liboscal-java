@@ -45,7 +45,6 @@ import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.jetbrains.annotations.NotNull;
@@ -61,11 +60,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.List;
 import java.util.Stack;
-import java.util.function.BiPredicate;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -108,24 +103,6 @@ class ProfileResolutionTests {
         = new ProfileResolver.ResolutionData(profile, profileFile.toURI(), new Stack<>());
     getProfileResolver().resolve(data);
     return data.getCatalog();
-  }
-
-  private RecursiveComparisonConfiguration configureComparisons() {
-    RecursiveComparisonConfiguration.Builder builder = RecursiveComparisonConfiguration.builder();
-    builder.withEqualsForType(new BiPredicate<List, List>() {
-      public boolean test(List list1, List list2) {
-        if (list1 == null) {
-          list1 = Collections.emptyList();
-        }
-
-        if (list2 == null) {
-          list2 = Collections.emptyList();
-        }
-        return list1.equals(list2);
-      }
-    }, List.class);
-
-    return builder.build();
   }
 
   private String transformXml(Source source) throws SaxonApiException {

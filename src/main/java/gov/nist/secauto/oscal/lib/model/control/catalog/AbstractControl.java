@@ -27,15 +27,9 @@
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
 import gov.nist.secauto.metaschema.binding.DeserializationHandler;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.model.Control;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-import java.util.stream.Stream;
-
-public abstract class AbstractControl implements DeserializationHandler, IControl {
+public abstract class AbstractControl extends AbstractControlContainer implements DeserializationHandler, IControl {
   private Control parent;
 
   protected AbstractControl() {
@@ -53,6 +47,7 @@ public abstract class AbstractControl implements DeserializationHandler, IContro
 
   @Override
   public void beforeDeserialize(Object parent) {
+    // do nothing
   }
 
   @Override
@@ -60,25 +55,6 @@ public abstract class AbstractControl implements DeserializationHandler, IContro
     if (parent instanceof Control) {
       setParentControl((Control) parent);
     }
-  }
-
-  @SuppressWarnings("null")
-  @NotNull
-  public Stream<@NotNull String> getReferencedParameterIds() {
-
-    // get parameters referenced by the control's parts
-    Stream<@NotNull String> insertIds = CollectionUtil.listOrEmpty(getParts()).stream()
-        .flatMap(part -> part.getInserts(insert -> "param".equals(insert.getType().toStringOrNull()), true))
-        .map(insert -> insert.getIdReference().toStringOrNull())
-        .filter(id -> id != null);
-
-    // get parameters referenced by the control's parameters
-    Stream<@NotNull String> parameterReferencedIds = CollectionUtil.listOrEmpty(getParams()).stream()
-        .filter(Objects::nonNull)
-        .flatMap(param -> param.getParameterReferences());
-
-    return Stream.concat(insertIds, parameterReferencedIds)
-        .distinct();
   }
 
 }

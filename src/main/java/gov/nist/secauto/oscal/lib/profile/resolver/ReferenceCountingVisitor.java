@@ -486,8 +486,8 @@ public class ReferenceCountingVisitor {
       for (Node node : CollectionUtil.toIterable(text.getNodesAsStream().iterator())) {
         if (node instanceof InsertAnchorNode) {
           handleInsert((InsertAnchorNode) node);
-        } else if (node instanceof com.vladsch.flexmark.ast.InlineLinkNode) {
-          handleAnchor((com.vladsch.flexmark.ast.InlineLinkNode) node);
+        } else if (node instanceof InlineLinkNode) {
+          handleAnchor((InlineLinkNode) node);
         }
       }
     }

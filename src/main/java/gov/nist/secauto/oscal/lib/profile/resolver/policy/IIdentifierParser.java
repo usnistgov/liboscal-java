@@ -38,19 +38,10 @@ public interface IIdentifierParser {
     public Match match(@NotNull String identifier) {
       return new Match(identifier, identifier, true);
     }
-
-    @Override
-    public String replaceReference(Match match, String replacement) {
-      return replacement;
-    }
-
   };
 
   @NotNull
   Match match(@NotNull String identifier);
-
-  @NotNull
-  String replaceReference(@NotNull Match match, @NotNull String newIdentifier);
 
   public class Match {
     @NotNull

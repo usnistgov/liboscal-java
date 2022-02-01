@@ -23,14 +23,34 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
-
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 
-public interface IControl extends IControlContainer {
+import org.jetbrains.annotations.NotNull;
 
-  Control getParentControl();
+import java.util.Objects;
+import java.util.stream.Stream;
 
-  Control setParentControl(Control parent);
+public abstract class AbstractControlContainer implements IControlContainer {
+
+  @SuppressWarnings("null")
+  @NotNull
+  public Stream<@NotNull String> getReferencedParameterIds() {
+
+    // get parameters referenced by the control's parts
+    Stream<@NotNull String> insertIds = CollectionUtil.listOrEmpty(getParts()).stream()
+        .flatMap(part -> part.getInserts(insert -> "param".equals(insert.getType().toStringOrNull()), true))
+        .map(insert -> insert.getIdReference().toStringOrNull())
+        .filter(id -> id != null);
+
+    // get parameters referenced by the control's parameters
+    Stream<@NotNull String> parameterReferencedIds = CollectionUtil.listOrEmpty(getParams()).stream()
+        .filter(Objects::nonNull)
+        .flatMap(param -> param.getParameterReferences());
+
+    return Stream.concat(insertIds, parameterReferencedIds)
+        .distinct();
+  }
+
 }
