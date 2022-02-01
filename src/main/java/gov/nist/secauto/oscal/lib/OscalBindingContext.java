@@ -29,11 +29,6 @@ package gov.nist.secauto.oscal.lib;
 import gov.nist.secauto.metaschema.binding.DefaultBindingContext;
 import gov.nist.secauto.metaschema.binding.IBindingMatcher;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.metapath.xdm.IXdmFactory;
-import gov.nist.secauto.metaschema.binding.model.constraint.ValidatingXdmVisitor;
-import gov.nist.secauto.metaschema.model.common.constraint.DefaultConstraintValidator;
-import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
-import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -50,7 +45,8 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-public class OscalBindingContext extends DefaultBindingContext {
+public class OscalBindingContext
+    extends DefaultBindingContext {
   private static OscalBindingContext instance;
 
   @NotNull

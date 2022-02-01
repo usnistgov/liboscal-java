@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
 public abstract class AbstractPatternIdentifierParser implements IIdentifierParser {
   private final Pattern pattern;
   private final int identifierGroup;
-  
+
   @SuppressWarnings("null")
   public AbstractPatternIdentifierParser(@NotNull String pattern, int identifierGroup) {
     this(Pattern.compile(Objects.requireNonNull(pattern, "pattern")), identifierGroup);
@@ -45,13 +46,11 @@ public abstract class AbstractPatternIdentifierParser implements IIdentifierPars
     this.pattern = Objects.requireNonNull(pattern, "pattern");
     this.identifierGroup = identifierGroup;
   }
-  
 
   public Pattern getPattern() {
     return pattern;
   }
 
-  
   public int getIdentifierGroup() {
     return identifierGroup;
   }
@@ -64,10 +63,9 @@ public abstract class AbstractPatternIdentifierParser implements IIdentifierPars
     if (matcher.matches()) {
       retval = new Match(reference, matcher.group(getIdentifierGroup()), true);
     } else {
-      retval = new Match(reference, matcher.group(getIdentifierGroup()), true);
+      retval = new Match(reference, reference, false);
     }
     return retval;
   }
-
 
 }

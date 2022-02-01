@@ -26,7 +26,6 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 
@@ -78,14 +77,14 @@ public interface IControlFilter {
    * 
    * @param control
    *          the control to check for a match
-   * @return a pair indicating the status of the match ({@code true} for a match or
-   *         {@false} otherwise), and if a match applies to child controls
+   * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
+   *         otherwise), and if a match applies to child controls
    */
   @NotNull
   default Pair<@NotNull Boolean, @NotNull Boolean> match(@NotNull IControl control) {
     return match(control, false);
   }
-  
+
   /**
    * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
    * first member of the pair indicates if the control matches, and the second indicates if the match
@@ -95,8 +94,8 @@ public interface IControlFilter {
    *          the control to check for a match
    * @param defaultMatch
    *          the match status to use if the filter doesn't have an explicit hit
-   * @return a pair indicating the status of the match ({@code true} for a match or
-   *         {@false} otherwise), and if a match applies to child controls
+   * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
+   *         otherwise), and if a match applies to child controls
    */
   @NotNull
   Pair<@NotNull Boolean, @NotNull Boolean> match(@NotNull IControl control, boolean defaultMatch);
@@ -114,7 +113,8 @@ public interface IControlFilter {
   }
 
   @NotNull
-  public static IControlFilter newInstance(@NotNull IControlSelectionFilter includes, @NotNull IControlSelectionFilter excludes) {
+  public static IControlFilter newInstance(@NotNull IControlSelectionFilter includes,
+      @NotNull IControlSelectionFilter excludes) {
     return new ControlFilterImpl(includes, excludes);
   }
 

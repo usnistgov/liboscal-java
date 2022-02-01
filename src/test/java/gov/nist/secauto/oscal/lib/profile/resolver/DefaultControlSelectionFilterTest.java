@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -46,9 +47,11 @@ import java.util.List;
 
 class DefaultControlSelectionFilterTest {
   @RegisterExtension
-  final JUnit5Mockery context = new JUnit5Mockery() {{
-    setImposteriser(ByteBuddyClassImposteriser.INSTANCE);
-  }};
+  final JUnit5Mockery context = new JUnit5Mockery() {
+    {
+      setImposteriser(ByteBuddyClassImposteriser.INSTANCE);
+    }
+  };
 
   void setUp() {
   }
@@ -64,14 +67,16 @@ class DefaultControlSelectionFilterTest {
 
   @SuppressWarnings("null")
   private IControlSelectionFilter newEmptyFilter() {
-    context.checking(new Expectations() {{
-      allowing (selectControlByIdA).getWithChildControls();
-      will(returnValue("no"));
-      allowing (selectControlByIdA).getWithIds();
-      will(returnValue(Collections.emptyList()));
-      allowing (selectControlByIdA).getMatching();
-      will(returnValue(Collections.emptyList()));
-    }});
+    context.checking(new Expectations() {
+      {
+        allowing(selectControlByIdA).getWithChildControls();
+        will(returnValue("no"));
+        allowing(selectControlByIdA).getWithIds();
+        will(returnValue(Collections.emptyList()));
+        allowing(selectControlByIdA).getMatching();
+        will(returnValue(Collections.emptyList()));
+      }
+    });
 
     return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
   }
@@ -79,16 +84,18 @@ class DefaultControlSelectionFilterTest {
   @SuppressWarnings("null")
   private IControlSelectionFilter newSingleSelectionFilter() {
     final List<String> withIds = List.of("test1", "test2");
-    context.checking(new Expectations() {{
-      allowing (selectControlByIdA).getWithChildControls();
-      will(returnValue("no"));
-      allowing (selectControlByIdA).getWithIds();
-      will(returnValue(withIds));
-      allowing (selectControlByIdA).getMatching();
-      will(returnValue(List.of(matchingA)));
-      allowing (matchingA).getPattern();
-      will(returnValue("other*"));
-    }});
+    context.checking(new Expectations() {
+      {
+        allowing(selectControlByIdA).getWithChildControls();
+        will(returnValue("no"));
+        allowing(selectControlByIdA).getWithIds();
+        will(returnValue(withIds));
+        allowing(selectControlByIdA).getMatching();
+        will(returnValue(List.of(matchingA)));
+        allowing(matchingA).getPattern();
+        will(returnValue("other*"));
+      }
+    });
 
     return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
   }
@@ -96,16 +103,18 @@ class DefaultControlSelectionFilterTest {
   @SuppressWarnings("null")
   private IControlSelectionFilter newSingleSelectionWithChildFilter() {
     final List<String> withIds = List.of("test1", "test2");
-    context.checking(new Expectations() {{
-      allowing (selectControlByIdA).getWithChildControls();
-      will(returnValue("yes"));
-      allowing (selectControlByIdA).getWithIds();
-      will(returnValue(withIds));
-      allowing (selectControlByIdA).getMatching();
-      will(returnValue(List.of(matchingA)));
-      allowing (matchingA).getPattern();
-      will(returnValue("other*"));
-    }});
+    context.checking(new Expectations() {
+      {
+        allowing(selectControlByIdA).getWithChildControls();
+        will(returnValue("yes"));
+        allowing(selectControlByIdA).getWithIds();
+        will(returnValue(withIds));
+        allowing(selectControlByIdA).getMatching();
+        will(returnValue(List.of(matchingA)));
+        allowing(matchingA).getPattern();
+        will(returnValue("other*"));
+      }
+    });
 
     return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
   }
@@ -114,25 +123,27 @@ class DefaultControlSelectionFilterTest {
   private IControlSelectionFilter newMultipleSelectionFilter() {
     final List<String> withIdsA = List.of("test1", "test2", "example1");
     final List<String> withIdsB = List.of("test3", "test4");
-    context.checking(new Expectations() {{
-      allowing (selectControlByIdA).getWithChildControls();
-      will(returnValue("yes"));
-      allowing (selectControlByIdA).getWithIds();
-      will(returnValue(withIdsA));
-      allowing (selectControlByIdA).getMatching();
-      will(returnValue(List.of(matchingA)));
-      allowing (matchingA).getPattern();
-      will(returnValue("other*"));
+    context.checking(new Expectations() {
+      {
+        allowing(selectControlByIdA).getWithChildControls();
+        will(returnValue("yes"));
+        allowing(selectControlByIdA).getWithIds();
+        will(returnValue(withIdsA));
+        allowing(selectControlByIdA).getMatching();
+        will(returnValue(List.of(matchingA)));
+        allowing(matchingA).getPattern();
+        will(returnValue("other*"));
 
-      allowing (selectControlByIdB).getWithChildControls();
-      will(returnValue("no"));
-      allowing (selectControlByIdB).getWithIds();
-      will(returnValue(withIdsB));
-      allowing (selectControlByIdB).getMatching();
-      will(returnValue(List.of(matchingB)));
-      allowing (matchingB).getPattern();
-      will(returnValue("example1*"));
-    }});
+        allowing(selectControlByIdB).getWithChildControls();
+        will(returnValue("no"));
+        allowing(selectControlByIdB).getWithIds();
+        will(returnValue(withIdsB));
+        allowing(selectControlByIdB).getMatching();
+        will(returnValue(List.of(matchingB)));
+        allowing(matchingB).getPattern();
+        will(returnValue("example1*"));
+      }
+    });
 
     return new DefaultControlSelectionFilter(List.of(selectControlByIdA, selectControlByIdB));
   }
@@ -144,10 +155,12 @@ class DefaultControlSelectionFilterTest {
   void testEmpty() {
     @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class);
-    context.checking(new Expectations() {{
-      allowing (control1).getId();
-      will(returnValue("test"));
-    }});
+    context.checking(new Expectations() {
+      {
+        allowing(control1).getId();
+        will(returnValue("test"));
+      }
+    });
 
     IControlSelectionFilter filter = newEmptyFilter();
     Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);

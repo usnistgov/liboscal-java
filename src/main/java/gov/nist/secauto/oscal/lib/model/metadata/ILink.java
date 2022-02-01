@@ -24,54 +24,8 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.model.builder;
+package gov.nist.secauto.oscal.lib.model.metadata;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
-import gov.nist.secauto.oscal.lib.model.Link;
+public interface ILink {
 
-import java.net.URI;
-import java.util.Objects;
-
-public class LinkBuilder {
-  private static final URI OSCAL_NAMESPACE = URI.create("http://csrc.nist.gov/ns/oscal");
-  private final URI href;
-
-  private String relation;
-  private String mediaType;
-  private MarkupLine text;
-
-  public LinkBuilder(URI href) {
-    this.href = Objects.requireNonNull(href, "href");
-  }
-
-  public LinkBuilder relation(String relation) {
-    this.relation = Objects.requireNonNull(relation, "relation");
-    return this;
-  }
-
-  public LinkBuilder value(String mediaType) {
-    this.mediaType = Objects.requireNonNull(mediaType, "mediaType");
-    return this;
-  }
-
-  public LinkBuilder clazz(MarkupLine text) {
-    this.text = Objects.requireNonNull(text, "text");
-    return this;
-  }
-
-  public Link build() {
-    Link retval = new Link();
-    retval.setHref(href);
-    if (relation != null) {
-      retval.setRel(relation);
-    }
-    if (mediaType != null) {
-      retval.setMediaType(mediaType);
-    }
-    if (text != null) {
-      retval.setText(text);
-    }
-
-    return retval;
-  }
 }

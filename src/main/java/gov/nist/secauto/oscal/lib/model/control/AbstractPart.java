@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.model.control;
 
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
@@ -41,7 +42,8 @@ public abstract class AbstractPart implements IPart {
 
   @SuppressWarnings({ "null", "resource" })
   @NotNull
-  public Stream<@NotNull InsertAnchorNode> getInserts(@NotNull Predicate<@NotNull InsertAnchorNode> filter, boolean recurse) {
+  public Stream<@NotNull InsertAnchorNode> getInserts(@NotNull Predicate<@NotNull InsertAnchorNode> filter,
+      boolean recurse) {
     MarkupMultiline prose = getProse();
 
     @NotNull

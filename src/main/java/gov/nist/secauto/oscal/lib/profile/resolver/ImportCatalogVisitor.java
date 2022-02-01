@@ -293,24 +293,29 @@ public class ImportCatalogVisitor {
     }
 
     // index the group
-    getIndex().addGroup(group, getSource(), result.isChildSelected());
+    if (group.getId() != null) {
+      getIndex().addGroup(group, getSource(), result.isChildSelected());
+    }
 
     return result;
   }
 
   public void visitPart(@NotNull ControlPart part) {
-    EntityItem item = getIndex().addPart(part, getSource());
-    if (item != null) {
-      String entityType = item.getItemType().toString().toLowerCase();
+    if (part.getId() != null) {
+      EntityItem item = getIndex().addPart(part, getSource());
+      if (item != null) {
+        String entityType = item.getItemType().toString().toLowerCase();
 
-      log.atWarn().log("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
-          entityType,
-          part.getId(),
-          getSource(),
-          entityType,
-          item.getIdentifier(),
-          item.getSource(),
-          entityType);
+        log.atWarn().log(
+            "The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
+            entityType,
+            part.getId(),
+            getSource(),
+            entityType,
+            item.getIdentifier(),
+            item.getSource(),
+            entityType);
+      }
     }
 
     for (ControlPart partChild : CollectionUtil.listOrEmpty(part.getParts())) {

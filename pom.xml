@@ -200,7 +200,7 @@
 				<directory>src/main/resources</directory>
 			</resource>
 			<resource>
-				<directory>${project.build.directory}/oscal-resources</directory>
+				<directory>${project.build.directory}/generated-resources/oscal</directory>
 			</resource>
 		</resources>
 		<pluginManagement>
@@ -285,7 +285,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/oscal-resources/schema/xml</outputDirectory>
+							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${project.basedir}/oscal/xml/schema</directory>
@@ -300,13 +300,26 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/oscal-resources/schema/json</outputDirectory>
+							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${project.basedir}/oscal/json/schema</directory>
 								</resource>
 							</resources>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>filter-src</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

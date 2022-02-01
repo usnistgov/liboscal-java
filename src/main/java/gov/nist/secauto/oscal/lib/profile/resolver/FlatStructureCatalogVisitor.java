@@ -61,7 +61,7 @@ public class FlatStructureCatalogVisitor {
       @NotNull
       Control child = iter.next();
       Result result = visitControl(child);
-      
+
       // apply result to current context
       result.apply(catalog);
     }

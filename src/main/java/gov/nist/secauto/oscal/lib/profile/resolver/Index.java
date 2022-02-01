@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
@@ -52,14 +53,13 @@ public class Index {
   private final Map<String, CatalogGroup> selectedGroups;
   @NotNull
   private final Map<String, Control> selectedControls;
-  
+
   @SuppressWarnings("null")
   public Index() {
     this.entityMap = new EnumMap<>(ItemType.class);
     this.selectedGroups = new HashMap<>();
     this.selectedControls = new HashMap<>();
   }
-
 
   @NotNull
   protected ItemGroup getItemGroup(@NotNull ItemType itemType) {
@@ -183,35 +183,36 @@ public class Index {
     return selectedControls.containsKey(identifier);
   }
 
-//
-//  public int getParameterReferenceCount(String parameterId) {
-//    Integer count = parameterReferenceCountMap.get(parameterId);
-//    if (count == null) {
-//      count = 0;
-//    }
-//    return count;
-//  }
-//
-//  public void incrementParameterReferenceCount(@NotNull String parameterId) {
-//    int count = getParameterReferenceCount(parameterId);
-//    
-//    parameterReferenceCountMap.put(parameterId, ++count);
-//  }
-//
-//  public void decrementParameterReferenceCount(@NotNull String parameterId) {
-//    int count = getParameterReferenceCount(parameterId);
-//    
-//    if (count == 0) {
-//      throw new IllegalStateException(String.format("reference count for parameter '%s' is already 0", parameterId));
-//    } else {
-//      count -= 1;
-//      if (count > 0) {
-//        parameterReferenceCountMap.put(parameterId, count);
-//      } else {
-//        parameterReferenceCountMap.remove(parameterId);
-//      }
-//    }
-//  }
+  //
+  // public int getParameterReferenceCount(String parameterId) {
+  // Integer count = parameterReferenceCountMap.get(parameterId);
+  // if (count == null) {
+  // count = 0;
+  // }
+  // return count;
+  // }
+  //
+  // public void incrementParameterReferenceCount(@NotNull String parameterId) {
+  // int count = getParameterReferenceCount(parameterId);
+  //
+  // parameterReferenceCountMap.put(parameterId, ++count);
+  // }
+  //
+  // public void decrementParameterReferenceCount(@NotNull String parameterId) {
+  // int count = getParameterReferenceCount(parameterId);
+  //
+  // if (count == 0) {
+  // throw new IllegalStateException(String.format("reference count for parameter '%s' is already 0",
+  // parameterId));
+  // } else {
+  // count -= 1;
+  // if (count > 0) {
+  // parameterReferenceCountMap.put(parameterId, count);
+  // } else {
+  // parameterReferenceCountMap.remove(parameterId);
+  // }
+  // }
+  // }
 
   public static class ItemGroup {
     @NotNull

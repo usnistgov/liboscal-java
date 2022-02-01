@@ -34,6 +34,8 @@ public class OscalFunctionLibrary
   public OscalFunctionLibrary() {
     registerFunction(ResolveProfile.SIGNATURE_NO_ARG);
     registerFunction(ResolveProfile.SIGNATURE_ONE_ARG);
+    registerFunction(HasOscalNamespace.SIGNATURE_ONE_ARG);
+    registerFunction(HasOscalNamespace.SIGNATURE_TWO_ARGS);
   }
 
 }

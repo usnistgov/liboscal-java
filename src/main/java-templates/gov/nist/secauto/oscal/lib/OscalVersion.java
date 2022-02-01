@@ -23,33 +23,12 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+package gov.nist.secauto.oscal.lib;
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
-
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-public abstract class AbstractStaticItemTypesReferencePolicy<TYPE>
-    extends AbstractReferencePolicy<TYPE> {
-
-  @NotNull
-  private final Set<@NotNull ItemType> itemTypes;
-
-  public AbstractStaticItemTypesReferencePolicy(@NotNull IIdentifierParser identifierParser,
-      @NotNull List<@NotNull IReferencePolicyHandler<TYPE>> handlers,
-      @NotNull Set<@NotNull ItemType> itemTypes) {
-    super(identifierParser, handlers);
-    this.itemTypes = CollectionUtil.requireNonEmpty(Objects.requireNonNull(itemTypes, "itemTypes"), "itemTypes");
-  }
-
-  @Override
-  protected Set<@NotNull ItemType> getEntityItemTypes(@NotNull TYPE type) {
-    return itemTypes;
+public class OscalVersion {
+  public static final String OSCAL_BRANCH = "${oscal-content.commit}";
+  
+  public static String getOscalBranch() {
+    return OSCAL_BRANCH;
   }
 }

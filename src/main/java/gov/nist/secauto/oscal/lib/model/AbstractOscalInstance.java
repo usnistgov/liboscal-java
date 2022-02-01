@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.model;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
@@ -37,7 +38,7 @@ public abstract class AbstractOscalInstance implements IOscalInstance {
   @Override
   public Resource getResourceByUuid(@NotNull UUID uuid) {
     IBackMatter backMatter = getBackMatter();
-    
+
     Resource retval = null;
     if (backMatter != null) {
       retval = backMatter.getResourceByUuid(uuid);

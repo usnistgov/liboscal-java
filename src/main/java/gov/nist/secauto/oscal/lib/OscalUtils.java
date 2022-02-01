@@ -56,7 +56,8 @@ public class OscalUtils {
     }
 
     String schemeSpecificPart = uri.getSchemeSpecificPart();
-    return uri.getScheme() == null && (schemeSpecificPart == null || schemeSpecificPart.isEmpty()) && uri.getFragment() != null;
+    return uri.getScheme() == null && (schemeSpecificPart == null || schemeSpecificPart.isEmpty())
+        && uri.getFragment() != null;
   }
 
   @SuppressWarnings("null")
@@ -89,7 +90,8 @@ public class OscalUtils {
         throw new NullPointerException("resource has a null UUID");
       }
       @SuppressWarnings("null")
-      @NotNull URI result = documentUri.resolve("#" + uuid);
+      @NotNull
+      URI result = documentUri.resolve("#" + uuid);
       ByteBuffer buffer = base64.getValue();
       if (buffer == null) {
         throw new NullPointerException(String.format("null base64 value for resource '%s'", uuid));
@@ -133,7 +135,8 @@ public class OscalUtils {
   @NotNull
   public static Source newSource(@NotNull URI source, @NotNull URI baseUri) {
     @SuppressWarnings("null")
-    @NotNull URI result = baseUri.resolve(source);
+    @NotNull
+    URI result = baseUri.resolve(source);
     Source retval = new URISource(result);
     return retval;
   }

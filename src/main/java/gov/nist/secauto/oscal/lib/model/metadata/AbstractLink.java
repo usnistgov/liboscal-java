@@ -24,32 +24,71 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+package gov.nist.secauto.oscal.lib.model.metadata;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.oscal.lib.model.Link;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.net.URI;
 import java.util.Objects;
-import java.util.Set;
 
-public abstract class AbstractStaticItemTypesReferencePolicy<TYPE>
-    extends AbstractReferencePolicy<TYPE> {
+public abstract class AbstractLink implements ILink {
 
   @NotNull
-  private final Set<@NotNull ItemType> itemTypes;
-
-  public AbstractStaticItemTypesReferencePolicy(@NotNull IIdentifierParser identifierParser,
-      @NotNull List<@NotNull IReferencePolicyHandler<TYPE>> handlers,
-      @NotNull Set<@NotNull ItemType> itemTypes) {
-    super(identifierParser, handlers);
-    this.itemTypes = CollectionUtil.requireNonEmpty(Objects.requireNonNull(itemTypes, "itemTypes"), "itemTypes");
+  public static Builder builder(@NotNull URI href) {
+    return new Builder(href);
   }
 
-  @Override
-  protected Set<@NotNull ItemType> getEntityItemTypes(@NotNull TYPE type) {
-    return itemTypes;
+  public static class Builder {
+    @NotNull
+    private final URI href;
+    private String relation;
+    private String mediaType;
+    private MarkupLine text;
+
+    @SuppressWarnings("null")
+    public Builder(@NotNull URI href) {
+      this.href = Objects.requireNonNull(href, "href");
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder relation(@NotNull String relation) {
+      this.relation = Objects.requireNonNull(relation, "relation");
+      return this;
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder value(@NotNull String mediaType) {
+      this.mediaType = Objects.requireNonNull(mediaType, "mediaType");
+      return this;
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder clazz(@NotNull MarkupLine text) {
+      this.text = Objects.requireNonNull(text, "text");
+      return this;
+    }
+
+    @NotNull
+    public Link build() {
+      Link retval = new Link();
+      retval.setHref(href);
+      if (relation != null) {
+        retval.setRel(relation);
+      }
+      if (mediaType != null) {
+        retval.setMediaType(mediaType);
+      }
+      if (text != null) {
+        retval.setText(text);
+      }
+
+      return retval;
+    }
   }
 }

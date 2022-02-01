@@ -27,7 +27,6 @@
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
 import gov.nist.secauto.metaschema.binding.BindingContext;
-import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.metapath.xdm.IXdmFactory;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathException;
@@ -35,7 +34,6 @@ import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionUtils;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IArgument;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
-import gov.nist.secauto.metaschema.model.common.metapath.function.library.FnDocFunction;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
@@ -44,8 +42,6 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -54,11 +50,12 @@ import java.util.List;
 import java.util.Stack;
 
 public class ResolveProfile {
-  private static final Logger logger = LogManager.getLogger(FnDocFunction.class);
-
   static final IFunction SIGNATURE_NO_ARG = IFunction.newBuilder()
       .name("resolve-profile")
       .returnType(INodeItem.class)
+      .focusDependent()
+      .contextDependent()
+      .deterministic()
       .returnOne()
       .functionHandler(ResolveProfile::executeNoArg)
       .build();
@@ -70,6 +67,9 @@ public class ResolveProfile {
           .type(INodeItem.class)
           .zeroOrOne()
           .build())
+      .focusDependent()
+      .contextDependent()
+      .deterministic()
       .returnType(INodeItem.class)
       .returnOne()
       .functionHandler(ResolveProfile::executeOneArg)
@@ -100,9 +100,10 @@ public class ResolveProfile {
 
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
-  
+
   @NotNull
-  public static IDocumentNodeItem resolveProfile(@NotNull IDocumentNodeItem profile, @NotNull DynamicContext dynamicContext) {
+  public static IDocumentNodeItem resolveProfile(@NotNull IDocumentNodeItem profile,
+      @NotNull DynamicContext dynamicContext) {
     Object profileObject = profile.toBoundObject();
 
     IDocumentNodeItem retval;
@@ -112,9 +113,11 @@ public class ResolveProfile {
       // this is a profile
       URI baseUri = profile.getBaseUri();
       ProfileResolver resolver = new ProfileResolver(dynamicContext);
-      @NotNull Catalog resolvedCatalog;
+      @NotNull
+      Catalog resolvedCatalog;
       try {
-        ProfileResolver.ResolutionData data = new ProfileResolver.ResolutionData((Profile)profileObject, baseUri, new Stack<>());
+        ProfileResolver.ResolutionData data
+            = new ProfileResolver.ResolutionData((Profile) profileObject, baseUri, new Stack<>());
         resolver.resolve(data);
         resolvedCatalog = data.getCatalog();
       } catch (IOException ex) {

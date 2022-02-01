@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public interface IControlSelectionFilter extends Function<gov.nist.secauto.oscal.lib.model.control.catalog.IControl, Pair<@NotNull Boolean, @NotNull Boolean>> {
+public interface IControlSelectionFilter extends Function<IControl, Pair<@NotNull Boolean, @NotNull Boolean>> {
 
   @NotNull
   public static final Pair<@NotNull Boolean, @NotNull Boolean> NON_MATCH = ObjectUtils.notNull(Pair.of(false, false));
@@ -62,8 +62,8 @@ public interface IControlSelectionFilter extends Function<gov.nist.secauto.oscal
    * 
    * @param control
    *          the control to check for a match
-   * @return a pair indicating the status of the match ({@code true} for a match or
-   *         {@false} otherwise), and if a match applies to child controls
+   * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
+   *         otherwise), and if a match applies to child controls
    */
   @NotNull
   @Override

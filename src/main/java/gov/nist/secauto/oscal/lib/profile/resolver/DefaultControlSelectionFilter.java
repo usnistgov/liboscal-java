@@ -52,7 +52,8 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
   /**
    * Construct a new selection filter based on the provided list of select criteria.
    * 
-   * @param selections a list of select criteria
+   * @param selections
+   *          a list of select criteria
    */
   @SuppressWarnings("null")
   public DefaultControlSelectionFilter(@NotNull List<? extends IProfileSelectControlById> selections) {
@@ -95,8 +96,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
           Pair<@NotNull Boolean, @NotNull Boolean> result;
           if (first.getLeft() || second.getLeft()) {
             // at least one matches
-            boolean withChild
-                = first.getLeft() ? first.getRight() : false || second.getLeft() ? second.getRight() : false;
+            boolean withChild = (first.getLeft() && first.getRight()) || (second.getLeft() && second.getRight());
             result = Pair.of(true, withChild);
           } else {
             result = IControlSelectionFilter.NON_MATCH;
@@ -180,7 +180,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
     }
 
     @NotNull
-    private Pair<@NotNull Boolean, @NotNull Boolean> match(String id) {
+    protected Pair<@NotNull Boolean, @NotNull Boolean> match(String id) {
       // first check for direct match
       boolean result = identifiers.stream().anyMatch(controlIdentifier -> controlIdentifier.equals(id));
       if (!result) {

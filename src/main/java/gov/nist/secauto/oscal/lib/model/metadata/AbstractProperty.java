@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
@@ -39,7 +40,7 @@ import java.util.UUID;
 import javax.xml.namespace.QName;
 
 public abstract class AbstractProperty implements IProperty {
-  
+
   @NotNull
   public static QName qname(URI namespace, @NotNull String name) {
     return new QName(normalizeNamespace(namespace).toString(), name);
@@ -59,6 +60,8 @@ public abstract class AbstractProperty implements IProperty {
     return propertyNamespace;
   }
 
+  @SuppressWarnings("null")
+  @NotNull
   public static Optional<Property> find(List<Property> props, @NotNull QName qname) {
     return CollectionUtil.listOrEmpty(props).stream().filter(prop -> qname.equals(prop.getQName())).findFirst();
   }
@@ -69,8 +72,9 @@ public abstract class AbstractProperty implements IProperty {
   public boolean isNamespaceEqual(@NotNull URI namespace) {
     return normalizeNamespace(getNs()).equals(namespace);
   }
-  
-  public static Builder builder(String name) {
+
+  @NotNull
+  public static Builder builder(@NotNull String name) {
     return new Builder(name);
   }
 
@@ -78,8 +82,9 @@ public abstract class AbstractProperty implements IProperty {
   public QName getQName() {
     return new QName(normalizeNamespace(getNs()).toString(), getName());
   }
-  
+
   public static class Builder {
+    @NotNull
     private final String name;
 
     private UUID uuid;
@@ -87,17 +92,21 @@ public abstract class AbstractProperty implements IProperty {
     private String value;
     private String clazz;
 
-    public Builder(String name) {
+    @SuppressWarnings("null")
+    public Builder(@NotNull String name) {
       this.name = Objects.requireNonNull(name, "name");
     }
 
-    public Builder uuid(UUID uuid) {
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder uuid(@NotNull UUID uuid) {
       this.uuid = Objects.requireNonNull(uuid, "uuid");
       return this;
     }
 
-    public Builder namespace(URI namespace) {
-      
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder namespace(@NotNull URI namespace) {
       if (IProperty.OSCAL_NAMESPACE.equals(namespace)) {
         this.namespace = null;
       } else {
@@ -106,16 +115,21 @@ public abstract class AbstractProperty implements IProperty {
       return this;
     }
 
-    public Builder value(String value) {
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder value(@NotNull String value) {
       this.value = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    public Builder clazz(String clazz) {
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder clazz(@NotNull String clazz) {
       this.clazz = Objects.requireNonNull(clazz, "clazz");
       return this;
     }
 
+    @NotNull
     public Property build() {
       Property retval = new Property();
       retval.setName(name);

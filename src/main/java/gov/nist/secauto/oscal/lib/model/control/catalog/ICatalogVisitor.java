@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -34,7 +35,10 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ICatalogVisitor<RESULT, CONTEXT> {
   RESULT visitCatalog(@NotNull Catalog catalog, CONTEXT context);
+
   RESULT visitGroup(@NotNull CatalogGroup group, CONTEXT context);
+
   RESULT visitControl(@NotNull Control control, CONTEXT context);
+
   RESULT visitParameter(@NotNull Parameter parameter, CONTEXT context);
 }

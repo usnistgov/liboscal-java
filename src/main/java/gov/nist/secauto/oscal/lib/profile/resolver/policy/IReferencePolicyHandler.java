@@ -45,8 +45,8 @@ public interface IReferencePolicyHandler<TYPE> {
       // do nothing
       return true;
     }
-  }; 
-  
+  };
+
   public static IReferencePolicyHandler<?> INCREMENT_COUNT_INDEX_HIT_POLICY = new IReferencePolicyHandler<>() {
 
     @Override
@@ -55,11 +55,11 @@ public interface IReferencePolicyHandler<TYPE> {
       return true;
     }
   };
-  
+
   @SuppressWarnings("unchecked")
   @NotNull
-  public static <T>  IReferencePolicyHandler<T> incrementCountIndexHitPolicy() {
-    return (@NotNull IReferencePolicyHandler<T>)INCREMENT_COUNT_INDEX_HIT_POLICY;
+  public static <T> IReferencePolicyHandler<T> incrementCountIndexHitPolicy() {
+    return (@NotNull IReferencePolicyHandler<T>) INCREMENT_COUNT_INDEX_HIT_POLICY;
   }
 
   default boolean handleIdentifierNonMatch(@NotNull TYPE type, @NotNull Match match,

@@ -101,9 +101,11 @@ class ProfileResolutionTests {
     return profileResolver;
   }
 
-  private Catalog resolveProfile(@NotNull File profileFile) throws FileNotFoundException, BindingException, IOException {
+  private Catalog resolveProfile(@NotNull File profileFile)
+      throws FileNotFoundException, BindingException, IOException {
     Profile profile = OscalBindingContext.instance().loadProfile(profileFile);
-    ProfileResolver.ResolutionData data = new ProfileResolver.ResolutionData(profile, profileFile.toURI(), new Stack<>());
+    ProfileResolver.ResolutionData data
+        = new ProfileResolver.ResolutionData(profile, profileFile.toURI(), new Stack<>());
     getProfileResolver().resolve(data);
     return data.getCatalog();
   }
@@ -129,7 +131,7 @@ class ProfileResolutionTests {
   private String transformXml(Source source) throws SaxonApiException {
     net.sf.saxon.s9api.Serializer out = getProcessor().newSerializer();
     out.setOutputProperty(net.sf.saxon.s9api.Serializer.Property.METHOD, "xml");
-//    out.setOutputProperty(net.sf.saxon.s9api.Serializer.Property.INDENT, "yes");
+    // out.setOutputProperty(net.sf.saxon.s9api.Serializer.Property.INDENT, "yes");
     StringWriter writer = new StringWriter();
     out.setOutputWriter(writer);
     XsltTransformer trans = compairisonXslt.load();
@@ -162,10 +164,10 @@ class ProfileResolutionTests {
     serializer.serialize(catalog, writer);
     // serializer.serialize(catalog, System.out);
 
-    System.out.println("Pre scrub: "+writer.getBuffer().toString());
+    System.out.println("Pre scrub: " + writer.getBuffer().toString());
 
     String actual = transformXml(new StreamSource(new StringReader(writer.getBuffer().toString())));
-//    System.out.println("Post scrub: "+actual);
+    // System.out.println("Post scrub: "+actual);
 
     String expectedPath = String.format("%s/%s_profile_RESOLVED.xml", PROFILE_EXPECTED_PATH, profileName);
     String expected = transformXml(new StreamSource(new File(expectedPath)));
@@ -179,8 +181,8 @@ class ProfileResolutionTests {
 
     File profileFile = new File(profileLocation);
 
-    FileNotFoundException exceptionThrown = assertThrows(FileNotFoundException.class, () -> {
-      Catalog catalog = resolveProfile(profileFile);
+    assertThrows(FileNotFoundException.class, () -> {
+      resolveProfile(profileFile);
     });
   }
 
@@ -191,7 +193,7 @@ class ProfileResolutionTests {
     File profileFile = new File(profileLocation);
 
     IOException exceptionThrown = assertThrows(IOException.class, () -> {
-      Catalog catalog = resolveProfile(profileFile);
+      resolveProfile(profileFile);
     });
 
     MatcherAssert.assertThat(exceptionThrown.getCause(), CoreMatchers.instanceOf(ImportCycleException.class));

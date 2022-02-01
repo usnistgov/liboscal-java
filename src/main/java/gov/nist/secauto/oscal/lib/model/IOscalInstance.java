@@ -38,6 +38,6 @@ public interface IOscalInstance {
   Metadata getMetadata();
 
   BackMatter getBackMatter();
-  
+
   Resource getResourceByUuid(@NotNull UUID id);
 }

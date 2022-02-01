@@ -101,7 +101,6 @@ public class EntityItem {
     public Builder() {
     }
 
-
     public Builder instance(@NotNull Object instance, @NotNull UUID identifier) {
       return instance(instance, identifier.toString());
     }

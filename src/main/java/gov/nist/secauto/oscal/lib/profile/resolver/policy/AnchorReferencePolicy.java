@@ -29,11 +29,11 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import com.vladsch.flexmark.ast.InlineLinkNode;
 import com.vladsch.flexmark.util.sequence.CharSubSequence;
 
+import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
-import gov.nist.secauto.oscal.lib.util.CustomCollectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,9 +51,11 @@ public class AnchorReferencePolicy
   @NotNull
   private static final IReferencePolicyHandler<InlineLinkNode> INDEX_MISS_HANDLER = new IndexMissHandler();
   @NotNull
-  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_HIT_UNSELECTED_HANDLER = new IndexHitUnselectedHandler();
+  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_HIT_UNSELECTED_HANDLER
+      = new IndexHitUnselectedHandler();
   @NotNull
-  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_HIT_INCREMENT_HANDLER = IReferencePolicyHandler.incrementCountIndexHitPolicy();
+  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_HIT_INCREMENT_HANDLER
+      = IReferencePolicyHandler.incrementCountIndexHitPolicy();
 
   @SuppressWarnings("null")
   public AnchorReferencePolicy() {

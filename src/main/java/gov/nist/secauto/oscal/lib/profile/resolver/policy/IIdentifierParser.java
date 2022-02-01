@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,15 +43,15 @@ public interface IIdentifierParser {
     public String replaceReference(Match match, String replacement) {
       return replacement;
     }
-    
+
   };
-  
+
   @NotNull
   Match match(@NotNull String identifier);
 
   @NotNull
   String replaceReference(@NotNull Match match, @NotNull String newIdentifier);
-  
+
   public class Match {
     @NotNull
     private final String reference;
@@ -63,7 +64,7 @@ public interface IIdentifierParser {
       this.identifier = identifier;
       this.match = match;
     }
-    
+
     public String getReference() {
       return reference;
     }

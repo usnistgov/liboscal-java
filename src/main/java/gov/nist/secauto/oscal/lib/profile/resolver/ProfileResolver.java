@@ -30,7 +30,6 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
@@ -41,6 +40,7 @@ import gov.nist.secauto.oscal.lib.OscalUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Location;
 import gov.nist.secauto.oscal.lib.model.Merge;
 import gov.nist.secauto.oscal.lib.model.Metadata;
@@ -49,7 +49,6 @@ import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.Role;
-import gov.nist.secauto.oscal.lib.model.builder.LinkBuilder;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.resource.Source;
 
@@ -143,7 +142,7 @@ public class ProfileResolver {
     metadata.getProps().add(Property.builder("resolution-tool").value("libOSCAL-Java").build());
     metadata.setLinks(new LinkedList<>());
     URI profileUri = data.getProfileUri();
-    metadata.getLinks().add(new LinkBuilder(profileUri).relation("source-profile").build());
+    metadata.getLinks().add(Link.builder(profileUri).relation("source-profile").build());
 
     resolvedCatalog.setMetadata(metadata);
 
@@ -184,7 +183,7 @@ public class ProfileResolver {
       throw new NullPointerException("profileImport.getHref() must return a non-null URI");
     }
 
-    log.debug("resolving profile import '{}'", importUri);
+    log.atDebug().log("resolving profile import '{}'", importUri);
 
     URI profileUri = data.getProfileUri();
     Stack<URI> importHistory = data.getImportHistory();
@@ -350,7 +349,7 @@ public class ProfileResolver {
 
   private void handleReferences(@NotNull ResolutionData data) {
     ReferenceCountingVisitor visitor = new ReferenceCountingVisitor(data);
-    
+
     visitor.visitCatalog(data.getCatalog());
     visitor.visitProfile(data.getProfile());
 
@@ -372,7 +371,7 @@ public class ProfileResolver {
           }
           return retval;
         })
-        .map(item -> (Role)item.getInstance())
+        .map(item -> (Role) item.getInstance())
         .collect(Collectors.toCollection(LinkedList::new)));
     metadata.setLocations(index.getEntitiesByItemType(ItemType.LOCATION).stream()
         .filter(item -> {
@@ -387,7 +386,7 @@ public class ProfileResolver {
           }
           return retval;
         })
-        .map(item -> (Location)item.getInstance())
+        .map(item -> (Location) item.getInstance())
         .collect(Collectors.toCollection(LinkedList::new)));
     metadata.setParties(index.getEntitiesByItemType(ItemType.PARTY).stream()
         .filter(item -> {
@@ -402,32 +401,32 @@ public class ProfileResolver {
           }
           return retval;
         })
-        .map(item -> (Party)item.getInstance())
+        .map(item -> (Party) item.getInstance())
         .collect(Collectors.toCollection(LinkedList::new)));
 
     List<BackMatter.Resource> resources = index.getEntitiesByItemType(ItemType.RESOURCE).stream()
-    .filter(item -> {
-      boolean retval = item.getReferenceCount() > 0;
-      if (!retval) {
-        BackMatter.Resource instance = (BackMatter.Resource) item.getInstance();
-        retval = Property.find(instance.getProps(), Property.qname("keep"))
-            .map(prop -> "always".equals(prop.getValue()))
-            .or(() -> Optional.of(false))
-            .get();
+        .filter(item -> {
+          boolean retval = item.getReferenceCount() > 0;
+          if (!retval) {
+            BackMatter.Resource instance = (BackMatter.Resource) item.getInstance();
+            retval = Property.find(instance.getProps(), Property.qname("keep"))
+                .map(prop -> "always".equals(prop.getValue()))
+                .or(() -> Optional.of(false))
+                .get();
 
-      }
-      return retval;
-    })
-    .map(item -> (BackMatter.Resource)item.getInstance())
-    .collect(Collectors.toCollection(LinkedList::new));
-    
+          }
+          return retval;
+        })
+        .map(item -> (BackMatter.Resource) item.getInstance())
+        .collect(Collectors.toCollection(LinkedList::new));
+
     if (!resources.isEmpty()) {
       BackMatter backMatter = catalog.getBackMatter();
       if (backMatter == null) {
         backMatter = new BackMatter();
         catalog.setBackMatter(backMatter);
       }
-  
+
       backMatter.setResources(resources);
     }
   }

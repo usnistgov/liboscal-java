@@ -14,6 +14,11 @@
 				<extend-base-class>gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty</extend-base-class>
 			</java>
 		</define-assembly-binding>
+		<define-assembly-binding name="link">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.metadata.AbstractLink</extend-base-class>
+			</java>
+		</define-assembly-binding>
 		<define-assembly-binding name="back-matter">
 			<java>
 				<extend-base-class>gov.nist.secauto.oscal.lib.model.metadata.AbstractBackMatter</extend-base-class>

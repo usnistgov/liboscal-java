@@ -28,12 +28,10 @@ package gov.nist.secauto.oscal.java;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Feature;
-import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.INodeContext;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathFactory;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.metaschema.model.common.metapath.evaluate.IExpressionEvaluationVisitor;
 import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
@@ -42,9 +40,6 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IValuedItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.metapath.function.library.ResolveProfile;
-import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.Profile;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
@@ -75,34 +70,40 @@ class MetaschemaVisitorTest {
     File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
     IDocumentNodeItem nodeItem = loader.loadAsNodeItem(file);
 
-    @NotNull
-    Profile profile = nodeItem.toBoundObject();
-    
-    IDocumentNodeItem resolvedProfile = ResolveProfile.resolveProfile(nodeItem, dynamicContext);
-    OscalBindingContext.instance().validate(resolvedProfile.toBoundObject(), file.toURI());
-    evaluatePath(MetapathFactory.parseMetapathString("//control[part[@name='assessment' and not(prop[@name='method'])]]/@id"), resolvedProfile, visitor);
-    
-    OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class).serialize(resolvedProfile.toBoundObject(), System.out);
+    // @NotNull
+    // Profile profile = nodeItem.toBoundObject();
 
-//    evaluatePath(MetapathFactory.parseMetapathString("resolve-profile(doc(resolve-uri(/profile/import/@href, document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem, visitor);
-    evaluatePath(MetapathFactory.parseMetapathString("//control/@id"), resolvedProfile, visitor);
-//    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem, visitor);
-//    evaluatePath(
-//        MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified - /catalog/metadata/last-modified"),
-//        nodeItem, visitor);
-//    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified + duration('PT1H')"), nodeItem,
-//        visitor);
-//    evaluatePath(MetapathFactory.parseMetapathString("doc(resolve-uri(/profile/import/@href, document-uri(/profile)))/catalog/metadata/last-modified,/catalog/metadata/last-modified"),
-//        nodeItem, visitor);
-//    evaluatePath(MetapathFactory.parseMetapathString("doc('target/download/content/NIST_SP-800-53_rev5_catalog.xml')"),
-//        nodeItem, visitor);
+    IDocumentNodeItem resolvedProfile = ResolveProfile.resolveProfile(nodeItem, dynamicContext);
+    OscalBindingContext.instance().validate(resolvedProfile.toBoundObject(), file.toURI(), true, null);
+
+    // OscalBindingContext.instance().newSerializer(Format.XML,
+    // Catalog.class).serialize(resolvedProfile.toBoundObject(), new FileWriter(new
+    // File("resolved-catalog.xml")));
+
+    // evaluatePath(MetapathExpression.compile("resolve-profile(doc(resolve-uri(/profile/import/@href,
+    // document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem, visitor);
+    evaluatePath(MetapathExpression.compile("//control/@id"), resolvedProfile, visitor);
+    // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
+    // document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem, visitor);
+    // evaluatePath(
+    // MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
+    // document-uri(/profile)))/catalog/metadata/last-modified - /catalog/metadata/last-modified"),
+    // nodeItem, visitor);
+    // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
+    // document-uri(/profile)))/catalog/metadata/last-modified + duration('PT1H')"), nodeItem,
+    // visitor);
+    // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
+    // document-uri(/profile)))/catalog/metadata/last-modified,/catalog/metadata/last-modified"),
+    // nodeItem, visitor);
+    // evaluatePath(MetapathExpression.compile("doc('target/download/content/NIST_SP-800-53_rev5_catalog.xml')"),
+    // nodeItem, visitor);
     // evaluatePath(Metapath.parseMetapathString("2 eq 1 + 1[/catalog]"), nodeContext, visitor);
     // evaluatePath(Metapath.parseMetapathString("/catalog/back-matter/resource[rlink/@href='https://doi.org/10.6028/NIST.SP.800-53r5']"),
     // nodeItem, visitor);
-    // evaluatePath(MetapathFactory.parseMetapathString("/catalog//(@id,@uuid)"), nodeItem, visitor);
-    // evaluatePath(MetapathFactory.parseMetapathString("exists(/catalog//(@id,@uuid))"), nodeItem,
+    // evaluatePath(MetapathExpression.compile("/catalog//(@id,@uuid)"), nodeItem, visitor);
+    // evaluatePath(MetapathExpression.compile("exists(/catalog//(@id,@uuid))"), nodeItem,
     // visitor);
-    // evaluatePath(MetapathFactory.parseMetapathString("/catalog//control//prop/@name"), nodeItem,
+    // evaluatePath(MetapathExpression.compile("/catalog//control//prop/@name"), nodeItem,
     // visitor);
     // evaluatePath(Metapath.parseMetapathString("(/catalog//control[@id='ac-1'])"), nodeItem,
     // visitor);
@@ -123,6 +124,6 @@ class MetaschemaVisitorTest {
       }
       count.incrementAndGet();
     });
-    System.out.println(String.format("  %d items",count.get()));
+    System.out.println(String.format("  %d items", count.get()));
   }
 }

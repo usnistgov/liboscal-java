@@ -32,10 +32,7 @@ import gov.nist.secauto.oscal.lib.model.Control;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AbstractControl implements DeserializationHandler, IControl {

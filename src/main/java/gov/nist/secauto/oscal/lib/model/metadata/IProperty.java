@@ -34,6 +34,9 @@ public interface IProperty {
   @SuppressWarnings("null")
   @NotNull
   public static final URI OSCAL_NAMESPACE = URI.create("http://csrc.nist.gov/ns/oscal");
+  @SuppressWarnings("null")
+  @NotNull
+  public static final URI RMF_NAMESPACE = URI.create("http://csrc.nist.gov/ns/rmf");
 
   String getName();
 
