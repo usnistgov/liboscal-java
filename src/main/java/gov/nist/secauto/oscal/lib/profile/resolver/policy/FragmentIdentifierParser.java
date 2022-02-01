@@ -26,8 +26,6 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import org.jetbrains.annotations.NotNull;
-
 public class FragmentIdentifierParser
     extends AbstractPatternIdentifierParser {
 

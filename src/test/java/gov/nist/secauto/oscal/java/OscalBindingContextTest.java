@@ -115,7 +115,8 @@ class OscalBindingContextTest {
   @Test
   void testLoadProfileJson(@TempDir Path tempDir) throws BindingException, IOException {
     Profile profile
-        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json").getCanonicalFile());
+        = loader.load(
+            new File("target/download/content/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json").getCanonicalFile());
     assertNotNull(profile);
 
     // File out = new File(tempDir.toFile(), "out.json");

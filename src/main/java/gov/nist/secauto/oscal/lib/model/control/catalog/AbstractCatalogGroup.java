@@ -26,7 +26,9 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-public abstract class AbstractCatalogGroup extends AbstractControlContainer implements ICatalogGroup {
+public abstract class AbstractCatalogGroup
+    extends AbstractControlContainer
+    implements ICatalogGroup {
 
   public AbstractCatalogGroup() {
     // TODO Auto-generated constructor stub

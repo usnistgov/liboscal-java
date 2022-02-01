@@ -29,7 +29,9 @@ package gov.nist.secauto.oscal.lib.model.control.catalog;
 import gov.nist.secauto.metaschema.binding.DeserializationHandler;
 import gov.nist.secauto.oscal.lib.model.Control;
 
-public abstract class AbstractControl extends AbstractControlContainer implements DeserializationHandler, IControl {
+public abstract class AbstractControl
+    extends AbstractControlContainer
+    implements DeserializationHandler, IControl {
   private Control parent;
 
   protected AbstractControl() {
