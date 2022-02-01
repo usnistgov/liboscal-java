@@ -35,6 +35,7 @@ import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.Profile;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -115,6 +116,31 @@ class OscalLoaderTest {
     serializer.serialize(catalog, out);
 
     assertNotNull(loader.loadCatalog(out));
+
+    // out.delete();
+  }
+
+  @Test
+  void testLoadProfileJson(@TempDir Path tempDir) throws BindingException, IOException {
+    Profile profile
+        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json").getCanonicalFile());
+    assertNotNull(profile);
+
+    // File out = new File(tempDir.toFile(), "out.json");
+    File out = new File("target/out-profile.json");
+    BindingContext context = BindingContext.newInstance();
+    MutableConfiguration config
+        = new MutableConfiguration().enableFeature(Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
+
+    Serializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class, config);
+    serializer.serialize(profile, out);
+
+    assertNotNull(loader.loadProfile(out));
+
+    out = new File("target/out-profile.yaml");
+
+    serializer = context.newSerializer(Format.YAML, Profile.class, config);
+    serializer.serialize(profile, out);
 
     // out.delete();
   }

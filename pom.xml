@@ -239,6 +239,17 @@
 							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
+					<execution>
+						<id>download-profile-json</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json</uri>
+							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
