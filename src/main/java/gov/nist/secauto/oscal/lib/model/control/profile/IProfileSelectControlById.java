@@ -24,29 +24,18 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.model;
+package gov.nist.secauto.oscal.lib.model.control.profile;
 
-import gov.nist.secauto.metaschema.binding.DeserializationHandler;
+import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 
-public abstract class AbstractControl implements DeserializationHandler {
-  private Control parent;
+import java.util.List;
 
-  protected Control getParent() {
-    return parent;
-  }
+public interface IProfileSelectControlById {
 
-  protected void setParent(Control parent) {
-    this.parent = parent;
-  }
+  String getWithChildControls();
 
-  @Override
-  public void beforeDeserialize(Object parent) {
-  }
+  List<String> getWithIds();
 
-  @Override
-  public void afterDeserialize(Object parent) {
-    if (parent instanceof Control) {
-      this.parent = (Control) parent;
-    }
-  }
+  List<ProfileSelectControlById.Matching> getMatching();
+
 }

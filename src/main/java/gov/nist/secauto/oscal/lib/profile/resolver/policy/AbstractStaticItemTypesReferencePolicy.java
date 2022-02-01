@@ -24,30 +24,32 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.java;
+package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.format.DataFormatDetector;
-import com.fasterxml.jackson.core.format.DataFormatMatcher;
-import com.fasterxml.jackson.core.format.MatchStrength;
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.jetbrains.annotations.NotNull;
 
-public class ContentUtil {
-  private static final JsonFactory jsonFactory = new JsonFactory();
-  private static final XmlFactory xmlFactory = new XmlFactory();
-  private static final YAMLFactory yamlFactory = new YAMLFactory();
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-  public static DataFormatMatcher detectFormat(InputStream is) throws IOException {
+public abstract class AbstractStaticItemTypesReferencePolicy<TYPE>
+    extends AbstractReferencePolicy<TYPE> {
 
-    DataFormatDetector det = new DataFormatDetector(new JsonFactory[] { jsonFactory, yamlFactory, xmlFactory });
-    det = det.withMinimalMatch(MatchStrength.WEAK_MATCH).withOptimalMatch(MatchStrength.SOLID_MATCH);
+  @NotNull
+  private final Set<@NotNull ItemType> itemTypes;
 
-    DataFormatMatcher matcher = det.findFormat(is);
-    return matcher;
+  public AbstractStaticItemTypesReferencePolicy(@NotNull IIdentifierParser identifierParser,
+      @NotNull List<@NotNull IReferencePolicyHandler<TYPE>> handlers,
+      @NotNull Set<@NotNull ItemType> itemTypes) {
+    super(identifierParser, handlers);
+    this.itemTypes = CollectionUtil.requireNonEmpty(Objects.requireNonNull(itemTypes, "itemTypes"), "itemTypes");
   }
 
+  @Override
+  protected Set<@NotNull ItemType> getEntityItemTypes(@NotNull TYPE type) {
+    return itemTypes;
+  }
 }
