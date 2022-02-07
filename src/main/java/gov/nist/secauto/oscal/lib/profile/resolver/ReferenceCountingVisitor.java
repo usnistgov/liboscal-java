@@ -29,8 +29,8 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 import com.vladsch.flexmark.ast.InlineLinkNode;
 import com.vladsch.flexmark.util.ast.Node;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupText;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.insertanchor.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.IMarkupText;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
@@ -481,7 +481,7 @@ public class ReferenceCountingVisitor {
     // return retval;
   }
 
-  private void visitLinkedNodes(MarkupText text) {
+  private void visitLinkedNodes(IMarkupText text) {
     if (text != null) {
       for (Node node : CollectionUtil.toIterable(text.getNodesAsStream().iterator())) {
         if (node instanceof InsertAnchorNode) {

@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.DefaultBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.Serializer;
+import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
@@ -136,7 +136,7 @@ class ProfileResolutionTests {
     Assertions.assertThat(catalog.getMetadata().getProps()).filteredOn("name", "resolution-tool").extracting("value")
         .hasSize(1);
 
-    Serializer<Catalog> serializer = OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class);
+    ISerializer<Catalog> serializer = OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class);
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
     // serializer.serialize(catalog, System.out);

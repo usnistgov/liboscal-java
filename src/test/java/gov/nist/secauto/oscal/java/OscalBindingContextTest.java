@@ -28,12 +28,12 @@ package gov.nist.secauto.oscal.java;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import gov.nist.secauto.metaschema.binding.BindingContext;
+import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.Serializer;
+import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
@@ -66,7 +66,7 @@ class OscalBindingContextTest {
     // File out = new File(tempDir.toFile(), "out.yaml");
     File out = new File("target/out.yaml");
 
-    Serializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
+    ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
     serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
@@ -83,9 +83,9 @@ class OscalBindingContextTest {
 
     // File out = new File(tempDir.toFile(), "out.json");
     File out = new File("target/out.json");
-    BindingContext context = BindingContext.newInstance();
+    IBindingContext context = IBindingContext.newInstance();
 
-    Serializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class);
+    ISerializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class);
     serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
@@ -102,9 +102,9 @@ class OscalBindingContextTest {
 
     // File out = new File(tempDir.toFile(), "out.xml");
     File out = new File("target/out.xml");
-    BindingContext context = BindingContext.newInstance();
+    IBindingContext context = IBindingContext.newInstance();
 
-    Serializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
+    ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
     serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
@@ -121,9 +121,9 @@ class OscalBindingContextTest {
 
     // File out = new File(tempDir.toFile(), "out.json");
     File out = new File("target/out-profile.json");
-    BindingContext context = BindingContext.newInstance();
+    IBindingContext context = IBindingContext.newInstance();
 
-    Serializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class);
+    ISerializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class);
     serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(profile, out);
 

@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
-import gov.nist.secauto.metaschema.binding.BindingContext;
+import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.metapath.xdm.IXdmFactory;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathException;
@@ -123,7 +123,7 @@ public class ResolveProfile {
       } catch (IOException ex) {
         throw new MetapathException(String.format("Unable to resolve profile '%s'", profile.getBaseUri()), ex);
       }
-      BindingContext bindingContext = OscalBindingContext.instance();
+      IBindingContext bindingContext = OscalBindingContext.instance();
       retval = IXdmFactory.INSTANCE.newDocumentNodeItem(resolvedCatalog, bindingContext, profile.getBaseUri());
     }
     return retval;

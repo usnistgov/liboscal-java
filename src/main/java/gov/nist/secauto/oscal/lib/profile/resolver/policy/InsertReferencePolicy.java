@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.insertanchor.InsertAnchorNode;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 

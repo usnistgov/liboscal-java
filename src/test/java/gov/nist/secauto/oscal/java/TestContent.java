@@ -28,12 +28,12 @@ package gov.nist.secauto.oscal.java;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import gov.nist.secauto.metaschema.binding.BindingContext;
+import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.Deserializer;
+import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.Serializer;
+import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +50,7 @@ import java.nio.file.Path;
 class TestContent {
   private static final Logger logger = LogManager.getLogger(TestContent.class);
 
-  private static <CLASS> CLASS measureDeserializer(String format, File file, Deserializer<CLASS> deserializer,
+  private static <CLASS> CLASS measureDeserializer(String format, File file, IDeserializer<CLASS> deserializer,
       int iterations) throws BindingException, FileNotFoundException {
     CLASS retval = null;
     long totalTime = 0;
@@ -69,7 +69,7 @@ class TestContent {
     return retval;
   }
 
-  private static <CLASS> void measureSerializer(CLASS root, String format, File file, Serializer<CLASS> serializer,
+  private static <CLASS> void measureSerializer(CLASS root, String format, File file, ISerializer<CLASS> serializer,
       int iterations) throws BindingException, FileNotFoundException {
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
@@ -91,18 +91,18 @@ class TestContent {
 
   private static <CLASS> void chainReadWrite(File xmlSource, Class<CLASS> clazz, Path tempDir, int iterations)
       throws BindingException, FileNotFoundException, IOException {
-    BindingContext context = BindingContext.newInstance();
+    IBindingContext context = IBindingContext.newInstance();
 
     CLASS obj;
 
     // XML
     {
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz);
-      deserializer.enableFeature(Feature.DESERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_VALIDATE);
+      IDeserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz);
+      deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
 
       File out = new File(tempDir.toFile(), "out.xml");
-      Serializer<CLASS> serializer = context.newSerializer(Format.XML, clazz);
+      ISerializer<CLASS> serializer = context.newSerializer(Format.XML, clazz);
       serializer.enableFeature(Feature.SERIALIZE_ROOT);
       measureSerializer(obj, "XML", out, serializer, iterations);
     }
@@ -110,24 +110,24 @@ class TestContent {
     // JSON
     {
       File out = new File(tempDir.toFile(), "out.json");
-      Serializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz);
+      ISerializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz);
       serializer.enableFeature(Feature.SERIALIZE_ROOT);
       measureSerializer(obj, "JSON", out, serializer, iterations);
 
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
-      deserializer.enableFeature(Feature.DESERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_VALIDATE);
+      IDeserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
+      deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
       obj = measureDeserializer("JSON", out, deserializer, iterations);
     }
 
     // YAML
     {
       File out = new File(tempDir.toFile(), "out.yml");
-      Serializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz);
+      ISerializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz);
       serializer.enableFeature(Feature.SERIALIZE_ROOT);
       measureSerializer(obj, "YAML", out, serializer, iterations);
 
-      Deserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
-      deserializer.enableFeature(Feature.DESERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_VALIDATE);
+      IDeserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
+      deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
       obj = measureDeserializer("YAML", out, deserializer, iterations);
     }
   }

@@ -27,7 +27,7 @@
 package gov.nist.secauto.oscal.lib.model.control;
 
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.insertanchor.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,5 +42,5 @@ public interface IPart {
   List<ControlPart> getParts();
 
   @NotNull
-  Stream<@NotNull InsertAnchorNode> getInserts(@NotNull Predicate<@NotNull InsertAnchorNode> filter, boolean recurse);
+  Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter, boolean recurse);
 }

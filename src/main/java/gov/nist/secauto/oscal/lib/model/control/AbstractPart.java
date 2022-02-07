@@ -27,7 +27,7 @@
 package gov.nist.secauto.oscal.lib.model.control;
 
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.insertanchor.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,14 +42,14 @@ public abstract class AbstractPart implements IPart {
 
   @SuppressWarnings({ "null", "resource" })
   @NotNull
-  public Stream<@NotNull InsertAnchorNode> getInserts(@NotNull Predicate<@NotNull InsertAnchorNode> filter,
+  public Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter,
       boolean recurse) {
     MarkupMultiline prose = getProse();
 
     @NotNull
-    Stream<@NotNull InsertAnchorNode> retval;
+    Stream<InsertAnchorNode> retval;
     if (prose != null) {
-      List<@NotNull InsertAnchorNode> result = prose.getInserts(filter);
+      List<InsertAnchorNode> result = prose.getInserts(filter);
       retval = result.stream();
     } else {
       retval = Stream.empty();
