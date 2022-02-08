@@ -39,6 +39,7 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2-
     - name: Initialize CodeQL
+      if: github.event_name == 'push'
       uses: github/codeql-action/init@v1
       with:
         languages: java
@@ -57,4 +58,5 @@ jobs:
         name: Package
         path: staging
     - name: Perform CodeQL Analysis
+      if: github.event_name == 'push'
       uses: github/codeql-action/analyze@v1          
