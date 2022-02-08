@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IReferencePolicy<TYPE> {
   @NotNull
-  public static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+  static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
 
     @Override
     public boolean handleReference(@NotNull Object type, @NotNull Index index) {
@@ -42,7 +42,7 @@ public interface IReferencePolicy<TYPE> {
 
   @SuppressWarnings("unchecked")
   @NotNull
-  public static <TYPE> IReferencePolicy<TYPE> ignore() {
+  static <TYPE> IReferencePolicy<TYPE> ignore() {
     return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
   }
 

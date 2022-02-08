@@ -61,6 +61,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.ZoneOffset;
 import java.util.Stack;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -141,7 +142,7 @@ class ProfileResolutionTests {
     serializer.serialize(catalog, writer);
     // serializer.serialize(catalog, System.out);
 
-    System.out.println("Pre scrub: " + writer.getBuffer().toString());
+    // System.out.println("Pre scrub: " + writer.getBuffer().toString());
 
     String actual = transformXml(new StreamSource(new StringReader(writer.getBuffer().toString())));
     // System.out.println("Post scrub: "+actual);

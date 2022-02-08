@@ -37,16 +37,19 @@ public abstract class AbstractControl
   protected AbstractControl() {
   }
 
+  @Override
   public Control getParentControl() {
     return parent;
   }
 
+  @Override
   public Control setParentControl(Control parent) {
     Control oldParent = this.parent;
     this.parent = parent;
     return oldParent;
   }
 
+  @SuppressWarnings("PMD")
   @Override
   public void beforeDeserialize(Object parent) {
     // do nothing

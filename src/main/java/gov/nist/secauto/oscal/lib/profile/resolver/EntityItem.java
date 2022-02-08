@@ -53,7 +53,7 @@ public class EntityItem {
   private final ItemType itemType;
   @NotNull
   private final URI source;
-  private int referenceCount = 0;
+  private int referenceCount; // 0 by default
 
   public static Builder builder() {
     return new Builder();
@@ -97,9 +97,6 @@ public class EntityItem {
     private Object instance;
     private ItemType itemType;
     private URI source;
-
-    public Builder() {
-    }
 
     public Builder instance(@NotNull Object instance, @NotNull UUID identifier) {
       return instance(instance, identifier.toString());

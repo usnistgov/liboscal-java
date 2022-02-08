@@ -45,7 +45,11 @@ import org.jetbrains.annotations.NotNull;
 import java.net.URI;
 import java.util.List;
 
-public class HasOscalNamespace {
+public final class HasOscalNamespace {
+  private HasOscalNamespace() {
+    // disable construction
+  }
+
   static final IFunction SIGNATURE_ONE_ARG = IFunction.newBuilder()
       .name("has-oscal-namespace")
       .argument(IArgument.newBuilder()

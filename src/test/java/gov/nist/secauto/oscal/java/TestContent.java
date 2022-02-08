@@ -133,7 +133,7 @@ class TestContent {
   }
 
   @Test
-  public void testReadWriteOSCALCatalog(@TempDir Path tempDir) throws IOException, BindingException {
+  public void testReadWriteOscalCatalog(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
     logger.info("Testing XML file: {}", catalogSourceXml.getName());
@@ -147,7 +147,7 @@ class TestContent {
 
   @Disabled
   @Test
-  public void testOSCALCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
+  public void testOscalCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
     logger.info("Testing XML file: {}", catalogSourceXml.getName());

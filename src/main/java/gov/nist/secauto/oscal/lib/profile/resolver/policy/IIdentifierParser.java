@@ -30,9 +30,9 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IIdentifierParser {
   @NotNull
-  public static final IIdentifierParser FRAGMENT_PARSER = new FragmentIdentifierParser();
+  static final IIdentifierParser FRAGMENT_PARSER = new FragmentIdentifierParser();
   @NotNull
-  public static final IIdentifierParser IDENTITY_PARSER = new IIdentifierParser() {
+  static final IIdentifierParser IDENTITY_PARSER = new IIdentifierParser() {
 
     @Override
     public Match match(@NotNull String identifier) {
@@ -43,7 +43,7 @@ public interface IIdentifierParser {
   @NotNull
   Match match(@NotNull String identifier);
 
-  public class Match {
+  class Match {
     @NotNull
     private final String reference;
     @NotNull

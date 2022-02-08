@@ -69,7 +69,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ProfileResolver {
-  private static final Logger log = LogManager.getLogger(ProfileResolver.class);
+  private static final Logger LOGGER = LogManager.getLogger(ProfileResolver.class);
 
   public enum StructuringDirective {
     FLAT,
@@ -101,7 +101,7 @@ public class ProfileResolver {
     } else {
       URI baseUri = profile.getBaseUri();
       if (baseUri == null) {
-        throw new NullPointerException("profile.getBaseUri() must return a non-null URI");
+        throw new IllegalArgumentException("profile.getBaseUri() must return a non-null URI");
       }
 
       Profile boundProfile = (Profile) profileObject;
@@ -168,8 +168,9 @@ public class ProfileResolver {
     }
 
     for (ProfileImport profileImport : imports) {
-      if (profileImport == null)
+      if (profileImport == null) {
         continue;
+      }
 
       resolveImport(profileImport, data);
     }
@@ -180,10 +181,10 @@ public class ProfileResolver {
       throws IOException {
     URI importUri = profileImport.getHref();
     if (importUri == null) {
-      throw new NullPointerException("profileImport.getHref() must return a non-null URI");
+      throw new IllegalArgumentException("profileImport.getHref() must return a non-null URI");
     }
 
-    log.atDebug().log("resolving profile import '{}'", importUri);
+    LOGGER.atDebug().log("resolving profile import '{}'", importUri);
 
     URI profileUri = data.getProfileUri();
     Stack<URI> importHistory = data.getImportHistory();
@@ -200,7 +201,7 @@ public class ProfileResolver {
       @NotNull
       URI resolvedUri = importUri.resolve(profileUri);
       if (resource == null) {
-        throw new NullPointerException(
+        throw new IllegalArgumentException(
             String.format("unable to find the resource identified by '%s' used in profile import", resolvedUri));
       }
 
@@ -343,7 +344,7 @@ public class ProfileResolver {
   }
 
   private void structureFlat(@NotNull Catalog catalog) {
-    log.debug("applying flat structuring directive");
+    LOGGER.debug("applying flat structuring directive");
     new FlatStructureCatalogVisitor().visitCatalog(catalog);
   }
 

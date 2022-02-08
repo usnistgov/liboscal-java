@@ -42,8 +42,7 @@ public abstract class AbstractBackMatter implements IBackMatter {
     Resource retval = null;
     if (resources != null) {
       retval = resources.stream().filter(resource -> {
-        UUID result = resource.getUuid();
-        return result != null && uuid.equals(result);
+        return uuid.equals(resource.getUuid());
       }).findFirst().orElse(null);
     }
     return retval;

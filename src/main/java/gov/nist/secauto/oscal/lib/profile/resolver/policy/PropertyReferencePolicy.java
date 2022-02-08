@@ -45,7 +45,7 @@ import java.util.Set;
 
 public class PropertyReferencePolicy
     extends AbstractStaticItemTypesReferencePolicy<Property> {
-  private static final Logger log = LogManager.getLogger(PropertyReferencePolicy.class);
+  private static final Logger LOGGER = LogManager.getLogger(PropertyReferencePolicy.class);
 
   @NotNull
   private static final IReferencePolicyHandler<Property> INDEX_MISS_HANDLER = new IndexMissHandler();
@@ -89,7 +89,7 @@ public class PropertyReferencePolicy
       URI sourceUri = item.getSource();
 
       URI resolved = sourceUri.resolve(linkHref);
-      log.atInfo().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      LOGGER.atInfo().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
       property.setValue(resolved.toString());
       return true;
     }
@@ -101,7 +101,7 @@ public class PropertyReferencePolicy
     @Override
     public boolean handleIndexMiss(@NotNull Property property, @NotNull Set<ItemType> itemTypes,
         @NotNull Match match, @NotNull Index index) {
-      log.atWarn().log(
+      LOGGER.atWarn().log(
           "property '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
           property.getQName(),
           itemTypes.stream().map(en -> en.name().toLowerCase()).collect(CustomCollectors.joiningWithOxfordComma("or")),

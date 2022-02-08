@@ -34,22 +34,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public interface IControlSelectionFilter extends Function<IControl, Pair<@NotNull Boolean, @NotNull Boolean>> {
+public interface IControlSelectionFilter extends Function<@NotNull IControl, Pair<@NotNull Boolean, @NotNull Boolean>> {
 
   @NotNull
-  public static final Pair<@NotNull Boolean, @NotNull Boolean> NON_MATCH = ObjectUtils.notNull(Pair.of(false, false));
+  static final Pair<@NotNull Boolean, @NotNull Boolean> NON_MATCH = ObjectUtils.notNull(Pair.of(false, false));
   @NotNull
-  public static final Pair<@NotNull Boolean, @NotNull Boolean> MATCH = ObjectUtils.notNull(Pair.of(true, true));
+  static final Pair<@NotNull Boolean, @NotNull Boolean> MATCH = ObjectUtils.notNull(Pair.of(true, true));
 
   @NotNull
-  public static final IControlSelectionFilter ALL_MATCH = new IControlSelectionFilter() {
+  static final IControlSelectionFilter ALL_MATCH = new IControlSelectionFilter() {
     public Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
       return MATCH;
     }
   };
 
   @NotNull
-  public static final IControlSelectionFilter NONE_MATCH = new IControlSelectionFilter() {
+  static final IControlSelectionFilter NONE_MATCH = new IControlSelectionFilter() {
     public Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
       return NON_MATCH;
     }

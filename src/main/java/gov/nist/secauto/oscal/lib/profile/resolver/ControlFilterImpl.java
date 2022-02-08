@@ -46,15 +46,15 @@ class ControlFilterImpl implements IControlFilter {
   public ControlFilterImpl(@NotNull ProfileImport profileImport) {
     IncludeAll includeAll = profileImport.getIncludeAll();
 
-    if (includeAll != null) {
-      this.inclusionFilter = IControlSelectionFilter.ALL_MATCH;
-    } else {
+    if (includeAll == null) {
       List<? extends IProfileSelectControlById> selections = profileImport.getIncludeControls();
       if (selections == null) {
         this.inclusionFilter = IControlSelectionFilter.NONE_MATCH;
       } else {
         this.inclusionFilter = new DefaultControlSelectionFilter(selections);
       }
+    } else {
+      this.inclusionFilter = IControlSelectionFilter.ALL_MATCH;
     }
 
     List<? extends IProfileSelectControlById> selections = profileImport.getExcludeControls();
@@ -71,11 +71,13 @@ class ControlFilterImpl implements IControlFilter {
     this.exclusionFilter = excludes;
   }
 
+  @Override
   @NotNull
   public IControlSelectionFilter getInclusionFilter() {
     return inclusionFilter;
   }
 
+  @Override
   @NotNull
   public IControlSelectionFilter getExclusionFilter() {
     return exclusionFilter;
@@ -86,15 +88,15 @@ class ControlFilterImpl implements IControlFilter {
     @NotNull
     Pair<@NotNull Boolean, @NotNull Boolean> result = getInclusionFilter().apply(control);
     boolean left = ObjectUtils.notNull(result.getLeft());
-    if (!left) {
-      result = defaultMatch ? IControlSelectionFilter.MATCH : IControlSelectionFilter.NON_MATCH;
-    } else {
+    if (left) {
       // this is a positive include match. Is it excluded?
       Pair<@NotNull Boolean, @NotNull Boolean> excluded = getExclusionFilter().apply(control);
       if (ObjectUtils.notNull(excluded.getLeft())) {
         // the effective result is a non-match
         result = IControlSelectionFilter.NON_MATCH;
       }
+    } else {
+      result = defaultMatch ? IControlSelectionFilter.MATCH : IControlSelectionFilter.NON_MATCH;
     }
     return result;
   }

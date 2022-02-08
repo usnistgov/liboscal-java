@@ -26,6 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.model.control.profile;
 
+@SuppressWarnings("PMD")
 public abstract class AbstractProfileSelectControlById implements IProfileSelectControlById {
-  // TODO: move implementation here
+  // TODO: move implementation from profile resolver selection code here
 }

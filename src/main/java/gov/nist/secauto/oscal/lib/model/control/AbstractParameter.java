@@ -40,6 +40,7 @@ public abstract class AbstractParameter implements IParameter {
   public AbstractParameter() {
   }
 
+  @Override
   public Stream<@NotNull String> getParameterReferences() {
 
     // handle prop name="aggregates"

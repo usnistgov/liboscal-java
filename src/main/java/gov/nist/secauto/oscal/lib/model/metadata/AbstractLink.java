@@ -44,7 +44,7 @@ public abstract class AbstractLink implements ILink {
   public static class Builder {
     @NotNull
     private final URI href;
-    private String relation;
+    private String rel;
     private String mediaType;
     private MarkupLine text;
 
@@ -56,7 +56,7 @@ public abstract class AbstractLink implements ILink {
     @SuppressWarnings("null")
     @NotNull
     public Builder relation(@NotNull String relation) {
-      this.relation = Objects.requireNonNull(relation, "relation");
+      this.rel = Objects.requireNonNull(relation, "rel");
       return this;
     }
 
@@ -78,8 +78,8 @@ public abstract class AbstractLink implements ILink {
     public Link build() {
       Link retval = new Link();
       retval.setHref(href);
-      if (relation != null) {
-        retval.setRel(relation);
+      if (rel != null) {
+        retval.setRel(rel);
       }
       if (mediaType != null) {
         retval.setMediaType(mediaType);

@@ -46,7 +46,7 @@ import java.util.Set;
 
 public class AnchorReferencePolicy
     extends AbstractReferencePolicy<InlineLinkNode> {
-  private static final Logger log = LogManager.getLogger(AnchorReferencePolicy.class);
+  private static final Logger LOGGER = LogManager.getLogger(AnchorReferencePolicy.class);
 
   @NotNull
   private static final IReferencePolicyHandler<InlineLinkNode> INDEX_MISS_HANDLER = new IndexMissHandler();
@@ -83,7 +83,7 @@ public class AnchorReferencePolicy
       URI sourceUri = item.getSource();
 
       URI resolved = sourceUri.resolve(linkHref);
-      log.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      LOGGER.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
       link.setUrl(CharSubSequence.of(resolved.toString()));
       return true;
     }
@@ -95,7 +95,7 @@ public class AnchorReferencePolicy
     @Override
     public boolean handleIndexMiss(@NotNull InlineLinkNode type, @NotNull Set<ItemType> itemTypes,
         @NotNull Match match, @NotNull Index index) {
-      log.atError().log(
+      LOGGER.atError().log(
           "the anchor should reference a {} identified by '{}', but the identifier was not found in the index.",
           itemTypes.stream().map(en -> en.name().toLowerCase()).collect(CustomCollectors.joiningWithOxfordComma("or")),
           match.getIdentifier());

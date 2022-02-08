@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 
@@ -41,7 +41,7 @@ import java.util.Set;
 
 public class InsertReferencePolicy
     extends AbstractReferencePolicy<InsertAnchorNode> {
-  private static final Logger log = LogManager.getLogger(InsertReferencePolicy.class);
+  private static final Logger LOGGER = LogManager.getLogger(InsertReferencePolicy.class);
 
   @NotNull
   private static final IReferencePolicyHandler<InsertAnchorNode> INDEX_MISS_HANDLER = new IndexMissHandler();
@@ -82,11 +82,13 @@ public class InsertReferencePolicy
     @Override
     public boolean handleIndexMiss(@NotNull InsertAnchorNode insert, @NotNull Set<ItemType> itemTypes,
         @NotNull Match match, @NotNull Index index) {
-      log.atError().log(
-          "the insert of type '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
-          insert.getType().toString(),
-          itemTypes.iterator().next().name().toLowerCase(),
-          match.getIdentifier());
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.atError().log(
+            "the '{}' insert should reference a '{}' identified by '{}'. The index did not contain the identifier.",
+            insert.getType().toString(),
+            itemTypes.iterator().next().name().toLowerCase(),
+            match.getIdentifier());
+      }
       return true;
     }
   }

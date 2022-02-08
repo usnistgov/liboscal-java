@@ -47,14 +47,11 @@ import javax.xml.namespace.QName;
 
 public class OscalBindingContext
     extends DefaultBindingContext {
-  private static OscalBindingContext instance;
+  private static final OscalBindingContext INSTANCE = new OscalBindingContext();
 
   @NotNull
-  public static synchronized OscalBindingContext instance() {
-    if (instance == null) {
-      instance = new OscalBindingContext();
-    }
-    return instance;
+  public static OscalBindingContext instance() {
+    return INSTANCE;
   }
 
   /**

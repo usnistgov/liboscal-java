@@ -45,7 +45,7 @@ import java.util.Set;
 
 public class LinkReferencePolicy
     extends AbstractStaticItemTypesReferencePolicy<Link> {
-  private static final Logger log = LogManager.getLogger(LinkReferencePolicy.class);
+  private static final Logger LOGGER = LogManager.getLogger(LinkReferencePolicy.class);
   @NotNull
   private static final IReferencePolicyHandler<Link> INDEX_MISS_HANDLER = new IndexMissHandler();
   @NotNull
@@ -82,12 +82,15 @@ public class LinkReferencePolicy
 
   private static class IndexHitUnselectedHandler
       extends AbstractIndexHitUnselectedPolicyHandler<Link> {
+    @Override
     protected boolean handleUnselected(EntityItem item, @NotNull Link link) {
       URI linkHref = link.getHref();
       URI sourceUri = item.getSource();
 
       URI resolved = sourceUri.resolve(linkHref);
-      log.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      }
       link.setHref(resolved);
       return true;
     }
@@ -99,11 +102,14 @@ public class LinkReferencePolicy
     @Override
     public boolean handleIndexMiss(@NotNull Link link, @NotNull Set<ItemType> itemTypes,
         @NotNull Match match, @NotNull Index index) {
-      log.atWarn().log(
-          "link with rel '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
-          link.getRel(),
-          itemTypes.stream().map(en -> en.name().toLowerCase()).collect(CustomCollectors.joiningWithOxfordComma("or")),
-          match.getIdentifier());
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.atWarn().log(
+            "link with rel '{}' should reference a {} identified by '{}'. The index did not contain the identifier.",
+            link.getRel(),
+            itemTypes.stream().map(en -> en.name().toLowerCase())
+                .collect(CustomCollectors.joiningWithOxfordComma("or")),
+            match.getIdentifier());
+      }
       return true;
     }
 

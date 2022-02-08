@@ -39,9 +39,6 @@ import java.util.List;
 
 public class FlatStructureCatalogVisitor {
 
-  public FlatStructureCatalogVisitor() {
-  }
-
   public void visitCatalog(@NotNull Catalog catalog) {
     // process children
     for (Iterator<CatalogGroup> iter = CollectionUtil.listOrEmpty(catalog.getGroups()).iterator(); iter.hasNext();) {

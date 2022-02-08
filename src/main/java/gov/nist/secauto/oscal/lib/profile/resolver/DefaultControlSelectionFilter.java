@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DefaultControlSelectionFilter implements IControlSelectionFilter {
-  private static final Logger logger = LogManager.getLogger(DefaultControlSelectionFilter.class);
+  private static final Logger LOGGER = LogManager.getLogger(DefaultControlSelectionFilter.class);
 
   @NotNull
   private final List<@NotNull Selection> selections;
@@ -70,7 +70,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
   public Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
     String id = control.getId();
     if (id == null) {
-      throw new NullPointerException("control is missing an identifier");
+      throw new IllegalArgumentException("control is missing an identifier");
     }
     return match(id);
   }
@@ -109,7 +109,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
   private static Pattern toPattern(@NotNull ProfileSelectControlById.Matching matching) {
     String pattern = matching.getPattern();
     if (pattern == null) {
-      throw new NullPointerException("pattern is null");
+      throw new IllegalArgumentException("pattern is null");
     }
     String regex = pattern.chars().boxed().map(ch -> (char) ch.intValue()).map(ch -> {
 
@@ -140,7 +140,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
       return value;
     }).collect(Collectors.joining("", "^", "$"));
 
-    logger.atInfo().log("regex: {}", regex);
+    LOGGER.atInfo().log("regex: {}", regex);
     return Pattern.compile(regex);
   }
 

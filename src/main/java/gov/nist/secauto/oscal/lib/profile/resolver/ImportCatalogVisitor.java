@@ -48,7 +48,7 @@ import java.net.URI;
 import java.util.Iterator;
 
 public class ImportCatalogVisitor {
-  private static final Logger log = LogManager.getLogger(ImportCatalogVisitor.class);
+  private static final Logger LOGGER = LogManager.getLogger(ImportCatalogVisitor.class);
 
   @NotNull
   private final Index index;
@@ -142,7 +142,8 @@ public class ImportCatalogVisitor {
     if (item != null) {
       String entityType = item.getItemType().toString().toLowerCase();
 
-      log.atWarn().log("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
+      LOGGER.atWarn().log(
+          "The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
           entityType,
           role.getId(),
           getSource(),
@@ -158,7 +159,8 @@ public class ImportCatalogVisitor {
     if (item != null) {
       String entityType = item.getItemType().toString().toLowerCase();
 
-      log.atWarn().log("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
+      LOGGER.atWarn().log(
+          "The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
           entityType,
           location.getUuid(),
           getSource(),
@@ -174,7 +176,8 @@ public class ImportCatalogVisitor {
     if (item != null) {
       String entityType = item.getItemType().toString().toLowerCase();
 
-      log.atWarn().log("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
+      LOGGER.atWarn().log(
+          "The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
           entityType,
           party.getUuid(),
           getSource(),
@@ -190,7 +193,8 @@ public class ImportCatalogVisitor {
     if (item != null) {
       String entityType = item.getItemType().toString().toLowerCase();
 
-      log.atWarn().log("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
+      LOGGER.atWarn().log(
+          "The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
           entityType,
           resource.getUuid(),
           getSource(),
@@ -206,7 +210,8 @@ public class ImportCatalogVisitor {
     if (item != null) {
       String entityType = item.getItemType().toString().toLowerCase();
 
-      log.atWarn().log("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
+      LOGGER.atWarn().log(
+          "The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
           entityType,
           parameter.getId(),
           getSource(),
@@ -306,7 +311,7 @@ public class ImportCatalogVisitor {
       if (item != null) {
         String entityType = item.getItemType().toString().toLowerCase();
 
-        log.atWarn().log(
+        LOGGER.atWarn().log(
             "The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
             entityType,
             part.getId(),
@@ -368,7 +373,7 @@ public class ImportCatalogVisitor {
       // } else if (!isMatch) {
       if (!isMatch) {
         // the parameter is used, but we will drop this control, so promote the parameter
-        log.atTrace().log("Promoting parameter '{}'", childParameterId);
+        LOGGER.atTrace().log("Promoting parameter '{}'", childParameterId);
         result.promoteParameter(childParam);
       } else {
         visitParameter(childParam);

@@ -74,7 +74,7 @@ import java.util.UUID;
 import javax.xml.namespace.QName;
 
 public class ReferenceCountingVisitor {
-  private static final Logger log = LogManager.getLogger(ImportCatalogVisitor.class);
+  private static final Logger LOGGER = LogManager.getLogger(ImportCatalogVisitor.class);
 
   @NotNull
   private static final IReferencePolicy<Property> PROPERTY_POLICY_IGNORE = IReferencePolicy.ignore();
@@ -82,31 +82,31 @@ public class ReferenceCountingVisitor {
   private static final IReferencePolicy<Link> LINK_POLICY_IGNORE = IReferencePolicy.ignore();
 
   @NotNull
-  private static final Map<QName, IReferencePolicy<Property>> propertyPolicies;
+  private static final Map<QName, IReferencePolicy<Property>> PROPERTY_POLICIES;
   @NotNull
-  private static final Map<String, IReferencePolicy<Link>> linkPolicies;
+  private static final Map<String, IReferencePolicy<Link>> LINK_POLICIES;
   @NotNull
-  private static final InsertReferencePolicy insertPolicy = new InsertReferencePolicy();
+  private static final InsertReferencePolicy INSERT_POLICY = new InsertReferencePolicy();
   @NotNull
-  private static final AnchorReferencePolicy anchorPolicy = new AnchorReferencePolicy();
+  private static final AnchorReferencePolicy ANCHOR_POLICY = new AnchorReferencePolicy();
 
   static {
-    propertyPolicies = new HashMap<>();
-    propertyPolicies.put(Property.qname(Property.OSCAL_NAMESPACE, "resolution-tool"), PROPERTY_POLICY_IGNORE);
-    propertyPolicies.put(Property.qname(Property.OSCAL_NAMESPACE, "label"), PROPERTY_POLICY_IGNORE);
-    propertyPolicies.put(Property.qname(Property.OSCAL_NAMESPACE, "sort-id"), PROPERTY_POLICY_IGNORE);
-    propertyPolicies.put(Property.qname(Property.OSCAL_NAMESPACE, "alt-label"), PROPERTY_POLICY_IGNORE);
-    propertyPolicies.put(Property.qname(Property.OSCAL_NAMESPACE, "alt-identifier"), PROPERTY_POLICY_IGNORE);
-    propertyPolicies.put(Property.qname(Property.RMF_NAMESPACE, "method"), PROPERTY_POLICY_IGNORE);
-    propertyPolicies.put(Property.qname(Property.RMF_NAMESPACE, "aggregates"),
+    PROPERTY_POLICIES = new HashMap<>();
+    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "resolution-tool"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "label"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "sort-id"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "alt-label"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "alt-identifier"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(Property.qname(Property.RMF_NAMESPACE, "method"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(Property.qname(Property.RMF_NAMESPACE, "aggregates"),
         PropertyReferencePolicy.create(IIdentifierParser.IDENTITY_PARSER, ItemType.PARAMETER));
 
-    linkPolicies = new HashMap<>();
-    linkPolicies.put("source-profile", LINK_POLICY_IGNORE);
-    linkPolicies.put("citation", LinkReferencePolicy.create(ItemType.RESOURCE));
-    linkPolicies.put("reference", LinkReferencePolicy.create(ItemType.RESOURCE));
-    linkPolicies.put("related", LinkReferencePolicy.create(ItemType.CONTROL));
-    linkPolicies.put("required", LinkReferencePolicy.create(ItemType.CONTROL));
+    LINK_POLICIES = new HashMap<>();
+    LINK_POLICIES.put("source-profile", LINK_POLICY_IGNORE);
+    LINK_POLICIES.put("citation", LinkReferencePolicy.create(ItemType.RESOURCE));
+    LINK_POLICIES.put("reference", LinkReferencePolicy.create(ItemType.RESOURCE));
+    LINK_POLICIES.put("related", LinkReferencePolicy.create(ItemType.CONTROL));
+    LINK_POLICIES.put("required", LinkReferencePolicy.create(ItemType.CONTROL));
   }
 
   @NotNull
@@ -210,7 +210,7 @@ public class ReferenceCountingVisitor {
 
       EntityItem item = getIndex().getEntity(ItemType.PARAMETER, childParam.getId());
       if (item == null || item.getReferenceCount() == 0) {
-        log.atTrace().log("Removing parameter '{}'", childParam.getId());
+        LOGGER.atTrace().log("Removing parameter '{}'", childParam.getId());
         parameterIter.remove();
       }
     }
@@ -280,7 +280,7 @@ public class ReferenceCountingVisitor {
   protected void incrementReferenceCount(@NotNull ItemType type, @NotNull String identifier) {
     EntityItem item = getIndex().getEntity(type, identifier);
     if (item == null) {
-      log.atError().log("Unknown reference to {} '{}'", type.toString().toLowerCase(), identifier);
+      LOGGER.atError().log("Unknown reference to {} '{}'", type.toString().toLowerCase(), identifier);
     } else {
       item.incrementReferenceCount();
     }
@@ -311,15 +311,16 @@ public class ReferenceCountingVisitor {
     EntityItem item = getIndex().addResource(resource, getSource());
     if (item != null) {
       String entityType = item.getItemType().toString().toLowerCase();
-
-      log.warn("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
-          entityType,
-          resource.getUuid(),
-          getSource(),
-          entityType,
-          item.getIdentifier(),
-          item.getSource(),
-          entityType);
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.warn("The current {} '{}' in '{}' collides with the existing {} '{}' in '{}'. Using the current one.",
+            entityType,
+            resource.getUuid(),
+            getSource(),
+            entityType,
+            item.getIdentifier(),
+            item.getSource(),
+            entityType);
+      }
     }
   }
 
@@ -386,7 +387,9 @@ public class ReferenceCountingVisitor {
 
       EntityItem item = getIndex().getEntity(ItemType.PARAMETER, childParam.getId());
       if (item.getReferenceCount() == 0) {
-        log.atTrace().log("Removing parameter '{}'", childParam.getId());
+        if (LOGGER.isTraceEnabled()) {
+          LOGGER.atTrace().log("Removing parameter '{}'", childParam.getId());
+        }
         parameterIter.remove();
       }
     }
@@ -438,7 +441,9 @@ public class ReferenceCountingVisitor {
 
       EntityItem item = getIndex().getEntity(ItemType.PARAMETER, childParam.getId());
       if (item == null || item.getReferenceCount() == 0) {
-        log.atTrace().log("Removing parameter '{}'", childParam.getId());
+        if (LOGGER.isTraceEnabled()) {
+          LOGGER.atTrace().log("Removing parameter '{}'", childParam.getId());
+        }
         parameterIter.remove();
       }
     }
@@ -496,15 +501,15 @@ public class ReferenceCountingVisitor {
   private void handleProperty(@NotNull Property property) {
     QName qname = property.getQName();
 
-    IReferencePolicy<Property> policy = propertyPolicies.get(qname);
+    IReferencePolicy<Property> policy = PROPERTY_POLICIES.get(qname);
 
     boolean handled = false;
     if (policy != null) {
       handled = policy.handleReference(property, index);
     }
 
-    if (!handled) {
-      log.atWarn().log("unsupported property '{}'", property.getQName());
+    if (!handled && LOGGER.isWarnEnabled()) {
+      LOGGER.atWarn().log("unsupported property '{}'", property.getQName());
     }
   }
 
@@ -512,7 +517,7 @@ public class ReferenceCountingVisitor {
     IReferencePolicy<Link> policy = null;
     String rel = link.getRel();
     if (rel != null) {
-      policy = linkPolicies.get(rel);
+      policy = LINK_POLICIES.get(rel);
     }
 
     boolean handled = false;
@@ -520,20 +525,20 @@ public class ReferenceCountingVisitor {
       handled = policy.handleReference(link, index);
     }
 
-    if (!handled) {
-      log.atWarn().log("unsupported link rel '{}'", link.getRel());
+    if (!handled && LOGGER.isWarnEnabled()) {
+      LOGGER.atWarn().log("unsupported link rel '{}'", link.getRel());
     }
   }
 
   private void handleInsert(@NotNull InsertAnchorNode node) {
-    if (!insertPolicy.handleReference(node, index)) {
-      log.atWarn().log("unsupported insert type '{}'", node.getType().toString());
+    if (!INSERT_POLICY.handleReference(node, index) && LOGGER.isWarnEnabled()) {
+      LOGGER.atWarn().log("unsupported insert type '{}'", node.getType().toString());
     }
   }
 
   private void handleAnchor(@NotNull InlineLinkNode node) {
-    if (!anchorPolicy.handleReference(node, index)) {
-      log.atWarn().log("unsupported anchor with href '{}'", node.getUrl().toString());
+    if (!ANCHOR_POLICY.handleReference(node, index) && LOGGER.isWarnEnabled()) {
+      LOGGER.atWarn().log("unsupported anchor with href '{}'", node.getUrl().toString());
     }
   }
 }

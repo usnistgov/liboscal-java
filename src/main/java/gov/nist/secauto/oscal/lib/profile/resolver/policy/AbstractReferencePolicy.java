@@ -89,6 +89,7 @@ public abstract class AbstractReferencePolicy<TYPE> implements IReferencePolicy<
         .findFirst().orElse(false);
   }
 
+  @Override
   @SuppressWarnings("null")
   public boolean handleReference(@NotNull TYPE type, @NotNull Index index) {
     String reference = getReference(type);
@@ -108,10 +109,10 @@ public abstract class AbstractReferencePolicy<TYPE> implements IReferencePolicy<
           }
         }
 
-        if (item != null) {
-          handled = handleIndexHit(item, type, index);
-        } else {
+        if (item == null) {
           handled = handleIndexMiss(type, itemTypes, result, index);
+        } else {
+          handled = handleIndexHit(item, type, index);
         }
       } else {
         handled = handleIdentifierNonMatch(type, result, index);

@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IControlFilter {
   @NotNull
-  public static final IControlFilter ALWAYS_MATCH = new IControlFilter() {
+  static final IControlFilter ALWAYS_MATCH = new IControlFilter() {
     @Override
     public @NotNull Pair<@NotNull Boolean, @NotNull Boolean> match(@NotNull IControl control, boolean defaultMatch) {
       return IControlSelectionFilter.MATCH;
@@ -52,7 +52,7 @@ public interface IControlFilter {
   };
 
   @NotNull
-  public static final IControlFilter NONE_MATCH = new IControlFilter() {
+  static final IControlFilter NONE_MATCH = new IControlFilter() {
 
     @Override
     public @NotNull Pair<@NotNull Boolean, @NotNull Boolean> match(@NotNull IControl control, boolean defaultMatch) {
@@ -69,6 +69,24 @@ public interface IControlFilter {
       return IControlSelectionFilter.NONE_MATCH;
     }
   };
+
+  /**
+   * Construct a new filter instance based on the provided profile import statement.
+   * 
+   * @param profileImport
+   *          an OSCAL profile import statement
+   * @return a new control filter
+   */
+  @NotNull
+  static IControlFilter newInstance(@NotNull ProfileImport profileImport) {
+    return new ControlFilterImpl(profileImport);
+  }
+
+  @NotNull
+  static IControlFilter newInstance(@NotNull IControlSelectionFilter includes,
+      @NotNull IControlSelectionFilter excludes) {
+    return new ControlFilterImpl(includes, excludes);
+  }
 
   /**
    * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
@@ -99,24 +117,6 @@ public interface IControlFilter {
    */
   @NotNull
   Pair<@NotNull Boolean, @NotNull Boolean> match(@NotNull IControl control, boolean defaultMatch);
-
-  /**
-   * Construct a new filter instance based on the provided profile import statement.
-   * 
-   * @param profileImport
-   *          an OSCAL profile import statement
-   * @return a new control filter
-   */
-  @NotNull
-  public static IControlFilter newInstance(@NotNull ProfileImport profileImport) {
-    return new ControlFilterImpl(profileImport);
-  }
-
-  @NotNull
-  public static IControlFilter newInstance(@NotNull IControlSelectionFilter includes,
-      @NotNull IControlSelectionFilter excludes) {
-    return new ControlFilterImpl(includes, excludes);
-  }
 
   @NotNull
   IControlSelectionFilter getInclusionFilter();

@@ -67,8 +67,10 @@ public abstract class AbstractProperty implements IProperty {
   }
 
   protected AbstractProperty() {
+    // only concrete classes should construct
   }
 
+  @Override
   public boolean isNamespaceEqual(@NotNull URI namespace) {
     return normalizeNamespace(getNs()).equals(namespace);
   }

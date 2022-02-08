@@ -42,7 +42,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OscalUtils {
+public final class OscalUtils {
   public static final String OSCAL_VERSION = "1.0.0";
   private static final Pattern INTERNAL_REFERENCE_FRAGMENT_PATTERN = Pattern.compile("^#(.+)$");
 
@@ -83,21 +83,7 @@ public class OscalUtils {
     Base64 base64 = resource.getBase64();
 
     Source retval;
-    if (base64 != null) {
-      // handle base64 encoded data
-      UUID uuid = resource.getUuid();
-      if (uuid == null) {
-        throw new NullPointerException("resource has a null UUID");
-      }
-      @SuppressWarnings("null")
-      @NotNull
-      URI result = documentUri.resolve("#" + uuid);
-      ByteBuffer buffer = base64.getValue();
-      if (buffer == null) {
-        throw new NullPointerException(String.format("null base64 value for resource '%s'", uuid));
-      }
-      retval = new Base64Source(result, buffer);
-    } else {
+    if (base64 == null) {
       // find a suitable rlink reference
       List<Rlink> rlinks = resource.getRlinks();
       if (rlinks == null || rlinks.isEmpty()) {
@@ -117,17 +103,31 @@ public class OscalUtils {
         }
 
         if (preferredRLink == null) {
-          throw new NullPointerException(
+          throw new IllegalArgumentException(
               String.format("Missing rlink for resource '%s'", resource.getUuid()));
         }
 
         URI rlinkHref = preferredRLink.getHref();
         if (rlinkHref == null) {
-          throw new NullPointerException(
+          throw new IllegalArgumentException(
               String.format("rlink has a null href value for resource '%s'", resource.getUuid()));
         }
         retval = newSource(rlinkHref, documentUri);
       }
+    } else {
+      // handle base64 encoded data
+      UUID uuid = resource.getUuid();
+      if (uuid == null) {
+        throw new IllegalArgumentException("resource has a null UUID");
+      }
+      @SuppressWarnings("null")
+      @NotNull
+      URI result = documentUri.resolve("#" + uuid);
+      ByteBuffer buffer = base64.getValue();
+      if (buffer == null) {
+        throw new IllegalArgumentException(String.format("null base64 value for resource '%s'", uuid));
+      }
+      retval = new Base64Source(result, buffer);
     }
     return retval;
   }

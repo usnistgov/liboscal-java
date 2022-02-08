@@ -30,7 +30,7 @@ public class ImportCycleException
     extends Exception {
 
   /**
-   * the serial version UUID
+   * the serial version UUID.
    */
   private static final long serialVersionUID = 1L;
 

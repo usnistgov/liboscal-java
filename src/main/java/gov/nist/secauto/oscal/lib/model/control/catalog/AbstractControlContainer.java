@@ -37,6 +37,7 @@ public abstract class AbstractControlContainer implements IControlContainer {
 
   @SuppressWarnings("null")
   @NotNull
+  @Override
   public Stream<@NotNull String> getReferencedParameterIds() {
 
     // get parameters referenced by the control's parts

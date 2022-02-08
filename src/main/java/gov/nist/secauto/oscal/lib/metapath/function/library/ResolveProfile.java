@@ -49,7 +49,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.Stack;
 
-public class ResolveProfile {
+public final class ResolveProfile {
+  private ResolveProfile() {
+    // disable construction
+  }
+
   static final IFunction SIGNATURE_NO_ARG = IFunction.newBuilder()
       .name("resolve-profile")
       .returnType(INodeItem.class)

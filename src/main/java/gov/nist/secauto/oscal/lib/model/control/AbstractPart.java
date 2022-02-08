@@ -41,6 +41,7 @@ public abstract class AbstractPart implements IPart {
   }
 
   @SuppressWarnings({ "null", "resource" })
+  @Override
   @NotNull
   public Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter,
       boolean recurse) {
@@ -48,11 +49,11 @@ public abstract class AbstractPart implements IPart {
 
     @NotNull
     Stream<InsertAnchorNode> retval;
-    if (prose != null) {
+    if (prose == null) {
+      retval = Stream.empty();
+    } else {
       List<InsertAnchorNode> result = prose.getInserts(filter);
       retval = result.stream();
-    } else {
-      retval = Stream.empty();
     }
 
     if (recurse) {
