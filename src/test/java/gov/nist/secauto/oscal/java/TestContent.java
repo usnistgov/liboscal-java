@@ -30,9 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
+import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 
@@ -48,7 +48,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 class TestContent {
-  private static final Logger logger = LogManager.getLogger(TestContent.class);
+  private static final Logger LOGGER = LogManager.getLogger(TestContent.class);
 
   private static <CLASS> CLASS measureDeserializer(String format, File file, IDeserializer<CLASS> deserializer,
       int iterations) throws BindingException, FileNotFoundException {
@@ -59,12 +59,14 @@ class TestContent {
       retval = deserializer.deserialize(file);
       long endTime = System.nanoTime();
       long timeElapsed = (endTime - startTime) / 1000000;
-      logger.info(String.format("%s read in %d milliseconds from %s", format, timeElapsed, file));
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info(String.format("%s read in %d milliseconds from %s", format, timeElapsed, file));
+      }
       totalTime += timeElapsed;
     }
     long average = totalTime / iterations - 1;
-    if (iterations > 1) {
-      logger.info(String.format("%s read in %d milliseconds (on average) from %s", format, average, file));
+    if (iterations > 1 && LOGGER.isInfoEnabled()) {
+      LOGGER.info(String.format("%s read in %d milliseconds (on average) from %s", format, average, file));
     }
     return retval;
   }
@@ -77,15 +79,17 @@ class TestContent {
       serializer.serialize(root, file);
       long endTime = System.nanoTime();
       long timeElapsed = (endTime - startTime) / 1000000;
-      logger.info(String.format("%s written in %d milliseconds to %s", format, timeElapsed, file));
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info(String.format("%s written in %d milliseconds to %s", format, timeElapsed, file));
+      }
       if (iterations == 1 || i > 0) {
         totalTime += timeElapsed;
       }
     }
 
     long average = totalTime / (iterations == 1 ? 1 : iterations - 1);
-    if (iterations > 1) {
-      logger.info(String.format("%s written in %d milliseconds (on average) to %s", format, average, file));
+    if (iterations > 1 && LOGGER.isInfoEnabled()) {
+      LOGGER.info(String.format("%s written in %d milliseconds (on average) to %s", format, average, file));
     }
   }
 
@@ -136,13 +140,15 @@ class TestContent {
   public void testReadWriteOscalCatalog(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
-    logger.info("Testing XML file: {}", catalogSourceXml.getName());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Testing XML file: {}", catalogSourceXml.getName());
+    }
     assertTrue(catalogSourceXml.exists());
 
     File outDir = new File("target/test-content");
     outDir.mkdirs();
-    tempDir = outDir.toPath();
-    chainReadWrite(catalogSourceXml, Catalog.class, tempDir, 1);
+    Path outPath = outDir.toPath();
+    chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
   }
 
   @Disabled
@@ -150,7 +156,9 @@ class TestContent {
   public void testOscalCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
-    logger.info("Testing XML file: {}", catalogSourceXml.getName());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Testing XML file: {}", catalogSourceXml.getName());
+    }
     assertTrue(catalogSourceXml.exists());
 
     chainReadWrite(catalogSourceXml, Catalog.class, tempDir, 50);

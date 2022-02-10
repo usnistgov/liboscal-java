@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class MetaschemaVisitorTest {
@@ -69,7 +70,10 @@ class MetaschemaVisitorTest {
     MetaschemaPathEvaluationVisitor visitor = new MetaschemaPathEvaluationVisitor(dynamicContext);
 
     File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
-    IDocumentNodeItem nodeItem = loader.loadAsNodeItem(file);
+
+    // IDocumentNodeItem nodeItem = loader.loadAsNodeItem(file);
+    IDocumentNodeItem nodeItem = loader.loadAsNodeItem(new URL(
+        "https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_HIGH-baseline_profile.xml"));
 
     // @NotNull
     // Profile profile = nodeItem.toBoundObject();
@@ -110,6 +114,7 @@ class MetaschemaVisitorTest {
     // visitor);
   }
 
+  @SuppressWarnings("PMD")
   private void evaluatePath(@NotNull MetapathExpression path, @NotNull INodeContext context,
       @NotNull IExpressionEvaluationVisitor visitor) {
     System.out.println("Path: " + path.getPath());

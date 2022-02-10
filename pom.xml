@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>20-SNAPSHOT</version>
+		<version>20</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
@@ -114,7 +114,7 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.5.1-SNAPSHOT</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>0.6.0</dependency.metaschema-framework.version>
 		<dependency.jackson.version>2.12.1</dependency.jackson.version>
 		<dependency.jetbrains-annotation.version>16.0.2</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
