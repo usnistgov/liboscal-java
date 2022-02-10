@@ -221,6 +221,7 @@
 					</configuration>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<configuration>
 						<sourceDirectories>
@@ -254,9 +255,9 @@
 						<schemaVersion>${cyclonedx.schema.version}</schemaVersion>
 						<includeBomSerialNumber>true</includeBomSerialNumber>
 						<includeCompileScope>true</includeCompileScope>
-						<includeProvidedScope>true</includeProvidedScope>
-						<includeRuntimeScope>true</includeRuntimeScope>
-						<includeSystemScope>true</includeSystemScope>
+						<includeProvidedScope>false</includeProvidedScope>
+						<includeRuntimeScope>false</includeRuntimeScope>
+						<includeSystemScope>false</includeSystemScope>
 						<includeTestScope>false</includeTestScope>
 						<includeLicenseText>false</includeLicenseText>
 						<outputFormat>all</outputFormat>
@@ -264,10 +265,10 @@
 					</configuration>
 					<executions>
 						<execution>
+							<phase>package</phase>
 							<goals>
-								<goal>makeBom</goal>
+								<goal>makeAggregateBom</goal>
 							</goals>
-							<phase>verify</phase>
 						</execution>
 					</executions>
 				</plugin>
@@ -426,6 +427,25 @@
 							</sources>
 						</configuration>
 					</execution>
+<!--
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/</file>
+									<type>xml</type>
+									<classifier>optional</classifier>
+								</artifact>
+								...
+							</artifacts>
+						</configuration>
+					</execution>
+-->
 				</executions>
 			</plugin>
 			<plugin>
