@@ -114,7 +114,7 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.6.0</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>0.7.0-SNAPSHOT</dependency.metaschema-framework.version>
 		<dependency.jackson.version>2.12.1</dependency.jackson.version>
 		<dependency.jetbrains-annotation.version>16.0.2</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
@@ -201,6 +201,10 @@
 			</resource>
 			<resource>
 				<directory>${project.build.directory}/generated-resources/oscal</directory>
+				<includes>
+					<include>**/*.xsd</include>
+					<include>**/*.json</include>
+				</includes>
 			</resource>
 		</resources>
 		<pluginManagement>
@@ -289,21 +293,6 @@
 							<resources>
 								<resource>
 									<directory>${project.basedir}/oscal/xml/schema</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-oscal-json-schema</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${project.basedir}/oscal/json/schema</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -427,7 +416,25 @@
 							</sources>
 						</configuration>
 					</execution>
-<!--
+					<execution>
+						<id>add-oscal-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>add-resource</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/generated-resources/oscal</directory>
+									<includes>
+										<include>**/*.xsd</include>
+										<include>**/*.json</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<!--
 					<execution>
 						<id>attach-artifacts</id>
 						<phase>package</phase>
@@ -448,14 +455,21 @@
 -->
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.cyclonedx</groupId>
-				<artifactId>cyclonedx-maven-plugin</artifactId>
-			</plugin>
 		</plugins>
 	</build>
-
 	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.cyclonedx</groupId>
+						<artifactId>cyclonedx-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 		<profile>
 			<id>reporting</id>
 			<reporting>

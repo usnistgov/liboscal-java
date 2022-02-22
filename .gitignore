@@ -6,3 +6,5 @@
 .pmd
 .pmdruleset.xml
 /target/
+pom.xml.releaseBackup
+/release.properties

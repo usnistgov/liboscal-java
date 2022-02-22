@@ -51,7 +51,7 @@ class TestContent {
   private static final Logger LOGGER = LogManager.getLogger(TestContent.class);
 
   private static <CLASS> CLASS measureDeserializer(String format, File file, IDeserializer<CLASS> deserializer,
-      int iterations) throws BindingException, FileNotFoundException {
+      int iterations) throws IOException {
     CLASS retval = null;
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
@@ -72,7 +72,7 @@ class TestContent {
   }
 
   private static <CLASS> void measureSerializer(CLASS root, String format, File file, ISerializer<CLASS> serializer,
-      int iterations) throws BindingException, FileNotFoundException {
+      int iterations) throws IOException {
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
       long startTime = System.nanoTime();
@@ -94,7 +94,7 @@ class TestContent {
   }
 
   private static <CLASS> void chainReadWrite(File xmlSource, Class<CLASS> clazz, Path tempDir, int iterations)
-      throws BindingException, FileNotFoundException, IOException {
+      throws IOException {
     IBindingContext context = IBindingContext.newInstance();
 
     CLASS obj;

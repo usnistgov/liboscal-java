@@ -28,7 +28,6 @@ package gov.nist.secauto.oscal.lib;
 
 import gov.nist.secauto.metaschema.binding.DefaultBindingContext;
 import gov.nist.secauto.metaschema.binding.IBindingMatcher;
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -40,8 +39,9 @@ import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
 
 import javax.xml.namespace.QName;
 
@@ -62,42 +62,108 @@ public class OscalBindingContext
   }
 
   @NotNull
-  public Catalog loadCatalog(@NotNull File file) throws BindingException, FileNotFoundException, IOException {
-    return newBoundLoader().load(Catalog.class, file);
+  public Catalog loadCatalog(@NotNull URL url) throws IOException {
+    return newBoundLoader().load(Catalog.class, url);
   }
 
   @NotNull
-  public Profile loadProfile(@NotNull File file) throws BindingException, FileNotFoundException, IOException {
+  public Catalog loadCatalog(@NotNull Path path) throws IOException {
+    return newBoundLoader().load(Catalog.class, path);
+  }
+
+  @SuppressWarnings("null")
+  @NotNull
+  public Catalog loadCatalog(@NotNull File file) throws IOException {
+    return loadCatalog(file.toPath());
+  }
+
+  @NotNull
+  public Profile loadProfile(@NotNull URL url) throws IOException {
+    return newBoundLoader().load(Profile.class, url);
+  }
+
+  @NotNull
+  public Profile loadProfile(@NotNull Path path) throws IOException {
+    return newBoundLoader().load(Profile.class, path);
+  }
+
+  @NotNull
+  public Profile loadProfile(@NotNull File file) throws IOException {
     return newBoundLoader().load(Profile.class, file);
   }
 
   @NotNull
-  public SystemSecurityPlan loadSystemSecurityPlan(@NotNull File file)
-      throws BindingException, FileNotFoundException, IOException {
+  public SystemSecurityPlan loadSystemSecurityPlan(@NotNull URL url) throws IOException {
+    return newBoundLoader().load(SystemSecurityPlan.class, url);
+  }
+
+  @NotNull
+  public SystemSecurityPlan loadSystemSecurityPlan(@NotNull Path path) throws IOException {
+    return newBoundLoader().load(SystemSecurityPlan.class, path);
+  }
+
+  @NotNull
+  public SystemSecurityPlan loadSystemSecurityPlan(@NotNull File file) throws IOException {
     return newBoundLoader().load(SystemSecurityPlan.class, file);
   }
 
   @NotNull
-  public ComponentDefinition loadComponentDefinition(@NotNull File file)
-      throws BindingException, FileNotFoundException, IOException {
+  public ComponentDefinition loadComponentDefinition(@NotNull URL url) throws IOException {
+    return newBoundLoader().load(ComponentDefinition.class, url);
+  }
+
+  @NotNull
+  public ComponentDefinition loadComponentDefinition(@NotNull Path path) throws IOException {
+    return newBoundLoader().load(ComponentDefinition.class, path);
+  }
+
+  @NotNull
+  public ComponentDefinition loadComponentDefinition(@NotNull File file) throws IOException {
     return newBoundLoader().load(ComponentDefinition.class, file);
   }
 
   @NotNull
-  public AssessmentPlan loadAssessmentPlan(@NotNull File file)
-      throws BindingException, FileNotFoundException, IOException {
+  public AssessmentPlan loadAssessmentPlan(@NotNull URL url) throws IOException {
+    return newBoundLoader().load(AssessmentPlan.class, url);
+  }
+
+  @NotNull
+  public AssessmentPlan loadAssessmentPlan(@NotNull Path path) throws IOException {
+    return newBoundLoader().load(AssessmentPlan.class, path);
+  }
+
+  @NotNull
+  public AssessmentPlan loadAssessmentPlan(@NotNull File file) throws IOException {
     return newBoundLoader().load(AssessmentPlan.class, file);
   }
 
   @NotNull
-  public AssessmentResults loadAssessmentResults(@NotNull File file)
-      throws BindingException, FileNotFoundException, IOException {
+  public AssessmentResults loadAssessmentResults(@NotNull URL url) throws IOException {
+    return newBoundLoader().load(AssessmentResults.class, url);
+  }
+
+  @NotNull
+  public AssessmentResults loadAssessmentResults(@NotNull Path path) throws IOException {
+    return newBoundLoader().load(AssessmentResults.class, path);
+  }
+
+  @NotNull
+  public AssessmentResults loadAssessmentResults(@NotNull File file) throws IOException {
     return newBoundLoader().load(AssessmentResults.class, file);
   }
 
   @NotNull
-  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NotNull File file)
-      throws BindingException, FileNotFoundException, IOException {
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NotNull URL url) throws IOException {
+    return newBoundLoader().load(PlanOfActionAndMilestones.class, url);
+  }
+
+  @NotNull
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NotNull Path path) throws IOException {
+    return newBoundLoader().load(PlanOfActionAndMilestones.class, path);
+  }
+
+  @NotNull
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NotNull File file) throws IOException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, file);
   }
 
