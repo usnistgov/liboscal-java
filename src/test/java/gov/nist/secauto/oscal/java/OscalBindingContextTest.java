@@ -55,7 +55,7 @@ class OscalBindingContextTest {
   private static void initialize() {
     bindingContext = OscalBindingContext.instance();
     loader = bindingContext.newBoundLoader();
-    loader.enableFeature(Feature.DESERIALIZE_VALIDATE);
+    loader.enableFeature(Feature.DESERIALIZE_VALIDATE_CONSTRAINTS);
   }
 
   @Test

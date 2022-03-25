@@ -34,19 +34,14 @@ public abstract class AbstractControl
     implements IDeserializationHandler, IControl {
   private Control parent;
 
-  protected AbstractControl() {
-  }
-
   @Override
   public Control getParentControl() {
     return parent;
   }
 
   @Override
-  public Control setParentControl(Control parent) {
-    Control oldParent = this.parent;
+  public void setParentControl(Control parent) {
     this.parent = parent;
-    return oldParent;
   }
 
   @SuppressWarnings("PMD")

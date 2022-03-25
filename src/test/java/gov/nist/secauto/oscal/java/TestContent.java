@@ -43,7 +43,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -58,7 +57,7 @@ class TestContent {
       long startTime = System.nanoTime();
       retval = deserializer.deserialize(file);
       long endTime = System.nanoTime();
-      long timeElapsed = (endTime - startTime) / 1000000;
+      long timeElapsed = (endTime - startTime) / 1_000_000;
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(String.format("%s read in %d milliseconds from %s", format, timeElapsed, file));
       }
@@ -78,7 +77,7 @@ class TestContent {
       long startTime = System.nanoTime();
       serializer.serialize(root, file);
       long endTime = System.nanoTime();
-      long timeElapsed = (endTime - startTime) / 1000000;
+      long timeElapsed = (endTime - startTime) / 1_000_000;
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(String.format("%s written in %d milliseconds to %s", format, timeElapsed, file));
       }
@@ -102,7 +101,7 @@ class TestContent {
     // XML
     {
       IDeserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz);
-      deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
+      deserializer.enableFeature(Feature.DESERIALIZE_JSON_ROOT_PROPERTY);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
 
       File out = new File(tempDir.toFile(), "out.xml");
@@ -119,7 +118,7 @@ class TestContent {
       measureSerializer(obj, "JSON", out, serializer, iterations);
 
       IDeserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
-      deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
+      deserializer.enableFeature(Feature.DESERIALIZE_JSON_ROOT_PROPERTY);
       obj = measureDeserializer("JSON", out, deserializer, iterations);
     }
 
@@ -131,8 +130,8 @@ class TestContent {
       measureSerializer(obj, "YAML", out, serializer, iterations);
 
       IDeserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
-      deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
-      obj = measureDeserializer("YAML", out, deserializer, iterations);
+      deserializer.enableFeature(Feature.DESERIALIZE_JSON_ROOT_PROPERTY);
+      measureDeserializer("YAML", out, deserializer, iterations);
     }
   }
 

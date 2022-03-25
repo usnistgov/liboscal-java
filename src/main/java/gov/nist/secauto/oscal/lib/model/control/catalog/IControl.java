@@ -32,5 +32,5 @@ public interface IControl extends IControlContainer {
 
   Control getParentControl();
 
-  Control setParentControl(Control parent);
+  void setParentControl(Control parent);
 }

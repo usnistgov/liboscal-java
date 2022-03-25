@@ -33,10 +33,10 @@ import java.net.URI;
 public interface IProperty {
   @SuppressWarnings("null")
   @NotNull
-  static final URI OSCAL_NAMESPACE = URI.create("http://csrc.nist.gov/ns/oscal");
+  URI OSCAL_NAMESPACE = URI.create("http://csrc.nist.gov/ns/oscal");
   @SuppressWarnings("null")
   @NotNull
-  static final URI RMF_NAMESPACE = URI.create("http://csrc.nist.gov/ns/rmf");
+  URI RMF_NAMESPACE = URI.create("http://csrc.nist.gov/ns/rmf");
 
   String getName();
 

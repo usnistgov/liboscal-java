@@ -37,9 +37,6 @@ import java.util.stream.Stream;
 
 public abstract class AbstractPart implements IPart {
 
-  public AbstractPart() {
-  }
-
   @SuppressWarnings({ "null", "resource" })
   @Override
   @NotNull

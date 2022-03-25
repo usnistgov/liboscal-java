@@ -57,7 +57,7 @@ class MetaschemaVisitorTest {
   void test() throws FileNotFoundException, IOException, BindingException {
     OscalBindingContext bindingContext = OscalBindingContext.instance();
     IBoundLoader loader = bindingContext.newBoundLoader();
-    loader.enableFeature(Feature.DESERIALIZE_VALIDATE);
+    loader.enableFeature(Feature.DESERIALIZE_VALIDATE_CONSTRAINTS);
 
     StaticContext staticContext = new StaticContext();
     @SuppressWarnings("null")
