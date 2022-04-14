@@ -27,7 +27,9 @@
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.metapath.xdm.IXdmFactory;
+import gov.nist.secauto.metaschema.binding.metapath.item.IXdmFactory;
+import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
+import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathException;
 import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
@@ -37,6 +39,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
@@ -50,11 +53,8 @@ import java.util.List;
 import java.util.Stack;
 
 public final class ResolveProfile {
-  private ResolveProfile() {
-    // disable construction
-  }
 
-  static final IFunction SIGNATURE_NO_ARG = IFunction.newBuilder()
+  static final IFunction SIGNATURE_NO_ARG = IFunction.builder()
       .name("resolve-profile")
       .returnType(INodeItem.class)
       .focusDependent()
@@ -64,7 +64,7 @@ public final class ResolveProfile {
       .functionHandler(ResolveProfile::executeNoArg)
       .build();
 
-  static final IFunction SIGNATURE_ONE_ARG = IFunction.newBuilder()
+  static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("resolve-profile")
       .argument(IArgument.newBuilder()
           .name("profile")
@@ -78,6 +78,10 @@ public final class ResolveProfile {
       .returnOne()
       .functionHandler(ResolveProfile::executeOneArg)
       .build();
+
+  private ResolveProfile() {
+    // disable construction
+  }
 
   @NotNull
   public static ISequence<?> executeNoArg(@NotNull IFunction function,
@@ -128,7 +132,9 @@ public final class ResolveProfile {
         throw new MetapathException(String.format("Unable to resolve profile '%s'", profile.getBaseUri()), ex);
       }
       IBindingContext bindingContext = OscalBindingContext.instance();
-      retval = IXdmFactory.INSTANCE.newDocumentNodeItem(resolvedCatalog, bindingContext, profile.getBaseUri());
+      IAssemblyClassBinding catalogClassBinding = (IAssemblyClassBinding)ObjectUtils.notNull(bindingContext.getClassBinding(Catalog.class));
+      
+      retval = IXdmFactory.INSTANCE.newDocumentNodeItem(new RootAssemblyDefinition(catalogClassBinding), resolvedCatalog, profile.getBaseUri());
     }
     return retval;
   }

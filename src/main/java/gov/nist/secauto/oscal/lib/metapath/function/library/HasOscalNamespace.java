@@ -50,7 +50,7 @@ public final class HasOscalNamespace {
     // disable construction
   }
 
-  static final IFunction SIGNATURE_ONE_ARG = IFunction.newBuilder()
+  static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("has-oscal-namespace")
       .argument(IArgument.newBuilder()
           .name("namespace")
@@ -65,7 +65,7 @@ public final class HasOscalNamespace {
       .functionHandler(HasOscalNamespace::executeOneArg)
       .build();
 
-  static final IFunction SIGNATURE_TWO_ARGS = IFunction.newBuilder()
+  static final IFunction SIGNATURE_TWO_ARGS = IFunction.builder()
       .name("has-oscal-namespace")
       .argument(IArgument.newBuilder()
           .name("propOrPart")

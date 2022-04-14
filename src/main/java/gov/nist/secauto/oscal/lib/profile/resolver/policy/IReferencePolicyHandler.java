@@ -41,7 +41,7 @@ public interface IReferencePolicyHandler<TYPE> {
 
     @Override
     public boolean handleIndexMiss(@NotNull Object type, @NotNull Set<ItemType> itemTypes,
-        IIdentifierParser.@NotNull Match match, @NotNull Index index) {
+        @NotNull Match match, @NotNull Index index) {
       // do nothing
       return true;
     }

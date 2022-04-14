@@ -37,19 +37,21 @@ import java.util.function.Function;
 public interface IControlSelectionFilter extends Function<@NotNull IControl, Pair<@NotNull Boolean, @NotNull Boolean>> {
 
   @NotNull
-  static final Pair<@NotNull Boolean, @NotNull Boolean> NON_MATCH = ObjectUtils.notNull(Pair.of(false, false));
+  Pair<@NotNull Boolean, @NotNull Boolean> NON_MATCH = ObjectUtils.notNull(Pair.of(false, false));
   @NotNull
-  static final Pair<@NotNull Boolean, @NotNull Boolean> MATCH = ObjectUtils.notNull(Pair.of(true, true));
+  Pair<@NotNull Boolean, @NotNull Boolean> MATCH = ObjectUtils.notNull(Pair.of(true, true));
 
   @NotNull
-  static final IControlSelectionFilter ALL_MATCH = new IControlSelectionFilter() {
+  IControlSelectionFilter ALL_MATCH = new IControlSelectionFilter() {
+    @Override
     public Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
       return MATCH;
     }
   };
 
   @NotNull
-  static final IControlSelectionFilter NONE_MATCH = new IControlSelectionFilter() {
+  IControlSelectionFilter NONE_MATCH = new IControlSelectionFilter() {
+    @Override
     public Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
       return NON_MATCH;
     }

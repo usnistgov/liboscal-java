@@ -318,8 +318,7 @@ public class ReferenceCountingVisitor {
             getSource(),
             entityType,
             item.getIdentifier(),
-            item.getSource(),
-            entityType);
+            item.getSource());
       }
     }
   }

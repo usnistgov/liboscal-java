@@ -96,7 +96,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
           Pair<@NotNull Boolean, @NotNull Boolean> result;
           if (first.getLeft() || second.getLeft()) {
             // at least one matches
-            boolean withChild = (first.getLeft() && first.getRight()) || (second.getLeft() && second.getRight());
+            boolean withChild = first.getLeft() && first.getRight() || second.getLeft() && second.getRight();
             result = Pair.of(true, withChild);
           } else {
             result = IControlSelectionFilter.NON_MATCH;

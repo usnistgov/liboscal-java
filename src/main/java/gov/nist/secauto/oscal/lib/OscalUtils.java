@@ -90,7 +90,7 @@ public final class OscalUtils {
         throw new IllegalArgumentException(String
             .format("Resource '%s' is unresolvable, since it does not have a rlink or base64", resource.getUuid()));
       } else {
-        Rlink preferredRLink = null;
+        Rlink preferredRLink;
 
         // check if there is a matching rlink for the mime type
         if (preferredMimeType != null) {
@@ -137,7 +137,6 @@ public final class OscalUtils {
     @SuppressWarnings("null")
     @NotNull
     URI result = baseUri.resolve(source);
-    Source retval = new URISource(result);
-    return retval;
+    return new URISource(result);
   }
 }

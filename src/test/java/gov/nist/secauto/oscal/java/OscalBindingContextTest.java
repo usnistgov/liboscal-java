@@ -52,7 +52,7 @@ class OscalBindingContextTest {
   private static IBoundLoader loader;
 
   @BeforeAll
-  private static void initialize() {
+  private static void initialize() { // NOPMD - actually used by JUnit
     bindingContext = OscalBindingContext.instance();
     loader = bindingContext.newBoundLoader();
     loader.enableFeature(Feature.DESERIALIZE_VALIDATE_CONSTRAINTS);
@@ -64,7 +64,7 @@ class OscalBindingContextTest {
     Catalog catalog
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile());
 
-    Path out = newPath(tempDir,"out-catalog.yaml");
+    Path out = newPath(tempDir, "out-catalog.yaml");
 
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
     serializer.enableFeature(Feature.SERIALIZE_ROOT);
@@ -81,8 +81,8 @@ class OscalBindingContextTest {
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.json").getCanonicalFile());
     assertNotNull(catalog);
 
-     File out = new File(tempDir.toFile(), "out.json");
-//    File out = new File("target/out.json");
+    File out = new File(tempDir.toFile(), "out.json");
+    // File out = new File("target/out.json");
     IBindingContext context = IBindingContext.newInstance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class);
@@ -100,8 +100,8 @@ class OscalBindingContextTest {
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile());
     assertNotNull(catalog);
 
-     File out = new File(tempDir.toFile(), "out.xml");
-//    File out = new File("target/out.xml");
+    File out = new File(tempDir.toFile(), "out.xml");
+    // File out = new File("target/out.xml");
     IBindingContext context = IBindingContext.newInstance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
@@ -119,8 +119,8 @@ class OscalBindingContextTest {
             new File("target/download/content/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json").getCanonicalFile());
     assertNotNull(profile);
 
-     File out = new File(tempDir.toFile(), "out.json");
-//    File out = new File("target/out-profile.json");
+    File out = new File(tempDir.toFile(), "out.json");
+    // File out = new File("target/out-profile.json");
     IBindingContext context = IBindingContext.newInstance();
 
     ISerializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class);
@@ -129,8 +129,8 @@ class OscalBindingContextTest {
 
     assertNotNull(loader.load(out));
 
-    out = new File(tempDir.toFile(), "out.json");
-    out = new File("target/out-profile.yaml");
+    out = new File(tempDir.toFile(), "out.yaml");
+    // out = new File("target/out-profile.yaml");
 
     serializer = context.newSerializer(Format.YAML, Profile.class);
     serializer.enableFeature(Feature.SERIALIZE_ROOT);
@@ -141,6 +141,6 @@ class OscalBindingContextTest {
 
   static Path newPath(@NotNull Path dir, @NotNull String filename) {
     return dir.resolve(filename);
-//    return Path.of("target",filename);
+    // return Path.of("target",filename);
   }
 }

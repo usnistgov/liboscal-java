@@ -48,6 +48,11 @@ import java.nio.file.Path;
 
 class TestContent {
   private static final Logger LOGGER = LogManager.getLogger(TestContent.class);
+  
+  private enum OperationType {
+    SERIALIZE,
+    DESERIALIZE;
+  }
 
   private static <CLASS> CLASS measureDeserializer(String format, File file, IDeserializer<CLASS> deserializer,
       int iterations) throws IOException {

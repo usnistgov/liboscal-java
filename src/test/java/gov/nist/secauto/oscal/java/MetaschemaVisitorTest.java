@@ -79,7 +79,7 @@ class MetaschemaVisitorTest {
     // Profile profile = nodeItem.toBoundObject();
 
     IDocumentNodeItem resolvedProfile = ResolveProfile.resolveProfile(nodeItem, dynamicContext);
-    OscalBindingContext.instance().validate(resolvedProfile.toBoundObject(), file.toURI(), true, null);
+    OscalBindingContext.instance().validate(resolvedProfile);
 
     // OscalBindingContext.instance().newSerializer(Format.XML,
     // Catalog.class).serialize(resolvedProfile.toBoundObject(), new FileWriter(new

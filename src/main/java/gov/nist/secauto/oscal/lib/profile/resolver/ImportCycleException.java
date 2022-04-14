@@ -35,6 +35,7 @@ public class ImportCycleException
   private static final long serialVersionUID = 1L;
 
   public ImportCycleException() {
+    // no message or cause
   }
 
   public ImportCycleException(String message) {

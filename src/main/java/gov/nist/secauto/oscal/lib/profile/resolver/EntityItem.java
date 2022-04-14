@@ -32,7 +32,7 @@ import java.net.URI;
 import java.util.Objects;
 import java.util.UUID;
 
-public class EntityItem {
+public final class EntityItem {
 
   public enum ItemType {
     ROLE,
