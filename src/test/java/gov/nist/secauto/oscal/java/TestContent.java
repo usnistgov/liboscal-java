@@ -48,7 +48,7 @@ import java.nio.file.Path;
 
 class TestContent {
   private static final Logger LOGGER = LogManager.getLogger(TestContent.class);
-  
+
   private enum OperationType {
     SERIALIZE,
     DESERIALIZE;
@@ -140,7 +140,6 @@ class TestContent {
     }
   }
 
-  @Disabled
   @Test
   public void testReadWriteOscalCatalog(@TempDir Path tempDir) throws IOException, BindingException {
 
@@ -156,6 +155,7 @@ class TestContent {
     chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
   }
 
+  @Disabled
   @Test
   public void testOscalCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
 

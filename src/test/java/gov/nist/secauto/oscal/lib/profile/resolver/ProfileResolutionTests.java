@@ -66,7 +66,6 @@ import java.util.Stack;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-
 class ProfileResolutionTests {
   private static final String XSLT_PATH = "oscal/src/utils/util/resolver-pipeline/oscal-profile-test-helper.xsl";
   private static final String PROFILE_PATH = "oscal/src/specifications/profile-resolution/profile-resolution-examples";

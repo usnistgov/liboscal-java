@@ -37,13 +37,15 @@ public abstract class AbstractBackMatter implements IBackMatter {
 
   @Override
   public Resource getResourceByUuid(@NotNull UUID uuid) {
-    List<Resource> resources = getResources();
+    List<@NotNull Resource> resources = getResources();
 
     Resource retval = null;
     if (resources != null) {
-      retval = resources.stream().filter(resource -> {
-        return uuid.equals(resource.getUuid());
-      }).findFirst().orElse(null);
+      retval = resources.stream()
+          .filter(resource -> {
+            return uuid.equals(resource.getUuid());
+          }).findFirst()
+          .orElse(null);
     }
     return retval;
   }

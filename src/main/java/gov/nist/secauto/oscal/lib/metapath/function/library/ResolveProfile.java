@@ -134,9 +134,11 @@ public final class ResolveProfile {
         throw new MetapathException(String.format("Unable to resolve profile '%s'", profile.getBaseUri()), ex);
       }
       IBindingContext bindingContext = OscalBindingContext.instance();
-      IAssemblyClassBinding catalogClassBinding = (IAssemblyClassBinding)ObjectUtils.notNull(bindingContext.getClassBinding(Catalog.class));
-      
-      retval = IXdmFactory.INSTANCE.newDocumentNodeItem(new RootAssemblyDefinition(catalogClassBinding), resolvedCatalog, profile.getBaseUri());
+      IAssemblyClassBinding catalogClassBinding
+          = (IAssemblyClassBinding) ObjectUtils.notNull(bindingContext.getClassBinding(Catalog.class));
+
+      retval = IXdmFactory.INSTANCE.newDocumentNodeItem(new RootAssemblyDefinition(catalogClassBinding),
+          resolvedCatalog, profile.getBaseUri());
     }
     return retval;
   }

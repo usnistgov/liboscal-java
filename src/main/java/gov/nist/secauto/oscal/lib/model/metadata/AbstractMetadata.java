@@ -23,7 +23,31 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.model.metadata;
 
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.Party;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.UUID;
+
 public abstract class AbstractMetadata implements IMetadata {
+
+  @Override
+  public Party getPartyByUuid(@NotNull UUID uuid) {
+    List<@NotNull Party> parties = getParties();
+
+    Party retval = null;
+    if (parties != null) {
+      retval = parties.stream()
+          .filter(party -> {
+            return uuid.equals(party.getUuid());
+          }).findFirst()
+          .orElse(null);
+    }
+    return retval;
+  }
 }
