@@ -54,6 +54,7 @@ import java.util.Stack;
 
 public final class ResolveProfile {
 
+  @NotNull
   static final IFunction SIGNATURE_NO_ARG = IFunction.builder()
       .name("resolve-profile")
       .returnType(INodeItem.class)
@@ -64,6 +65,7 @@ public final class ResolveProfile {
       .functionHandler(ResolveProfile::executeNoArg)
       .build();
 
+  @NotNull
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("resolve-profile")
       .argument(IArgument.newBuilder()

@@ -26,6 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -99,7 +101,7 @@ public final class EntityItem {
     private URI source;
 
     public Builder instance(@NotNull Object instance, @NotNull UUID identifier) {
-      return instance(instance, identifier.toString());
+      return instance(instance, ObjectUtils.notNull(identifier.toString()));
     }
 
     @SuppressWarnings("null")

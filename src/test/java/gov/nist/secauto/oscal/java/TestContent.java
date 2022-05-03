@@ -140,6 +140,7 @@ class TestContent {
     }
   }
 
+  @Disabled
   @Test
   public void testReadWriteOscalCatalog(@TempDir Path tempDir) throws IOException, BindingException {
 
@@ -155,7 +156,6 @@ class TestContent {
     chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
   }
 
-  @Disabled
   @Test
   public void testOscalCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
 

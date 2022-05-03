@@ -29,12 +29,14 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface IBackMatter {
-  List<Resource> getResources();
+  List<@NotNull Resource> getResources();
 
+  @Nullable
   Resource getResourceByUuid(@NotNull UUID uuid);
 }

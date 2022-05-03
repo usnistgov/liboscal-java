@@ -34,10 +34,11 @@ import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Location;
-import gov.nist.secauto.oscal.lib.model.Metadata;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Role;
+import gov.nist.secauto.oscal.lib.model.metadata.IBackMatter;
+import gov.nist.secauto.oscal.lib.model.metadata.IMetadata;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -74,7 +75,7 @@ public class ImportCatalogVisitor {
     Result result = new Result();
 
     // process children
-    Metadata metadata = catalog.getMetadata();
+    IMetadata metadata = catalog.getMetadata();
     if (metadata != null) {
       for (Role role : CollectionUtil.listOrEmpty(metadata.getRoles())) {
         visitRole(role);
@@ -88,7 +89,7 @@ public class ImportCatalogVisitor {
         visitParty(party);
       }
 
-      BackMatter backMatter = catalog.getBackMatter();
+      IBackMatter backMatter = catalog.getBackMatter();
       if (backMatter != null) {
         for (BackMatter.Resource resource : CollectionUtil.listOrEmpty(backMatter.getResources())) {
           visitResource(resource);
@@ -367,10 +368,6 @@ public class ImportCatalogVisitor {
 
       String childParameterId = childParam.getId();
 
-      // if (getIndex().getParameterReferenceCount(childParameterId) == 0) {
-      // // the parameter is unused
-      // parameterIter.remove();
-      // } else if (!isMatch) {
       if (!isMatch) {
         // the parameter is used, but we will drop this control, so promote the parameter
         LOGGER.atTrace().log("Promoting parameter '{}'", childParameterId);
@@ -385,40 +382,6 @@ public class ImportCatalogVisitor {
     }
 
     return result;
-    // // append in-scope parameters
-    // List<Parameter> parameters = listOrEmpty(control.getParams());
-    // parameters.stream().forEachOrdered(param -> inScopeParameters.put(param.getId(), param));
-    //
-    // controlStack.push(control);
-    //
-    // // determine matching controls
-    // Result matchingChildren = listOrEmpty(control.getControls()).stream()
-    // .filter(Objects::nonNull)
-    // .map(child -> {
-    // Result result = visitControl(child, filter);
-    // return result;
-    // }).reduce((resultA, resultB) -> {
-    // return resultA.aggregate(resultB);
-    // }).orElse(null);
-    //
-    // Result retval;
-    // if (isMatch) {
-    // // assign the resulting children to this control
-    // control.setControls(matchingChildren.collect(Collectors.toList()));
-    // control.getControls().forEach(child -> child.setParentControl(control));
-    // // return this control as the child
-    // retval = Stream.of(control);
-    // } else {
-    // // push the children up since this control is not a match
-    // retval = matchingChildren;
-    // }
-    //
-    // controlStack.pop();
-    //
-    // // remove in-scope parameters
-    // parameters.stream().forEachOrdered(param -> inScopeParameters.remove(param.getId()));
-    //
-    // return retval;
   }
 
   public static class Result

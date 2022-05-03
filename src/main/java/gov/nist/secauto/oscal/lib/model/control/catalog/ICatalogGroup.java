@@ -26,5 +26,13 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 public interface ICatalogGroup extends IControlContainer {
+
+  List<@NotNull CatalogGroup> getGroups();
 }

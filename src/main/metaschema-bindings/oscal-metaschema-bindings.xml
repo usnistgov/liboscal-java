@@ -24,6 +24,11 @@
 				<extend-base-class>gov.nist.secauto.oscal.lib.model.metadata.AbstractBackMatter</extend-base-class>
 			</java>
 		</define-assembly-binding>
+		<define-assembly-binding name="metadata">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.metadata.AbstractMetadata</extend-base-class>
+			</java>
+		</define-assembly-binding>
 	</metaschema-binding>
 	<metaschema-binding
 		href="../../../oscal/src/metaschema/oscal_control-common_metaschema.xml">

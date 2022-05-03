@@ -47,6 +47,7 @@ import javax.xml.namespace.QName;
 
 public class OscalBindingContext
     extends DefaultBindingContext {
+  @NotNull
   private static final OscalBindingContext INSTANCE = new OscalBindingContext();
 
   @NotNull

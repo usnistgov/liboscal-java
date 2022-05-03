@@ -23,35 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+package gov.nist.secauto.oscal.lib.model.metadata;
 
-package gov.nist.secauto.oscal.lib.model.control.catalog;
-
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
-import gov.nist.secauto.oscal.lib.model.Parameter;
-import gov.nist.secauto.oscal.lib.model.Property;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.stream.Stream;
-
-public interface IControlContainer {
-
-  String getId();
-
-  List<@NotNull ControlPart> getParts();
-
-  List<@NotNull Control> getControls();
-
-  boolean addControl(@NotNull Control childControl);
-
-  List<@NotNull Parameter> getParams();
-
-  boolean addParam(@NotNull Parameter param);
-
-  List<@NotNull Property> getProps();
-
-  Stream<@NotNull String> getReferencedParameterIds();
-
+public abstract class AbstractMetadata implements IMetadata {
 }

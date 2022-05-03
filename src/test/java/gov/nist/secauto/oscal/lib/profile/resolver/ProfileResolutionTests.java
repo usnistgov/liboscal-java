@@ -34,6 +34,7 @@ import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
@@ -64,6 +65,7 @@ import java.util.Stack;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
 
 class ProfileResolutionTests {
   private static final String XSLT_PATH = "oscal/src/utils/util/resolver-pipeline/oscal-profile-test-helper.xsl";
@@ -101,7 +103,7 @@ class ProfileResolutionTests {
       throws FileNotFoundException, BindingException, IOException {
     Profile profile = OscalBindingContext.instance().loadProfile(profileFile);
     ProfileResolver.ResolutionData data
-        = new ProfileResolver.ResolutionData(profile, profileFile.toURI(), new Stack<>());
+        = new ProfileResolver.ResolutionData(profile, ObjectUtils.notNull(profileFile.toURI()), new Stack<>());
     getProfileResolver().resolve(data);
     return data.getCatalog();
   }
@@ -137,7 +139,7 @@ class ProfileResolutionTests {
     Assertions.assertThat(catalog.getMetadata().getProps()).filteredOn("name", "resolution-tool").extracting("value")
         .hasSize(1);
 
-    ISerializer<Catalog> serializer = OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class);
+    ISerializer<@NotNull Catalog> serializer = OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class);
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
     // serializer.serialize(catalog, System.out);
@@ -170,6 +172,7 @@ class ProfileResolutionTests {
 
     File profileFile = new File(profileLocation);
 
+    @SuppressWarnings("null")
     IOException exceptionThrown = assertThrows(IOException.class, () -> {
       resolveProfile(profileFile);
     });

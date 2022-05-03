@@ -40,10 +40,13 @@ import gov.nist.secauto.oscal.lib.OscalUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Location;
 import gov.nist.secauto.oscal.lib.model.Merge;
 import gov.nist.secauto.oscal.lib.model.Metadata;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
@@ -124,9 +127,6 @@ public class ProfileResolver {
     // @NotNull Stack<@NotNull URI> importHistory
 
     Catalog resolvedCatalog = data.getCatalog();
-    resolvedCatalog.setParams(new LinkedList<>());
-    resolvedCatalog.setControls(new LinkedList<>());
-    resolvedCatalog.setGroups(new LinkedList<>());
 
     resolvedCatalog.setUuid(UUID.randomUUID());
 
@@ -138,11 +138,10 @@ public class ProfileResolver {
     metadata.setOscalVersion(OscalUtils.OSCAL_VERSION);
     metadata.setLastModified(ZonedDateTime.now(ZoneOffset.UTC));
 
-    metadata.setProps(new LinkedList<>());
-    metadata.getProps().add(Property.builder("resolution-tool").value("libOSCAL-Java").build());
-    metadata.setLinks(new LinkedList<>());
+    metadata.addProp(Property.builder("resolution-tool").value("libOSCAL-Java").build());
+
     URI profileUri = data.getProfileUri();
-    metadata.getLinks().add(Link.builder(profileUri).relation("source-profile").build());
+    metadata.addLink(Link.builder(profileUri).relation("source-profile").build());
 
     resolvedCatalog.setMetadata(metadata);
 
@@ -187,7 +186,7 @@ public class ProfileResolver {
     LOGGER.atDebug().log("resolving profile import '{}'", importUri);
 
     URI profileUri = data.getProfileUri();
-    Stack<URI> importHistory = data.getImportHistory();
+    Stack<@NotNull URI> importHistory = data.getImportHistory();
 
     IDocumentNodeItem document;
     if (OscalUtils.isInternalReference(importUri)) {
@@ -217,8 +216,7 @@ public class ProfileResolver {
       document = (IDocumentNodeItem) getDynamicContext().getDocumentLoader().loadAsNodeItem(source.newInputStream(),
           source.getSystemId());
 
-      @SuppressWarnings("null")
-      URI poppedUri = importHistory.pop();
+      URI poppedUri = ObjectUtils.notNull(importHistory.pop());
       assert resolvedUri.equals(poppedUri);
     } else {
       // handle external reference
@@ -253,7 +251,7 @@ public class ProfileResolver {
     new ImportCatalogVisitor(data.getIndex(), importUri).visitCatalog(importedCatalog, filter);
 
     // pop the resolved catalog from the import history
-    URI poppedUri = importHistory.pop();
+    URI poppedUri = ObjectUtils.notNull(importHistory.pop());
     assert document.getDocumentUri().equals(poppedUri);
 
     Version catalogVersion = VersionUtil.parseVersion(importedCatalog.getMetadata().getOscalVersion(), null, null);
@@ -266,22 +264,29 @@ public class ProfileResolver {
       resolvingCatalog.getMetadata().setOscalVersion(catalogVersion.toString());
     }
 
-    resolvingCatalog.getParams().addAll(CollectionUtil.listOrEmpty(importedCatalog.getParams()));
-    resolvingCatalog.getControls().addAll(CollectionUtil.listOrEmpty(importedCatalog.getControls()));
-    resolvingCatalog.getGroups().addAll(CollectionUtil.listOrEmpty(importedCatalog.getGroups()));
+    for (Parameter param : CollectionUtil.listOrEmpty(importedCatalog.getParams())) {
+      resolvingCatalog.addParam(param);
+    }
+    for (Control control : CollectionUtil.listOrEmpty(importedCatalog.getControls())) {
+      resolvingCatalog.addControl(control);
+    }
+    for (CatalogGroup group : CollectionUtil.listOrEmpty(importedCatalog.getGroups())) {
+      resolvingCatalog.addGroup(group);
+    }
 
     // TODO: copy roles, parties, and locations with prop name:keep and any referenced
     // TODO: handle resources properly
     BackMatter backMatter = importedCatalog.getBackMatter();
-    if (backMatter != null) {
+    if (backMatter != null && backMatter.getResources() != null) {
       BackMatter resolvingBackMatter = resolvingCatalog.getBackMatter();
       if (resolvingBackMatter == null) {
         resolvingBackMatter = new BackMatter();
-        resolvingBackMatter.setResources(new LinkedList<>());
         resolvingCatalog.setBackMatter(resolvingBackMatter);
       }
 
-      resolvingBackMatter.getResources().addAll(backMatter.getResources());
+      for (Resource resource : backMatter.getResources()) {
+        resolvingBackMatter.addResource(resource);
+      }
     }
   }
 

@@ -27,9 +27,9 @@
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.model.control.catalog.ICatalogGroup;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,110 +38,74 @@ import java.util.List;
 
 public class ControlResult {
 
-  private final List<Parameter> promotedParameters;
-  private final List<Control> promotedControls;
+  private final List<@NotNull Parameter> promotedParameters;
+  private final List<@NotNull Control> promotedControls;
 
   public ControlResult() {
     this.promotedParameters = new LinkedList<>();
     this.promotedControls = new LinkedList<>();
   }
 
-  public List<Parameter> getPromotedParameters() {
+  public List<@NotNull Parameter> getPromotedParameters() {
     return promotedParameters;
   }
 
-  public List<Control> getPromotedControls() {
+  public List<@NotNull Control> getPromotedControls() {
     return promotedControls;
   }
 
-  public void promoteParameter(Parameter param) {
+  public void promoteParameter(@NotNull Parameter param) {
     promotedParameters.add(param);
   }
 
-  public void promoteControl(Control control) {
+  public void promoteControl(@NotNull Control control) {
     promotedControls.add(control);
   }
 
   public void apply(@NotNull Catalog catalog) {
-    List<Parameter> promotedParams = getPromotedParameters();
+    List<@NotNull Parameter> promotedParams = getPromotedParameters();
     if (!promotedParams.isEmpty()) {
-      List<Parameter> params = catalog.getParams();
-      if (params == null) {
-        params = new LinkedList<>();
-        catalog.setParams(params);
-      }
-
       for (Parameter param : promotedParams) {
-        params.add(param);
+        catalog.addParam(param);
       }
     }
 
-    List<Control> promotedControls = getPromotedControls();
+    List<@NotNull Control> promotedControls = getPromotedControls();
     if (!promotedControls.isEmpty()) {
-      List<Control> controls = catalog.getControls();
-      if (controls == null) {
-        controls = new LinkedList<>();
-        catalog.setControls(controls);
-      }
-
       for (Control childControl : promotedControls) {
-        controls.add(childControl);
+        catalog.addControl(childControl);
       }
     }
   }
 
-  public void apply(@NotNull CatalogGroup group) {
-    List<Parameter> promotedParams = getPromotedParameters();
+  public void apply(@NotNull ICatalogGroup group) {
+    List<@NotNull Parameter> promotedParams = getPromotedParameters();
     if (!promotedParams.isEmpty()) {
-      List<Parameter> params = group.getParams();
-      if (params == null) {
-        params = new LinkedList<>();
-        group.setParams(params);
-      }
-
       for (Parameter param : promotedParams) {
-        params.add(param);
+        group.addParam(param);
       }
     }
 
-    List<Control> promotedControls = getPromotedControls();
+    List<@NotNull Control> promotedControls = getPromotedControls();
     if (!promotedControls.isEmpty()) {
-      List<Control> controls = group.getControls();
-      if (controls == null) {
-        controls = new LinkedList<>();
-        group.setControls(controls);
-      }
-
       for (Control childControl : promotedControls) {
-        controls.add(childControl);
+        group.addControl(childControl);
       }
     }
   }
 
   public void apply(@NotNull Control control) {
-    List<Parameter> promotedParams = getPromotedParameters();
+    List<@NotNull Parameter> promotedParams = getPromotedParameters();
     if (!promotedParams.isEmpty()) {
-      List<Parameter> params = control.getParams();
-      if (params == null) {
-        params = new LinkedList<>();
-        control.setParams(params);
-      }
-
       for (Parameter param : promotedParams) {
-        params.add(param);
+        control.addParam(param);
       }
     }
 
-    List<Control> promotedControls = getPromotedControls();
+    List<@NotNull Control> promotedControls = getPromotedControls();
     if (!promotedControls.isEmpty()) {
-      List<Control> controls = control.getControls();
-      if (controls == null) {
-        controls = new LinkedList<>();
-        control.setControls(controls);
-      }
-
       for (Control childControl : promotedControls) {
-        controls.add(childControl);
+        control.addControl(childControl);
       }
     }
   }
