@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile xmlns="http://csrc.nist.gov/ns/oscal/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://csrc.nist.gov/ns/oscal/1.0 ../../../oscal/xml/schema/oscal_complete_schema.xsd"
+    uuid="591f12cc-57df-4752-9fa4-3a5cf9b55600">
+    <metadata>
+        <title>Test Profile Using Relative Links</title>
+        <last-modified>2022-05-12T09:11:42.159308700-04:00</last-modified>
+        <version>1.0.0</version>
+        <oscal-version>1.0.4</oscal-version>
+    </metadata>
+    <import href="#abc4e6a0-1362-4ae7-bd09-798f1768209a">
+        <include-controls>
+            <with-id>control-1</with-id>
+        </include-controls>
+    </import>
+    <back-matter>
+        <resource uuid="abc4e6a0-1362-4ae7-bd09-798f1768209a">
+            <rlink href="test-catalog.xml" media-type="application/oscal+xml"/>
+        </resource>
+    </back-matter>
+</profile>

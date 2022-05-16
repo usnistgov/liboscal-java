@@ -62,7 +62,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.util.Stack;
 
@@ -71,8 +73,10 @@ import javax.xml.transform.stream.StreamSource;
 
 class ProfileResolutionTests {
   private static final String XSLT_PATH = "oscal/src/utils/util/resolver-pipeline/oscal-profile-test-helper.xsl";
-  private static final String PROFILE_PATH = "oscal/src/specifications/profile-resolution/profile-resolution-examples";
-  private static final String PROFILE_EXPECTED_PATH = PROFILE_PATH + "/output-expected";
+  private static final String PROFILE_UNIT_TEST_PATH
+      = "oscal/src/specifications/profile-resolution/profile-resolution-examples";
+  private static final String JUNIT_TEST_PATH = "src/test/resources";
+  private static final String PROFILE_EXPECTED_PATH = PROFILE_UNIT_TEST_PATH + "/output-expected";
 
   private static ProfileResolver profileResolver;
   private static Processor processor;
@@ -136,7 +140,7 @@ class ProfileResolutionTests {
   @ParameterizedTest
   @CsvFileSource(resources = "/profile-tests.csv", numLinesToSkip = 1)
   void test(String profileName) throws IllegalStateException, IOException, BindingException, SaxonApiException {
-    String profileLocation = String.format("%s/%s_profile.xml", PROFILE_PATH, profileName);
+    String profileLocation = String.format("%s/%s_profile.xml", PROFILE_UNIT_TEST_PATH, profileName);
 
     File profileFile = new File(profileLocation);
 
@@ -168,7 +172,7 @@ class ProfileResolutionTests {
 
   @Test
   void testBrokenLink() throws IllegalStateException, IOException, BindingException {
-    String profileLocation = String.format("%s/broken_profile.xml", PROFILE_PATH);
+    String profileLocation = String.format("%s/broken_profile.xml", PROFILE_UNIT_TEST_PATH);
 
     File profileFile = new File(profileLocation);
 
@@ -179,7 +183,7 @@ class ProfileResolutionTests {
 
   @Test
   void testCircularLink() throws IllegalStateException, IOException, BindingException {
-    String profileLocation = String.format("%s/circular_profile.xml", PROFILE_PATH);
+    String profileLocation = String.format("%s/circular_profile.xml", PROFILE_UNIT_TEST_PATH);
 
     File profileFile = new File(profileLocation);
 
@@ -191,7 +195,6 @@ class ProfileResolutionTests {
     MatcherAssert.assertThat(exceptionThrown.getCause(), CoreMatchers.instanceOf(ImportCycleException.class));
   }
 
-
   @Test
   void testOscalVersion() throws IllegalStateException, IOException, BindingException {
     Path profileFile = Path.of("src/test/resources/test-oscal-version-profile.xml");
@@ -200,4 +203,14 @@ class ProfileResolutionTests {
     assertEquals("1.0.4", catalog.getMetadata().getOscalVersion());
   }
 
+  @Test
+  void testImportResourceRelativeLink() throws IOException {
+    Path profilePath = Paths.get(JUNIT_TEST_PATH, "profile-relative-links-resource.xml");
+    System.out.println(profilePath.normalize().toRealPath(LinkOption.NOFOLLOW_LINKS).toString());
+    Profile profile = OscalBindingContext.instance().loadProfile(profilePath);
+    ProfileResolver.ResolutionData data
+        = new ProfileResolver.ResolutionData(profile, ObjectUtils.notNull(profilePath.toUri()), new Stack<>());
+    Catalog resolvedCatalog =  getProfileResolver().resolve(data);
+    assertNotNull(resolvedCatalog);
+  }
 }

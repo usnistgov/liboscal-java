@@ -26,15 +26,20 @@
 
 package gov.nist.secauto.oscal.lib;
 
+import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream;
+
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;
-import gov.nist.secauto.oscal.lib.resource.Base64Source;
-import gov.nist.secauto.oscal.lib.resource.Source;
-import gov.nist.secauto.oscal.lib.resource.URISource;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -61,16 +66,17 @@ public final class OscalUtils {
   }
 
   @SuppressWarnings("null")
+  @NotNull
   public static String internalReferenceFragmentToId(@NotNull URI fragment) throws IllegalArgumentException {
     return internalReferenceFragmentToId(fragment.toString());
   }
 
+  @NotNull
   public static String internalReferenceFragmentToId(@NotNull String fragment) throws IllegalArgumentException {
-
     Matcher matcher = INTERNAL_REFERENCE_FRAGMENT_PATTERN.matcher(fragment);
     String retval;
     if (matcher.matches()) {
-      retval = matcher.group(1);
+      retval = ObjectUtils.notNull(matcher.group(1));
     } else {
       throw new IllegalArgumentException(String.format("The fragment '%s' does not match the pattern '%s'", fragment,
           INTERNAL_REFERENCE_FRAGMENT_PATTERN.pattern()));
@@ -78,65 +84,80 @@ public final class OscalUtils {
     return retval;
   }
 
-  @NotNull
-  public static Source newSource(@NotNull Resource resource, @NotNull URI documentUri, String preferredMimeType) {
+  public static boolean hasBase64Data(@NotNull Resource resource) {
+    return resource.getBase64() != null;
+  }
+
+  @Nullable
+  public static ByteBuffer getBase64Data(@NotNull Resource resource) {
     Base64 base64 = resource.getBase64();
 
-    Source retval;
-    if (base64 == null) {
-      // find a suitable rlink reference
-      List<Rlink> rlinks = resource.getRlinks();
-      if (rlinks == null || rlinks.isEmpty()) {
-        throw new IllegalArgumentException(String
-            .format("Resource '%s' is unresolvable, since it does not have a rlink or base64", resource.getUuid()));
-      } else {
-        Rlink preferredRLink;
-
-        // check if there is a matching rlink for the mime type
-        if (preferredMimeType != null) {
-          // find preferred mime type first
-          preferredRLink = rlinks.stream().filter(rlink -> preferredMimeType.equals(rlink.getMediaType())).findFirst()
-              .orElse(null);
-        } else {
-          // use the first one instead
-          preferredRLink = rlinks.stream().findFirst().orElse(null);
-        }
-
-        if (preferredRLink == null) {
-          throw new IllegalArgumentException(
-              String.format("Missing rlink for resource '%s'", resource.getUuid()));
-        }
-
-        URI rlinkHref = preferredRLink.getHref();
-        if (rlinkHref == null) {
-          throw new IllegalArgumentException(
-              String.format("rlink has a null href value for resource '%s'", resource.getUuid()));
-        }
-        retval = newSource(rlinkHref, documentUri);
-      }
-    } else {
-      // handle base64 encoded data
-      UUID uuid = resource.getUuid();
-      if (uuid == null) {
-        throw new IllegalArgumentException("resource has a null UUID");
-      }
-      @SuppressWarnings("null")
-      @NotNull
-      URI result = documentUri.resolve("#" + uuid);
-      ByteBuffer buffer = base64.getValue();
-      if (buffer == null) {
-        throw new IllegalArgumentException(String.format("null base64 value for resource '%s'", uuid));
-      }
-      retval = new Base64Source(result, buffer);
+    ByteBuffer retval = null;
+    if (base64 != null) {
+      retval = base64.getValue();
     }
     return retval;
   }
 
-  @NotNull
-  public static Source newSource(@NotNull URI source, @NotNull URI baseUri) {
-    @SuppressWarnings("null")
-    @NotNull
-    URI result = baseUri.resolve(source);
-    return new URISource(result);
+  @Nullable
+  public static URI getResourceURI(@NotNull Resource resource, @Nullable String preferredMediaType) {
+    URI retval;
+    if (hasBase64Data(resource)) {
+      UUID uuid = resource.getUuid();
+      if (uuid == null) {
+        throw new IllegalArgumentException("resource has a null UUID");
+      }
+      retval = ObjectUtils.notNull(URI.create("#" + uuid));
+    } else {
+      Rlink rlink = findMatchingRLink(resource, preferredMediaType);
+      retval = rlink == null ? null : rlink.getHref();
+    }
+    return retval;
+  }
+
+  @Nullable
+  public static Rlink findMatchingRLink(@NotNull Resource resource, @Nullable String preferredMediaType) {
+    // find a suitable rlink reference
+    List<Rlink> rlinks = resource.getRlinks();
+
+    Rlink retval = null;
+    if (rlinks != null) {
+      // check if there is a matching rlink for the mime type
+      if (preferredMediaType != null) {
+        // find preferred mime type first
+        retval = rlinks.stream().filter(rlink -> preferredMediaType.equals(rlink.getMediaType())).findFirst()
+            .orElse(null);
+      } else {
+        // use the first one instead
+        retval = rlinks.stream().findFirst().orElse(null);
+      }
+    }
+    return retval;
+  }
+
+  @Nullable
+  public static InputSource newInputSource(@NotNull Resource resource, @NotNull EntityResolver resolver,
+      @Nullable String preferredMediaType) throws IOException {
+    URI uri = getResourceURI(resource, null);
+    if (uri == null) {
+      throw new IOException(String.format("unable to determine URI for resource '%s'", resource.getUuid()));
+    }
+
+    InputSource retval;
+    try {
+      retval = resolver.resolveEntity(null, uri.toASCIIString());
+    } catch (SAXException ex) {
+      throw new IOException(ex);
+    }
+
+    if (hasBase64Data(resource)) {
+      // handle base64 encoded data
+      ByteBuffer buffer = getBase64Data(resource);
+      if (buffer == null) {
+        throw new IOException(String.format("null base64 value for resource '%s'", resource.getUuid()));
+      }
+      retval.setByteStream(new ByteBufferBackedInputStream(buffer));
+    }
+    return retval;
   }
 }
