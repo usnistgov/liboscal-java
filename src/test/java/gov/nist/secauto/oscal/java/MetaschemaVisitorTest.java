@@ -48,13 +48,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class MetaschemaVisitorTest {
 
   @Test
-  void test() throws FileNotFoundException, IOException, BindingException {
+  void test() throws FileNotFoundException, IOException, BindingException, URISyntaxException {
     OscalBindingContext bindingContext = OscalBindingContext.instance();
     IBoundLoader loader = bindingContext.newBoundLoader();
     loader.enableFeature(Feature.DESERIALIZE_VALIDATE_CONSTRAINTS);
