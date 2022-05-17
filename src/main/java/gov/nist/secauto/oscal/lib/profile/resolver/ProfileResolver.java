@@ -135,8 +135,14 @@ public class ProfileResolver {
 
     Metadata metadata = new Metadata();
     metadata.setTitle(profile.getMetadata().getTitle());
-    metadata.setVersion(profile.getMetadata().getVersion());
-    metadata.setOscalVersion(OscalUtils.OSCAL_VERSION);
+
+    if (profile.getMetadata().getVersion() != null) {
+      metadata.setVersion(profile.getMetadata().getVersion());
+    }
+
+//    metadata.setOscalVersion(OscalUtils.OSCAL_VERSION);
+    metadata.setOscalVersion(data.getProfile().getMetadata().getOscalVersion());
+
     metadata.setLastModified(ZonedDateTime.now(ZoneOffset.UTC));
 
     metadata.addProp(Property.builder("resolution-tool").value("libOSCAL-Java").build());
@@ -145,14 +151,6 @@ public class ProfileResolver {
     metadata.addLink(Link.builder(profileUri).relation("source-profile").build());
 
     resolvedCatalog.setMetadata(metadata);
-
-    Version version;
-    if (profile.getMetadata().getVersion() != null) {
-      version = VersionUtil.parseVersion(profile.getMetadata().getVersion(), null, null);
-    } else {
-      version = Version.unknownVersion();
-    }
-    metadata.setVersion(version.toString());
 
     resolveImports(data);
     handleMerge(data);
@@ -259,34 +257,34 @@ public class ProfileResolver {
     URI poppedUri = ObjectUtils.notNull(importHistory.pop());
     assert document.getDocumentUri().equals(poppedUri);
 
-    Version catalogVersion = VersionUtil.parseVersion(importedCatalog.getMetadata().getOscalVersion(), null, null);
+    Version importOscalVersion = VersionUtil.parseVersion(importedCatalog.getMetadata().getOscalVersion(), null, null);
 
-    Catalog resolvingCatalog = data.getCatalog();
-    Version resolvingCatalogVersion
-        = VersionUtil.parseVersion(resolvingCatalog.getMetadata().getOscalVersion(), null, null);
+    Catalog resolvedCatalog = data.getCatalog();
+    Version resolvedCatalogVersion
+        = VersionUtil.parseVersion(resolvedCatalog.getMetadata().getOscalVersion(), null, null);
 
-    if (catalogVersion.compareTo(resolvingCatalogVersion) > 0) {
-      resolvingCatalog.getMetadata().setOscalVersion(catalogVersion.toString());
+    if (importOscalVersion.compareTo(resolvedCatalogVersion) > 0) {
+      resolvedCatalog.getMetadata().setOscalVersion(importOscalVersion.toString());
     }
 
     for (Parameter param : CollectionUtil.listOrEmpty(importedCatalog.getParams())) {
-      resolvingCatalog.addParam(param);
+      resolvedCatalog.addParam(param);
     }
     for (Control control : CollectionUtil.listOrEmpty(importedCatalog.getControls())) {
-      resolvingCatalog.addControl(control);
+      resolvedCatalog.addControl(control);
     }
     for (CatalogGroup group : CollectionUtil.listOrEmpty(importedCatalog.getGroups())) {
-      resolvingCatalog.addGroup(group);
+      resolvedCatalog.addGroup(group);
     }
 
     // TODO: copy roles, parties, and locations with prop name:keep and any referenced
     // TODO: handle resources properly
     BackMatter backMatter = importedCatalog.getBackMatter();
     if (backMatter != null && backMatter.getResources() != null) {
-      BackMatter resolvingBackMatter = resolvingCatalog.getBackMatter();
+      BackMatter resolvingBackMatter = resolvedCatalog.getBackMatter();
       if (resolvingBackMatter == null) {
         resolvingBackMatter = new BackMatter();
-        resolvingCatalog.setBackMatter(resolvingBackMatter);
+        resolvedCatalog.setBackMatter(resolvingBackMatter);
       }
 
       for (Resource resource : backMatter.getResources()) {
