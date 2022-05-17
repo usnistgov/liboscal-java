@@ -119,7 +119,7 @@
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
 		<dependency.junit5.version>5.8.2</dependency.junit5.version>
 		<dependency.junit5-platform-launcher.version>1.8.2</dependency.junit5-platform-launcher.version>
-		<dependency.saxon.version>11.2</dependency.saxon.version>
+		<dependency.saxon.version>11.3</dependency.saxon.version>
 		<dependency.xmlresolver.version>4.2.0</dependency.xmlresolver.version>
 
 		<plugin.license.version>4.0.rc1</plugin.license.version>
