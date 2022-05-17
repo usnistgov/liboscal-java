@@ -61,6 +61,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -231,8 +232,12 @@ public class ProfileResolver {
         throw new IOException(ex);
       }
 
+      try {
       document = (IDocumentNodeItem) getDynamicContext().getDocumentLoader()
           .loadAsNodeItem(ObjectUtils.notNull(source.toURL()));
+      } catch (URISyntaxException ex) {
+        throw new IOException(ex);
+      }
     }
 
     importHistory.push(document.getDocumentUri());

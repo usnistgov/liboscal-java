@@ -40,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -63,7 +64,7 @@ public class OscalBindingContext
   }
 
   @NotNull
-  public Catalog loadCatalog(@NotNull URL url) throws IOException {
+  public Catalog loadCatalog(@NotNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(Catalog.class, url);
   }
 
@@ -79,7 +80,7 @@ public class OscalBindingContext
   }
 
   @NotNull
-  public Profile loadProfile(@NotNull URL url) throws IOException {
+  public Profile loadProfile(@NotNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(Profile.class, url);
   }
 
@@ -94,7 +95,7 @@ public class OscalBindingContext
   }
 
   @NotNull
-  public SystemSecurityPlan loadSystemSecurityPlan(@NotNull URL url) throws IOException {
+  public SystemSecurityPlan loadSystemSecurityPlan(@NotNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(SystemSecurityPlan.class, url);
   }
 
@@ -109,7 +110,7 @@ public class OscalBindingContext
   }
 
   @NotNull
-  public ComponentDefinition loadComponentDefinition(@NotNull URL url) throws IOException {
+  public ComponentDefinition loadComponentDefinition(@NotNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(ComponentDefinition.class, url);
   }
 
@@ -124,7 +125,7 @@ public class OscalBindingContext
   }
 
   @NotNull
-  public AssessmentPlan loadAssessmentPlan(@NotNull URL url) throws IOException {
+  public AssessmentPlan loadAssessmentPlan(@NotNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(AssessmentPlan.class, url);
   }
 
@@ -139,7 +140,7 @@ public class OscalBindingContext
   }
 
   @NotNull
-  public AssessmentResults loadAssessmentResults(@NotNull URL url) throws IOException {
+  public AssessmentResults loadAssessmentResults(@NotNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(AssessmentResults.class, url);
   }
 
@@ -154,7 +155,7 @@ public class OscalBindingContext
   }
 
   @NotNull
-  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NotNull URL url) throws IOException {
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NotNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, url);
   }
 

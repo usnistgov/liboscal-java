@@ -157,6 +157,26 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<name>Nexus Snapshots</name>
+			<id>snapshots-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<releases>
+			  <enabled>false</enabled>
+			  <updatePolicy>always</updatePolicy>
+			  <checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+			  <enabled>true</enabled>
+			  <updatePolicy>daily</updatePolicy>
+			  <checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+		  </repository>
+    </repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>gov.nist.secauto.metaschema</groupId>
