@@ -26,6 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
@@ -60,6 +62,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.util.Stack;
 
@@ -96,6 +99,15 @@ class ProfileResolutionTests {
 
   public static ProfileResolver getProfileResolver() {
     return profileResolver;
+  }
+
+  private Catalog resolveProfile(@NotNull Path profileFile)
+      throws FileNotFoundException, BindingException, IOException {
+    Profile profile = OscalBindingContext.instance().loadProfile(profileFile);
+    ProfileResolver.ResolutionData data
+        = new ProfileResolver.ResolutionData(profile, ObjectUtils.notNull(profileFile.toUri()), new Stack<>());
+    getProfileResolver().resolve(data);
+    return data.getCatalog();
   }
 
   private Catalog resolveProfile(@NotNull File profileFile)
@@ -178,4 +190,14 @@ class ProfileResolutionTests {
 
     MatcherAssert.assertThat(exceptionThrown.getCause(), CoreMatchers.instanceOf(ImportCycleException.class));
   }
+
+
+  @Test
+  void testOscalVersion() throws IllegalStateException, IOException, BindingException {
+    Path profileFile = Path.of("src/test/resources/test-oscal-version-profile.xml");
+    Catalog catalog = resolveProfile(profileFile);
+    assertNotNull(catalog);
+    assertEquals("1.0.4", catalog.getMetadata().getOscalVersion());
+  }
+
 }

@@ -152,7 +152,7 @@ public class ProfileResolver {
     } else {
       version = Version.unknownVersion();
     }
-    metadata.setOscalVersion(version.toString());
+    metadata.setVersion(version.toString());
 
     resolveImports(data);
     handleMerge(data);
