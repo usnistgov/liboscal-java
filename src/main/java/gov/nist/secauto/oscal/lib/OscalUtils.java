@@ -43,7 +43,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class OscalUtils {
-  public static final String OSCAL_VERSION = "1.0.0";
+  public static final String OSCAL_VERSION = "1.0.4";
   private static final Pattern INTERNAL_REFERENCE_FRAGMENT_PATTERN = Pattern.compile("^#(.+)$");
 
   private OscalUtils() {
