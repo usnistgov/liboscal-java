@@ -23,6 +23,7 @@ jobs:
       with:
         token: ${{ github.token }}
         submodules: recursive
+        fetch-depth: 0
     # -------------------------
     # Java JDK 11
     - name: Set up JDK 11
