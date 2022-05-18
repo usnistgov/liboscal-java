@@ -141,22 +141,6 @@ class TestContent {
   }
 
   @Test
-  public void testReadWriteOscalCatalog(@TempDir Path tempDir) throws IOException, BindingException {
-
-    File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
-    if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("Testing XML file: {}", catalogSourceXml.getName());
-    }
-    assertTrue(catalogSourceXml.exists());
-
-    File outDir = new File("target/test-content");
-    outDir.mkdirs();
-    Path outPath = outDir.toPath();
-    chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
-  }
-
-  @Disabled
-  @Test
   public void testOscalCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
@@ -165,6 +149,11 @@ class TestContent {
     }
     assertTrue(catalogSourceXml.exists());
 
-    chainReadWrite(catalogSourceXml, Catalog.class, tempDir, 50);
+//    File outDir = new File("target/test-content");
+//    outDir.mkdirs();
+//    Path outPath = outDir.toPath();
+    Path outPath = tempDir;
+//    chainReadWrite(catalogSourceXml, Catalog.class, tempDir, 50);
+    chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
   }
 }

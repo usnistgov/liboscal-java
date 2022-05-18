@@ -53,11 +53,13 @@ import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.Role;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-import gov.nist.secauto.oscal.lib.resource.Source;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -81,21 +83,30 @@ public class ProfileResolver {
     CUSTOM;
   }
 
+  @NotNull
   private final DynamicContext dynamicContext;
 
   public ProfileResolver(@NotNull DynamicContext dynamicContext) {
     this.dynamicContext = dynamicContext;
   }
 
+  @NotNull
   protected DynamicContext getDynamicContext() {
     return dynamicContext;
   }
 
-  public @NotNull Catalog resolve(@NotNull INodeItem profile) throws IOException {
+  @NotNull
+  protected EntityResolver getEntityResolver(@NotNull URI documentUri) {
+    return new DocumentEntityResolver(documentUri);
+  }
+
+  @NotNull
+  public Catalog resolve(@NotNull INodeItem profile) throws IOException {
     return resolve(profile, new Stack<>());
   }
 
-  public @NotNull Catalog resolve(@NotNull INodeItem profile, @NotNull Stack<@NotNull URI> importHistory)
+  @NotNull
+  public Catalog resolve(@NotNull INodeItem profile, @NotNull Stack<@NotNull URI> importHistory)
       throws IOException {
     Object profileObject = profile.toBoundObject();
 
@@ -123,7 +134,7 @@ public class ProfileResolver {
   }
 
   @NotNull
-  public void resolve(@NotNull ResolutionData data) throws IOException, IllegalStateException {
+  public Catalog resolve(@NotNull ResolutionData data) throws IOException, IllegalStateException {
     // final Profile profile, @NotNull final URI documentUri,
     // @NotNull Stack<@NotNull URI> importHistory
 
@@ -155,6 +166,8 @@ public class ProfileResolver {
     resolveImports(data);
     handleMerge(data);
     handleReferences(data);
+
+    return data.getCatalog();
   }
 
   private void resolveImports(@NotNull ResolutionData data) throws IOException {
@@ -187,58 +200,44 @@ public class ProfileResolver {
     URI profileUri = data.getProfileUri();
     Stack<@NotNull URI> importHistory = data.getImportHistory();
 
-    IDocumentNodeItem document;
+    EntityResolver resolver = getEntityResolver(profileUri);
+
+    InputSource source;
     if (OscalUtils.isInternalReference(importUri)) {
       // handle internal reference
       String uuid = OscalUtils.internalReferenceFragmentToId(importUri);
 
       Profile profile = data.getProfile();
       Resource resource = profile.getResourceByUuid(ObjectUtils.notNull(UUID.fromString(uuid)));
-
-      @SuppressWarnings("null")
-      @NotNull
-      URI resolvedUri = importUri.resolve(profileUri);
       if (resource == null) {
         throw new IllegalArgumentException(
-            String.format("unable to find the resource identified by '%s' used in profile import", resolvedUri));
+            String.format("unable to find the resource identified by '%s' used in profile import", importUri));
       }
 
-      // check for import cycle
-      try {
-        requireNonCycle(resolvedUri, importHistory);
-      } catch (ImportCycleException ex) {
-        throw new IOException(ex);
-      }
-      importHistory.push(resolvedUri);
-
-      Source source = OscalUtils.newSource(resource, resolvedUri, null);
-      document = (IDocumentNodeItem) getDynamicContext().getDocumentLoader().loadAsNodeItem(source.newInputStream(),
-          source.getSystemId());
-
-      URI poppedUri = ObjectUtils.notNull(importHistory.pop());
-      assert resolvedUri.equals(poppedUri);
+      source = OscalUtils.newInputSource(resource, resolver, null);
     } else {
-      // handle external reference
-      @SuppressWarnings("null")
-      @NotNull
-      URI source = profileUri.resolve(importUri);
-
-      // check for import cycle
       try {
-        requireNonCycle(source, importHistory);
-      } catch (ImportCycleException ex) {
-        throw new IOException(ex);
-      }
-
-      try {
-      document = (IDocumentNodeItem) getDynamicContext().getDocumentLoader()
-          .loadAsNodeItem(ObjectUtils.notNull(source.toURL()));
-      } catch (URISyntaxException ex) {
+        source = resolver.resolveEntity(null, importUri.toASCIIString());
+      } catch (SAXException ex) {
         throw new IOException(ex);
       }
     }
 
-    importHistory.push(document.getDocumentUri());
+    if (source == null || source.getSystemId() == null) {
+      throw new IOException(String.format("Unable to resolve import '%s'.", importUri.toString()));
+    }
+    importUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
+
+    // check for import cycle
+    try {
+      requireNonCycle(importUri, importHistory);
+    } catch (ImportCycleException ex) {
+      throw new IOException(ex);
+    }
+    importHistory.push(importUri);
+
+    IDocumentNodeItem document;
+    document = (IDocumentNodeItem) getDynamicContext().getDocumentLoader().loadAsNodeItem(source);
 
     Catalog importedCatalog = resolve(document, importHistory);
 
@@ -483,5 +482,36 @@ public class ProfileResolver {
     public Catalog getCatalog() {
       return catalog;
     }
+  }
+
+  private class DocumentEntityResolver implements EntityResolver {
+    @NotNull
+    private final URI documentUri;
+
+    public DocumentEntityResolver(@NotNull URI documentUri) {
+      this.documentUri = documentUri;
+    }
+
+    @NotNull
+    protected URI getDocumentUri() {
+      return documentUri;
+    }
+
+    @Override
+    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+
+      URI resolvedUri = getDocumentUri().resolve(systemId);
+
+      EntityResolver resolver = getDynamicContext().getDocumentLoader().getEntityResolver();
+
+      InputSource retval;
+      if (resolver == null) {
+        retval = new InputSource(resolvedUri.toASCIIString());
+      } else {
+        retval = resolver.resolveEntity(publicId, resolvedUri.toASCIIString());
+      }
+      return retval;
+    }
+
   }
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="http://csrc.nist.gov/ns/oscal/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://csrc.nist.gov/ns/oscal/1.0 ../../../oscal/xml/schema/oscal_complete_schema.xsd"
+    uuid="2ac0d22d-7e4c-4dc2-a073-98c474d24bd7">
+    <metadata>
+        <title>Simple Test Catalog</title>
+        <last-modified>2022-05-12T09:11:42.159308700-04:00</last-modified>
+        <version>1.0.0</version>
+        <oscal-version>1.0.4</oscal-version>
+    </metadata>
+    <control id="control-1">
+        <title>Test Control</title>
+        <part name="statement">
+            <p>This is a test control statement.</p>
+        </part>
+    </control>
+</catalog>
