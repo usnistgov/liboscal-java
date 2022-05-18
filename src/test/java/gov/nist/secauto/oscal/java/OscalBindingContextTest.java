@@ -37,12 +37,14 @@ import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
+import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -142,5 +144,16 @@ class OscalBindingContextTest {
   static Path newPath(@NotNull Path dir, @NotNull String filename) {
     return dir.resolve(filename);
     // return Path.of("target",filename);
+  }
+  
+  @Test
+  void testSerializeSspToOutputStream() throws IOException {
+    SystemSecurityPlan ssp = new SystemSecurityPlan();
+
+    IBindingContext context = IBindingContext.newInstance();
+    ISerializer<SystemSecurityPlan> serializer = context.newSerializer(Format.JSON, SystemSecurityPlan.class);
+    serializer.enableFeature(Feature.SERIALIZE_ROOT);
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    serializer.serialize(ssp, out);
   }
 }
