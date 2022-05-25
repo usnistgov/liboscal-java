@@ -31,6 +31,7 @@ import com.fasterxml.jackson.core.util.VersionUtil;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.model.common.metapath.function.InvalidTypeFunctionMetapathException;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
@@ -107,7 +108,11 @@ public class ProfileResolver {
   @NotNull
   public Catalog resolve(@NotNull INodeItem profile, @NotNull Stack<@NotNull URI> importHistory)
       throws IOException {
-    Object profileObject = ObjectUtils.requireNonNull(profile.getValue());
+    Object profileObject = profile.getValue();
+    if (profileObject == null) {
+      throw new InvalidTypeFunctionMetapathException(InvalidTypeFunctionMetapathException.NODE_HAS_NO_TYPED_VALUE,
+          String.format("Item '%s' has no typed value", profile.getClass().getName()));
+    }
 
     Catalog retval;
     if (profileObject instanceof Catalog) {

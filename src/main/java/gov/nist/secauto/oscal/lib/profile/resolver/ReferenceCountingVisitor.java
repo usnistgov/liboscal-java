@@ -237,27 +237,28 @@ public class ReferenceCountingVisitor {
     visitProperties(metadata.getProps());
     visitLinks(metadata.getLinks());
     visitLinkedNodes(metadata.getRemarks());
+    visitResponsibleParties(metadata.getResponsibleParties());
   }
 
   protected void visitProperties(List<Property> properties) {
-    if (properties != null) {
-      for (Property property : properties) {
-        handleProperty(property);
-        visitLinkedNodes(property.getRemarks());
-      }
+    for (Property property : CollectionUtil.listOrEmpty(properties)) {
+      handleProperty(property);
+      visitLinkedNodes(property.getRemarks());
     }
   }
 
   protected void visitLinks(List<Link> links) {
-    if (links != null) {
-      for (Link link : links) {
-        handleLink(link);
-        visitLinkedNodes(link.getText());
-      }
+    for (Link link : CollectionUtil.listOrEmpty(links)) {
+      handleLink(link);
+      visitLinkedNodes(link.getText());
     }
   }
 
   public void visitRole(@NotNull Role role) {
+//    if ("always".equals(Property.getValue(role.getProps(), Property.qname(Property.OSCAL_NAMESPACE, "keep"), "never"))) {
+//      incrementReferenceCount(ItemType.ROLE, role.getId());
+//    }
+    
     visitLinkedNodes(role.getTitle());
     visitLinkedNodes(role.getDescription());
     visitProperties(role.getProps());
@@ -270,6 +271,12 @@ public class ReferenceCountingVisitor {
     visitProperties(location.getProps());
     visitLinks(location.getLinks());
     visitLinkedNodes(location.getRemarks());
+  }
+
+  protected void visitResponsibleParties(List<ResponsibleParty> responsibleParties) {
+    for (ResponsibleParty responsibleParty : CollectionUtil.listOrEmpty(responsibleParties)) {
+      visitResponsibleParty(responsibleParty);
+    }
   }
 
   @SuppressWarnings("null")

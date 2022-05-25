@@ -32,6 +32,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionUtils;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IArgument;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
+import gov.nist.secauto.metaschema.model.common.metapath.function.InvalidTypeFunctionMetapathException;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IBooleanItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
@@ -128,6 +129,13 @@ public final class HasOscalNamespace {
       @NotNull ISequence<? extends IStringItem> namespaces, @NotNull DynamicContext dynamicContext)
       throws MetapathException {
     Object propOrPartObject = propOrPart.getValue();
+<<<<<<< HEAD
+=======
+    if (propOrPartObject == null) {
+      throw new InvalidTypeFunctionMetapathException(InvalidTypeFunctionMetapathException.NODE_HAS_NO_TYPED_VALUE,
+          String.format("Item '%s' has no typed value", propOrPart.getClass().getName()));
+    }
+>>>>>>> ddaa4ff (Updated use of metaschema-java.)
 
     URI nodeNamespace;
     if (propOrPartObject instanceof Property) {
