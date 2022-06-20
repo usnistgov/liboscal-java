@@ -26,15 +26,20 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.IncludeAll;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
+import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public interface IControlFilter {
   @NotNull
-  static final IControlFilter ALWAYS_MATCH = new IControlFilter() {
+  IControlFilter ALWAYS_MATCH = new IControlFilter() {
     @Override
     public @NotNull Pair<@NotNull Boolean, @NotNull Boolean> match(@NotNull IControl control, boolean defaultMatch) {
       return IControlSelectionFilter.MATCH;
@@ -52,7 +57,7 @@ public interface IControlFilter {
   };
 
   @NotNull
-  static final IControlFilter NONE_MATCH = new IControlFilter() {
+  IControlFilter NONE_MATCH = new IControlFilter() {
 
     @Override
     public @NotNull Pair<@NotNull Boolean, @NotNull Boolean> match(@NotNull IControl control, boolean defaultMatch) {
@@ -79,13 +84,13 @@ public interface IControlFilter {
    */
   @NotNull
   static IControlFilter newInstance(@NotNull ProfileImport profileImport) {
-    return new ControlFilterImpl(profileImport);
+    return new Filter(profileImport);
   }
 
   @NotNull
   static IControlFilter newInstance(@NotNull IControlSelectionFilter includes,
       @NotNull IControlSelectionFilter excludes) {
-    return new ControlFilterImpl(includes, excludes);
+    return new Filter(includes, excludes);
   }
 
   /**
@@ -123,4 +128,71 @@ public interface IControlFilter {
 
   @NotNull
   IControlSelectionFilter getExclusionFilter();
+
+  class Filter implements IControlFilter {
+    @NotNull
+    private final IControlSelectionFilter inclusionFilter;
+    @NotNull
+    private final IControlSelectionFilter exclusionFilter;
+
+    public Filter(@NotNull ProfileImport profileImport) {
+      IncludeAll includeAll = profileImport.getIncludeAll();
+
+      if (includeAll == null) {
+        List<? extends IProfileSelectControlById> selections = profileImport.getIncludeControls();
+        if (selections == null) {
+          this.inclusionFilter = IControlSelectionFilter.NONE_MATCH;
+        } else {
+          this.inclusionFilter = new DefaultControlSelectionFilter(selections);
+        }
+      } else {
+        this.inclusionFilter = IControlSelectionFilter.ALL_MATCH;
+      }
+
+      List<? extends IProfileSelectControlById> selections = profileImport.getExcludeControls();
+      if (selections == null) {
+        this.exclusionFilter = IControlSelectionFilter.NONE_MATCH;
+      } else {
+        this.exclusionFilter = new DefaultControlSelectionFilter(selections);
+      }
+
+    }
+
+    public Filter(@NotNull IControlSelectionFilter includes, @NotNull IControlSelectionFilter excludes) {
+      this.inclusionFilter = includes;
+      this.exclusionFilter = excludes;
+    }
+
+    @Override
+    @NotNull
+    public IControlSelectionFilter getInclusionFilter() {
+      return inclusionFilter;
+    }
+
+    @Override
+    @NotNull
+    public IControlSelectionFilter getExclusionFilter() {
+      return exclusionFilter;
+    }
+
+    @Override
+    public Pair<@NotNull Boolean, @NotNull Boolean> match(@NotNull IControl control, boolean defaultMatch) {
+      @NotNull
+      Pair<@NotNull Boolean, @NotNull Boolean> result = getInclusionFilter().apply(control);
+      boolean left = ObjectUtils.notNull(result.getLeft());
+      if (left) {
+        // this is a positive include match. Is it excluded?
+        Pair<@NotNull Boolean, @NotNull Boolean> excluded = getExclusionFilter().apply(control);
+        if (ObjectUtils.notNull(excluded.getLeft())) {
+          // the effective result is a non-match
+          result = IControlSelectionFilter.NON_MATCH;
+        }
+      } else {
+        result = defaultMatch ? IControlSelectionFilter.MATCH : IControlSelectionFilter.NON_MATCH;
+      }
+      return result;
+    }
+
+  }
+
 }

@@ -24,35 +24,36 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.model.control.catalog;
-
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.stream.Stream;
+public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
 
-public abstract class AbstractControlContainer implements IControlContainer {
-
-  @SuppressWarnings("null")
+  /**
+   * Get the parser to use to parse an entity identifier from the reference text.
+   * 
+   * @return the parser
+   */
   @NotNull
-  @Override
-  public Stream<@NotNull String> getReferencedParameterIds() {
+  IIdentifierParser getIdentifierParser();
 
-    // get parameters referenced by the control's parts
-    Stream<@NotNull String> insertIds = CollectionUtil.listOrEmpty(getParts()).stream()
-        .flatMap(part -> part.getInserts(insert -> "param".equals(insert.getType().toStringOrNull()), true))
-        .map(insert -> insert.getIdReference().toStringOrNull())
-        .filter(id -> id != null);
+  /**
+   * Retrieve the reference text from the {@code reference} object.
+   * 
+   * @param reference
+   *          the reference object
+   * @return the reference text or {@code null} if there is no text
+   */
+  String getReferenceText(@NotNull TYPE reference);
 
-    // get parameters referenced by the control's parameters
-    Stream<@NotNull String> parameterReferencedIds = CollectionUtil.listOrEmpty(getParams()).stream()
-        .filter(Objects::nonNull)
-        .flatMap(param -> param.getParameterReferences());
-
-    return Stream.concat(insertIds, parameterReferencedIds)
-        .distinct();
-  }
-
+  /**
+   * Update the reference text used in the {@code reference} object.
+   * 
+   * @param reference
+   *          the reference object
+   * @param newReferenceText
+   *          the reference text replacement
+   */
+  void setReferenceText(@NotNull TYPE reference, @NotNull String newReferenceText);
 }

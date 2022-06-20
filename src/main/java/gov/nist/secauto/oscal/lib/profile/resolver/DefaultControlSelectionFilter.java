@@ -114,7 +114,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
     String regex = pattern.chars().boxed().map(ch -> (char) ch.intValue()).map(ch -> {
 
       String value;
-      switch (ch) {
+      switch (ch) { // NOPMD - intentional
       case '*':
         value = ".*";
         break;
@@ -140,7 +140,9 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
       return value;
     }).collect(Collectors.joining("", "^", "$"));
 
-    LOGGER.atInfo().log("regex: {}", regex);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.atDebug().log("regex: {}", regex);
+    }
     return Pattern.compile(regex);
   }
 

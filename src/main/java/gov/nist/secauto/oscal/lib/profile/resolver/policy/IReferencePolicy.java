@@ -26,25 +26,39 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-
 import org.jetbrains.annotations.NotNull;
 
-public interface IReferencePolicy<TYPE> {
+public interface IReferencePolicy<T> {
   @NotNull
-  static final IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+  IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
 
     @Override
-    public boolean handleReference(@NotNull Object type, @NotNull Index index) {
+    public boolean handleReference(@NotNull Object reference, @NotNull IReferenceVisitor visitor) {
       return true;
     }
   };
 
+  /**
+   * Get a reference policy that will ignore processing the reference.
+   * 
+   * @param <T>
+   *          the type of the reference object
+   * @return the policy
+   */
   @SuppressWarnings("unchecked")
   @NotNull
-  static <TYPE> IReferencePolicy<TYPE> ignore() {
-    return (@NotNull IReferencePolicy<TYPE>) IGNORE_POLICY;
+  static <T> IReferencePolicy<T> ignore() {
+    return (@NotNull IReferencePolicy<T>) IGNORE_POLICY;
   }
 
-  boolean handleReference(@NotNull TYPE type, @NotNull Index index);
+  /**
+   * Handle the provided {@code reference}.
+   * 
+   * @param reference
+   *          the reference object to process
+   * @param visitor
+   *          used to lookup and resolve items
+   * @return {@code true} if the reference was handled, or {@code false} otherwise
+   */
+  boolean handleReference(@NotNull T reference, @NotNull IReferenceVisitor visitor);
 }

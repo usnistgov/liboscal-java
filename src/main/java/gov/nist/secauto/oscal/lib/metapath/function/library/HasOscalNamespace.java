@@ -47,10 +47,6 @@ import java.net.URI;
 import java.util.List;
 
 public final class HasOscalNamespace {
-  private HasOscalNamespace() {
-    // disable construction
-  }
-
   @NotNull
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("has-oscal-namespace")
@@ -87,6 +83,10 @@ public final class HasOscalNamespace {
       .returnOne()
       .functionHandler(HasOscalNamespace::executeTwoArg)
       .build();
+
+  private HasOscalNamespace() {
+    // disable construction
+  }
 
   @NotNull
   public static ISequence<?> executeOneArg(@NotNull IFunction function,
@@ -129,13 +129,10 @@ public final class HasOscalNamespace {
       @NotNull ISequence<? extends IStringItem> namespaces, @NotNull DynamicContext dynamicContext)
       throws MetapathException {
     Object propOrPartObject = propOrPart.getValue();
-<<<<<<< HEAD
-=======
     if (propOrPartObject == null) {
       throw new InvalidTypeFunctionMetapathException(InvalidTypeFunctionMetapathException.NODE_HAS_NO_TYPED_VALUE,
           String.format("Item '%s' has no typed value", propOrPart.getClass().getName()));
     }
->>>>>>> ddaa4ff (Updated use of metaschema-java.)
 
     URI nodeNamespace;
     if (propOrPartObject instanceof Property) {

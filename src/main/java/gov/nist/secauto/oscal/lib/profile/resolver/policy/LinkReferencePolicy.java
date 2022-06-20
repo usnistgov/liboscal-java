@@ -31,8 +31,6 @@ import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,78 +38,77 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.Locale;
 
 public class LinkReferencePolicy
-    extends AbstractStaticItemTypesReferencePolicy<Link> {
+    extends AbstractMultiItemTypeReferencePolicy<Link> {
   private static final Logger LOGGER = LogManager.getLogger(LinkReferencePolicy.class);
-  @NotNull
-  private static final IReferencePolicyHandler<Link> INDEX_MISS_HANDLER = new IndexMissHandler();
-  @NotNull
-  private static final IReferencePolicyHandler<Link> INDEX_HIT_UNSELECTED_HANDLER = new IndexHitUnselectedHandler();
-  @NotNull
-  private static final IReferencePolicyHandler<Link> INDEX_HIT_INCREMENT_HANDLER
-      = IReferencePolicyHandler.incrementCountIndexHitPolicy();
 
   @SuppressWarnings("null")
   @NotNull
   public static LinkReferencePolicy create(@NotNull ItemType itemType) {
-    return create(Set.of(itemType));
+    return create(List.of(itemType));
   }
 
   @NotNull
-  public static LinkReferencePolicy create(Set<ItemType> itemTypes) {
-    return new LinkReferencePolicy(
-        CollectionUtil.requireNonEmpty(Objects.requireNonNull(itemTypes, "itemTypes"), "itemTypes"));
+  public static LinkReferencePolicy create(@NotNull List<@NotNull ItemType> itemTypes) {
+    return new LinkReferencePolicy(CollectionUtil.requireNonEmpty(itemTypes, "itemTypes"));
   }
 
-  @SuppressWarnings("null")
-  public LinkReferencePolicy(@NotNull Set<ItemType> itemTypes) {
-    super(IIdentifierParser.FRAGMENT_PARSER,
-        List.of(INDEX_MISS_HANDLER,
-            INDEX_HIT_UNSELECTED_HANDLER,
-            INDEX_HIT_INCREMENT_HANDLER),
-        itemTypes);
+  public LinkReferencePolicy(@NotNull List<@NotNull ItemType> itemTypes) {
+    super(IIdentifierParser.FRAGMENT_PARSER, itemTypes);
   }
 
   @Override
-  protected String getReference(@NotNull Link link) {
+  public String getReferenceText(@NotNull Link link) {
     return link.getHref().toString();
   }
 
-  private static class IndexHitUnselectedHandler
-      extends AbstractIndexHitUnselectedPolicyHandler<Link> {
-    @Override
-    protected boolean handleUnselected(EntityItem item, @NotNull Link link) {
-      URI linkHref = link.getHref();
-      URI sourceUri = item.getSource();
-
-      URI resolved = sourceUri.resolve(linkHref);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
-      }
-      link.setHref(resolved);
-      return true;
-    }
+  @Override
+  public void setReferenceText(@NotNull Link link, @NotNull String newValue) {
+    link.setHref(URI.create(newValue));
   }
 
-  private static class IndexMissHandler
-      extends AbstractIndexMissPolicyHandler<Link> {
+  @Override
+  protected void handleUnselected(
+      @NotNull Link link,
+      @NotNull EntityItem item,
+      @NotNull IReferenceVisitor visitor) {
+    URI linkHref = link.getHref();
+    URI sourceUri = item.getSource();
 
-    @Override
-    public boolean handleIndexMiss(@NotNull Link link, @NotNull Set<ItemType> itemTypes,
-        @NotNull Match match, @NotNull Index index) {
-      if (LOGGER.isWarnEnabled()) {
-        LOGGER.atWarn().log(
-            "link with rel '{}' should reference a {} identified by '{}'. The index did not contain the identifier.",
-            link.getRel(),
-            itemTypes.stream().map(en -> en.name().toLowerCase())
-                .collect(CustomCollectors.joiningWithOxfordComma("or")),
-            match.getIdentifier());
-      }
-      return true;
+    URI resolved = sourceUri.resolve(linkHref);
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
     }
+    link.setHref(resolved);
+  }
 
+  @Override
+  protected boolean handleIndexMiss(
+      @NotNull Link link,
+      @NotNull List<@NotNull ItemType> itemTypes,
+      @NotNull String identifier,
+      @NotNull IReferenceVisitor visitor) {
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.atWarn().log(
+          "link with rel '{}' should reference a {} identified by '{}'. The index did not contain the identifier.",
+          link.getRel(),
+          itemTypes.stream()
+              .map(en -> en.name().toLowerCase(Locale.ROOT))
+              .collect(CustomCollectors.joiningWithOxfordComma("or")),
+          identifier);
+    }
+    return true;
+  }
+  
+
+  @Override
+  protected boolean handleIdentifierNonMatch(@NotNull Link reference, @NotNull IReferenceVisitor visitor) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.atDebug().log("Ignoring URI '{}'", reference.getHref().toString());
+    }
+    
+    return true;
   }
 }

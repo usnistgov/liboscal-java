@@ -26,12 +26,24 @@
 
 package gov.nist.secauto.oscal.lib.model.control;
 
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.oscal.lib.model.Link;
+import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.model.ParameterConstraint;
+import gov.nist.secauto.oscal.lib.model.ParameterGuideline;
 import gov.nist.secauto.oscal.lib.model.ParameterSelection;
+import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -65,4 +77,141 @@ public abstract class AbstractParameter implements IParameter {
     return retval;
   }
 
+  @NotNull
+  public static Builder builder(@NotNull String id) {
+    return new Builder(id);
+  }
+
+  public static class Builder {
+    @NotNull
+    private final String id;
+
+    private String clazz;
+    private final List<Property> props = new LinkedList<>();
+    private final List<Link> links = new LinkedList<>();
+    private MarkupLine label;
+    private MarkupMultiline usage;
+    private final List<ParameterConstraint> constraints = new LinkedList<>();
+    private final List<ParameterGuideline> guidelines = new LinkedList<>();
+    private List<String> values = new LinkedList<>();
+    private ParameterSelection selection;
+    private MarkupMultiline remarks;
+
+    @SuppressWarnings("null")
+    public Builder(@NotNull String id) {
+      this.id = Objects.requireNonNull(id, "id");
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder clazz(@NotNull String value) {
+      this.clazz = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @NotNull
+    public Builder prop(@NotNull Property value) {
+      this.props.add(Objects.requireNonNull(value, "value"));
+      return this;
+    }
+
+    @NotNull
+    public Builder link(@NotNull Link value) {
+      this.links.add(Objects.requireNonNull(value, "value"));
+      return this;
+    }
+
+    @NotNull
+    public Builder label(@NotNull String markdown) {
+      return label(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder label(@NotNull MarkupLine value) {
+      this.label = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @NotNull
+    public Builder usage(@NotNull String markdown) {
+      return usage(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder usage(@NotNull MarkupMultiline value) {
+      this.usage = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @NotNull
+    public Builder constraint(@NotNull ParameterConstraint value) {
+      this.constraints.add(Objects.requireNonNull(value, "value"));
+      return this;
+    }
+
+    @NotNull
+    public Builder guideline(@NotNull ParameterGuideline value) {
+      this.guidelines.add(Objects.requireNonNull(value, "value"));
+      return this;
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder values(@NotNull String... values) {
+      return values(Arrays.asList(values));
+    }
+
+    @NotNull
+    public Builder values(@NotNull Collection<String> values) {
+      this.values = new ArrayList<>(values);
+      return this;
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder select(@NotNull ParameterSelection value) {
+      this.selection = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @NotNull
+    public Parameter build() {
+      Parameter retval = new Parameter();
+      retval.setId(id);
+
+      if (clazz != null) {
+        retval.setClazz(clazz);
+      }
+      if (!props.isEmpty()) {
+        retval.setProps(props);
+      }
+      if (!links.isEmpty()) {
+        retval.setLinks(links);
+      }
+      if (label != null) {
+        retval.setLabel(label);
+      }
+      if (usage != null) {
+        retval.setUsage(usage);
+      }
+      if (!constraints.isEmpty()) {
+        retval.setConstraints(constraints);
+      }
+      if (!guidelines.isEmpty()) {
+        retval.setGuidelines(guidelines);
+      }
+      if (!values.isEmpty()) {
+        retval.setValues(values);
+      }
+      if (selection != null) {
+        retval.setSelect(selection);
+      }
+      if (remarks != null) {
+        retval.setRemarks(remarks);
+      }
+      return retval;
+    }
+  }
 }

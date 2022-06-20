@@ -26,7 +26,13 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferenceVisitor;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +41,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class EntityItem {
+  private static final MetapathExpression CONTAINER_METAPATH
+      = MetapathExpression.compile("(ancestor::control|ancestor::group)[1])");
 
   public enum ItemType {
     ROLE,
@@ -48,25 +56,50 @@ public final class EntityItem {
   }
 
   @NotNull
+  private final String originalIdentifier;
+  @NotNull
   private final String identifier;
   @NotNull
-  private final Object instance;
+  private final IRequiredValueModelNodeItem instance;
   @NotNull
   private final ItemType itemType;
   @NotNull
   private final URI source;
   private int referenceCount; // 0 by default
+  private boolean resolved; // false by default
 
   public static Builder builder() {
     return new Builder();
   }
 
+  @SuppressWarnings("null")
+  private EntityItem(@NotNull Builder builder) {
+    this.originalIdentifier = builder.originalIdentifier == null ? builder.identifier : builder.originalIdentifier;
+    this.identifier = Objects.requireNonNull(builder.identifier, "identifier");
+    this.instance = Objects.requireNonNull(builder.instance, "instance");
+    this.itemType = Objects.requireNonNull(builder.itemType, "itemType");
+    this.source = Objects.requireNonNull(builder.source, "source");
+  }
+
+  @NotNull
+  public String getOriginalIdentifier() {
+    return originalIdentifier;
+  }
+
+  @NotNull
   public String getIdentifier() {
     return identifier;
   }
 
-  public Object getInstance() {
+  @NotNull
+  public IRequiredValueModelNodeItem getInstance() {
     return instance;
+  }
+
+  @NotNull
+  @SuppressWarnings("unchecked")
+  public <T> T getInstanceValue() {
+    return (T) instance.getValue();
   }
 
   @NotNull
@@ -74,50 +107,124 @@ public final class EntityItem {
     return itemType;
   }
 
+  @NotNull
   public URI getSource() {
     return source;
+  }
+
+  public boolean isIdentifierChanged() {
+    return !getOriginalIdentifier().equals(getIdentifier());
   }
 
   public int getReferenceCount() {
     return referenceCount;
   }
 
+  public boolean isResolved() {
+    return resolved;
+  }
+
+  public void markResolved() {
+    resolved = true;
+  }
+
   public void incrementReferenceCount() {
     referenceCount += 1;
   }
 
-  @SuppressWarnings("null")
-  private EntityItem(@NotNull Builder builder) {
-    this.identifier = Objects.requireNonNull(builder.identifier, "identifier");
-    this.instance = Objects.requireNonNull(builder.instance, "instance");
-    this.itemType = Objects.requireNonNull(builder.itemType, "itemType");
-    this.source = Objects.requireNonNull(builder.source, "source");
+  public boolean isSelected(@NotNull Index index) {
+    boolean retval;
+    switch (getItemType()) {
+    case CONTROL:
+      Control control = getInstanceValue();
+      retval = index.isSelected(control);
+      break;
+    case GROUP:
+      CatalogGroup group = getInstanceValue();
+      retval = index.isSelected(group);
+      break;
+    case PART: {
+      IRequiredValueModelNodeItem instance = getInstance();
+      IRequiredValueModelNodeItem containerItem = CONTAINER_METAPATH.evaluateAs(instance, ResultType.NODE);
+      retval = index.isSelected(containerItem.getValue());
+      break;
+    }
+    case PARAMETER:
+    case LOCATION:
+    case PARTY:
+    case RESOURCE:
+    case ROLE:
+      // always "selected"
+      retval = true;
+      break;
+    default:
+      throw new IllegalStateException(getItemType().name());
+    }
+    return retval;
+  }
+
+  public void accept(@NotNull IReferenceVisitor visitor) {
+    IRequiredValueModelNodeItem instance = getInstance();
+    switch (getItemType()) {
+    case CONTROL:
+      visitor.visitControl(instance);
+      break;
+    case GROUP:
+      visitor.visitGroup(instance);
+      break;
+    case LOCATION:
+      visitor.visitLocation(instance);
+      break;
+    case PARAMETER:
+      visitor.visitParameter(instance);
+      break;
+    case PART:
+      visitor.visitPart(instance);
+      break;
+    case PARTY:
+      visitor.visitParty(instance);
+      break;
+    case RESOURCE:
+      visitor.visitResource(instance);
+      break;
+    case ROLE:
+      visitor.visitRole(instance);
+      break;
+    default:
+      throw new IllegalStateException(getItemType().name());
+    }
   }
 
   public static class Builder {
+    private String originalIdentifier;
     private String identifier;
-    private Object instance;
+    private IRequiredValueModelNodeItem instance;
     private ItemType itemType;
     private URI source;
 
-    public Builder instance(@NotNull Object instance, @NotNull UUID identifier) {
-      return instance(instance, ObjectUtils.notNull(identifier.toString()));
+    public Builder instance(@NotNull IRequiredValueModelNodeItem item, @NotNull UUID identifier) {
+      return instance(item, ObjectUtils.notNull(identifier.toString()));
     }
 
     @SuppressWarnings("null")
-    public Builder instance(@NotNull Object instance, @NotNull String identifier) {
+    public Builder instance(@NotNull IRequiredValueModelNodeItem item, @NotNull String identifier) {
       this.identifier = Objects.requireNonNull(identifier, "identifier");
-      this.instance = Objects.requireNonNull(instance, "instance");
+      this.instance = Objects.requireNonNull(item, "item");
       return this;
     }
 
-    public Builder itemType(ItemType itemType) {
-      this.itemType = Objects.requireNonNull(itemType, "itemType");
+    public Builder originalIdentifier(@NotNull String identifier) {
+      this.originalIdentifier = identifier;
       return this;
     }
 
-    public Builder source(URI source) {
-      this.source = Objects.requireNonNull(source, "source");
+    public Builder itemType(@NotNull ItemType itemType) {
+      this.itemType = itemType;
+      return this;
+    }
+
+    public Builder source(@NotNull URI source) {
+      this.source = source;
       return this;
     }
 

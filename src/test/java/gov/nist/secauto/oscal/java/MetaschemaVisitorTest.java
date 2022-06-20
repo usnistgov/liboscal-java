@@ -63,7 +63,7 @@ class MetaschemaVisitorTest {
     DynamicContext dynamicContext = staticContext.newDynamicContext();
     dynamicContext.setDocumentLoader(loader);
 
-    File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
+    //    File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
 
     // IDocumentNodeItem nodeItem = loader.loadAsNodeItem(file);
     IDocumentNodeItem nodeItem = loader.loadAsNodeItem(new URL(
@@ -114,12 +114,11 @@ class MetaschemaVisitorTest {
     System.out.println("Path: " + path.getPath());
     System.out.println("Compiled Path: " + path.toString());
 
-    ISequence<?> result = path.evaluate(nodeContext, dynamicContext);
+    ISequence<?> result = path.evaluate(nodeContext ,dynamicContext);
     System.out.println("Result: ");
     AtomicInteger count = new AtomicInteger();
     result.asStream().forEachOrdered(x -> {
       Object value = x.getValue();
-      
       System.out.println(String.format("  %s", value));
       count.incrementAndGet();
     });

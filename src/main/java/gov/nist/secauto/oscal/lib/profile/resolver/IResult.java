@@ -24,12 +24,43 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+package gov.nist.secauto.oscal.lib.profile.resolver;
 
-public class FragmentIdentifierParser
-    extends AbstractPatternIdentifierParser {
+import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 
-  public FragmentIdentifierParser() {
-    super("^(#)([^#]+)(#.*)?$", 2);
-  }
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Set;
+
+public interface IResult {
+
+  @NotNull
+  Collection<@NotNull Parameter> getPromotedParameters();
+
+  @NotNull
+  Collection<@NotNull Control> getPromotedControls();
+
+  @NotNull
+  Set<@NotNull String> getRequiredParameterIds();
+
+  boolean isParameterRequired(@NotNull String id);
+
+  void promoteParameter(@NotNull Parameter param);
+
+  void promoteControl(@NotNull Control control);
+
+  void requireParameters(@NotNull Set<@NotNull String> requiredParameterIds);
+
+  void applyTo(@NotNull Catalog parent);
+
+  void applyTo(@NotNull CatalogGroup parent);
+
+  void applyTo(@NotNull Control parent);
+
+  @NotNull
+  IResult append(@NotNull IResult that);
 }

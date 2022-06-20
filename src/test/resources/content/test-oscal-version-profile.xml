@@ -9,7 +9,7 @@
       <version>2.3.4</version>
       <oscal-version>1.0.4</oscal-version>
    </metadata>
-   <import href="../../../oscal/src/specifications/profile-resolution/profile-resolution-examples/catalogs/abc-simple_catalog.xml">
+   <import href="../../../../oscal/src/specifications/profile-resolution/profile-resolution-examples/catalogs/abc-simple_catalog.xml">
       <include-controls with-child-controls="yes">
          <with-id>a1</with-id>
          <with-id>b1</with-id>

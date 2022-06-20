@@ -42,5 +42,5 @@ public interface IPart {
   List<ControlPart> getParts();
 
   @NotNull
-  Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter, boolean recurse);
+  Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter);
 }

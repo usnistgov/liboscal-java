@@ -48,7 +48,7 @@
 		href="../../../oscal/src/metaschema/oscal_catalog_metaschema.xml">
 		<define-assembly-binding name="catalog">
 			<java>
-				<extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractOscalInstance</extend-base-class>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.catalog.AbstractCatalog</extend-base-class>
 			</java>
 		</define-assembly-binding>
 		<define-assembly-binding name="group">

@@ -26,7 +26,6 @@
 
 package gov.nist.secauto.oscal.lib.model.metadata;
 
-import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Party;
 
 import org.jetbrains.annotations.NotNull;

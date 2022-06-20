@@ -26,14 +26,16 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.core.util.VersionUtil;
-
 import gov.nist.secauto.metaschema.binding.io.BindingException;
+import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
+import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
+import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
-import gov.nist.secauto.metaschema.model.common.metapath.function.InvalidTypeFunctionMetapathException;
+import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
+import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
@@ -41,19 +43,14 @@ import gov.nist.secauto.oscal.lib.OscalUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.CatalogGroup;
-import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Link;
-import gov.nist.secauto.oscal.lib.model.Location;
 import gov.nist.secauto.oscal.lib.model.Merge;
 import gov.nist.secauto.oscal.lib.model.Metadata;
-import gov.nist.secauto.oscal.lib.model.Parameter;
-import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.Property;
-import gov.nist.secauto.oscal.lib.model.Role;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.policy.ReferenceCountingVisitor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,14 +59,17 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -83,16 +83,42 @@ public class ProfileResolver {
     CUSTOM;
   }
 
-  @NotNull
-  private final DynamicContext dynamicContext;
+  private IBoundLoader loader;
+  private DynamicContext dynamicContext;
 
-  public ProfileResolver(@NotNull DynamicContext dynamicContext) {
-    this.dynamicContext = dynamicContext;
+  @NotNull
+  public IBoundLoader getBoundLoader() {
+    synchronized (this) {
+      if (loader == null) {
+        loader = OscalBindingContext.instance().newBoundLoader();
+      }
+    }
+    assert loader != null;
+    return loader;
+  }
+
+  public void setBoundLoader(@NotNull IBoundLoader loader) {
+    synchronized (this) {
+      this.loader = loader;
+    }
   }
 
   @NotNull
-  protected DynamicContext getDynamicContext() {
+  public DynamicContext getDynamicContext() {
+    synchronized (this) {
+      if (dynamicContext == null) {
+        dynamicContext = new StaticContext().newDynamicContext();
+        dynamicContext.setDocumentLoader(getBoundLoader());
+      }
+    }
+    assert dynamicContext != null;
     return dynamicContext;
+  }
+
+  public void setDynamicContext(@NotNull DynamicContext dynamicContext) {
+    synchronized (this) {
+      this.dynamicContext = dynamicContext;
+    }
   }
 
   @NotNull
@@ -100,199 +126,198 @@ public class ProfileResolver {
     return new DocumentEntityResolver(documentUri);
   }
 
-  @NotNull
-  public Catalog resolve(@NotNull INodeItem profile) throws IOException {
-    return resolve(profile, new Stack<>());
+  public IDocumentNodeItem resolveProfile(@NotNull URL url) throws URISyntaxException, IOException {
+    IBoundLoader loader = getBoundLoader();
+    IDocumentNodeItem catalogOrProfile = loader.loadAsNodeItem(url);
+    return resolve(catalogOrProfile);
+  }
+
+  public IDocumentNodeItem resolveProfile(@NotNull Path path) throws IOException {
+    IBoundLoader loader = getBoundLoader();
+    IDocumentNodeItem catalogOrProfile = loader.loadAsNodeItem(path);
+    return resolve(catalogOrProfile);
+  }
+
+  public IDocumentNodeItem resolveProfile(@NotNull File file) throws IOException {
+    return resolveProfile(ObjectUtils.notNull(file.toPath()));
   }
 
   @NotNull
-  public Catalog resolve(@NotNull INodeItem profile, @NotNull Stack<@NotNull URI> importHistory)
+  public IDocumentNodeItem resolve(@NotNull IDocumentNodeItem profileOrCatalog) throws IOException {
+    return resolve(profileOrCatalog, new Stack<>());
+  }
+
+  @NotNull
+  protected IDocumentNodeItem resolve(@NotNull IDocumentNodeItem profileOrCatalog,
+      @NotNull Stack<@NotNull URI> importHistory)
       throws IOException {
-    Object profileObject = profile.getValue();
-    if (profileObject == null) {
-      throw new InvalidTypeFunctionMetapathException(InvalidTypeFunctionMetapathException.NODE_HAS_NO_TYPED_VALUE,
-          String.format("Item '%s' has no typed value", profile.getClass().getName()));
-    }
+    Object profileObject = profileOrCatalog.getValue();
 
-    Catalog retval;
+    IDocumentNodeItem retval;
     if (profileObject instanceof Catalog) {
-      retval = (Catalog) profileObject;
+      // already a catalog
+      retval = profileOrCatalog;
     } else {
-      URI baseUri = profile.getBaseUri();
-      if (baseUri == null) {
-        throw new IllegalArgumentException("profile.getBaseUri() must return a non-null URI");
-      }
-
-      Profile boundProfile = (Profile) profileObject;
-      try {
-        boundProfile = OscalBindingContext.instance().copyBoundObject(boundProfile, null);
-      } catch (BindingException ex) {
-        throw new IOException(ex);
-      }
-
-      ResolutionData data = new ResolutionData(boundProfile, baseUri, importHistory);
-      resolve(data);
-      retval = data.getCatalog();
+      // must be a profile
+      retval = resolveProfile(profileOrCatalog, importHistory);
     }
     return retval;
   }
 
+  /**
+   * Resolve the profile to a catalog.
+   * 
+   * @param profileDocument
+   *          a {@link IDocumentNodeItem} containing the profile to resolve
+   * @param importHistory
+   *          the import stack for cycle detection
+   * @return the resolved profile
+   * @throws IOException
+   *           if an error occurs while loading the profile or an import
+   */
   @NotNull
-  public Catalog resolve(@NotNull ResolutionData data) throws IOException, IllegalStateException {
-    // final Profile profile, @NotNull final URI documentUri,
-    // @NotNull Stack<@NotNull URI> importHistory
+  protected IDocumentNodeItem resolveProfile(
+      @NotNull IDocumentNodeItem profileDocument,
+      @NotNull Stack<@NotNull URI> importHistory) throws IOException {
+    Catalog resolvedCatalog = new Catalog();
 
-    Catalog resolvedCatalog = data.getCatalog();
+    generateMetadata(resolvedCatalog, profileDocument);
 
+    resolveImports(resolvedCatalog, profileDocument, importHistory);
+    handleMerge(resolvedCatalog, profileDocument);
+    handleReferences(resolvedCatalog, profileDocument);
+
+    return DefaultNodeItemFactory.instance().newDocumentNodeItem(
+        new RootAssemblyDefinition(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
+        resolvedCatalog,
+        profileDocument.getBaseUri());
+  }
+
+  private Profile toProfile(@NotNull IDocumentNodeItem profileDocument) {
+    Object object = profileDocument.getValue();
+    assert object != null;
+
+    return (Profile) object;
+  }
+
+  @NotNull
+  private static Profile toProfile(@NotNull IRootAssemblyNodeItem profileItem) {
+    Object object = profileItem.getValue();
+    assert object != null;
+
+    return (Profile) object;
+  }
+
+  private void generateMetadata(@NotNull Catalog resolvedCatalog, @NotNull IDocumentNodeItem profileDocument) {
     resolvedCatalog.setUuid(UUID.randomUUID());
 
-    Profile profile = data.getProfile();
+    Profile profile = toProfile(profileDocument);
+    Metadata profileMetadata = profile.getMetadata();
 
-    Metadata metadata = new Metadata();
-    metadata.setTitle(profile.getMetadata().getTitle());
+    Metadata resolvedMetadata = new Metadata();
+    resolvedMetadata.setTitle(profileMetadata.getTitle());
 
-    if (profile.getMetadata().getVersion() != null) {
-      metadata.setVersion(profile.getMetadata().getVersion());
+    if (profileMetadata.getVersion() != null) {
+      resolvedMetadata.setVersion(profileMetadata.getVersion());
     }
 
-//    metadata.setOscalVersion(OscalUtils.OSCAL_VERSION);
-    metadata.setOscalVersion(data.getProfile().getMetadata().getOscalVersion());
+    // metadata.setOscalVersion(OscalUtils.OSCAL_VERSION);
+    resolvedMetadata.setOscalVersion(profileMetadata.getOscalVersion());
 
-    metadata.setLastModified(ZonedDateTime.now(ZoneOffset.UTC));
+    resolvedMetadata.setLastModified(ZonedDateTime.now(ZoneOffset.UTC));
 
-    metadata.addProp(Property.builder("resolution-tool").value("libOSCAL-Java").build());
+    resolvedMetadata.addProp(Property.builder("resolution-tool").value("libOSCAL-Java").build());
 
-    URI profileUri = data.getProfileUri();
-    metadata.addLink(Link.builder(profileUri).relation("source-profile").build());
+    URI profileUri = profileDocument.getDocumentUri();
+    resolvedMetadata.addLink(Link.builder(profileUri).relation("source-profile").build());
 
-    resolvedCatalog.setMetadata(metadata);
-
-    resolveImports(data);
-    handleMerge(data);
-    handleReferences(data);
-
-    return data.getCatalog();
+    resolvedCatalog.setMetadata(resolvedMetadata);
   }
 
-  private void resolveImports(@NotNull ResolutionData data) throws IOException {
-    Profile profile = data.getProfile();
-
-    List<ProfileImport> imports = profile.getImports();
-    if (imports == null || imports.isEmpty()) {
-      throw new IllegalStateException(String.format("profile '%s' has no imports", data.getProfileUri()));
-    }
-
-    for (ProfileImport profileImport : imports) {
-      if (profileImport == null) {
-        continue;
-      }
-
-      resolveImport(profileImport, data);
-    }
-  }
-
-  @NotNull
-  private void resolveImport(@NotNull ProfileImport profileImport, @NotNull ResolutionData data)
+  private void resolveImports(@NotNull Catalog resolvedCatalog, @NotNull IDocumentNodeItem profileDocument,
+      @NotNull Stack<@NotNull URI> importHistory)
       throws IOException {
-    URI importUri = profileImport.getHref();
-    if (importUri == null) {
-      throw new IllegalArgumentException("profileImport.getHref() must return a non-null URI");
+
+    IRootAssemblyNodeItem profileItem = profileDocument.getRootAssemblyNodeItem();
+
+    // first verify there is at least one import
+    List<@NotNull ? extends IRequiredValueModelNodeItem> profileImports = profileItem.getModelItemsByName("import");
+    if (profileImports.isEmpty()) {
+      throw new IllegalStateException(String.format("Profile '%s' has no imports", profileItem.getBaseUri()));
     }
 
-    LOGGER.atDebug().log("resolving profile import '{}'", importUri);
+    // now process each import
+    for (IRequiredValueModelNodeItem profileImportItem : profileImports) {
+      ProfileImport profileImport = (ProfileImport) profileImportItem.getValue();
 
-    URI profileUri = data.getProfileUri();
-    Stack<@NotNull URI> importHistory = data.getImportHistory();
-
-    EntityResolver resolver = getEntityResolver(profileUri);
-
-    InputSource source;
-    if (OscalUtils.isInternalReference(importUri)) {
-      // handle internal reference
-      String uuid = OscalUtils.internalReferenceFragmentToId(importUri);
-
-      Profile profile = data.getProfile();
-      Resource resource = profile.getResourceByUuid(ObjectUtils.notNull(UUID.fromString(uuid)));
-      if (resource == null) {
-        throw new IllegalArgumentException(
-            String.format("unable to find the resource identified by '%s' used in profile import", importUri));
+      URI importUri = profileImport.getHref();
+      if (importUri == null) {
+        throw new IllegalArgumentException("profileImport.getHref() must return a non-null URI");
       }
 
-      source = OscalUtils.newInputSource(resource, resolver, null);
-    } else {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.atDebug().log("resolving profile import '{}'", importUri);
+      }
+
+      // Create an entity resolver to resolve relative references in the profile
+      EntityResolver resolver = getEntityResolver(profileDocument.getDocumentUri());
+
+      InputSource source;
+      if (OscalUtils.isInternalReference(importUri)) {
+        // handle internal reference
+        String uuid = OscalUtils.internalReferenceFragmentToId(importUri);
+
+        Profile profile = toProfile(profileItem);
+        Resource resource = profile.getResourceByUuid(ObjectUtils.notNull(UUID.fromString(uuid)));
+        if (resource == null) {
+          throw new IllegalArgumentException(
+              String.format("unable to find the resource identified by '%s' used in profile import", importUri));
+        }
+
+        source = OscalUtils.newInputSource(resource, resolver, null);
+      } else {
+        try {
+          source = resolver.resolveEntity(null, importUri.toASCIIString());
+        } catch (SAXException ex) {
+          throw new IOException(ex);
+        }
+      }
+
+      if (source == null || source.getSystemId() == null) {
+        throw new IOException(String.format("Unable to resolve import '%s'.", importUri.toString()));
+      }
+      importUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
+
+      // check for import cycle
       try {
-        source = resolver.resolveEntity(null, importUri.toASCIIString());
-      } catch (SAXException ex) {
+        requireNonCycle(importUri, importHistory);
+      } catch (ImportCycleException ex) {
         throw new IOException(ex);
       }
-    }
+      importHistory.push(importUri);
 
-    if (source == null || source.getSystemId() == null) {
-      throw new IOException(String.format("Unable to resolve import '%s'.", importUri.toString()));
-    }
-    importUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
+      IDocumentNodeItem document;
+      document = (IDocumentNodeItem) getDynamicContext().getDocumentLoader().loadAsNodeItem(source);
 
-    // check for import cycle
-    try {
-      requireNonCycle(importUri, importHistory);
-    } catch (ImportCycleException ex) {
-      throw new IOException(ex);
-    }
-    importHistory.push(importUri);
+      IDocumentNodeItem importedCatalog = resolve(document, importHistory);
 
-    IDocumentNodeItem document;
-    document = (IDocumentNodeItem) getDynamicContext().getDocumentLoader().loadAsNodeItem(source);
+      // Create a defensive deep copy of the document and associated values, since we will be making
+      // changes to the data.
+      try {
+        importedCatalog = DefaultNodeItemFactory.instance().newDocumentNodeItem(
+            importedCatalog.getDefinition(),
+            OscalBindingContext.instance().copyBoundObject(importedCatalog.getValue(), null),
+            importedCatalog.getDocumentUri());
 
-    Catalog importedCatalog = resolve(document, importHistory);
-
-    // make a defensive copy, since we will be modifying the catalog
-    try {
-      importedCatalog = OscalBindingContext.instance().copyBoundObject(importedCatalog, null);
-    } catch (BindingException ex) {
-      throw new IOException(ex);
-    }
-
-    // filter controls based on selections
-    IControlFilter filter = IControlFilter.newInstance(profileImport);
-    new ImportCatalogVisitor(data.getIndex(), importUri).visitCatalog(importedCatalog, filter);
-
-    // pop the resolved catalog from the import history
-    URI poppedUri = ObjectUtils.notNull(importHistory.pop());
-    assert document.getDocumentUri().equals(poppedUri);
-
-    Version importOscalVersion = VersionUtil.parseVersion(importedCatalog.getMetadata().getOscalVersion(), null, null);
-
-    Catalog resolvedCatalog = data.getCatalog();
-    Version resolvedCatalogVersion
-        = VersionUtil.parseVersion(resolvedCatalog.getMetadata().getOscalVersion(), null, null);
-
-    if (importOscalVersion.compareTo(resolvedCatalogVersion) > 0) {
-      resolvedCatalog.getMetadata().setOscalVersion(importOscalVersion.toString());
-    }
-
-    for (Parameter param : CollectionUtil.listOrEmpty(importedCatalog.getParams())) {
-      resolvedCatalog.addParam(param);
-    }
-    for (Control control : CollectionUtil.listOrEmpty(importedCatalog.getControls())) {
-      resolvedCatalog.addControl(control);
-    }
-    for (CatalogGroup group : CollectionUtil.listOrEmpty(importedCatalog.getGroups())) {
-      resolvedCatalog.addGroup(group);
-    }
-
-    // TODO: copy roles, parties, and locations with prop name:keep and any referenced
-    // TODO: handle resources properly
-    BackMatter backMatter = importedCatalog.getBackMatter();
-    if (backMatter != null && backMatter.getResources() != null) {
-      BackMatter resolvingBackMatter = resolvedCatalog.getBackMatter();
-      if (resolvingBackMatter == null) {
-        resolvingBackMatter = new BackMatter();
-        resolvedCatalog.setBackMatter(resolvingBackMatter);
+        new Import(profileDocument, profileImportItem).resolve(importedCatalog, resolvedCatalog);
+      } catch (BindingException ex) {
+        throw new IOException(ex);
       }
 
-      for (Resource resource : backMatter.getResources()) {
-        resolvingBackMatter.addResource(resource);
-      }
+      // pop the resolved catalog from the import history
+      URI poppedUri = ObjectUtils.notNull(importHistory.pop());
+      assert document.getDocumentUri().equals(poppedUri);
     }
   }
 
@@ -336,11 +361,11 @@ public class ProfileResolver {
     return retval;
   }
 
-  private void handleMerge(@NotNull ResolutionData data) {
+  private void handleMerge(@NotNull Catalog resolvedCatalog, @NotNull IDocumentNodeItem profileDocument) {
     // handle combine
 
     // handle structuring
-    switch (getStructuringDirective(data.getProfile())) {
+    switch (getStructuringDirective(toProfile(profileDocument))) {
     case AS_IS:
       // do nothing
       break;
@@ -348,143 +373,82 @@ public class ProfileResolver {
       throw new UnsupportedOperationException("custom structuring");
     case FLAT:
     default:
-      structureFlat(data.getCatalog());
+      structureFlat(resolvedCatalog);
       break;
     }
 
   }
 
   private void structureFlat(@NotNull Catalog catalog) {
-    LOGGER.debug("applying flat structuring directive");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("applying flat structuring directive");
+    }
     new FlatStructureCatalogVisitor().visitCatalog(catalog);
   }
 
-  private void handleReferences(@NotNull ResolutionData data) {
-    ReferenceCountingVisitor visitor = new ReferenceCountingVisitor(data);
+  private void handleReferences(@NotNull Catalog resolvedCatalog, @NotNull IDocumentNodeItem profileDocument) {
+    IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
+        new RootAssemblyDefinition(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
+        resolvedCatalog,
+        profileDocument.getBaseUri());
 
-    visitor.visitCatalog(data.getCatalog());
-    visitor.visitProfile(data.getProfile());
+    ControlSelectionVisitor selectionVisitor
+        = new ControlSelectionVisitor(IControlFilter.ALWAYS_MATCH, IIdentifierMapper.IDENTITY);
+    selectionVisitor.visitCatalog(resolvedCatalogItem);
+    selectionVisitor.visitProfile(profileDocument);
+    Index index = selectionVisitor.getIndex();
 
-    Catalog catalog = data.getCatalog();
-    Metadata metadata = catalog.getMetadata();
+    // process references
+    new ReferenceCountingVisitor(index, profileDocument.getBaseUri()).visitCatalog(resolvedCatalogItem);
 
-    Index index = data.getIndex();
+    // filter based on selections
+    FilterNonSelectedVisitor pruneVisitor = new FilterNonSelectedVisitor(index);
+    pruneVisitor.visitCatalog(resolvedCatalogItem);
 
-    metadata.setRoles(index.getEntitiesByItemType(ItemType.ROLE).stream()
-        .filter(item -> {
-          boolean retval = item.getReferenceCount() > 0;
-          if (!retval) {
-            Role instance = (Role) item.getInstance();
-            retval = Property.find(instance.getProps(), Property.qname("keep"))
-                .map(prop -> "always".equals(prop.getValue()))
-                .or(() -> Optional.of(false))
-                .get();
+    // copy roles, parties, and locations with prop name:keep and any referenced
+    Metadata resolvedMetadata = resolvedCatalog.getMetadata();
+    resolvedMetadata.setRoles(
+        Index.merge(
+            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getRoles()).stream()),
+            index,
+            ItemType.ROLE,
+            item -> item.getId())
+            .collect(Collectors.toCollection(LinkedList::new)));
+    resolvedMetadata.setParties(
+        Index.merge(
+            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getParties()).stream()),
+            index,
+            ItemType.PARTY,
+            item -> item.getUuid())
+            .collect(Collectors.toCollection(LinkedList::new)));
+    resolvedMetadata.setLocations(
+        Index.merge(
+            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getLocations()).stream()),
+            index,
+            ItemType.LOCATION,
+            item -> item.getUuid())
+            .collect(Collectors.toCollection(LinkedList::new)));
 
-          }
-          return retval;
-        })
-        .map(item -> (Role) item.getInstance())
-        .collect(Collectors.toCollection(LinkedList::new)));
-    metadata.setLocations(index.getEntitiesByItemType(ItemType.LOCATION).stream()
-        .filter(item -> {
-          boolean retval = item.getReferenceCount() > 0;
-          if (!retval) {
-            Location instance = (Location) item.getInstance();
-            retval = Property.find(instance.getProps(), Property.qname("keep"))
-                .map(prop -> "always".equals(prop.getValue()))
-                .or(() -> Optional.of(false))
-                .get();
+    // copy resources
+    BackMatter resolvedBackMatter = resolvedCatalog.getBackMatter();
+    List<Resource> resolvedResources = resolvedBackMatter == null ? CollectionUtil.emptyList()
+        : CollectionUtil.listOrEmpty(resolvedBackMatter.getResources());
 
-          }
-          return retval;
-        })
-        .map(item -> (Location) item.getInstance())
-        .collect(Collectors.toCollection(LinkedList::new)));
-    metadata.setParties(index.getEntitiesByItemType(ItemType.PARTY).stream()
-        .filter(item -> {
-          boolean retval = item.getReferenceCount() > 0;
-          if (!retval) {
-            Party instance = (Party) item.getInstance();
-            retval = Property.find(instance.getProps(), Property.qname("keep"))
-                .map(prop -> "always".equals(prop.getValue()))
-                .or(() -> Optional.of(false))
-                .get();
-
-          }
-          return retval;
-        })
-        .map(item -> (Party) item.getInstance())
-        .collect(Collectors.toCollection(LinkedList::new)));
-
-    List<BackMatter.Resource> resources = index.getEntitiesByItemType(ItemType.RESOURCE).stream()
-        .filter(item -> {
-          boolean retval = item.getReferenceCount() > 0;
-          if (!retval) {
-            BackMatter.Resource instance = (BackMatter.Resource) item.getInstance();
-            retval = Property.find(instance.getProps(), Property.qname("keep"))
-                .map(prop -> "always".equals(prop.getValue()))
-                .or(() -> Optional.of(false))
-                .get();
-
-          }
-          return retval;
-        })
-        .map(item -> (BackMatter.Resource) item.getInstance())
+    List<Resource> resources = Index.merge(
+        ObjectUtils.notNull(resolvedResources.stream()),
+        index,
+        ItemType.RESOURCE,
+        item -> item.getUuid())
         .collect(Collectors.toCollection(LinkedList::new));
 
     if (!resources.isEmpty()) {
-      BackMatter backMatter = catalog.getBackMatter();
-      if (backMatter == null) {
-        backMatter = new BackMatter();
-        catalog.setBackMatter(backMatter);
+      if (resolvedBackMatter == null) {
+        resolvedBackMatter = new BackMatter();
+        resolvedCatalog.setBackMatter(resolvedBackMatter);
       }
 
-      backMatter.setResources(resources);
-    }
-  }
-
-  public static class ResolutionData {
-    @NotNull
-    private final Profile profile;
-    @NotNull
-    private final URI documentUri;
-    @NotNull
-    private final Stack<@NotNull URI> importHistory;
-    @NotNull
-    private final Index index = new Index();
-    @NotNull
-    private final Catalog catalog = new Catalog();
-
-    public ResolutionData(@NotNull Profile profile, @NotNull URI documentUri,
-        @NotNull Stack<@NotNull URI> importHistory) {
-      this.profile = profile;
-      this.documentUri = documentUri;
-      this.importHistory = importHistory;
-    }
-
-    @NotNull
-    public Profile getProfile() {
-      return profile;
-    }
-
-    @NotNull
-    public URI getProfileUri() {
-      return documentUri;
-    }
-
-    @NotNull
-    public Stack<@NotNull URI> getImportHistory() {
-      return importHistory;
-    }
-
-    @NotNull
-    public Index getIndex() {
-      return index;
-    }
-
-    @NotNull
-    public Catalog getCatalog() {
-      return catalog;
+      resolvedBackMatter.setResources(resources);
     }
   }
 

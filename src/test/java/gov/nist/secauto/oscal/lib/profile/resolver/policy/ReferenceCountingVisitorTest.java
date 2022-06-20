@@ -26,53 +26,46 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.metaschema.binding.io.Format;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
+import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.profile.resolver.ControlSelectionVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.IControlFilter;
+import gov.nist.secauto.oscal.lib.profile.resolver.IControlSelectionFilter;
+import gov.nist.secauto.oscal.lib.profile.resolver.IIdentifierMapper;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
+import gov.nist.secauto.oscal.lib.profile.resolver.TestUtil;
+import org.junit.jupiter.api.Test;
 
-import org.jetbrains.annotations.NotNull;
+import java.io.IOException;
 
-import java.util.Set;
+class ReferenceCountingVisitorTest {
 
-public interface IReferencePolicyHandler<TYPE> {
-  @NotNull
-  public static IReferencePolicyHandler<?> IGNORE_INDEX_MISS_POLICY = new AbstractIndexMissPolicyHandler<>() {
+  @Test
+  void test() throws IOException {
+    // setup the imported catalog
+    IDocumentNodeItem importedCatalogDocumentItem = TestUtil.newImportedCatalog();
 
-    @Override
-    public boolean handleIndexMiss(@NotNull Object type, @NotNull Set<ItemType> itemTypes,
-        @NotNull Match match, @NotNull Index index) {
-      // do nothing
-      return true;
-    }
-  };
+    // setup the selection visitor
+    IControlFilter filter = IControlFilter.newInstance(
+        IControlSelectionFilter.ALL_MATCH,
+        IControlSelectionFilter.matchIds("control2", "control5", "control7"));
+    IIdentifierMapper mapper = TestUtil.UUID_CONCAT_ID_MAPPER;
+    ControlSelectionVisitor selectionVisitor = new ControlSelectionVisitor(filter, mapper);
 
-  public static IReferencePolicyHandler<?> INCREMENT_COUNT_INDEX_HIT_POLICY = new IReferencePolicyHandler<>() {
+    // process selections
+    selectionVisitor.visitCatalog(importedCatalogDocumentItem);
 
-    @Override
-    public boolean handleIndexHit(EntityItem item, @NotNull Object type, @NotNull Index index) {
-      item.incrementReferenceCount();
-      return true;
-    }
-  };
+    // setup reference counting
+    Index index = selectionVisitor.getIndex();
 
-  @SuppressWarnings("unchecked")
-  @NotNull
-  public static <T> IReferencePolicyHandler<T> incrementCountIndexHitPolicy() {
-    return (@NotNull IReferencePolicyHandler<T>) INCREMENT_COUNT_INDEX_HIT_POLICY;
+    new ReferenceCountingVisitor(index, importedCatalogDocumentItem.getBaseUri())
+        .visitCatalog(importedCatalogDocumentItem);
+
+    OscalBindingContext.instance()
+        .newSerializer(Format.YAML, Catalog.class)
+        .serialize((Catalog) importedCatalogDocumentItem.getValue(), System.out);
   }
 
-  default boolean handleIdentifierNonMatch(@NotNull TYPE type, @NotNull Match match,
-      @NotNull Index index) {
-    return false;
-  }
-
-  default boolean handleIndexMiss(@NotNull TYPE type, @NotNull Set<EntityItem.ItemType> itemTypes,
-      @NotNull Match match, @NotNull Index index) {
-    return false;
-  }
-
-  default boolean handleIndexHit(EntityItem item, @NotNull TYPE type, @NotNull Index index) {
-    return false;
-  }
 }
