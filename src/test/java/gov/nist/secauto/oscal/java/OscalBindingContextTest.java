@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.Feature;
+import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
@@ -47,7 +47,9 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 class OscalBindingContextTest {
   private static OscalBindingContext bindingContext;
@@ -57,7 +59,6 @@ class OscalBindingContextTest {
   private static void initialize() { // NOPMD - actually used by JUnit
     bindingContext = OscalBindingContext.instance();
     loader = bindingContext.newBoundLoader();
-    loader.enableFeature(Feature.DESERIALIZE_VALIDATE_CONSTRAINTS);
   }
 
   @Test
@@ -69,7 +70,6 @@ class OscalBindingContextTest {
     Path out = newPath(tempDir, "out-catalog.yaml");
 
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
-    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
@@ -88,7 +88,6 @@ class OscalBindingContextTest {
     IBindingContext context = IBindingContext.newInstance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class);
-    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
@@ -102,16 +101,15 @@ class OscalBindingContextTest {
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile());
     assertNotNull(catalog);
 
-    File out = new File(tempDir.toFile(), "out.xml");
-    // File out = new File("target/out.xml");
+    // File out = new File(tempDir.toFile(), "out.xml");
+    File out = new File("target/out.xml");
     IBindingContext context = IBindingContext.newInstance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
-    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
-    out.delete();
+    // out.delete();
   }
 
   @Test
@@ -126,7 +124,6 @@ class OscalBindingContextTest {
     IBindingContext context = IBindingContext.newInstance();
 
     ISerializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class);
-    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(profile, out);
 
     assertNotNull(loader.load(out));
@@ -135,7 +132,6 @@ class OscalBindingContextTest {
     // out = new File("target/out-profile.yaml");
 
     serializer = context.newSerializer(Format.YAML, Profile.class);
-    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     serializer.serialize(profile, out);
 
     // out.delete();
@@ -145,15 +141,32 @@ class OscalBindingContextTest {
     return dir.resolve(filename);
     // return Path.of("target",filename);
   }
-  
+
   @Test
   void testSerializeSspToOutputStream() throws IOException {
     SystemSecurityPlan ssp = new SystemSecurityPlan();
 
     IBindingContext context = IBindingContext.newInstance();
     ISerializer<SystemSecurityPlan> serializer = context.newSerializer(Format.JSON, SystemSecurityPlan.class);
-    serializer.enableFeature(Feature.SERIALIZE_ROOT);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serializer.serialize(ssp, out);
+  }
+
+  @Test
+  void testCatalogXmlListItems(@TempDir Path tempDir) throws BindingException, IOException {
+    Catalog catalog
+        = loader.load(new File("src/test/resources/content/catalog-with-lists.xml").getCanonicalFile());
+    assertNotNull(catalog);
+
+    // File out = new File(tempDir.toFile(), "out.xml");
+    Path out = Paths.get("target/generated-test-resources/catalog-with-lists.xml");
+    Files.createDirectories(out.getParent());
+    IBindingContext context = IBindingContext.newInstance();
+
+    ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
+    serializer.serialize(catalog, out);
+
+    assertNotNull(bindingContext.loadCatalog(out));
+    // out.delete();
   }
 }

@@ -116,6 +116,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<dependency.metaschema-framework.version>0.8.0-SNAPSHOT</dependency.metaschema-framework.version>
+		<plugin.metaschema.version>0.7.0</plugin.metaschema.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
 		<dependency.junit5.version>5.8.2</dependency.junit5.version>
@@ -464,7 +465,7 @@
 			<plugin>
 				<groupId>gov.nist.secauto.metaschema</groupId>
 				<artifactId>metaschema-maven-plugin</artifactId>
-				<version>${dependency.metaschema-framework.version}</version>
+				<version>${plugin.metaschema.version}</version>
 				<executions>
 					<execution>
 						<id>generate-model-sources</id>

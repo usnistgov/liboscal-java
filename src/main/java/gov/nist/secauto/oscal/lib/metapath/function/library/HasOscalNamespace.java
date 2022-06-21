@@ -127,7 +127,7 @@ public final class HasOscalNamespace {
   public static IBooleanItem hasNamespace(@NotNull INodeItem propOrPart,
       @NotNull ISequence<? extends IStringItem> namespaces, @NotNull DynamicContext dynamicContext)
       throws MetapathException {
-    Object propOrPartObject = propOrPart.toBoundObject();
+    Object propOrPartObject = propOrPart.getValue();
 
     URI nodeNamespace;
     if (propOrPartObject instanceof Property) {
