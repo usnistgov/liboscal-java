@@ -27,7 +27,6 @@
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.metapath.item.IXdmFactory;
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
@@ -36,6 +35,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionUtils;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IArgument;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
+import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
@@ -114,7 +114,7 @@ public final class ResolveProfile {
   @NotNull
   public static IDocumentNodeItem resolveProfile(@NotNull IDocumentNodeItem profile,
       @NotNull DynamicContext dynamicContext) {
-    Object profileObject = profile.toBoundObject();
+    Object profileObject = profile.getValue();
 
     IDocumentNodeItem retval;
     if (profileObject instanceof Catalog) {
@@ -137,7 +137,7 @@ public final class ResolveProfile {
       IAssemblyClassBinding catalogClassBinding
           = (IAssemblyClassBinding) ObjectUtils.notNull(bindingContext.getClassBinding(Catalog.class));
 
-      retval = IXdmFactory.INSTANCE.newDocumentNodeItem(new RootAssemblyDefinition(catalogClassBinding),
+      retval = DefaultNodeItemFactory.instance().newDocumentNodeItem(new RootAssemblyDefinition(catalogClassBinding),
           resolvedCatalog, profile.getBaseUri());
     }
     return retval;

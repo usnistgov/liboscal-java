@@ -40,6 +40,33 @@ git clone --recurse-submodules https://github.com/usnistgov/liboscal-java.git
 mvn install
 ```
 
+## Using
+
+The following is a simple example of how to load and write OSCAL content using this API.
+
+```
+// Initialize the Metaschema framework
+OscalBindingContext bindingContext = OscalBindingContext.instance(); // manages the Metaschema model
+IBoundLoader loader = bindingContext.newBoundLoader(); // supports loading OSCAL documents
+
+// load an OSCAL catalog
+Catalog catalog = loader.load(Paths.get("src/test/resources/content/test-catalog.xml")); // load the catalog
+
+// Create a serializer which can be used to write multiple catalogs
+ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
+
+// create the output directory
+Path outDir = Paths.get("target/generated-test-resources");
+Files.createDirectories(outDir);
+
+// serialize the catalog as yaml
+serializer.serialize(catalog, outDir.resolve("test-catalog.yaml"));
+```
+
+tree/ddb1a4667b8c09b08300cd7ad9a2161ff4dc4d23#readme
+
+The [full code](src/test/java/gov/nist/secauto/oscal/java/ExamplesTest.javasrc/test/java/gov/nist/secauto/oscal/java/ExamplesTest.java) for this example is also available.
+
 ## Contact us
 
 Maintainer: [David Waltermire](https://www.nist.gov/people/david-waltermire) - [@david-waltermire-nist](https://github.com/david-waltermire-nist), [NIST](https://www.nist.gov/) [Information Technology Labratory](https://www.nist.gov/itl), [Computer Security Division](https://www.nist.gov/itl/csd), [Security Components and Mechanisms Group](https://www.nist.gov/itl/csd/security-components-and-mechanisms)
