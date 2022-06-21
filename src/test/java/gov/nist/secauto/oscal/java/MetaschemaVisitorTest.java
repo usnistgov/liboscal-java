@@ -27,17 +27,14 @@
 package gov.nist.secauto.oscal.java;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.Feature;
+import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.INodeContext;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
-import gov.nist.secauto.metaschema.model.common.metapath.evaluate.IExpressionEvaluationVisitor;
 import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
-import gov.nist.secauto.metaschema.model.common.metapath.evaluate.MetaschemaPathEvaluationVisitor;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IValuedItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.metapath.function.library.ResolveProfile;
 
@@ -58,7 +55,7 @@ class MetaschemaVisitorTest {
   void test() throws FileNotFoundException, IOException, BindingException, URISyntaxException {
     OscalBindingContext bindingContext = OscalBindingContext.instance();
     IBoundLoader loader = bindingContext.newBoundLoader();
-    loader.enableFeature(Feature.DESERIALIZE_VALIDATE_CONSTRAINTS);
+    loader.enableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
 
     StaticContext staticContext = new StaticContext();
     @SuppressWarnings("null")
@@ -67,8 +64,6 @@ class MetaschemaVisitorTest {
     staticContext.setBaseUri(baseUri);
     DynamicContext dynamicContext = staticContext.newDynamicContext();
     dynamicContext.setDocumentLoader(loader);
-
-    MetaschemaPathEvaluationVisitor visitor = new MetaschemaPathEvaluationVisitor(dynamicContext);
 
     File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
 
@@ -88,7 +83,7 @@ class MetaschemaVisitorTest {
 
     // evaluatePath(MetapathExpression.compile("resolve-profile(doc(resolve-uri(/profile/import/@href,
     // document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem, visitor);
-    evaluatePath(MetapathExpression.compile("//control/@id"), resolvedProfile, visitor);
+    evaluatePath(MetapathExpression.compile("//control/@id"), resolvedProfile, dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
     // document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem, visitor);
     // evaluatePath(
@@ -117,18 +112,17 @@ class MetaschemaVisitorTest {
 
   @SuppressWarnings("PMD")
   private void evaluatePath(@NotNull MetapathExpression path, @NotNull INodeContext context,
-      @NotNull IExpressionEvaluationVisitor visitor) {
+      @NotNull DynamicContext dynamicContext) {
     System.out.println("Path: " + path.getPath());
     System.out.println("Compiled Path: " + path.toString());
 
-    ISequence<?> result = visitor.visit(path.getASTNode(), context);
+    ISequence<?> result = path.evaluate(context, dynamicContext);
     System.out.println("Result: ");
     AtomicInteger count = new AtomicInteger();
     result.asStream().forEachOrdered(x -> {
-      if (x instanceof IValuedItem) {
-        Object value = ((IValuedItem) x).getValue();
-        System.out.println(String.format("  %s: %s", x.getItemName(), value));
-      }
+      Object value = x.getValue();
+      
+      System.out.println(String.format("  %s", value));
       count.incrementAndGet();
     });
     System.out.println(String.format("  %d items", count.get()));

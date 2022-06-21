@@ -205,8 +205,8 @@ class ProfileResolutionTests {
 
   @Test
   void testImportResourceRelativeLink() throws IOException {
-    Path profilePath = Paths.get(JUNIT_TEST_PATH, "profile-relative-links-resource.xml");
-    System.out.println(profilePath.normalize().toRealPath(LinkOption.NOFOLLOW_LINKS).toString());
+    Path profilePath = Paths.get(JUNIT_TEST_PATH, "content/profile-relative-links-resource.xml");
+//    System.out.println(profilePath.normalize().toRealPath(LinkOption.NOFOLLOW_LINKS).toString());
     Profile profile = OscalBindingContext.instance().loadProfile(profilePath);
     ProfileResolver.ResolutionData data
         = new ProfileResolver.ResolutionData(profile, ObjectUtils.notNull(profilePath.toUri()), new Stack<>());

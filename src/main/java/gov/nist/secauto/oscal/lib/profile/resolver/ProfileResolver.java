@@ -63,7 +63,6 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -108,7 +107,7 @@ public class ProfileResolver {
   @NotNull
   public Catalog resolve(@NotNull INodeItem profile, @NotNull Stack<@NotNull URI> importHistory)
       throws IOException {
-    Object profileObject = profile.toBoundObject();
+    Object profileObject = ObjectUtils.requireNonNull(profile.getValue());
 
     Catalog retval;
     if (profileObject instanceof Catalog) {
