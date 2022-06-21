@@ -26,13 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.oscal.lib.model.CatalogGroup;
-
-import org.jetbrains.annotations.NotNull;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
 
 import java.util.List;
 
-public interface ICatalogGroup extends IControlContainer {
-
-  List<@NotNull CatalogGroup> getGroups();
+public interface ICatalogGroup extends IGroupContainer {
+  List<ControlPart> getParts();
 }

@@ -23,20 +23,8 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
-
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-
-import org.jetbrains.annotations.NotNull;
-
-public class ReferenceCountIncrementingPolicyHandler implements IReferencePolicyHandler<Object> {
-
-  @Override
-  public boolean handleIndexHit(EntityItem item, @NotNull Object type, @NotNull Index index) {
-    item.incrementReferenceCount();
-    return true;
-  }
+public interface ICatalog extends IGroupContainer {
 
 }

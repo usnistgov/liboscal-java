@@ -26,18 +26,26 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.AbstractOscalInstance;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public interface IControl extends IControlContainer {
+import java.util.stream.Stream;
 
-  String getId();
+public abstract class AbstractCatalog
+    extends AbstractOscalInstance
+    implements ICatalog {
 
-  List<ControlPart> getParts();
-
-  Control getParentControl();
-
-  void setParentControl(Control parent);
+  @SuppressWarnings("null")
+  @NotNull
+  @Override
+  public Stream<@NotNull String> getReferencedParameterIds() {
+    // get parameters referenced by the control's parameters
+    return CollectionUtil.listOrEmpty(getParams()).stream()
+        .flatMap(ObjectUtils::filterNull)
+        .flatMap(param -> param.getParameterReferences())
+        .distinct();
+  }
 }

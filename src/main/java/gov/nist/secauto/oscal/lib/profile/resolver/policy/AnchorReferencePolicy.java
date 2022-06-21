@@ -27,80 +27,81 @@
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import com.vladsch.flexmark.ast.InlineLinkNode;
+import com.vladsch.flexmark.util.sequence.BasedSequence;
 import com.vladsch.flexmark.util.sequence.CharSubSequence;
 
 import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 public class AnchorReferencePolicy
-    extends AbstractReferencePolicy<InlineLinkNode> {
+    extends AbstractCustomReferencePolicy<InlineLinkNode> {
   private static final Logger LOGGER = LogManager.getLogger(AnchorReferencePolicy.class);
 
-  @NotNull
-  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_MISS_HANDLER = new IndexMissHandler();
-  @NotNull
-  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_HIT_UNSELECTED_HANDLER
-      = new IndexHitUnselectedHandler();
-  @NotNull
-  private static final IReferencePolicyHandler<InlineLinkNode> INDEX_HIT_INCREMENT_HANDLER
-      = IReferencePolicyHandler.incrementCountIndexHitPolicy();
-
-  @SuppressWarnings("null")
   public AnchorReferencePolicy() {
-    super(IIdentifierParser.FRAGMENT_PARSER,
-        List.of(INDEX_MISS_HANDLER,
-            INDEX_HIT_UNSELECTED_HANDLER,
-            INDEX_HIT_INCREMENT_HANDLER));
+    super(IIdentifierParser.FRAGMENT_PARSER);
   }
 
   @SuppressWarnings("null")
   @Override
-  protected Set<ItemType> getEntityItemTypes(@NotNull InlineLinkNode link) {
-    return EnumSet.of(ItemType.RESOURCE, ItemType.CONTROL, ItemType.PART, ItemType.GROUP);
+  protected List<@NotNull ItemType> getEntityItemTypes(@NotNull InlineLinkNode link) {
+    return List.of(ItemType.RESOURCE, ItemType.CONTROL, ItemType.GROUP, ItemType.PART);
   }
 
   @Override
-  protected String getReference(@NotNull InlineLinkNode link) {
+  public String getReferenceText(@NotNull InlineLinkNode link) {
     return link.getUrl().toString();
   }
 
-  private static class IndexHitUnselectedHandler
-      extends AbstractIndexHitUnselectedPolicyHandler<InlineLinkNode> {
-    protected boolean handleUnselected(EntityItem item, @NotNull InlineLinkNode link) {
-      URI linkHref = URI.create(link.getUrl().toString());
-      URI sourceUri = item.getSource();
-
-      URI resolved = sourceUri.resolve(linkHref);
-      LOGGER.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
-      link.setUrl(CharSubSequence.of(resolved.toString()));
-      return true;
-    }
+  @Override
+  public void setReferenceText(@NotNull InlineLinkNode link, @NotNull String newValue) {
+    link.setUrl(BasedSequence.of(newValue));
   }
 
-  private static class IndexMissHandler
-      extends AbstractIndexMissPolicyHandler<InlineLinkNode> {
+  @Override
+  protected void handleUnselected(@NotNull InlineLinkNode link, @NotNull EntityItem item,
+      @NotNull IReferenceVisitor visitor) {
+    URI linkHref = URI.create(link.getUrl().toString());
+    URI sourceUri = item.getSource();
 
-    @Override
-    public boolean handleIndexMiss(@NotNull InlineLinkNode type, @NotNull Set<ItemType> itemTypes,
-        @NotNull Match match, @NotNull Index index) {
+    URI resolved = sourceUri.resolve(linkHref);
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+    }
+    link.setUrl(CharSubSequence.of(resolved.toString()));
+  }
+
+  @Override
+  protected boolean handleIndexMiss(
+      @NotNull InlineLinkNode reference,
+      @NotNull List<@NotNull ItemType> itemTypes,
+      @NotNull String identifier,
+      @NotNull IReferenceVisitor visitor) {
+    if (LOGGER.isErrorEnabled()) {
       LOGGER.atError().log(
           "the anchor should reference a {} identified by '{}', but the identifier was not found in the index.",
-          itemTypes.stream().map(en -> en.name().toLowerCase()).collect(CustomCollectors.joiningWithOxfordComma("or")),
-          match.getIdentifier());
-      return true;
+          itemTypes.stream()
+              .map(en -> en.name().toLowerCase(Locale.ROOT))
+              .collect(CustomCollectors.joiningWithOxfordComma("or")),
+          identifier);
+    }
+    return true;
+  }
+
+  @Override
+  protected boolean handleIdentifierNonMatch(@NotNull InlineLinkNode reference, @NotNull IReferenceVisitor visitor) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.atDebug().log("Ignoring URI '{}'", reference.getUrl().toStringOrNull());
     }
 
+    return true;
   }
 }

@@ -27,19 +27,17 @@
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
+import java.util.List;
 
-public abstract class AbstractIndexMissPolicyHandler<TYPE> implements IReferencePolicyHandler<TYPE> {
-
-  public AbstractIndexMissPolicyHandler() {
-  }
-
+public abstract class AbstractIndexMissPolicyHandler<TYPE> implements ICustomReferencePolicyHandler<TYPE> {
   @Override
-  public abstract boolean handleIndexMiss(@NotNull TYPE type, @NotNull Set<ItemType> itemTypes,
-      @NotNull IIdentifierParser.Match match,
-      @NotNull Index index);
+  public abstract boolean handleIndexMiss(
+      @NotNull ICustomReferencePolicy<TYPE> policy,
+      @NotNull TYPE type,
+      @NotNull List<@NotNull ItemType> itemTypes,
+      @NotNull String identifier,
+      @NotNull IReferenceVisitor visitor);
 }

@@ -24,32 +24,48 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+public abstract class AbstractCatalogControlItemVisitor<T, R> {
 
-public abstract class AbstractStaticItemTypesReferencePolicy<TYPE>
-    extends AbstractReferencePolicy<TYPE> {
+  protected abstract R newDefaultResult(T context);
 
-  @NotNull
-  private final Set<@NotNull ItemType> itemTypes;
+  protected abstract R aggregateResults(R first, R second, T context);
 
-  public AbstractStaticItemTypesReferencePolicy(@NotNull IIdentifierParser identifierParser,
-      @NotNull List<@NotNull IReferencePolicyHandler<TYPE>> handlers,
-      @NotNull Set<@NotNull ItemType> itemTypes) {
-    super(identifierParser, handlers);
-    this.itemTypes = CollectionUtil.requireNonEmpty(Objects.requireNonNull(itemTypes, "itemTypes"), "itemTypes");
+  protected R visitCatalog(@NotNull IDocumentNodeItem profileDocument, T context) {
+    return visitGroupContainer(profileDocument.getRootAssemblyNodeItem(), context);
   }
 
-  @Override
-  protected Set<@NotNull ItemType> getEntityItemTypes(@NotNull TYPE type) {
-    return itemTypes;
+  protected R visitGroupContainer(@NotNull IRequiredValueModelNodeItem catalogOrGroup, T context) {
+    R groupResult = catalogOrGroup.getModelItemsByName("group").stream()
+        .map(groupItem -> {
+          return visitGroup(groupItem, context);
+        })
+        .reduce(newDefaultResult(context), (first, second) -> aggregateResults(first, second, context));
+
+    R controlResult = visitControlContainer(catalogOrGroup, context);
+    return aggregateResults(groupResult, controlResult, context);
   }
+
+  protected R visitControlContainer(@NotNull IRequiredValueModelNodeItem catalogOrGroupOrControl, T context) {
+    return catalogOrGroupOrControl.getModelItemsByName("control").stream()
+        .map(controlItem -> {
+          return visitControl(controlItem, context);
+        })
+        .reduce(newDefaultResult(context), (first, second) -> aggregateResults(first, second, context));
+  }
+
+  protected R visitGroup(@NotNull IRequiredValueModelNodeItem groupItem, T context) {
+    return visitGroupContainer(groupItem, context);
+  }
+
+  protected R visitControl(@NotNull IRequiredValueModelNodeItem controlItem, T context) {
+    return visitControlContainer(controlItem, context);
+  }
+
 }

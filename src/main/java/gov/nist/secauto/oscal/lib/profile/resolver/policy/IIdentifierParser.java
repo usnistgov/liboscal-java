@@ -27,45 +27,44 @@
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface IIdentifierParser {
   @NotNull
-  static final IIdentifierParser FRAGMENT_PARSER = new FragmentIdentifierParser();
+  IIdentifierParser FRAGMENT_PARSER = new PatternIdentifierParser("^#([^#]+)(?:#.*)?$", 1);
   @NotNull
-  static final IIdentifierParser IDENTITY_PARSER = new IIdentifierParser() {
+  IIdentifierParser IDENTITY_PARSER = new IIdentifierParser() {
 
     @Override
-    public Match match(@NotNull String identifier) {
-      return new Match(identifier, identifier, true);
-    }
-  };
-
-  @NotNull
-  Match match(@NotNull String identifier);
-
-  class Match {
-    @NotNull
-    private final String reference;
-    @NotNull
-    private final String identifier;
-    private final boolean match;
-
-    public Match(@NotNull String reference, @NotNull String identifier, boolean match) {
-      this.reference = reference;
-      this.identifier = identifier;
-      this.match = match;
-    }
-
-    public String getReference() {
+    public String parse(@NotNull String reference) {
       return reference;
     }
 
-    public String getIdentifier() {
-      return identifier;
+    @Override
+    public String update(@NotNull String reference, @NotNull String newIdentifier) {
+      return newIdentifier;
     }
+  };
 
-    public boolean isMatch() {
-      return match;
-    }
-  }
+  /**
+   * Parse the {@code referenceText} for the identifier.
+   * 
+   * @param referenceText
+   *          the reference text containing the identifier
+   * @return the identifier, or {@code null} if the identifier could not be parsed
+   */
+  @Nullable
+  String parse(@NotNull String referenceText);
+
+  /**
+   * Substitute the provided {@code newIdentifier} with the identifier in the {@code referenceText}.
+   * 
+   * @param referenceText
+   *          the reference text containing the original identifier
+   * @param newIdentifier
+   *          the new identifier to replace the existing identifier
+   * @return the updated reference text with the identifier replaced
+   */
+  @NotNull
+  String update(@NotNull String referenceText, @NotNull String newIdentifier);
 }

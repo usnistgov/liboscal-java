@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
@@ -47,11 +46,6 @@ import java.nio.file.Path;
 
 class TestContent {
   private static final Logger LOGGER = LogManager.getLogger(TestContent.class);
-
-  private enum OperationType {
-    SERIALIZE,
-    DESERIALIZE;
-  }
 
   private static <CLASS> CLASS measureDeserializer(String format, File file, IDeserializer<CLASS> deserializer,
       int iterations) throws IOException {
@@ -134,7 +128,7 @@ class TestContent {
   }
 
   @Test
-  public void testOscalCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
+  void testOscalCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
 
     File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
     if (LOGGER.isInfoEnabled()) {

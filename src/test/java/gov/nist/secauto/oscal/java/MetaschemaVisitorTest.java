@@ -27,7 +27,6 @@
 package gov.nist.secauto.oscal.java;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.INodeContext;
@@ -55,7 +54,6 @@ class MetaschemaVisitorTest {
   void test() throws FileNotFoundException, IOException, BindingException, URISyntaxException {
     OscalBindingContext bindingContext = OscalBindingContext.instance();
     IBoundLoader loader = bindingContext.newBoundLoader();
-    loader.enableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
 
     StaticContext staticContext = new StaticContext();
     @SuppressWarnings("null")
@@ -65,7 +63,7 @@ class MetaschemaVisitorTest {
     DynamicContext dynamicContext = staticContext.newDynamicContext();
     dynamicContext.setDocumentLoader(loader);
 
-    File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
+    //    File file = new File("target/download/content/NIST_SP-800-53_rev5_LOW-baseline_profile.xml").getCanonicalFile();
 
     // IDocumentNodeItem nodeItem = loader.loadAsNodeItem(file);
     IDocumentNodeItem nodeItem = loader.loadAsNodeItem(new URL(
@@ -82,46 +80,45 @@ class MetaschemaVisitorTest {
     // File("resolved-catalog.xml")));
 
     // evaluatePath(MetapathExpression.compile("resolve-profile(doc(resolve-uri(/profile/import/@href,
-    // document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem, visitor);
+    // document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem, dynamicContext);
     evaluatePath(MetapathExpression.compile("//control/@id"), resolvedProfile, dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
-    // document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem, visitor);
+    // document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem, dynamicContext);
     // evaluatePath(
     // MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
     // document-uri(/profile)))/catalog/metadata/last-modified - /catalog/metadata/last-modified"),
-    // nodeItem, visitor);
+    // nodeItem, dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
     // document-uri(/profile)))/catalog/metadata/last-modified + duration('PT1H')"), nodeItem,
-    // visitor);
+    // dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
     // document-uri(/profile)))/catalog/metadata/last-modified,/catalog/metadata/last-modified"),
-    // nodeItem, visitor);
+    // nodeItem, dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc('target/download/content/NIST_SP-800-53_rev5_catalog.xml')"),
-    // nodeItem, visitor);
+    // nodeItem, dynamicContext);
     // evaluatePath(Metapath.parseMetapathString("2 eq 1 + 1[/catalog]"), nodeContext, visitor);
     // evaluatePath(Metapath.parseMetapathString("/catalog/back-matter/resource[rlink/@href='https://doi.org/10.6028/NIST.SP.800-53r5']"),
-    // nodeItem, visitor);
-    // evaluatePath(MetapathExpression.compile("/catalog//(@id,@uuid)"), nodeItem, visitor);
+    // nodeItem, dynamicContext);
+    // evaluatePath(MetapathExpression.compile("/catalog//(@id,@uuid)"), nodeItem, dynamicContext);
     // evaluatePath(MetapathExpression.compile("exists(/catalog//(@id,@uuid))"), nodeItem,
-    // visitor);
+    // dynamicContext);
     // evaluatePath(MetapathExpression.compile("/catalog//control//prop/@name"), nodeItem,
-    // visitor);
+    // dynamicContext);
     // evaluatePath(Metapath.parseMetapathString("(/catalog//control[@id='ac-1'])"), nodeItem,
-    // visitor);
+    // dynamicContext);
   }
 
   @SuppressWarnings("PMD")
-  private void evaluatePath(@NotNull MetapathExpression path, @NotNull INodeContext context,
+  private void evaluatePath(@NotNull MetapathExpression path, @NotNull INodeContext nodeContext,
       @NotNull DynamicContext dynamicContext) {
     System.out.println("Path: " + path.getPath());
     System.out.println("Compiled Path: " + path.toString());
 
-    ISequence<?> result = path.evaluate(context, dynamicContext);
+    ISequence<?> result = path.evaluate(nodeContext ,dynamicContext);
     System.out.println("Result: ");
     AtomicInteger count = new AtomicInteger();
     result.asStream().forEachOrdered(x -> {
       Object value = x.getValue();
-      
       System.out.println(String.format("  %s", value));
       count.incrementAndGet();
     });

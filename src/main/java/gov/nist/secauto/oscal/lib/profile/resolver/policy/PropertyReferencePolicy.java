@@ -26,13 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,73 +37,70 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.Locale;
 
 public class PropertyReferencePolicy
-    extends AbstractStaticItemTypesReferencePolicy<Property> {
+    extends AbstractMultiItemTypeReferencePolicy<Property> {
   private static final Logger LOGGER = LogManager.getLogger(PropertyReferencePolicy.class);
-
-  @NotNull
-  private static final IReferencePolicyHandler<Property> INDEX_MISS_HANDLER = new IndexMissHandler();
-  @NotNull
-  private static final IReferencePolicyHandler<Property> INDEX_HIT_UNSELECTED_HANDLER = new IndexHitUnselectedHandler();
-  @NotNull
-  private static final IReferencePolicyHandler<Property> INDEX_HIT_INCREMENT_HANDLER
-      = IReferencePolicyHandler.incrementCountIndexHitPolicy();
 
   @SuppressWarnings("null")
   @NotNull
   public static PropertyReferencePolicy create(@NotNull IIdentifierParser identifierParser,
       @NotNull ItemType itemType) {
-    return create(identifierParser, Set.of(itemType));
+    return create(identifierParser, List.of(itemType));
   }
 
   @NotNull
-  public static PropertyReferencePolicy create(@NotNull IIdentifierParser identifierParser, Set<ItemType> itemTypes) {
-    return new PropertyReferencePolicy(identifierParser,
-        CollectionUtil.requireNonEmpty(Objects.requireNonNull(itemTypes, "itemTypes"), "itemTypes"));
+  public static PropertyReferencePolicy create(@NotNull IIdentifierParser identifierParser,
+      @NotNull List<ItemType> itemTypes) {
+    return new PropertyReferencePolicy(identifierParser, itemTypes);
   }
 
   @SuppressWarnings("null")
-  public PropertyReferencePolicy(@NotNull IIdentifierParser identifierParser, @NotNull Set<ItemType> itemTypes) {
-    super(identifierParser,
-        List.of(INDEX_MISS_HANDLER,
-            INDEX_HIT_UNSELECTED_HANDLER,
-            INDEX_HIT_INCREMENT_HANDLER),
-        itemTypes);
+  public PropertyReferencePolicy(@NotNull IIdentifierParser identifierParser, @NotNull List<ItemType> itemTypes) {
+    super(identifierParser, itemTypes);
   }
 
   @Override
-  protected String getReference(@NotNull Property property) {
+  public String getReferenceText(@NotNull Property property) {
     return property.getValue();
   }
 
-  private static class IndexHitUnselectedHandler
-      extends AbstractIndexHitUnselectedPolicyHandler<Property> {
-    protected boolean handleUnselected(EntityItem item, @NotNull Property property) {
-      URI linkHref = URI.create(property.getValue());
-      URI sourceUri = item.getSource();
-
-      URI resolved = sourceUri.resolve(linkHref);
-      LOGGER.atInfo().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
-      property.setValue(resolved.toString());
-      return true;
-    }
+  @Override
+  public void setReferenceText(@NotNull Property property, @NotNull String newValue) {
+    property.setValue(newValue);
   }
 
-  private static class IndexMissHandler
-      extends AbstractIndexMissPolicyHandler<Property> {
+  @Override
+  protected void handleUnselected(
+      @NotNull Property property,
+      @NotNull EntityItem item,
+      @NotNull IReferenceVisitor visitor) {
+    URI linkHref = URI.create(property.getValue());
+    URI sourceUri = item.getSource();
 
-    @Override
-    public boolean handleIndexMiss(@NotNull Property property, @NotNull Set<ItemType> itemTypes,
-        @NotNull Match match, @NotNull Index index) {
+    URI resolved = sourceUri.resolve(linkHref);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.atDebug().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+    }
+    property.setValue(resolved.toString());
+  }
+
+  @Override
+  protected boolean handleIndexMiss(
+      @NotNull Property property,
+      @NotNull List<@NotNull ItemType> itemTypes,
+      @NotNull String identifier,
+      @NotNull IReferenceVisitor visitor) {
+    if (LOGGER.isWarnEnabled()) {
       LOGGER.atWarn().log(
           "property '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
           property.getQName(),
-          itemTypes.stream().map(en -> en.name().toLowerCase()).collect(CustomCollectors.joiningWithOxfordComma("or")),
-          match.getIdentifier());
-      return true;
+          itemTypes.stream()
+              .map(en -> en.name().toLowerCase(Locale.ROOT))
+              .collect(CustomCollectors.joiningWithOxfordComma("or")),
+          identifier);
     }
+    return true;
   }
 }

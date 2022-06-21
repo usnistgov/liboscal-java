@@ -26,33 +26,28 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractIndexHitUnselectedPolicyHandler<TYPE> implements IReferencePolicyHandler<TYPE> {
+public interface IReferenceVisitor {
+  @NotNull
+  Index getIndex();
 
-  @Override
-  public boolean handleIndexHit(EntityItem item, @NotNull TYPE type, @NotNull Index index) {
-    boolean handled = false;
+  void visitGroup(@NotNull IRequiredValueModelNodeItem item);
 
-    switch (item.getItemType()) {
-    case CONTROL:
-      if (!index.isControlSelected(item.getIdentifier())) {
-        handled = handleUnselected(item, type);
-      }
-      break;
-    case GROUP:
-      if (!index.isGroupSelected(item.getIdentifier())) {
-        handled = handleUnselected(item, type);
-      }
-      break;
-    default:
-      // do nothing
-    }
-    return handled;
-  }
+  void visitControl(@NotNull IRequiredValueModelNodeItem item);
 
-  protected abstract boolean handleUnselected(EntityItem item, @NotNull TYPE type);
+  void visitParameter(@NotNull IRequiredValueModelNodeItem item);
+
+  void visitPart(@NotNull IRequiredValueModelNodeItem item);
+
+  void visitRole(@NotNull IRequiredValueModelNodeItem item);
+
+  void visitParty(@NotNull IRequiredValueModelNodeItem item);
+
+  void visitLocation(@NotNull IRequiredValueModelNodeItem item);
+
+  void visitResource(@NotNull IRequiredValueModelNodeItem item);
 }

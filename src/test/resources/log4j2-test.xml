@@ -19,11 +19,11 @@
 		<Logger name="gov.nist.secauto.metaschema.binding.datatypes" level="info" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>
-<!--
-		<Logger name="gov.nist.secauto.metaschema.binding.model.constraint" level="fatal" additivity="false">
+
+		<Logger name="gov.nist.secauto.metaschema.model" level="info" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>
--->
+
 		<Logger name="gov.nist.secauto.oscal.lib" level="debug" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>

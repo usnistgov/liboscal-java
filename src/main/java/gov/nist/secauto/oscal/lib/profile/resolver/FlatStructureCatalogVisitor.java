@@ -40,39 +40,42 @@ import java.util.List;
 public class FlatStructureCatalogVisitor {
 
   public void visitCatalog(@NotNull Catalog catalog) {
+    DefaultResult result = new DefaultResult();
     // process children
     for (Iterator<CatalogGroup> iter = CollectionUtil.listOrEmpty(catalog.getGroups()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
       @NotNull
       CatalogGroup child = iter.next();
-      ControlResult result = visitGroup(child);
+      DefaultResult childResult = visitGroup(child);
 
       // remove this group and promote its contents
       iter.remove();
-      result.apply(catalog);
+      result.append(childResult);
     }
 
     for (Iterator<Control> iter = CollectionUtil.listOrEmpty(catalog.getControls()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
       @NotNull
       Control child = iter.next();
-      ControlResult result = visitControl(child);
+      DefaultResult childResult = visitControl(child);
 
       // apply result to current context
-      result.apply(catalog);
+      result.append(childResult);
     }
+    result.applyTo(catalog);
   }
 
-  public ControlResult visitGroup(@NotNull CatalogGroup group) {
+  @NotNull
+  public DefaultResult visitGroup(@NotNull CatalogGroup group) {
     // process children
-    ControlResult retval = new ControlResult();
+    DefaultResult retval = new DefaultResult();
 
     // groups
     for (Iterator<CatalogGroup> iter = CollectionUtil.listOrEmpty(group.getGroups()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
       @NotNull
       CatalogGroup child = iter.next();
-      ControlResult result = visitGroup(child);
+      DefaultResult result = visitGroup(child);
       retval.append(result);
     }
 
@@ -88,15 +91,16 @@ public class FlatStructureCatalogVisitor {
       @NotNull
       Control child = iter.next();
       retval.promoteControl(child);
-      ControlResult result = visitControl(child);
+      DefaultResult result = visitControl(child);
       retval.append(result);
     }
 
     return retval;
   }
 
-  public ControlResult visitControl(@NotNull Control control) {
-    ControlResult result = new ControlResult();
+  @NotNull
+  public DefaultResult visitControl(@NotNull Control control) {
+    DefaultResult result = new DefaultResult();
 
     List<Control> controlChildren = CollectionUtil.listOrEmpty(control.getControls());
     if (!controlChildren.isEmpty()) {
@@ -105,7 +109,7 @@ public class FlatStructureCatalogVisitor {
         @SuppressWarnings("null")
         @NotNull
         Control child = iter.next();
-        ControlResult childResult = visitControl(child);
+        DefaultResult childResult = visitControl(child);
 
         // promote and remove this control as a child
         result.promoteControl(child);

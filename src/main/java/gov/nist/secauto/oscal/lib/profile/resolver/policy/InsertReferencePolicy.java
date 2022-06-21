@@ -26,70 +26,67 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import com.vladsch.flexmark.util.sequence.BasedSequence;
+
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.IIdentifierParser.Match;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 public class InsertReferencePolicy
-    extends AbstractReferencePolicy<InsertAnchorNode> {
+    extends AbstractCustomReferencePolicy<InsertAnchorNode> {
   private static final Logger LOGGER = LogManager.getLogger(InsertReferencePolicy.class);
 
-  @NotNull
-  private static final IReferencePolicyHandler<InsertAnchorNode> INDEX_MISS_HANDLER = new IndexMissHandler();
-  @NotNull
-  private static final IReferencePolicyHandler<InsertAnchorNode> INDEX_HIT_INCREMENT_HANDLER
-      = IReferencePolicyHandler.incrementCountIndexHitPolicy();
-
-  @SuppressWarnings("null")
   public InsertReferencePolicy() {
-    super(IIdentifierParser.IDENTITY_PARSER,
-        List.of(INDEX_MISS_HANDLER,
-            INDEX_HIT_INCREMENT_HANDLER));
+    super(IIdentifierParser.IDENTITY_PARSER);
   }
 
-  @SuppressWarnings("null")
   @Override
-  protected Set<ItemType> getEntityItemTypes(@NotNull InsertAnchorNode insert) {
+  protected List<@NotNull ItemType> getEntityItemTypes(@NotNull InsertAnchorNode insert) {
     String type = insert.getType().toString();
-    Set<ItemType> itemTypes;
-    switch (type) {
-    case "param":
-      itemTypes = Collections.singleton(ItemType.PARAMETER);
-      break;
-    default:
+
+    List<@NotNull ItemType> itemTypes;
+    if ("param".equals(type)) {
+      itemTypes = CollectionUtil.singletonList(ItemType.PARAMETER);
+    } else {
       throw new UnsupportedOperationException("unrecognized insert type: " + type);
     }
     return itemTypes;
   }
 
   @Override
-  protected String getReference(@NotNull InsertAnchorNode insert) {
+  public String getReferenceText(@NotNull InsertAnchorNode insert) {
     return insert.getIdReference().toString();
   }
 
-  private static class IndexMissHandler
-      extends AbstractIndexMissPolicyHandler<InsertAnchorNode> {
-
-    @Override
-    public boolean handleIndexMiss(@NotNull InsertAnchorNode insert, @NotNull Set<ItemType> itemTypes,
-        @NotNull Match match, @NotNull Index index) {
-      if (LOGGER.isErrorEnabled()) {
-        LOGGER.atError().log(
-            "the '{}' insert should reference a '{}' identified by '{}'. The index did not contain the identifier.",
-            insert.getType().toString(),
-            itemTypes.iterator().next().name().toLowerCase(),
-            match.getIdentifier());
-      }
-      return true;
-    }
+  @Override
+  public void setReferenceText(@NotNull InsertAnchorNode insert, @NotNull String newReference) {
+    insert.setIdReference(BasedSequence.of(newReference));
   }
+
+  @Override
+  protected boolean handleIndexMiss(
+      @NotNull InsertAnchorNode insert,
+      @NotNull List<@NotNull ItemType> itemTypes,
+      @NotNull String identifier,
+      @NotNull IReferenceVisitor visitor) {
+    if (LOGGER.isErrorEnabled()) {
+      LOGGER.atError().log(
+          "the '{}' insert should reference a '{}' identified by '{}'. The index did not contain the identifier.",
+          insert.getType().toString(),
+          itemTypes.stream()
+              .map(type -> type.name().toLowerCase(Locale.ROOT))
+              .collect(CustomCollectors.joiningWithOxfordComma("or")),
+          identifier);
+    }
+    return true;
+  }
+
 }

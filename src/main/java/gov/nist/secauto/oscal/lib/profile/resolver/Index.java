@@ -26,55 +26,85 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
-import gov.nist.secauto.oscal.lib.model.CatalogGroup;
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
-import gov.nist.secauto.oscal.lib.model.Location;
-import gov.nist.secauto.oscal.lib.model.Parameter;
-import gov.nist.secauto.oscal.lib.model.Party;
-import gov.nist.secauto.oscal.lib.model.Role;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
+import gov.nist.secauto.oscal.lib.model.control.catalog.ICatalog;
+import gov.nist.secauto.oscal.lib.model.control.catalog.IControlContainer;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class Index {
+  public static final MetapathExpression HAS_PROP_KEEP = MetapathExpression
+      .compile("prop[@name='keep' and has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@value = 'always'");
+
   @NotNull
   private final Map<ItemType, ItemGroup> entityMap;
   @NotNull
-  private final Map<String, CatalogGroup> selectedGroups;
-  @NotNull
-  private final Map<String, Control> selectedControls;
+  private final Set<IControlContainer> selectedContainers;
+
+  public static <T, K> Stream<T> merge(
+      @NotNull Stream<T> resolvedItems,
+      @NotNull Index index,
+      @NotNull ItemType itemType,
+      @NotNull Function<? super T, ? extends K> keyMapper) {
+    @SuppressWarnings("unchecked")
+    Stream<T> importedStream = index.getEntitiesByItemType(itemType).stream()
+        .filter(entity -> {
+          return entity.getReferenceCount() > 0
+              || (Boolean) HAS_PROP_KEEP.evaluateAs(entity.getInstance(), ResultType.BOOLEAN);
+        })
+        .map(entity -> (T) entity.getInstanceValue());
+
+    return CustomCollectors.distinctByKey(
+        Stream.concat(resolvedItems, importedStream),
+        keyMapper,
+        (key, value1, value2) -> value2);
+  }
 
   @SuppressWarnings("null")
   public Index() {
     this.entityMap = new EnumMap<>(ItemType.class);
-    this.selectedGroups = new HashMap<>();
-    this.selectedControls = new HashMap<>();
+    this.selectedContainers = new HashSet<>();
   }
 
-  @NotNull
+  public void markSelected(@NotNull IControlContainer container) {
+    selectedContainers.add(container);
+  }
+
+  public boolean isSelected(@NotNull IControlContainer container) {
+    return container instanceof ICatalog || selectedContainers.contains(container);
+  }
+
+  @Nullable
   protected ItemGroup getItemGroup(@NotNull ItemType itemType) {
-    ItemGroup retval = entityMap.get(itemType);
-    if (retval == null) {
-      retval = new ItemGroup(itemType);
-      entityMap.put(itemType, retval);
-    }
+    return entityMap.get(itemType);
+  }
+
+  protected ItemGroup newItemGroup(@NotNull ItemType itemType) {
+    ItemGroup retval = new ItemGroup(itemType);
+    entityMap.put(itemType, retval);
     return retval;
   }
 
   @NotNull
-  public Collection<EntityItem> getEntitiesByItemType(@NotNull ItemType itemType) {
+  public Collection<@NotNull EntityItem>
+      getEntitiesByItemType(@NotNull ItemType itemType) {
     ItemGroup group = getItemGroup(itemType);
-    return group.getEntities();
+    return group == null ? CollectionUtil.emptyList() : group.getEntities();
   }
 
   @SuppressWarnings("null")
@@ -84,103 +114,17 @@ public class Index {
 
   public EntityItem getEntity(@NotNull ItemType itemType, @NotNull String identifier) {
     ItemGroup group = getItemGroup(itemType);
-    return group.getEntity(identifier);
+    return group == null ? null : group.getEntity(identifier);
   }
 
-  @SuppressWarnings("null")
-  public EntityItem addRole(@NotNull Role role, @NotNull URI source) {
-    ItemGroup group = getItemGroup(ItemType.ROLE);
-    return group.add(EntityItem.builder()
-        .itemType(ItemType.ROLE)
-        .instance(role, role.getId())
-        .source(source)
-        .build());
-  }
+  public <T> EntityItem addItem(@NotNull EntityItem item) {
+    ItemType type = item.getItemType();
 
-  @SuppressWarnings("null")
-  public EntityItem addLocation(@NotNull Location location, @NotNull URI source) {
-    ItemGroup group = getItemGroup(ItemType.LOCATION);
-    return group.add(EntityItem.builder()
-        .itemType(ItemType.LOCATION)
-        .instance(location, location.getUuid())
-        .source(source)
-        .build());
-  }
-
-  @SuppressWarnings("null")
-  public EntityItem addParty(@NotNull Party party, @NotNull URI source) {
-    ItemGroup group = getItemGroup(ItemType.PARTY);
-    return group.add(EntityItem.builder()
-        .itemType(ItemType.PARTY)
-        .instance(party, party.getUuid())
-        .source(source)
-        .build());
-  }
-
-  @SuppressWarnings("null")
-  public EntityItem addGroup(@NotNull CatalogGroup catalogGroup, @NotNull URI source, boolean selected) {
-    if (selected) {
-      selectedGroups.put(catalogGroup.getId(), catalogGroup);
+    ItemGroup group = getItemGroup(type);
+    if (group == null) {
+      group = newItemGroup(type);
     }
-
-    ItemGroup group = getItemGroup(ItemType.GROUP);
-    return group.add(EntityItem.builder()
-        .itemType(ItemType.GROUP)
-        .instance(catalogGroup, catalogGroup.getId())
-        .source(source)
-        .build());
-  }
-
-  @SuppressWarnings("null")
-  public EntityItem addControl(@NotNull Control control, @NotNull URI source, boolean selected) {
-    if (selected) {
-      selectedControls.put(control.getId(), control);
-    }
-
-    ItemGroup group = getItemGroup(ItemType.CONTROL);
-    return group.add(EntityItem.builder()
-        .itemType(ItemType.CONTROL)
-        .instance(control, control.getId())
-        .source(source)
-        .build());
-  }
-
-  @SuppressWarnings("null")
-  public EntityItem addParameter(@NotNull Parameter parameter, @NotNull URI source) {
-    ItemGroup group = getItemGroup(ItemType.PARAMETER);
-    return group.add(EntityItem.builder()
-        .itemType(ItemType.PARAMETER)
-        .instance(parameter, parameter.getId())
-        .source(source)
-        .build());
-  }
-
-  @SuppressWarnings("null")
-  public EntityItem addPart(@NotNull ControlPart part, @NotNull URI source) {
-    ItemGroup group = getItemGroup(ItemType.PART);
-    return group.add(EntityItem.builder()
-        .itemType(ItemType.PART)
-        .instance(part, part.getId())
-        .source(source)
-        .build());
-  }
-
-  @SuppressWarnings("null")
-  public EntityItem addResource(@NotNull Resource resource, @NotNull URI source) {
-    ItemGroup group = getItemGroup(ItemType.RESOURCE);
-    return group.add(EntityItem.builder()
-        .itemType(ItemType.RESOURCE)
-        .instance(resource, resource.getUuid())
-        .source(source)
-        .build());
-  }
-
-  public boolean isGroupSelected(String identifier) {
-    return selectedGroups.containsKey(identifier);
-  }
-
-  public boolean isControlSelected(String identifier) {
-    return selectedControls.containsKey(identifier);
+    return group.add(item);
   }
 
   //
@@ -214,10 +158,10 @@ public class Index {
   // }
   // }
 
-  public static class ItemGroup {
+  private static class ItemGroup {
     @NotNull
     private final ItemType itemType;
-    Map<String, EntityItem> idToEntityMap;
+    Map<@NotNull String, EntityItem> idToEntityMap;
 
     public ItemGroup(@NotNull ItemType itemType) {
       this.itemType = itemType;
@@ -230,13 +174,13 @@ public class Index {
 
     @SuppressWarnings("null")
     @NotNull
-    public Collection<EntityItem> getEntities() {
+    public Collection<@NotNull EntityItem> getEntities() {
       return idToEntityMap.values();
     }
 
     public EntityItem add(@NotNull EntityItem entity) {
       assert itemType.equals(entity.getItemType());
-      return idToEntityMap.put(entity.getIdentifier(), entity);
+      return idToEntityMap.put(entity.getOriginalIdentifier(), entity);
     }
   }
 }

@@ -26,31 +26,22 @@
 
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
-import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
-import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathException;
 import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionUtils;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IArgument;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
-import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
-import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
-import java.util.Stack;
 
 public final class ResolveProfile {
 
@@ -121,24 +112,13 @@ public final class ResolveProfile {
       retval = profile;
     } else {
       // this is a profile
-      URI baseUri = profile.getBaseUri();
-      ProfileResolver resolver = new ProfileResolver(dynamicContext);
-      @NotNull
-      Catalog resolvedCatalog;
+      ProfileResolver resolver = new ProfileResolver();
+      resolver.setDynamicContext(dynamicContext);
       try {
-        ProfileResolver.ResolutionData data
-            = new ProfileResolver.ResolutionData((Profile) profileObject, baseUri, new Stack<>());
-        resolver.resolve(data);
-        resolvedCatalog = data.getCatalog();
+        retval = resolver.resolve(profile);
       } catch (IOException ex) {
         throw new MetapathException(String.format("Unable to resolve profile '%s'", profile.getBaseUri()), ex);
       }
-      IBindingContext bindingContext = OscalBindingContext.instance();
-      IAssemblyClassBinding catalogClassBinding
-          = (IAssemblyClassBinding) ObjectUtils.notNull(bindingContext.getClassBinding(Catalog.class));
-
-      retval = DefaultNodeItemFactory.instance().newDocumentNodeItem(new RootAssemblyDefinition(catalogClassBinding),
-          resolvedCatalog, profile.getBaseUri());
     }
     return retval;
   }

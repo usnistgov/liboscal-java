@@ -24,20 +24,29 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.model.control.catalog;
+package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public interface IControl extends IControlContainer {
+public interface IIndexer {
+  @NotNull
+  Index getIndex();
 
-  String getId();
+  EntityItem addRole(@NotNull IRequiredValueModelNodeItem role);
 
-  List<ControlPart> getParts();
+  EntityItem addLocation(@NotNull IRequiredValueModelNodeItem location);
 
-  Control getParentControl();
+  EntityItem addParty(@NotNull IRequiredValueModelNodeItem party);
 
-  void setParentControl(Control parent);
+  EntityItem addGroup(@NotNull IRequiredValueModelNodeItem group, boolean selected);
+
+  EntityItem addControl(@NotNull IRequiredValueModelNodeItem control, boolean selected);
+
+  EntityItem addParameter(@NotNull IRequiredValueModelNodeItem parameter);
+
+  EntityItem addPart(@NotNull IRequiredValueModelNodeItem part);
+
+  EntityItem addResource(@NotNull IRequiredValueModelNodeItem resource);
 }

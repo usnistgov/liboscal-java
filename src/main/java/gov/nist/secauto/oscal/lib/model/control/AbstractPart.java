@@ -26,22 +26,29 @@
 
 package gov.nist.secauto.oscal.lib.model.control;
 
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.oscal.lib.model.Link;
+import gov.nist.secauto.oscal.lib.model.Property;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public abstract class AbstractPart implements IPart {
 
-  @SuppressWarnings({ "null", "resource" })
+  @SuppressWarnings({ "null" })
   @Override
   @NotNull
-  public Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter,
-      boolean recurse) {
+  public Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter) {
     MarkupMultiline prose = getProse();
 
     @NotNull
@@ -52,11 +59,133 @@ public abstract class AbstractPart implements IPart {
       List<InsertAnchorNode> result = prose.getInserts(filter);
       retval = result.stream();
     }
-
-    if (recurse) {
-      retval = Stream.concat(retval, getParts().stream()
-          .flatMap(childPart -> childPart.getInserts(filter, true)));
-    }
     return retval;
+  }
+
+  public Stream<@NotNull IPart> getPartsRecursively() {
+    return Stream.concat(
+        Stream.of(this),
+        CollectionUtil.listOrEmpty(getParts()).stream()
+            .flatMap(part -> part.getPartsRecursively()));
+  }
+
+  @NotNull
+  public static Builder builder(@NotNull String name) {
+    return new Builder(name);
+  }
+
+  public static class Builder {
+    private String id;
+    @NotNull
+    private final String name;
+    private URI namespace;
+    private String clazz;
+    private MarkupMultiline prose;
+    private MarkupLine title;
+    private final List<Property> props = new LinkedList<>();
+    private final List<Link> links = new LinkedList<>();
+    private final List<ControlPart> parts = new LinkedList<>();
+
+    @SuppressWarnings("null")
+    public Builder(@NotNull String name) {
+      this.name = Objects.requireNonNull(name, "name");
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder id(@NotNull String value) {
+      this.id = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder namespace(@NotNull URI value) {
+      this.namespace = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder clazz(@NotNull String value) {
+      this.clazz = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @NotNull
+    public Builder title(@NotNull String markdown) {
+      return title(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder title(@NotNull MarkupLine value) {
+      this.title = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @NotNull
+    public Builder prose(@NotNull String markdown) {
+      return prose(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
+    }
+
+    @SuppressWarnings("null")
+    @NotNull
+    public Builder prose(@NotNull MarkupMultiline value) {
+      this.prose = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    @NotNull
+    public Builder prop(@NotNull Property value) {
+      this.props.add(Objects.requireNonNull(value, "value"));
+      return this;
+    }
+
+    @NotNull
+    public Builder link(@NotNull Link value) {
+      this.links.add(Objects.requireNonNull(value, "value"));
+      return this;
+    }
+
+    @NotNull
+    public Builder part(@NotNull ControlPart value) {
+      this.parts.add(Objects.requireNonNull(value, "value"));
+      return this;
+    }
+
+    
+    @NotNull
+    public ControlPart build() {
+      ControlPart retval = new ControlPart();
+
+      retval.setName(name);
+
+      if (id != null) {
+        retval.setId(id);
+      }
+      if (namespace != null) {
+        retval.setNs(namespace);
+      }
+      if (clazz != null) {
+        retval.setClazz(clazz);
+      }
+      if (prose != null) {
+        retval.setProse(prose);
+      }
+      if (title != null) {
+        retval.setTitle(title);
+      }
+      if (!props.isEmpty()) {
+        retval.setProps(props);
+      }
+      if (!links.isEmpty()) {
+        retval.setLinks(links);
+      }
+      if (!parts.isEmpty()) {
+        retval.setParts(parts);
+      }
+      return retval;
+    }
   }
 }

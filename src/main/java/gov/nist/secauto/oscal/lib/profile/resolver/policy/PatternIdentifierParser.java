@@ -26,23 +26,25 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class AbstractPatternIdentifierParser implements IIdentifierParser {
+public class PatternIdentifierParser implements IIdentifierParser {
   private final Pattern pattern;
   private final int identifierGroup;
 
   @SuppressWarnings("null")
-  public AbstractPatternIdentifierParser(@NotNull String pattern, int identifierGroup) {
-    this(Pattern.compile(Objects.requireNonNull(pattern, "pattern")), identifierGroup);
+  public PatternIdentifierParser(@NotNull String pattern, int identifierGroup) {
+    this(Pattern.compile(pattern), identifierGroup);
   }
 
   @SuppressWarnings("null")
-  public AbstractPatternIdentifierParser(@NotNull Pattern pattern, int identifierGroup) {
+  public PatternIdentifierParser(@NotNull Pattern pattern, int identifierGroup) {
     this.pattern = Objects.requireNonNull(pattern, "pattern");
     this.identifierGroup = identifierGroup;
   }
@@ -56,16 +58,25 @@ public abstract class AbstractPatternIdentifierParser implements IIdentifierPars
   }
 
   @Override
-  public Match match(@NotNull String reference) {
-    Matcher matcher = getPattern().matcher(reference);
+  public String parse(@NotNull String referenceText) {
+    Matcher matcher = getPattern().matcher(referenceText);
 
-    Match retval;
-    if (matcher.matches()) {
-      retval = new Match(reference, matcher.group(getIdentifierGroup()), true);
-    } else {
-      retval = new Match(reference, reference, false);
-    }
-    return retval;
+    return matcher.matches() ? matcher.group(getIdentifierGroup()) : null;
   }
 
+  @Override
+  public String update(@NotNull String referenceText, @NotNull String newIdentifier) {
+    Matcher matcher = getPattern().matcher(referenceText);
+    if (!matcher.matches()) {
+      throw new IllegalStateException(String.format("The original reference '%s' did not match the pattern '%s'.",
+          referenceText, getPattern().pattern()));
+    }
+
+    return ObjectUtils.notNull(new StringBuilder(referenceText)
+        .replace(
+            matcher.start(getIdentifierGroup()),
+            matcher.end(getIdentifierGroup()),
+            newIdentifier)
+        .toString());
+  }
 }

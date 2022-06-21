@@ -23,21 +23,34 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
-
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface IControl extends IControlContainer {
+public interface IGroupContainer extends IControlContainer {
 
-  String getId();
 
-  List<ControlPart> getParts();
+  List<@NotNull CatalogGroup> getGroups();
 
-  Control getParentControl();
+  /**
+   * Add a new {@link CatalogGroup} item to the end of the underlying collection.
+   * 
+   * @param item
+   *          the item to add
+   * @return {@code true}
+   */
+  boolean addGroup(@NotNull CatalogGroup item);
 
-  void setParentControl(Control parent);
+  /**
+   * Remove the first matching {@link CatalogGroup} item from the underlying collection.
+   * 
+   * @param item
+   *          the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  boolean removeGroup(@NotNull CatalogGroup item);
 }

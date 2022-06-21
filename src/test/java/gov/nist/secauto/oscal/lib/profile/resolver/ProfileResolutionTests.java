@@ -36,10 +36,8 @@ import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.Profile;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -62,11 +60,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneOffset;
-import java.util.Stack;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -86,7 +82,8 @@ class ProfileResolutionTests {
   static void setup() throws SaxonApiException {
     DynamicContext context = new StaticContext().newDynamicContext();
     context.setDocumentLoader(new DefaultBoundLoader(OscalBindingContext.instance()));
-    profileResolver = new ProfileResolver(context);
+    profileResolver = new ProfileResolver();
+    profileResolver.setDynamicContext(context);
 
     processor = new Processor(false);
     XsltCompiler comp = processor.newXsltCompiler();
@@ -107,20 +104,12 @@ class ProfileResolutionTests {
 
   private Catalog resolveProfile(@NotNull Path profileFile)
       throws FileNotFoundException, BindingException, IOException {
-    Profile profile = OscalBindingContext.instance().loadProfile(profileFile);
-    ProfileResolver.ResolutionData data
-        = new ProfileResolver.ResolutionData(profile, ObjectUtils.notNull(profileFile.toUri()), new Stack<>());
-    getProfileResolver().resolve(data);
-    return data.getCatalog();
+    return (Catalog)getProfileResolver().resolveProfile(profileFile).getValue();
   }
 
   private Catalog resolveProfile(@NotNull File profileFile)
       throws FileNotFoundException, BindingException, IOException {
-    Profile profile = OscalBindingContext.instance().loadProfile(profileFile);
-    ProfileResolver.ResolutionData data
-        = new ProfileResolver.ResolutionData(profile, ObjectUtils.notNull(profileFile.toURI()), new Stack<>());
-    getProfileResolver().resolve(data);
-    return data.getCatalog();
+    return (Catalog)getProfileResolver().resolveProfile(profileFile).getValue();
   }
 
   private String transformXml(Source source) throws SaxonApiException {
@@ -140,6 +129,15 @@ class ProfileResolutionTests {
   @ParameterizedTest
   @CsvFileSource(resources = "/profile-tests.csv", numLinesToSkip = 1)
   void test(String profileName) throws IllegalStateException, IOException, BindingException, SaxonApiException {
+    performTest(profileName);
+  }
+
+  @Test
+  void testSingle() throws IllegalStateException, IOException, BindingException, SaxonApiException {
+    performTest("merge-keep-resources");
+  }
+  
+  void performTest(String profileName) throws IllegalStateException, IOException, BindingException, SaxonApiException {
     String profileLocation = String.format("%s/%s_profile.xml", PROFILE_UNIT_TEST_PATH, profileName);
 
     File profileFile = new File(profileLocation);
@@ -157,7 +155,8 @@ class ProfileResolutionTests {
     ISerializer<@NotNull Catalog> serializer = OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class);
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
-    // serializer.serialize(catalog, System.out);
+
+    OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog, System.out);
 
     // System.out.println("Pre scrub: " + writer.getBuffer().toString());
 
@@ -197,20 +196,16 @@ class ProfileResolutionTests {
 
   @Test
   void testOscalVersion() throws IllegalStateException, IOException, BindingException {
-    Path profileFile = Path.of("src/test/resources/test-oscal-version-profile.xml");
+    Path profileFile = Paths.get(JUNIT_TEST_PATH, "content/test-oscal-version-profile.xml");
     Catalog catalog = resolveProfile(profileFile);
     assertNotNull(catalog);
     assertEquals("1.0.4", catalog.getMetadata().getOscalVersion());
   }
 
   @Test
-  void testImportResourceRelativeLink() throws IOException {
+  void testImportResourceRelativeLink() throws IOException, BindingException {
     Path profilePath = Paths.get(JUNIT_TEST_PATH, "content/profile-relative-links-resource.xml");
-//    System.out.println(profilePath.normalize().toRealPath(LinkOption.NOFOLLOW_LINKS).toString());
-    Profile profile = OscalBindingContext.instance().loadProfile(profilePath);
-    ProfileResolver.ResolutionData data
-        = new ProfileResolver.ResolutionData(profile, ObjectUtils.notNull(profilePath.toUri()), new Stack<>());
-    Catalog resolvedCatalog =  getProfileResolver().resolve(data);
+    Catalog resolvedCatalog =  resolveProfile(profilePath);
     assertNotNull(resolvedCatalog);
   }
 }

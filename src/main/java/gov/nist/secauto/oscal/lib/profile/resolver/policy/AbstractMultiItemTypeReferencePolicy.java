@@ -24,20 +24,30 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.model.control.catalog;
+package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface IControl extends IControlContainer {
+public abstract class AbstractMultiItemTypeReferencePolicy<TYPE>
+    extends AbstractCustomReferencePolicy<TYPE> {
 
-  String getId();
+  @NotNull
+  private final List<@NotNull ItemType> itemTypes;
 
-  List<ControlPart> getParts();
+  public AbstractMultiItemTypeReferencePolicy(
+      @NotNull IIdentifierParser identifierParser,
+      @NotNull List<@NotNull ItemType> itemTypes) {
+    super(identifierParser);
+    this.itemTypes = CollectionUtil.requireNonEmpty(itemTypes, "itemTypes");
+  }
 
-  Control getParentControl();
-
-  void setParentControl(Control parent);
+  @Override
+  protected List<@NotNull ItemType> getEntityItemTypes(@NotNull TYPE type) {
+    return itemTypes;
+  }
 }

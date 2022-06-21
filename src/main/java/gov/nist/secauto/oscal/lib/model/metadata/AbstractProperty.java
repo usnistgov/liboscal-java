@@ -76,13 +76,13 @@ public abstract class AbstractProperty implements IProperty {
   }
 
   @NotNull
-  public static Builder builder(@NotNull String name) {
-    return new Builder(name);
+  public QName getQName() {
+    return new QName(normalizeNamespace(getNs()).toString(), getName());
   }
 
   @NotNull
-  public QName getQName() {
-    return new QName(normalizeNamespace(getNs()).toString(), getName());
+  public static Builder builder(@NotNull String name) {
+    return new Builder(name);
   }
 
   public static class Builder {

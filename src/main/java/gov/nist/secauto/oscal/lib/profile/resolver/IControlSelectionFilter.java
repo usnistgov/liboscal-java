@@ -32,7 +32,10 @@ import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface IControlSelectionFilter extends Function<@NotNull IControl, Pair<@NotNull Boolean, @NotNull Boolean>> {
 
@@ -56,6 +59,20 @@ public interface IControlSelectionFilter extends Function<@NotNull IControl, Pai
       return NON_MATCH;
     }
   };
+
+  @NotNull
+  static IControlSelectionFilter matchIds(@NotNull String...identifiers) {
+    return new IControlSelectionFilter() {
+      private Set<@NotNull String> keys = Arrays.stream(identifiers).collect(Collectors.toUnmodifiableSet());
+
+      @SuppressWarnings("null")
+      @Override
+      public @NotNull Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
+        return Pair.of(keys.contains(control.getId()), false);
+      }
+      
+    };
+  }
 
   /**
    * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
