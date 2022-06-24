@@ -84,7 +84,7 @@ class OscalBindingContextTest {
 
     File out = new File(tempDir.toFile(), "out.json");
     // File out = new File("target/out.json");
-    IBindingContext context = IBindingContext.newInstance();
+    IBindingContext context = IBindingContext.instance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class);
     serializer.serialize(catalog, out);
@@ -102,7 +102,7 @@ class OscalBindingContextTest {
 
     // File out = new File(tempDir.toFile(), "out.xml");
     File out = new File("target/out.xml");
-    IBindingContext context = IBindingContext.newInstance();
+    IBindingContext context = IBindingContext.instance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
     serializer.serialize(catalog, out);
@@ -120,7 +120,7 @@ class OscalBindingContextTest {
 
     File out = new File(tempDir.toFile(), "out.json");
     // File out = new File("target/out-profile.json");
-    IBindingContext context = IBindingContext.newInstance();
+    IBindingContext context = IBindingContext.instance();
 
     ISerializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class);
     serializer.serialize(profile, out);
@@ -145,7 +145,7 @@ class OscalBindingContextTest {
   void testSerializeSspToOutputStream() throws IOException {
     SystemSecurityPlan ssp = new SystemSecurityPlan();
 
-    IBindingContext context = IBindingContext.newInstance();
+    IBindingContext context = IBindingContext.instance();
     ISerializer<SystemSecurityPlan> serializer = context.newSerializer(Format.JSON, SystemSecurityPlan.class);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serializer.serialize(ssp, out);
@@ -160,7 +160,7 @@ class OscalBindingContextTest {
     // File out = new File(tempDir.toFile(), "out.xml");
     Path out = Paths.get("target/generated-test-resources/catalog-with-lists.xml");
     Files.createDirectories(out.getParent());
-    IBindingContext context = IBindingContext.newInstance();
+    IBindingContext context = IBindingContext.instance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
     serializer.serialize(catalog, out);

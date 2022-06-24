@@ -44,8 +44,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-class TestContent {
-  private static final Logger LOGGER = LogManager.getLogger(TestContent.class);
+class ReadWriteTest {
+  private static final Logger LOGGER = LogManager.getLogger(ReadWriteTest.class);
 
   private static <CLASS> CLASS measureDeserializer(String format, File file, IDeserializer<CLASS> deserializer,
       int iterations) throws IOException {
@@ -92,7 +92,7 @@ class TestContent {
 
   private static <CLASS> void chainReadWrite(File xmlSource, Class<CLASS> clazz, Path tempDir, int iterations)
       throws IOException {
-    IBindingContext context = IBindingContext.newInstance();
+    IBindingContext context = IBindingContext.instance();
 
     CLASS obj;
 

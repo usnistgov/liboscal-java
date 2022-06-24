@@ -34,6 +34,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.function.IArgument;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
 import gov.nist.secauto.metaschema.model.common.metapath.function.InvalidTypeFunctionMetapathException;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IBooleanItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDefinitionNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IStringItem;
@@ -68,7 +69,7 @@ public final class HasOscalNamespace {
       .name("has-oscal-namespace")
       .argument(IArgument.newBuilder()
           .name("propOrPart")
-          .type(INodeItem.class)
+          .type(IDefinitionNodeItem.class)
           .one()
           .build())
       .argument(IArgument.newBuilder()
@@ -109,14 +110,14 @@ public final class HasOscalNamespace {
   public static ISequence<?> executeTwoArg(@NotNull IFunction function,
       @NotNull List<@NotNull ISequence<?>> arguments, @NotNull DynamicContext dynamicContext,
       INodeItem focus) {
-    ISequence<? extends INodeItem> nodeSequence = FunctionUtils.asType(arguments.get(0));
+    ISequence<? extends IDefinitionNodeItem> nodeSequence = FunctionUtils.asType(arguments.get(0));
 
     IItem node = FunctionUtils.getFirstItem(nodeSequence, true);
     if (node == null) {
       return ISequence.empty();
     }
 
-    ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(arguments.get(0));
+    ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(arguments.get(1));
     if (namespaceArgs.isEmpty()) {
       return ISequence.empty();
     }
@@ -125,7 +126,7 @@ public final class HasOscalNamespace {
   }
 
   @NotNull
-  public static IBooleanItem hasNamespace(@NotNull INodeItem propOrPart,
+  public static IBooleanItem hasNamespace(@NotNull IDefinitionNodeItem propOrPart,
       @NotNull ISequence<? extends IStringItem> namespaces, @NotNull DynamicContext dynamicContext)
       throws MetapathException {
     Object propOrPartObject = propOrPart.getValue();

@@ -306,7 +306,7 @@ public class ProfileResolver {
       // changes to the data.
       try {
         importedCatalog = DefaultNodeItemFactory.instance().newDocumentNodeItem(
-            importedCatalog.getDefinition(),
+            importedCatalog.getRootAssemblyNodeItem().getDefinition(),
             OscalBindingContext.instance().copyBoundObject(importedCatalog.getValue(), null),
             importedCatalog.getDocumentUri());
 
