@@ -28,6 +28,7 @@ package gov.nist.secauto.oscal.lib;
 
 import gov.nist.secauto.metaschema.binding.DefaultBindingContext;
 import gov.nist.secauto.metaschema.binding.IBindingMatcher;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraintSet;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -54,6 +56,17 @@ public class OscalBindingContext
   @NotNull
   public static OscalBindingContext instance() {
     return INSTANCE;
+  }
+
+  /**
+   * Construct a new OSCAL-flavored binding context with custom constraints.
+   * 
+   * @param constraintSets
+   *          a set of additional constraints to apply
+   */
+  public OscalBindingContext(@NotNull Set<@NotNull IConstraintSet> constraintSets) {
+    super(constraintSets);
+    registerBindingMatcher(new Matcher());
   }
 
   /**
