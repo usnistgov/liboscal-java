@@ -9,7 +9,7 @@
 
 	<groupId>gov.nist.secauto.oscal</groupId>
 	<artifactId>liboscal-java</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>OSCAL Java Library</name>
