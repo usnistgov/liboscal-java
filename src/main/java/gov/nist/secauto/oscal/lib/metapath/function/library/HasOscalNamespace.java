@@ -27,12 +27,12 @@
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.model.common.metapath.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathException;
-import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionUtils;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IArgument;
 import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
-import gov.nist.secauto.metaschema.model.common.metapath.function.InvalidTypeFunctionMetapathException;
+import gov.nist.secauto.metaschema.model.common.metapath.function.InvalidTypeFunctionException;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IBooleanItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDefinitionNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
@@ -131,8 +131,7 @@ public final class HasOscalNamespace {
       throws MetapathException {
     Object propOrPartObject = propOrPart.getValue();
     if (propOrPartObject == null) {
-      throw new InvalidTypeFunctionMetapathException(InvalidTypeFunctionMetapathException.NODE_HAS_NO_TYPED_VALUE,
-          String.format("Item '%s' has no typed value", propOrPart.getClass().getName()));
+      throw new InvalidTypeFunctionException(InvalidTypeFunctionException.NODE_HAS_NO_TYPED_VALUE, propOrPart);
     }
 
     URI nodeNamespace;

@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
@@ -49,27 +50,27 @@ public final class TestUtil {
 
     @Override
     public String mapRoleIdentifier(@NotNull String identifier) {
-      return identifier+"-"+UUID.randomUUID().toString();
+      return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
     public String mapControlIdentifier(@NotNull String identifier) {
-      return identifier+"-"+UUID.randomUUID().toString();
+      return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
     public String mapGroupIdentifier(@NotNull String identifier) {
-      return identifier+"-"+UUID.randomUUID().toString();
+      return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
     public String mapParameterIdentifier(@NotNull String identifier) {
-      return identifier+"-"+UUID.randomUUID().toString();
+      return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
     public @NotNull String mapPartIdentifier(@NotNull String identifier) {
-      return identifier+"-"+UUID.randomUUID().toString();
+      return identifier + "-" + UUID.randomUUID().toString();
     }
   };
 
@@ -83,13 +84,13 @@ public final class TestUtil {
     // setup the imported catalog
     Catalog importedCatalog = new Catalog();
     importedCatalog.setUuid(UUID.randomUUID());
-    
+
     importedCatalog.addParam(Parameter.builder("param1")
         .build());
 
     importedCatalog.addGroup(CatalogGroup.builder("group1")
         .title("Group 1")
-        .part(ControlPart.builder("statement")
+        .part(ControlPart.builder("statement") // NOPMD - no need to reduce literals
             .prose("group 1 part 1")
             .build())
         .param(Parameter.builder("param2")

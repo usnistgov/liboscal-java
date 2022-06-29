@@ -31,9 +31,9 @@ import com.vladsch.flexmark.util.ast.Node;
 
 import gov.nist.secauto.metaschema.model.common.datatype.markup.IMarkupText;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.metapath.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
-import gov.nist.secauto.metaschema.model.common.metapath.evaluate.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.function.library.FnData;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IMarkupItem;
@@ -191,7 +191,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitRole(@NotNull IRequiredValueModelNodeItem item) {
-    Role role = item.getValue();
+    Role role = (Role)item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.ROLE, ObjectUtils.notNull(role.getId()));
 
     if (!entity.isResolved()) {
@@ -205,7 +205,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitParty(@NotNull IRequiredValueModelNodeItem item) {
-    Party party = item.getValue();
+    Party party = (Party)item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.PARTY, ObjectUtils.notNull(party.getUuid()));
 
     if (!entity.isResolved()) {
@@ -219,7 +219,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitLocation(@NotNull IRequiredValueModelNodeItem item) {
-    Location location = item.getValue();
+    Location location = (Location)item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.LOCATION, ObjectUtils.notNull(location.getUuid()));
 
     if (!entity.isResolved()) {
@@ -233,7 +233,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitResource(@NotNull IRequiredValueModelNodeItem item) {
-    Resource resource = item.getValue();
+    Resource resource = (Resource)item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.RESOURCE, ObjectUtils.notNull(resource.getUuid()));
 
     if (!entity.isResolved()) {
@@ -253,7 +253,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitParameter(@NotNull IRequiredValueModelNodeItem item) {
-    Parameter parameter = item.getValue();
+    Parameter parameter = (Parameter)item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.PARAMETER, ObjectUtils.notNull(parameter.getId()));
 
     if (!entity.isResolved()) {
@@ -339,7 +339,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitPart(@NotNull IRequiredValueModelNodeItem item) {
-    ControlPart part = item.getValue();
+    ControlPart part = (ControlPart)item.getValue();
     String id = part.getId();
 
     boolean resolve;

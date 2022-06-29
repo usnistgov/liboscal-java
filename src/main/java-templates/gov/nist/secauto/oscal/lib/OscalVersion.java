@@ -27,12 +27,17 @@ package gov.nist.secauto.oscal.lib;
 
 public final class OscalVersion {
   public static final String OSCAL_BRANCH = "@oscal-git.closest.tag.name@";
+  public static final String OSCAL_COMMIT = "@oscal-git.commit.id.abbrev@";
 
   private OscalVersion() {
     // disable construction
   }
 
   public static String getOscalBranch() {
+    return OSCAL_BRANCH;
+  }
+
+  public static String getOscalCommit() {
     return OSCAL_BRANCH;
   }
 }

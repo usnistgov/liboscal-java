@@ -116,7 +116,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<dependency.metaschema-framework.version>0.8.0-SNAPSHOT</dependency.metaschema-framework.version>
-		<plugin.metaschema.version>0.7.0</plugin.metaschema.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
 		<dependency.junit5.version>5.8.2</dependency.junit5.version>
@@ -201,6 +200,7 @@
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
 			<version>${dependency.jetbrains-annotation.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -349,7 +349,7 @@
 					<generateGitPropertiesFile>true</generateGitPropertiesFile>
 					<generateGitPropertiesFilename>${project.build.directory}/oscal-git.properties</generateGitPropertiesFilename>
 					<verbose>true</verbose>
-					<useNativeGit>true</useNativeGit>
+					<useNativeGit>false</useNativeGit>
 					<prefix>oscal-git</prefix>
 				</configuration>
 				<executions>
@@ -368,7 +368,7 @@
 				<executions>
 					<execution>
 						<id>copy-oscal-xml-schema</id>
-						<phase>process-resources</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
@@ -377,6 +377,21 @@
 							<resources>
 								<resource>
 									<directory>${project.basedir}/oscal/xml/schema</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-oscal-json-schema</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/oscal/json/schema</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -465,7 +480,7 @@
 			<plugin>
 				<groupId>gov.nist.secauto.metaschema</groupId>
 				<artifactId>metaschema-maven-plugin</artifactId>
-				<version>${plugin.metaschema.version}</version>
+				<version>${dependency.metaschema-framework.version}</version>
 				<executions>
 					<execution>
 						<id>generate-model-sources</id>

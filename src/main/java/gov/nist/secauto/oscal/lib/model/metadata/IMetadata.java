@@ -45,5 +45,4 @@ public interface IMetadata {
   List<@NotNull Location> getLocations();
 
   List<@NotNull Party> getParties();
-
 }
