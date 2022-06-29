@@ -32,6 +32,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueMode
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.control.catalog.IControlContainer;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferenceVisitor;
 
 import org.jetbrains.annotations.NotNull;
@@ -146,7 +147,7 @@ public final class EntityItem {
     case PART: {
       IRequiredValueModelNodeItem instance = getInstance();
       IRequiredValueModelNodeItem containerItem = CONTAINER_METAPATH.evaluateAs(instance, ResultType.NODE);
-      retval = index.isSelected(containerItem.getValue());
+      retval = index.isSelected((IControlContainer)containerItem.getValue());
       break;
     }
     case PARAMETER:
