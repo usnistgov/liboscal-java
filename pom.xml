@@ -9,7 +9,7 @@
 
 	<groupId>gov.nist.secauto.oscal</groupId>
 	<artifactId>liboscal-java</artifactId>
-	<version>1.0.5-SNAPSHOT</version>
+	<version>1.0.4.1</version>
 	<packaging>jar</packaging>
 
 	<name>OSCAL Java Library</name>
@@ -25,7 +25,7 @@
 		<url>https://github.com/usnistgov/liboscal-java</url>
 		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git</connection>
 		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git</developerConnection>
-	  <tag>v1.0.4</tag>
+	  <tag>v1.0.4.1</tag>
   </scm>
 
 	<distributionManagement>
