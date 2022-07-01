@@ -165,21 +165,21 @@ public class Import {
               index,
               ItemType.ROLE,
               item -> item.getId())
-                  .collect(Collectors.toCollection(LinkedList::new)));
+              .collect(Collectors.toCollection(LinkedList::new)));
       resolvedMetadata.setParties(
           Index.merge(
               ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getParties()).stream()),
               index,
               ItemType.PARTY,
               item -> item.getUuid())
-                  .collect(Collectors.toCollection(LinkedList::new)));
+              .collect(Collectors.toCollection(LinkedList::new)));
       resolvedMetadata.setLocations(
           Index.merge(
               ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getLocations()).stream()),
               index,
               ItemType.LOCATION,
               item -> item.getUuid())
-                  .collect(Collectors.toCollection(LinkedList::new)));
+              .collect(Collectors.toCollection(LinkedList::new)));
     }
   }
 
@@ -199,7 +199,7 @@ public class Import {
           ItemType.RESOURCE,
           item -> item.getUuid())
           .collect(Collectors.toCollection(LinkedList::new));
-      
+
       if (!resources.isEmpty()) {
         if (resolvedBackMatter == null) {
           resolvedBackMatter = new BackMatter();

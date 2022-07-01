@@ -104,12 +104,12 @@ class ProfileResolutionTests {
 
   private Catalog resolveProfile(@NotNull Path profileFile)
       throws FileNotFoundException, BindingException, IOException {
-    return (Catalog)getProfileResolver().resolveProfile(profileFile).getValue();
+    return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
   }
 
   private Catalog resolveProfile(@NotNull File profileFile)
       throws FileNotFoundException, BindingException, IOException {
-    return (Catalog)getProfileResolver().resolveProfile(profileFile).getValue();
+    return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
   }
 
   private String transformXml(Source source) throws SaxonApiException {
@@ -136,7 +136,7 @@ class ProfileResolutionTests {
   void testSingle() throws IllegalStateException, IOException, BindingException, SaxonApiException {
     performTest("merge-keep-resources");
   }
-  
+
   void performTest(String profileName) throws IllegalStateException, IOException, BindingException, SaxonApiException {
     String profileLocation = String.format("%s/%s_profile.xml", PROFILE_UNIT_TEST_PATH, profileName);
 
@@ -205,7 +205,7 @@ class ProfileResolutionTests {
   @Test
   void testImportResourceRelativeLink() throws IOException, BindingException {
     Path profilePath = Paths.get(JUNIT_TEST_PATH, "content/profile-relative-links-resource.xml");
-    Catalog resolvedCatalog =  resolveProfile(profilePath);
+    Catalog resolvedCatalog = resolveProfile(profilePath);
     assertNotNull(resolvedCatalog);
   }
 }

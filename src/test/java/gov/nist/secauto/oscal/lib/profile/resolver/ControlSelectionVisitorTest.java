@@ -50,12 +50,12 @@ class ControlSelectionVisitorTest {
 
     IControlFilter filter = IControlFilter.newInstance(
         IControlSelectionFilter.ALL_MATCH,
-        IControlSelectionFilter.matchIds("control2","control5", "control7"));
+        IControlSelectionFilter.matchIds("control2", "control5", "control7"));
 
     ControlSelectionVisitor selectionVisitor = new ControlSelectionVisitor(filter, IIdentifierMapper.IDENTITY);
     selectionVisitor.visitCatalog(importedCatalogDocumentItem);
     Index index = selectionVisitor.getIndex();
-    
+
     Set<String> selected = Stream.concat(
         index.getEntitiesByItemType(ItemType.GROUP).stream(),
         index.getEntitiesByItemType(ItemType.CONTROL).stream())
@@ -74,6 +74,6 @@ class ControlSelectionVisitorTest {
           return id;
         })
         .collect(Collectors.toSet());
-    assertEquals(Set.of("control1","control3","control4","control6","control8","group1","group2"), selected);
+    assertEquals(Set.of("control1", "control3", "control4", "control6", "control8", "group1", "group2"), selected);
   }
 }

@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("PMD")
 public abstract class AbstractCatalogGroup
     implements ICatalogGroup, IGroupContainer {
-  
+
   @SuppressWarnings("null")
   @NotNull
   @Override
@@ -70,7 +70,7 @@ public abstract class AbstractCatalogGroup
     return Stream.concat(insertIds, parameterIds)
         .distinct();
   }
-  
+
   @NotNull
   public static Builder builder(@NotNull String id) {
     return new Builder(id);

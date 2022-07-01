@@ -147,7 +147,7 @@ public final class EntityItem {
     case PART: {
       IRequiredValueModelNodeItem instance = getInstance();
       IRequiredValueModelNodeItem containerItem = CONTAINER_METAPATH.evaluateAs(instance, ResultType.NODE);
-      retval = index.isSelected((IControlContainer)containerItem.getValue());
+      retval = index.isSelected((IControlContainer) containerItem.getValue());
       break;
     }
     case PARAMETER:

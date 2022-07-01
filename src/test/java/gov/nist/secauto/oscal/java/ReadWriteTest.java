@@ -136,11 +136,11 @@ class ReadWriteTest {
     }
     assertTrue(catalogSourceXml.exists());
 
-//    File outDir = new File("target/test-content");
-//    outDir.mkdirs();
-//    Path outPath = outDir.toPath();
+    // File outDir = new File("target/test-content");
+    // outDir.mkdirs();
+    // Path outPath = outDir.toPath();
     Path outPath = tempDir;
-//    chainReadWrite(catalogSourceXml, Catalog.class, tempDir, 50);
+    // chainReadWrite(catalogSourceXml, Catalog.class, tempDir, 50);
     chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
   }
 }

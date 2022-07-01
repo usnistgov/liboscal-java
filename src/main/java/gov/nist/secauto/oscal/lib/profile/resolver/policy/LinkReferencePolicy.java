@@ -101,14 +101,13 @@ public class LinkReferencePolicy
     }
     return true;
   }
-  
 
   @Override
   protected boolean handleIdentifierNonMatch(@NotNull Link reference, @NotNull IReferenceVisitor visitor) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.atDebug().log("Ignoring URI '{}'", reference.getHref().toString());
     }
-    
+
     return true;
   }
 }

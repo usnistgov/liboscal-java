@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
 @SuppressWarnings("PMD")
 public abstract class AbstractProfileSelectControlById implements IProfileSelectControlById {
   // TODO: move implementation from profile resolver selection code here
-  
 
   @NotNull
   public static Builder builder() {

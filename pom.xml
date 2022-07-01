@@ -114,7 +114,7 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.8.0</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>0.8.1</dependency.metaschema-framework.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
 		<dependency.junit5.version>5.8.2</dependency.junit5.version>

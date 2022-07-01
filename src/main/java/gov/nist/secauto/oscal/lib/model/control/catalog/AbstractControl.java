@@ -69,7 +69,7 @@ public abstract class AbstractControl
       setParentControl((Control) parent);
     }
   }
-  
+
   @SuppressWarnings("null")
   @NotNull
   @Override

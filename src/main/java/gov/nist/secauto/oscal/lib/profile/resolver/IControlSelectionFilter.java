@@ -61,7 +61,7 @@ public interface IControlSelectionFilter extends Function<@NotNull IControl, Pai
   };
 
   @NotNull
-  static IControlSelectionFilter matchIds(@NotNull String...identifiers) {
+  static IControlSelectionFilter matchIds(@NotNull String... identifiers) {
     return new IControlSelectionFilter() {
       private Set<@NotNull String> keys = Arrays.stream(identifiers).collect(Collectors.toUnmodifiableSet());
 
@@ -70,7 +70,7 @@ public interface IControlSelectionFilter extends Function<@NotNull IControl, Pai
       public @NotNull Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
         return Pair.of(keys.contains(control.getId()), false);
       }
-      
+
     };
   }
 

@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.java;
 
 import gov.nist.secauto.metaschema.binding.io.Format;
@@ -48,7 +49,7 @@ class ExamplesTest {
 
     // load an OSCAL catalog
     Catalog catalog = loader.load(Paths.get("src/test/resources/content/test-catalog.xml")); // load the catalog
-    
+
     // Create a serializer which can be used to write multiple catalogs
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
 

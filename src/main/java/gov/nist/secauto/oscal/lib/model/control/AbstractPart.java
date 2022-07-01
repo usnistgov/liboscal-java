@@ -154,7 +154,6 @@ public abstract class AbstractPart implements IPart {
       return this;
     }
 
-    
     @NotNull
     public ControlPart build() {
       ControlPart retval = new ControlPart();

@@ -191,7 +191,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitRole(@NotNull IRequiredValueModelNodeItem item) {
-    Role role = (Role)item.getValue();
+    Role role = (Role) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.ROLE, ObjectUtils.notNull(role.getId()));
 
     if (!entity.isResolved()) {
@@ -205,7 +205,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitParty(@NotNull IRequiredValueModelNodeItem item) {
-    Party party = (Party)item.getValue();
+    Party party = (Party) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.PARTY, ObjectUtils.notNull(party.getUuid()));
 
     if (!entity.isResolved()) {
@@ -219,7 +219,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitLocation(@NotNull IRequiredValueModelNodeItem item) {
-    Location location = (Location)item.getValue();
+    Location location = (Location) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.LOCATION, ObjectUtils.notNull(location.getUuid()));
 
     if (!entity.isResolved()) {
@@ -233,7 +233,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitResource(@NotNull IRequiredValueModelNodeItem item) {
-    Resource resource = (Resource)item.getValue();
+    Resource resource = (Resource) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.RESOURCE, ObjectUtils.notNull(resource.getUuid()));
 
     if (!entity.isResolved()) {
@@ -253,7 +253,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitParameter(@NotNull IRequiredValueModelNodeItem item) {
-    Parameter parameter = (Parameter)item.getValue();
+    Parameter parameter = (Parameter) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.PARAMETER, ObjectUtils.notNull(parameter.getId()));
 
     if (!entity.isResolved()) {
@@ -339,7 +339,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
   @Override
   public void visitPart(@NotNull IRequiredValueModelNodeItem item) {
-    ControlPart part = (ControlPart)item.getValue();
+    ControlPart part = (ControlPart) item.getValue();
     String id = part.getId();
 
     boolean resolve;
