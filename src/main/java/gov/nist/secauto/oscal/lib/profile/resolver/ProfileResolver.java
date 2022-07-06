@@ -27,6 +27,7 @@
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
+import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
@@ -74,7 +75,7 @@ import java.util.Stack;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class ProfileResolver {
+public class ProfileResolver { // NOPMD - ok
   private static final Logger LOGGER = LogManager.getLogger(ProfileResolver.class);
 
   public enum StructuringDirective {
@@ -86,11 +87,17 @@ public class ProfileResolver {
   private IBoundLoader loader;
   private DynamicContext dynamicContext;
 
+  /**
+   * Gets the configured loader or creates a new default loader if no loader was configured.
+   * 
+   * @return the bound loader
+   */
   @NotNull
   public IBoundLoader getBoundLoader() {
     synchronized (this) {
       if (loader == null) {
         loader = OscalBindingContext.instance().newBoundLoader();
+        loader.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
       }
     }
     assert loader != null;
@@ -249,57 +256,42 @@ public class ProfileResolver {
 
     // now process each import
     for (IRequiredValueModelNodeItem profileImportItem : profileImports) {
-      ProfileImport profileImport = (ProfileImport) profileImportItem.getValue();
+      resolveImport(profileImportItem, profileDocument, importHistory, resolvedCatalog);
+    }
+  }
 
-      URI importUri = profileImport.getHref();
-      if (importUri == null) {
-        throw new IllegalArgumentException("profileImport.getHref() must return a non-null URI");
-      }
+  protected void resolveImport(
+      @NotNull IRequiredValueModelNodeItem profileImportItem,
+      @NotNull IDocumentNodeItem profileDocument,
+      @NotNull Stack<@NotNull URI> importHistory,
+      @NotNull Catalog resolvedCatalog) throws IOException {
+    ProfileImport profileImport = (ProfileImport) profileImportItem.getValue();
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.atDebug().log("resolving profile import '{}'", importUri);
-      }
+    URI importUri = profileImport.getHref();
+    if (importUri == null) {
+      throw new IllegalArgumentException("profileImport.getHref() must return a non-null URI");
+    }
 
-      // Create an entity resolver to resolve relative references in the profile
-      EntityResolver resolver = getEntityResolver(profileDocument.getDocumentUri());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.atDebug().log("resolving profile import '{}'", importUri);
+    }
 
-      InputSource source;
-      if (OscalUtils.isInternalReference(importUri)) {
-        // handle internal reference
-        String uuid = OscalUtils.internalReferenceFragmentToId(importUri);
+    InputSource source = newImportSource(importUri, profileDocument, importHistory);
+    URI sourceUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
 
-        Profile profile = toProfile(profileItem);
-        Resource resource = profile.getResourceByUuid(ObjectUtils.notNull(UUID.fromString(uuid)));
-        if (resource == null) {
-          throw new IllegalArgumentException(
-              String.format("unable to find the resource identified by '%s' used in profile import", importUri));
-        }
+    // check for import cycle
+    try {
+      requireNonCycle(
+          sourceUri,
+          importHistory);
+    } catch (ImportCycleException ex) {
+      throw new IOException(ex);
+    }
 
-        source = OscalUtils.newInputSource(resource, resolver, null);
-      } else {
-        try {
-          source = resolver.resolveEntity(null, importUri.toASCIIString());
-        } catch (SAXException ex) {
-          throw new IOException(ex);
-        }
-      }
-
-      if (source == null || source.getSystemId() == null) {
-        throw new IOException(String.format("Unable to resolve import '%s'.", importUri.toString()));
-      }
-      importUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
-
-      // check for import cycle
-      try {
-        requireNonCycle(importUri, importHistory);
-      } catch (ImportCycleException ex) {
-        throw new IOException(ex);
-      }
-      importHistory.push(importUri);
-
-      IDocumentNodeItem document;
-      document = (IDocumentNodeItem) getDynamicContext().getDocumentLoader().loadAsNodeItem(source);
-
+    // track the import in the import history
+    importHistory.push(sourceUri);
+    try {
+      IDocumentNodeItem document = getDynamicContext().getDocumentLoader().loadAsNodeItem(source);
       IDocumentNodeItem importedCatalog = resolve(document, importHistory);
 
       // Create a defensive deep copy of the document and associated values, since we will be making
@@ -310,15 +302,54 @@ public class ProfileResolver {
             OscalBindingContext.instance().copyBoundObject(importedCatalog.getValue(), null),
             importedCatalog.getDocumentUri());
 
-        new Import(profileDocument, profileImportItem).resolve(importedCatalog, resolvedCatalog);
+        new Import(profileDocument, profileImportItem) // NOPMD - intentional
+            .resolve(importedCatalog, resolvedCatalog);
       } catch (BindingException ex) {
         throw new IOException(ex);
       }
-
+    } finally {
       // pop the resolved catalog from the import history
       URI poppedUri = ObjectUtils.notNull(importHistory.pop());
-      assert document.getDocumentUri().equals(poppedUri);
+      assert sourceUri.equals(poppedUri);
     }
+  }
+
+  @NotNull
+  protected InputSource newImportSource(
+      @NotNull URI importUri,
+      @NotNull IDocumentNodeItem profileDocument,
+      @NotNull Stack<@NotNull URI> importHistory) throws IOException {
+
+    // Get the entity resolver to resolve relative references in the profile
+    EntityResolver resolver = getEntityResolver(profileDocument.getDocumentUri());
+
+    InputSource source;
+    if (OscalUtils.isInternalReference(importUri)) {
+      // handle internal reference
+      String uuid = OscalUtils.internalReferenceFragmentToId(importUri);
+
+      IRootAssemblyNodeItem profileItem = profileDocument.getRootAssemblyNodeItem();
+      Profile profile = toProfile(profileItem);
+      Resource resource = profile.getResourceByUuid(ObjectUtils.notNull(UUID.fromString(uuid)));
+      if (resource == null) {
+        throw new IllegalArgumentException(
+            String.format("unable to find the resource identified by '%s' used in profile import", importUri));
+      }
+
+      source = OscalUtils.newInputSource(resource, resolver, null);
+    } else {
+      try {
+        source = resolver.resolveEntity(null, importUri.toASCIIString());
+      } catch (SAXException ex) {
+        throw new IOException(ex);
+      }
+    }
+
+    if (source == null || source.getSystemId() == null) {
+      throw new IOException(String.format("Unable to resolve import '%s'.", importUri.toString()));
+    }
+
+    return source;
   }
 
   @NotNull
