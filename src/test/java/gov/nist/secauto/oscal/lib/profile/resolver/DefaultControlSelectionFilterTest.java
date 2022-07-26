@@ -33,7 +33,7 @@ import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
 import org.jmock.imposters.ByteBuddyClassImposteriser;
@@ -159,7 +159,7 @@ class DefaultControlSelectionFilterTest {
     });
 
     IControlSelectionFilter filter = newEmptyFilter();
-    Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);
+    Pair<@Nonnull Boolean, @Nonnull Boolean> pair = filter.apply(control1);
     assertFalse(pair.getLeft());
     assertFalse(pair.getRight());
   }
@@ -183,7 +183,7 @@ class DefaultControlSelectionFilterTest {
     });
 
     IControlSelectionFilter filter = newSingleSelectionFilter();
-    Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);
+    Pair<@Nonnull Boolean, @Nonnull Boolean> pair = filter.apply(control1);
     assertFalse(pair.getLeft());
     assertFalse(pair.getRight());
 
@@ -211,7 +211,7 @@ class DefaultControlSelectionFilterTest {
     });
 
     IControlSelectionFilter filter = newSingleSelectionWithChildFilter();
-    Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);
+    Pair<@Nonnull Boolean, @Nonnull Boolean> pair = filter.apply(control1);
     assertFalse(pair.getLeft());
     assertFalse(pair.getRight());
 
@@ -259,7 +259,7 @@ class DefaultControlSelectionFilterTest {
     });
 
     IControlSelectionFilter filter = newMultipleSelectionFilter();
-    Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);
+    Pair<@Nonnull Boolean, @Nonnull Boolean> pair = filter.apply(control1);
     assertFalse(pair.getLeft());
     assertFalse(pair.getRight());
 

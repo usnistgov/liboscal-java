@@ -46,24 +46,24 @@ import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public class FilterNonSelectedVisitor {
   private static final Logger LOGGER = LogManager.getLogger(FilterNonSelectedVisitor.class);
 
-  @NotNull
+  @Nonnull
   private final Index index;
 
-  public FilterNonSelectedVisitor(@NotNull Index index) {
+  public FilterNonSelectedVisitor(@Nonnull Index index) {
     this.index = index;
   }
 
-  @NotNull
+  @Nonnull
   protected Index getIndex() {
     return index;
   }
 
-  public void visitCatalog(@NotNull IDocumentNodeItem catalogItem) {
+  public void visitCatalog(@Nonnull IDocumentNodeItem catalogItem) {
     IRootAssemblyNodeItem root = catalogItem.getRootAssemblyNodeItem();
 
     Catalog catalog = (Catalog) catalogItem.getValue();
@@ -154,7 +154,7 @@ public class FilterNonSelectedVisitor {
         });
   }
 
-  @NotNull
+  @Nonnull
   protected IResult visitGroup(IRequiredValueModelNodeItem item, IGroupContainer container) {
 
     CatalogGroup group = (CatalogGroup) item.getValue();
@@ -206,7 +206,7 @@ public class FilterNonSelectedVisitor {
     return retval;
   }
 
-  @NotNull
+  @Nonnull
   protected IResult visitControl(IRequiredValueModelNodeItem item, IControlContainer container) {
     Control control = (Control) item.getValue();
 

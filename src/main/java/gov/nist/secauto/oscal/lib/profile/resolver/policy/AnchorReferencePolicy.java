@@ -36,7 +36,7 @@ import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.net.URI;
 import java.util.List;
@@ -52,23 +52,23 @@ public class AnchorReferencePolicy
 
   @SuppressWarnings("null")
   @Override
-  protected List<@NotNull ItemType> getEntityItemTypes(@NotNull InlineLinkNode link) {
+  protected List<@Nonnull ItemType> getEntityItemTypes(@Nonnull InlineLinkNode link) {
     return List.of(ItemType.RESOURCE, ItemType.CONTROL, ItemType.GROUP, ItemType.PART);
   }
 
   @Override
-  public String getReferenceText(@NotNull InlineLinkNode link) {
+  public String getReferenceText(@Nonnull InlineLinkNode link) {
     return link.getUrl().toString();
   }
 
   @Override
-  public void setReferenceText(@NotNull InlineLinkNode link, @NotNull String newValue) {
+  public void setReferenceText(@Nonnull InlineLinkNode link, @Nonnull String newValue) {
     link.setUrl(BasedSequence.of(newValue));
   }
 
   @Override
-  protected void handleUnselected(@NotNull InlineLinkNode link, @NotNull EntityItem item,
-      @NotNull IReferenceVisitor visitor) {
+  protected void handleUnselected(@Nonnull InlineLinkNode link, @Nonnull EntityItem item,
+      @Nonnull IReferenceVisitor visitor) {
     URI linkHref = URI.create(link.getUrl().toString());
     URI sourceUri = item.getSource();
 
@@ -81,10 +81,10 @@ public class AnchorReferencePolicy
 
   @Override
   protected boolean handleIndexMiss(
-      @NotNull InlineLinkNode reference,
-      @NotNull List<@NotNull ItemType> itemTypes,
-      @NotNull String identifier,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull InlineLinkNode reference,
+      @Nonnull List<@Nonnull ItemType> itemTypes,
+      @Nonnull String identifier,
+      @Nonnull IReferenceVisitor visitor) {
     if (LOGGER.isErrorEnabled()) {
       LOGGER.atError().log(
           "the anchor should reference a {} identified by '{}', but the identifier was not found in the index.",
@@ -97,7 +97,7 @@ public class AnchorReferencePolicy
   }
 
   @Override
-  protected boolean handleIdentifierNonMatch(@NotNull InlineLinkNode reference, @NotNull IReferenceVisitor visitor) {
+  protected boolean handleIdentifierNonMatch(@Nonnull InlineLinkNode reference, @Nonnull IReferenceVisitor visitor) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.atDebug().log("Ignoring URI '{}'", reference.getUrl().toStringOrNull());
     }

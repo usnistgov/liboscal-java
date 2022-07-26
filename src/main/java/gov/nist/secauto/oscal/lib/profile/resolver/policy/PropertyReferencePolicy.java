@@ -33,7 +33,7 @@ import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.net.URI;
 import java.util.List;
@@ -44,38 +44,38 @@ public class PropertyReferencePolicy
   private static final Logger LOGGER = LogManager.getLogger(PropertyReferencePolicy.class);
 
   @SuppressWarnings("null")
-  @NotNull
-  public static PropertyReferencePolicy create(@NotNull IIdentifierParser identifierParser,
-      @NotNull ItemType itemType) {
+  @Nonnull
+  public static PropertyReferencePolicy create(@Nonnull IIdentifierParser identifierParser,
+      @Nonnull ItemType itemType) {
     return create(identifierParser, List.of(itemType));
   }
 
-  @NotNull
-  public static PropertyReferencePolicy create(@NotNull IIdentifierParser identifierParser,
-      @NotNull List<ItemType> itemTypes) {
+  @Nonnull
+  public static PropertyReferencePolicy create(@Nonnull IIdentifierParser identifierParser,
+      @Nonnull List<ItemType> itemTypes) {
     return new PropertyReferencePolicy(identifierParser, itemTypes);
   }
 
   @SuppressWarnings("null")
-  public PropertyReferencePolicy(@NotNull IIdentifierParser identifierParser, @NotNull List<ItemType> itemTypes) {
+  public PropertyReferencePolicy(@Nonnull IIdentifierParser identifierParser, @Nonnull List<ItemType> itemTypes) {
     super(identifierParser, itemTypes);
   }
 
   @Override
-  public String getReferenceText(@NotNull Property property) {
+  public String getReferenceText(@Nonnull Property property) {
     return property.getValue();
   }
 
   @Override
-  public void setReferenceText(@NotNull Property property, @NotNull String newValue) {
+  public void setReferenceText(@Nonnull Property property, @Nonnull String newValue) {
     property.setValue(newValue);
   }
 
   @Override
   protected void handleUnselected(
-      @NotNull Property property,
-      @NotNull EntityItem item,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull Property property,
+      @Nonnull EntityItem item,
+      @Nonnull IReferenceVisitor visitor) {
     URI linkHref = URI.create(property.getValue());
     URI sourceUri = item.getSource();
 
@@ -88,10 +88,10 @@ public class PropertyReferencePolicy
 
   @Override
   protected boolean handleIndexMiss(
-      @NotNull Property property,
-      @NotNull List<@NotNull ItemType> itemTypes,
-      @NotNull String identifier,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull Property property,
+      @Nonnull List<@Nonnull ItemType> itemTypes,
+      @Nonnull String identifier,
+      @Nonnull IReferenceVisitor visitor) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.atWarn().log(
           "property '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",

@@ -29,52 +29,52 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
 import gov.nist.secauto.oscal.lib.model.Link;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.net.URI;
 import java.util.Objects;
 
 public abstract class AbstractLink implements ILink {
 
-  @NotNull
-  public static Builder builder(@NotNull URI href) {
+  @Nonnull
+  public static Builder builder(@Nonnull URI href) {
     return new Builder(href);
   }
 
   public static class Builder {
-    @NotNull
+    @Nonnull
     private final URI href;
     private String rel;
     private String mediaType;
     private MarkupLine text;
 
     @SuppressWarnings("null")
-    public Builder(@NotNull URI href) {
+    public Builder(@Nonnull URI href) {
       this.href = Objects.requireNonNull(href, "href");
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder relation(@NotNull String relation) {
+    @Nonnull
+    public Builder relation(@Nonnull String relation) {
       this.rel = Objects.requireNonNull(relation, "rel");
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder value(@NotNull String mediaType) {
+    @Nonnull
+    public Builder value(@Nonnull String mediaType) {
       this.mediaType = Objects.requireNonNull(mediaType, "mediaType");
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder clazz(@NotNull MarkupLine text) {
+    @Nonnull
+    public Builder clazz(@Nonnull MarkupLine text) {
       this.text = Objects.requireNonNull(text, "text");
       return this;
     }
 
-    @NotNull
+    @Nonnull
     public Link build() {
       Link retval = new Link();
       retval.setHref(href);

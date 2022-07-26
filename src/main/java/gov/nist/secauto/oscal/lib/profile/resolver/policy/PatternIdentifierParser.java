@@ -28,7 +28,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -39,12 +39,12 @@ public class PatternIdentifierParser implements IIdentifierParser {
   private final int identifierGroup;
 
   @SuppressWarnings("null")
-  public PatternIdentifierParser(@NotNull String pattern, int identifierGroup) {
+  public PatternIdentifierParser(@Nonnull String pattern, int identifierGroup) {
     this(Pattern.compile(pattern), identifierGroup);
   }
 
   @SuppressWarnings("null")
-  public PatternIdentifierParser(@NotNull Pattern pattern, int identifierGroup) {
+  public PatternIdentifierParser(@Nonnull Pattern pattern, int identifierGroup) {
     this.pattern = Objects.requireNonNull(pattern, "pattern");
     this.identifierGroup = identifierGroup;
   }
@@ -58,14 +58,14 @@ public class PatternIdentifierParser implements IIdentifierParser {
   }
 
   @Override
-  public String parse(@NotNull String referenceText) {
+  public String parse(@Nonnull String referenceText) {
     Matcher matcher = getPattern().matcher(referenceText);
 
     return matcher.matches() ? matcher.group(getIdentifierGroup()) : null;
   }
 
   @Override
-  public String update(@NotNull String referenceText, @NotNull String newIdentifier) {
+  public String update(@Nonnull String referenceText, @Nonnull String newIdentifier) {
     Matcher matcher = getPattern().matcher(referenceText);
     if (!matcher.matches()) {
       throw new IllegalStateException(String.format("The original reference '%s' did not match the pattern '%s'.",

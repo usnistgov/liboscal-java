@@ -37,7 +37,7 @@ import gov.nist.secauto.oscal.lib.model.ParameterSelection;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ import java.util.stream.Stream;
 public abstract class AbstractParameter implements IParameter {
 
   @Override
-  public Stream<@NotNull String> getParameterReferences() {
+  public Stream<@Nonnull String> getParameterReferences() {
 
     // handle prop name="aggregates"
     Stream<String> aggregatesIds = CollectionUtil.listOrEmpty(getProps()).stream()
@@ -71,19 +71,19 @@ public abstract class AbstractParameter implements IParameter {
               .map(insert -> insert.getIdReference().toStringOrNull()));
     }
     @SuppressWarnings("null")
-    Stream<@NotNull String> retval = Stream.concat(aggregatesIds, selectInsertIds)
+    Stream<@Nonnull String> retval = Stream.concat(aggregatesIds, selectInsertIds)
         .filter(Objects::nonNull)
         .distinct();
     return retval;
   }
 
-  @NotNull
-  public static Builder builder(@NotNull String id) {
+  @Nonnull
+  public static Builder builder(@Nonnull String id) {
     return new Builder(id);
   }
 
   public static class Builder {
-    @NotNull
+    @Nonnull
     private final String id;
 
     private String clazz;
@@ -98,85 +98,85 @@ public abstract class AbstractParameter implements IParameter {
     private MarkupMultiline remarks;
 
     @SuppressWarnings("null")
-    public Builder(@NotNull String id) {
+    public Builder(@Nonnull String id) {
       this.id = Objects.requireNonNull(id, "id");
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder clazz(@NotNull String value) {
+    @Nonnull
+    public Builder clazz(@Nonnull String value) {
       this.clazz = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @NotNull
-    public Builder prop(@NotNull Property value) {
+    @Nonnull
+    public Builder prop(@Nonnull Property value) {
       this.props.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder link(@NotNull Link value) {
+    @Nonnull
+    public Builder link(@Nonnull Link value) {
       this.links.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder label(@NotNull String markdown) {
+    @Nonnull
+    public Builder label(@Nonnull String markdown) {
       return label(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder label(@NotNull MarkupLine value) {
+    @Nonnull
+    public Builder label(@Nonnull MarkupLine value) {
       this.label = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @NotNull
-    public Builder usage(@NotNull String markdown) {
+    @Nonnull
+    public Builder usage(@Nonnull String markdown) {
       return usage(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder usage(@NotNull MarkupMultiline value) {
+    @Nonnull
+    public Builder usage(@Nonnull MarkupMultiline value) {
       this.usage = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @NotNull
-    public Builder constraint(@NotNull ParameterConstraint value) {
+    @Nonnull
+    public Builder constraint(@Nonnull ParameterConstraint value) {
       this.constraints.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder guideline(@NotNull ParameterGuideline value) {
+    @Nonnull
+    public Builder guideline(@Nonnull ParameterGuideline value) {
       this.guidelines.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder values(@NotNull String... values) {
+    @Nonnull
+    public Builder values(@Nonnull String... values) {
       return values(Arrays.asList(values));
     }
 
-    @NotNull
-    public Builder values(@NotNull Collection<String> values) {
+    @Nonnull
+    public Builder values(@Nonnull Collection<String> values) {
       this.values = new ArrayList<>(values);
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder select(@NotNull ParameterSelection value) {
+    @Nonnull
+    public Builder select(@Nonnull ParameterSelection value) {
       this.selection = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @NotNull
+    @Nonnull
     public Parameter build() {
       Parameter retval = new Parameter();
       retval.setId(id);

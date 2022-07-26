@@ -41,12 +41,17 @@ import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.OscalUtils;
+import gov.nist.secauto.oscal.lib.model.Alter;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Merge;
 import gov.nist.secauto.oscal.lib.model.Metadata;
+import gov.nist.secauto.oscal.lib.model.Modify;
+import gov.nist.secauto.oscal.lib.model.Modify.ProfileSetParameter;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.Property;
@@ -55,7 +60,7 @@ import gov.nist.secauto.oscal.lib.profile.resolver.policy.ReferenceCountingVisit
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -92,7 +97,7 @@ public class ProfileResolver { // NOPMD - ok
    * 
    * @return the bound loader
    */
-  @NotNull
+  @Nonnull
   public IBoundLoader getBoundLoader() {
     synchronized (this) {
       if (loader == null) {
@@ -104,13 +109,13 @@ public class ProfileResolver { // NOPMD - ok
     return loader;
   }
 
-  public void setBoundLoader(@NotNull IBoundLoader loader) {
+  public void setBoundLoader(@Nonnull IBoundLoader loader) {
     synchronized (this) {
       this.loader = loader;
     }
   }
 
-  @NotNull
+  @Nonnull
   public DynamicContext getDynamicContext() {
     synchronized (this) {
       if (dynamicContext == null) {
@@ -122,41 +127,41 @@ public class ProfileResolver { // NOPMD - ok
     return dynamicContext;
   }
 
-  public void setDynamicContext(@NotNull DynamicContext dynamicContext) {
+  public void setDynamicContext(@Nonnull DynamicContext dynamicContext) {
     synchronized (this) {
       this.dynamicContext = dynamicContext;
     }
   }
 
-  @NotNull
-  protected EntityResolver getEntityResolver(@NotNull URI documentUri) {
+  @Nonnull
+  protected EntityResolver getEntityResolver(@Nonnull URI documentUri) {
     return new DocumentEntityResolver(documentUri);
   }
 
-  public IDocumentNodeItem resolveProfile(@NotNull URL url) throws URISyntaxException, IOException {
+  public IDocumentNodeItem resolveProfile(@Nonnull URL url) throws URISyntaxException, IOException {
     IBoundLoader loader = getBoundLoader();
     IDocumentNodeItem catalogOrProfile = loader.loadAsNodeItem(url);
     return resolve(catalogOrProfile);
   }
 
-  public IDocumentNodeItem resolveProfile(@NotNull Path path) throws IOException {
+  public IDocumentNodeItem resolveProfile(@Nonnull Path path) throws IOException {
     IBoundLoader loader = getBoundLoader();
     IDocumentNodeItem catalogOrProfile = loader.loadAsNodeItem(path);
     return resolve(catalogOrProfile);
   }
 
-  public IDocumentNodeItem resolveProfile(@NotNull File file) throws IOException {
+  public IDocumentNodeItem resolveProfile(@Nonnull File file) throws IOException {
     return resolveProfile(ObjectUtils.notNull(file.toPath()));
   }
 
-  @NotNull
-  public IDocumentNodeItem resolve(@NotNull IDocumentNodeItem profileOrCatalog) throws IOException {
+  @Nonnull
+  public IDocumentNodeItem resolve(@Nonnull IDocumentNodeItem profileOrCatalog) throws IOException {
     return resolve(profileOrCatalog, new Stack<>());
   }
 
-  @NotNull
-  protected IDocumentNodeItem resolve(@NotNull IDocumentNodeItem profileOrCatalog,
-      @NotNull Stack<@NotNull URI> importHistory)
+  @Nonnull
+  protected IDocumentNodeItem resolve(@Nonnull IDocumentNodeItem profileOrCatalog,
+      @Nonnull Stack<@Nonnull URI> importHistory)
       throws IOException {
     Object profileObject = profileOrCatalog.getValue();
 
@@ -182,16 +187,17 @@ public class ProfileResolver { // NOPMD - ok
    * @throws IOException
    *           if an error occurs while loading the profile or an import
    */
-  @NotNull
+  @Nonnull
   protected IDocumentNodeItem resolveProfile(
-      @NotNull IDocumentNodeItem profileDocument,
-      @NotNull Stack<@NotNull URI> importHistory) throws IOException {
+      @Nonnull IDocumentNodeItem profileDocument,
+      @Nonnull Stack<@Nonnull URI> importHistory) throws IOException {
     Catalog resolvedCatalog = new Catalog();
 
     generateMetadata(resolvedCatalog, profileDocument);
 
     resolveImports(resolvedCatalog, profileDocument, importHistory);
     handleMerge(resolvedCatalog, profileDocument);
+    handleAlterations(resolvedCatalog, profileDocument);
     handleReferences(resolvedCatalog, profileDocument);
 
     return DefaultNodeItemFactory.instance().newDocumentNodeItem(
@@ -201,22 +207,22 @@ public class ProfileResolver { // NOPMD - ok
         profileDocument.getBaseUri());
   }
 
-  private Profile toProfile(@NotNull IDocumentNodeItem profileDocument) {
+  private Profile toProfile(@Nonnull IDocumentNodeItem profileDocument) {
     Object object = profileDocument.getValue();
     assert object != null;
 
     return (Profile) object;
   }
 
-  @NotNull
-  private static Profile toProfile(@NotNull IRootAssemblyNodeItem profileItem) {
+  @Nonnull
+  private static Profile toProfile(@Nonnull IRootAssemblyNodeItem profileItem) {
     Object object = profileItem.getValue();
     assert object != null;
 
     return (Profile) object;
   }
 
-  private void generateMetadata(@NotNull Catalog resolvedCatalog, @NotNull IDocumentNodeItem profileDocument) {
+  private void generateMetadata(@Nonnull Catalog resolvedCatalog, @Nonnull IDocumentNodeItem profileDocument) {
     resolvedCatalog.setUuid(UUID.randomUUID());
 
     Profile profile = toProfile(profileDocument);
@@ -242,14 +248,14 @@ public class ProfileResolver { // NOPMD - ok
     resolvedCatalog.setMetadata(resolvedMetadata);
   }
 
-  private void resolveImports(@NotNull Catalog resolvedCatalog, @NotNull IDocumentNodeItem profileDocument,
-      @NotNull Stack<@NotNull URI> importHistory)
+  private void resolveImports(@Nonnull Catalog resolvedCatalog, @Nonnull IDocumentNodeItem profileDocument,
+      @Nonnull Stack<@Nonnull URI> importHistory)
       throws IOException {
 
     IRootAssemblyNodeItem profileItem = profileDocument.getRootAssemblyNodeItem();
 
     // first verify there is at least one import
-    List<@NotNull ? extends IRequiredValueModelNodeItem> profileImports = profileItem.getModelItemsByName("import");
+    List<@Nonnull ? extends IRequiredValueModelNodeItem> profileImports = profileItem.getModelItemsByName("import");
     if (profileImports.isEmpty()) {
       throw new IllegalStateException(String.format("Profile '%s' has no imports", profileItem.getBaseUri()));
     }
@@ -261,10 +267,10 @@ public class ProfileResolver { // NOPMD - ok
   }
 
   protected void resolveImport(
-      @NotNull IRequiredValueModelNodeItem profileImportItem,
-      @NotNull IDocumentNodeItem profileDocument,
-      @NotNull Stack<@NotNull URI> importHistory,
-      @NotNull Catalog resolvedCatalog) throws IOException {
+      @Nonnull IRequiredValueModelNodeItem profileImportItem,
+      @Nonnull IDocumentNodeItem profileDocument,
+      @Nonnull Stack<@Nonnull URI> importHistory,
+      @Nonnull Catalog resolvedCatalog) throws IOException {
     ProfileImport profileImport = (ProfileImport) profileImportItem.getValue();
 
     URI importUri = profileImport.getHref();
@@ -314,11 +320,11 @@ public class ProfileResolver { // NOPMD - ok
     }
   }
 
-  @NotNull
+  @Nonnull
   protected InputSource newImportSource(
-      @NotNull URI importUri,
-      @NotNull IDocumentNodeItem profileDocument,
-      @NotNull Stack<@NotNull URI> importHistory) throws IOException {
+      @Nonnull URI importUri,
+      @Nonnull IDocumentNodeItem profileDocument,
+      @Nonnull Stack<@Nonnull URI> importHistory) throws IOException {
 
     // Get the entity resolver to resolve relative references in the profile
     EntityResolver resolver = getEntityResolver(profileDocument.getDocumentUri());
@@ -352,8 +358,8 @@ public class ProfileResolver { // NOPMD - ok
     return source;
   }
 
-  @NotNull
-  private void requireNonCycle(@NotNull URI uri, @NotNull Stack<@NotNull URI> importHistory)
+  @Nonnull
+  private void requireNonCycle(@Nonnull URI uri, @Nonnull Stack<@Nonnull URI> importHistory)
       throws ImportCycleException {
     List<URI> cycle = checkCycle(uri, importHistory);
     if (!cycle.isEmpty()) {
@@ -363,8 +369,8 @@ public class ProfileResolver { // NOPMD - ok
   }
 
   @SuppressWarnings("null")
-  @NotNull
-  private List<URI> checkCycle(@NotNull URI uri, @NotNull Stack<@NotNull URI> importHistory) {
+  @Nonnull
+  private List<URI> checkCycle(@Nonnull URI uri, @Nonnull Stack<@Nonnull URI> importHistory) {
     int index = importHistory.indexOf(uri);
 
     List<URI> retval;
@@ -376,6 +382,7 @@ public class ProfileResolver { // NOPMD - ok
     return retval;
   }
 
+  // TODO: move this to an abstract method on profile
   private StructuringDirective getStructuringDirective(Profile profile) {
     Merge merge = profile.getMerge();
 
@@ -392,7 +399,8 @@ public class ProfileResolver { // NOPMD - ok
     return retval;
   }
 
-  private void handleMerge(@NotNull Catalog resolvedCatalog, @NotNull IDocumentNodeItem profileDocument) {
+
+  protected void handleMerge(@Nonnull Catalog resolvedCatalog, @Nonnull IDocumentNodeItem profileDocument) {
     // handle combine
 
     // handle structuring
@@ -410,14 +418,54 @@ public class ProfileResolver { // NOPMD - ok
 
   }
 
-  private void structureFlat(@NotNull Catalog catalog) {
+  protected void handleAlterations(@Nonnull Catalog resolvedCatalog, @Nonnull IDocumentNodeItem profileDocument) {
+    Profile profile = (Profile)profileDocument.getRootAssemblyNodeItem().getValue();
+
+    IDocumentNodeItem resolvedCatalogDocument = DefaultNodeItemFactory.instance().newDocumentNodeItem(
+        new RootAssemblyDefinition(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
+        resolvedCatalog,
+        profileDocument.getBaseUri());
+    
+    Modify modify = profile.getModify();
+    if (modify != null) {
+      ControlIndexingVisitor visitor = new ControlIndexingVisitor(IIdentifierMapper.IDENTITY);
+      visitor.visitCatalog(resolvedCatalogDocument, null);
+      Index index = visitor.getIndex();
+
+      for (ProfileSetParameter setParameter : CollectionUtil.listOrEmpty(modify.getSetParameters())) {
+        handleSetParameter(setParameter, index);
+      }
+
+      for (Alter alter : CollectionUtil.listOrEmpty(modify.getAlters())) {
+        handleAlter(alter, index);
+      }
+    }
+  }
+
+  protected void handleSetParameter(ProfileSetParameter setParameter, Index index) {
+    String paramId = setParameter.getParamId();
+    EntityItem entity = index.getEntity(ItemType.PARAMETER, paramId);
+    
+    Parameter param = entity.getInstanceValue();
+  }
+
+
+  protected void handleAlter(Alter alter, Index index) {
+    String controlId = alter.getControlId();
+    EntityItem entity = index.getEntity(ItemType.CONTROL, controlId);
+    
+    Control control = entity.getInstanceValue();
+  }
+
+  protected void structureFlat(@Nonnull Catalog catalog) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("applying flat structuring directive");
     }
     new FlatStructureCatalogVisitor().visitCatalog(catalog);
   }
 
-  private void handleReferences(@NotNull Catalog resolvedCatalog, @NotNull IDocumentNodeItem profileDocument) {
+  private void handleReferences(@Nonnull Catalog resolvedCatalog, @Nonnull IDocumentNodeItem profileDocument) {
     IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
         new RootAssemblyDefinition(
             (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
@@ -484,14 +532,14 @@ public class ProfileResolver { // NOPMD - ok
   }
 
   private class DocumentEntityResolver implements EntityResolver {
-    @NotNull
+    @Nonnull
     private final URI documentUri;
 
-    public DocumentEntityResolver(@NotNull URI documentUri) {
+    public DocumentEntityResolver(@Nonnull URI documentUri) {
       this.documentUri = documentUri;
     }
 
-    @NotNull
+    @Nonnull
     protected URI getDocumentUri() {
       return documentUri;
     }

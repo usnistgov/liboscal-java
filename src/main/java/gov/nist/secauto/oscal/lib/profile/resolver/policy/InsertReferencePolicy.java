@@ -35,7 +35,7 @@ import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.List;
 import java.util.Locale;
@@ -49,10 +49,10 @@ public class InsertReferencePolicy
   }
 
   @Override
-  protected List<@NotNull ItemType> getEntityItemTypes(@NotNull InsertAnchorNode insert) {
+  protected List<@Nonnull ItemType> getEntityItemTypes(@Nonnull InsertAnchorNode insert) {
     String type = insert.getType().toString();
 
-    List<@NotNull ItemType> itemTypes;
+    List<@Nonnull ItemType> itemTypes;
     if ("param".equals(type)) {
       itemTypes = CollectionUtil.singletonList(ItemType.PARAMETER);
     } else {
@@ -62,21 +62,21 @@ public class InsertReferencePolicy
   }
 
   @Override
-  public String getReferenceText(@NotNull InsertAnchorNode insert) {
+  public String getReferenceText(@Nonnull InsertAnchorNode insert) {
     return insert.getIdReference().toString();
   }
 
   @Override
-  public void setReferenceText(@NotNull InsertAnchorNode insert, @NotNull String newReference) {
+  public void setReferenceText(@Nonnull InsertAnchorNode insert, @Nonnull String newReference) {
     insert.setIdReference(BasedSequence.of(newReference));
   }
 
   @Override
   protected boolean handleIndexMiss(
-      @NotNull InsertAnchorNode insert,
-      @NotNull List<@NotNull ItemType> itemTypes,
-      @NotNull String identifier,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull InsertAnchorNode insert,
+      @Nonnull List<@Nonnull ItemType> itemTypes,
+      @Nonnull String identifier,
+      @Nonnull IReferenceVisitor visitor) {
     if (LOGGER.isErrorEnabled()) {
       LOGGER.atError().log(
           "the '{}' insert should reference a '{}' identified by '{}'. The index did not contain the identifier.",

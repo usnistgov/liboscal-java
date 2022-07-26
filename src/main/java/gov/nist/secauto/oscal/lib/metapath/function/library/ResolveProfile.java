@@ -38,14 +38,14 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 import java.util.List;
 
 public final class ResolveProfile {
 
-  @NotNull
+  @Nonnull
   static final IFunction SIGNATURE_NO_ARG = IFunction.builder()
       .name("resolve-profile")
       .returnType(INodeItem.class)
@@ -56,7 +56,7 @@ public final class ResolveProfile {
       .functionHandler(ResolveProfile::executeNoArg)
       .build();
 
-  @NotNull
+  @Nonnull
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("resolve-profile")
       .argument(IArgument.newBuilder()
@@ -76,9 +76,9 @@ public final class ResolveProfile {
     // disable construction
   }
 
-  @NotNull
-  public static ISequence<?> executeNoArg(@NotNull IFunction function,
-      @NotNull List<@NotNull ISequence<?>> arguments, @NotNull DynamicContext dynamicContext,
+  @Nonnull
+  public static ISequence<?> executeNoArg(@Nonnull IFunction function,
+      @Nonnull List<@Nonnull ISequence<?>> arguments, @Nonnull DynamicContext dynamicContext,
       INodeItem focus) {
 
     INodeItem item = focus;
@@ -88,9 +88,9 @@ public final class ResolveProfile {
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
 
-  @NotNull
-  public static ISequence<?> executeOneArg(@NotNull IFunction function,
-      @NotNull List<@NotNull ISequence<?>> arguments, @NotNull DynamicContext dynamicContext,
+  @Nonnull
+  public static ISequence<?> executeOneArg(@Nonnull IFunction function,
+      @Nonnull List<@Nonnull ISequence<?>> arguments, @Nonnull DynamicContext dynamicContext,
       INodeItem focus) {
     ISequence<? extends IDocumentNodeItem> arg = FunctionUtils.asType(arguments.get(0));
 
@@ -102,9 +102,9 @@ public final class ResolveProfile {
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
 
-  @NotNull
-  public static IDocumentNodeItem resolveProfile(@NotNull IDocumentNodeItem profile,
-      @NotNull DynamicContext dynamicContext) {
+  @Nonnull
+  public static IDocumentNodeItem resolveProfile(@Nonnull IDocumentNodeItem profile,
+      @Nonnull DynamicContext dynamicContext) {
     Object profileObject = profile.getValue();
 
     IDocumentNodeItem retval;

@@ -30,7 +30,7 @@ import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.AbstractOscalInstance;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.stream.Stream;
 
@@ -39,9 +39,9 @@ public abstract class AbstractCatalog
     implements ICatalog {
 
   @SuppressWarnings("null")
-  @NotNull
+  @Nonnull
   @Override
-  public Stream<@NotNull String> getReferencedParameterIds() {
+  public Stream<@Nonnull String> getReferencedParameterIds() {
     // get parameters referenced by the control's parameters
     return CollectionUtil.listOrEmpty(getParams()).stream()
         .flatMap(ObjectUtils::filterNull)

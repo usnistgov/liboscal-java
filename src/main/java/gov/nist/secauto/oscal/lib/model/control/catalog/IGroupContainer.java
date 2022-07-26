@@ -28,13 +28,13 @@ package gov.nist.secauto.oscal.lib.model.control.catalog;
 
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.List;
 
 public interface IGroupContainer extends IControlContainer {
 
-  List<@NotNull CatalogGroup> getGroups();
+  List<@Nonnull CatalogGroup> getGroups();
 
   /**
    * Add a new {@link CatalogGroup} item to the end of the underlying collection.
@@ -43,7 +43,7 @@ public interface IGroupContainer extends IControlContainer {
    *          the item to add
    * @return {@code true}
    */
-  boolean addGroup(@NotNull CatalogGroup item);
+  boolean addGroup(@Nonnull CatalogGroup item);
 
   /**
    * Remove the first matching {@link CatalogGroup} item from the underlying collection.
@@ -52,5 +52,5 @@ public interface IGroupContainer extends IControlContainer {
    *          the item to remove
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
-  boolean removeGroup(@NotNull CatalogGroup item);
+  boolean removeGroup(@Nonnull CatalogGroup item);
 }

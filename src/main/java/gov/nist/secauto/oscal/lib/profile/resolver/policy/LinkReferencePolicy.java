@@ -34,7 +34,7 @@ import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.net.URI;
 import java.util.List;
@@ -45,35 +45,35 @@ public class LinkReferencePolicy
   private static final Logger LOGGER = LogManager.getLogger(LinkReferencePolicy.class);
 
   @SuppressWarnings("null")
-  @NotNull
-  public static LinkReferencePolicy create(@NotNull ItemType itemType) {
+  @Nonnull
+  public static LinkReferencePolicy create(@Nonnull ItemType itemType) {
     return create(List.of(itemType));
   }
 
-  @NotNull
-  public static LinkReferencePolicy create(@NotNull List<@NotNull ItemType> itemTypes) {
+  @Nonnull
+  public static LinkReferencePolicy create(@Nonnull List<@Nonnull ItemType> itemTypes) {
     return new LinkReferencePolicy(CollectionUtil.requireNonEmpty(itemTypes, "itemTypes"));
   }
 
-  public LinkReferencePolicy(@NotNull List<@NotNull ItemType> itemTypes) {
+  public LinkReferencePolicy(@Nonnull List<@Nonnull ItemType> itemTypes) {
     super(IIdentifierParser.FRAGMENT_PARSER, itemTypes);
   }
 
   @Override
-  public String getReferenceText(@NotNull Link link) {
+  public String getReferenceText(@Nonnull Link link) {
     return link.getHref().toString();
   }
 
   @Override
-  public void setReferenceText(@NotNull Link link, @NotNull String newValue) {
+  public void setReferenceText(@Nonnull Link link, @Nonnull String newValue) {
     link.setHref(URI.create(newValue));
   }
 
   @Override
   protected void handleUnselected(
-      @NotNull Link link,
-      @NotNull EntityItem item,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull Link link,
+      @Nonnull EntityItem item,
+      @Nonnull IReferenceVisitor visitor) {
     URI linkHref = link.getHref();
     URI sourceUri = item.getSource();
 
@@ -86,10 +86,10 @@ public class LinkReferencePolicy
 
   @Override
   protected boolean handleIndexMiss(
-      @NotNull Link link,
-      @NotNull List<@NotNull ItemType> itemTypes,
-      @NotNull String identifier,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull Link link,
+      @Nonnull List<@Nonnull ItemType> itemTypes,
+      @Nonnull String identifier,
+      @Nonnull IReferenceVisitor visitor) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.atWarn().log(
           "link with rel '{}' should reference a {} identified by '{}'. The index did not contain the identifier.",
@@ -103,7 +103,7 @@ public class LinkReferencePolicy
   }
 
   @Override
-  protected boolean handleIdentifierNonMatch(@NotNull Link reference, @NotNull IReferenceVisitor visitor) {
+  protected boolean handleIdentifierNonMatch(@Nonnull Link reference, @Nonnull IReferenceVisitor visitor) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.atDebug().log("Ignoring URI '{}'", reference.getHref().toString());
     }

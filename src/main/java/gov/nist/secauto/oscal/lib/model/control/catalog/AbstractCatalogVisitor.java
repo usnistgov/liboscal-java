@@ -31,7 +31,7 @@ import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Objects;
 
@@ -62,7 +62,7 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
 
   @SuppressWarnings("null")
   @Override
-  public RESULT visitGroup(@NotNull CatalogGroup group, CONTEXT context) {
+  public RESULT visitGroup(@Nonnull CatalogGroup group, CONTEXT context) {
     RESULT result = group.getGroups().stream()
         .filter(Objects::nonNull)
         .map(childGroup -> visitGroup(childGroup, context))

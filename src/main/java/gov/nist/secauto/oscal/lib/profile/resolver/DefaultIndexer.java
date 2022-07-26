@@ -38,38 +38,38 @@ import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Role;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.UUID;
 
 public class DefaultIndexer implements IIndexer {
-  @NotNull
+  @Nonnull
   private final Index index;
-  @NotNull
+  @Nonnull
   private final IIdentifierMapper mapper;
 
-  public DefaultIndexer(@NotNull IIdentifierMapper mapper) {
+  public DefaultIndexer(@Nonnull IIdentifierMapper mapper) {
     this(new Index(), mapper);
   }
 
-  public DefaultIndexer(@NotNull Index index, @NotNull IIdentifierMapper mapper) {
+  public DefaultIndexer(@Nonnull Index index, @Nonnull IIdentifierMapper mapper) {
     this.index = index;
     this.mapper = mapper;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Index getIndex() {
     return index;
   }
 
-  @NotNull
+  @Nonnull
   protected IIdentifierMapper getMapper() {
     return mapper;
   }
 
   @Override
-  public EntityItem addRole(@NotNull IRequiredValueModelNodeItem item) {
+  public EntityItem addRole(@Nonnull IRequiredValueModelNodeItem item) {
     Role role = (Role) item.getValue();
     String identifier = ObjectUtils.notNull(role.getId());
     String mappedIdentifier = getMapper().mapRoleIdentifier(identifier);
@@ -84,7 +84,7 @@ public class DefaultIndexer implements IIndexer {
   }
 
   @Override
-  public EntityItem addLocation(@NotNull IRequiredValueModelNodeItem item) {
+  public EntityItem addLocation(@Nonnull IRequiredValueModelNodeItem item) {
     Location location = (Location) item.getValue();
     UUID identifier = ObjectUtils.notNull(location.getUuid());
 
@@ -95,7 +95,7 @@ public class DefaultIndexer implements IIndexer {
   }
 
   @Override
-  public EntityItem addParty(@NotNull IRequiredValueModelNodeItem item) {
+  public EntityItem addParty(@Nonnull IRequiredValueModelNodeItem item) {
     Party party = (Party) item.getValue();
     UUID identifier = ObjectUtils.notNull(party.getUuid());
 
@@ -106,7 +106,7 @@ public class DefaultIndexer implements IIndexer {
   }
 
   @Override
-  public EntityItem addGroup(@NotNull IRequiredValueModelNodeItem item, boolean selected) {
+  public EntityItem addGroup(@Nonnull IRequiredValueModelNodeItem item, boolean selected) {
     CatalogGroup group = (CatalogGroup) item.getValue();
 
     if (selected) {
@@ -131,7 +131,7 @@ public class DefaultIndexer implements IIndexer {
   }
 
   @Override
-  public EntityItem addControl(@NotNull IRequiredValueModelNodeItem item, boolean selected) {
+  public EntityItem addControl(@Nonnull IRequiredValueModelNodeItem item, boolean selected) {
     Control control = (Control) item.getValue();
     String identifier = ObjectUtils.notNull(control.getId());
     String mappedIdentifier = getMapper().mapControlIdentifier(identifier);
@@ -150,7 +150,7 @@ public class DefaultIndexer implements IIndexer {
   }
 
   @Override
-  public EntityItem addParameter(@NotNull IRequiredValueModelNodeItem item) {
+  public EntityItem addParameter(@Nonnull IRequiredValueModelNodeItem item) {
     Parameter parameter = (Parameter) item.getValue();
     String identifier = ObjectUtils.notNull(parameter.getId());
     String mappedIdentifier = getMapper().mapParameterIdentifier(identifier);
@@ -165,7 +165,7 @@ public class DefaultIndexer implements IIndexer {
   }
 
   @Override
-  public EntityItem addPart(@NotNull IRequiredValueModelNodeItem item) {
+  public EntityItem addPart(@Nonnull IRequiredValueModelNodeItem item) {
     ControlPart part = (ControlPart) item.getValue();
     String identifier = part.getId();
 
@@ -186,7 +186,7 @@ public class DefaultIndexer implements IIndexer {
   }
 
   @Override
-  public EntityItem addResource(@NotNull IRequiredValueModelNodeItem item) {
+  public EntityItem addResource(@Nonnull IRequiredValueModelNodeItem item) {
     Resource resource = (Resource) item.getValue();
     UUID identifier = ObjectUtils.notNull(resource.getUuid());
 
@@ -196,16 +196,16 @@ public class DefaultIndexer implements IIndexer {
         identifier);
   }
 
-  protected <T> EntityItem addItem(@NotNull ItemType type, @NotNull IRequiredValueModelNodeItem item,
-      @NotNull UUID identifier) {
+  protected <T> EntityItem addItem(@Nonnull ItemType type, @Nonnull IRequiredValueModelNodeItem item,
+      @Nonnull UUID identifier) {
     EntityItem.Builder builder = EntityItem.builder()
         .instance(item, identifier)
         .source(ObjectUtils.requireNonNull(item.getBaseUri(), "item must have an associated URI"));
     return addItem(type, builder);
   }
 
-  protected <T> EntityItem addItem(@NotNull ItemType type, @NotNull IRequiredValueModelNodeItem item,
-      @NotNull String identifier) {
+  protected <T> EntityItem addItem(@Nonnull ItemType type, @Nonnull IRequiredValueModelNodeItem item,
+      @Nonnull String identifier) {
     EntityItem.Builder builder = EntityItem.builder()
         .instance(item, identifier)
         .source(ObjectUtils.requireNonNull(item.getBaseUri(), "item must have an associated URI"));
@@ -213,9 +213,9 @@ public class DefaultIndexer implements IIndexer {
     return addItem(type, builder);
   }
 
-  protected EntityItem addItem(@NotNull ItemType type, @NotNull IRequiredValueModelNodeItem item,
-      @NotNull String identifier,
-      @NotNull String mappedIdentifier) {
+  protected EntityItem addItem(@Nonnull ItemType type, @Nonnull IRequiredValueModelNodeItem item,
+      @Nonnull String identifier,
+      @Nonnull String mappedIdentifier) {
 
     EntityItem.Builder builder = EntityItem.builder()
         .instance(item, mappedIdentifier)
@@ -224,7 +224,7 @@ public class DefaultIndexer implements IIndexer {
     return addItem(type, builder);
   }
 
-  protected <T> EntityItem addItem(@NotNull ItemType type, @NotNull EntityItem.Builder builder) {
+  protected <T> EntityItem addItem(@Nonnull ItemType type, @Nonnull EntityItem.Builder builder) {
 
     builder
         .itemType(type);

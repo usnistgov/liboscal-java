@@ -34,7 +34,7 @@ import gov.nist.secauto.oscal.lib.model.Parameter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,12 +44,12 @@ import java.util.Set;
 public class DefaultResult implements IResult {
   private static final Logger LOGGER = LogManager.getLogger(DefaultResult.class);
 
-  @NotNull
-  private final Set<@NotNull Parameter> promotedParameters;
-  @NotNull
-  private final Set<@NotNull Control> promotedControls;
-  @NotNull
-  private final Set<@NotNull String> requiredParameterIds;
+  @Nonnull
+  private final Set<@Nonnull Parameter> promotedParameters;
+  @Nonnull
+  private final Set<@Nonnull Control> promotedControls;
+  @Nonnull
+  private final Set<@Nonnull String> requiredParameterIds;
 
   public DefaultResult() {
     this.promotedParameters = new LinkedHashSet<>();
@@ -58,35 +58,35 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  @NotNull
-  public Collection<@NotNull Parameter> getPromotedParameters() {
+  @Nonnull
+  public Collection<@Nonnull Parameter> getPromotedParameters() {
     return promotedParameters;
   }
 
   @Override
-  @NotNull
-  public Collection<@NotNull Control> getPromotedControls() {
+  @Nonnull
+  public Collection<@Nonnull Control> getPromotedControls() {
     return promotedControls;
   }
 
   @Override
-  @NotNull
-  public Set<@NotNull String> getRequiredParameterIds() {
+  @Nonnull
+  public Set<@Nonnull String> getRequiredParameterIds() {
     return CollectionUtil.unmodifiableSet(requiredParameterIds);
   }
 
   @Override
-  public void requireParameters(@NotNull Set<@NotNull String> requiredParameterIds) {
+  public void requireParameters(@Nonnull Set<@Nonnull String> requiredParameterIds) {
     this.requiredParameterIds.addAll(requiredParameterIds);
   }
 
   @Override
-  public boolean isParameterRequired(@NotNull String id) {
+  public boolean isParameterRequired(@Nonnull String id) {
     return getRequiredParameterIds().contains(id);
   }
 
   @Override
-  public void promoteParameter(@NotNull Parameter param) {
+  public void promoteParameter(@Nonnull Parameter param) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.atDebug().log("promoting parameter '{}'", param.getId());
     }
@@ -94,7 +94,7 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  public void promoteControl(@NotNull Control control) {
+  public void promoteControl(@Nonnull Control control) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.atDebug().log("promoting control '{}'", control.getId());
     }
@@ -102,7 +102,7 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  public void applyTo(@NotNull Catalog parent) {
+  public void applyTo(@Nonnull Catalog parent) {
     getPromotedParameters().forEach(param -> parent.addParam(param));
     getPromotedControls().forEach(control -> {
       parent.addControl(control);
@@ -111,7 +111,7 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  public void applyTo(@NotNull CatalogGroup parent) {
+  public void applyTo(@Nonnull CatalogGroup parent) {
     getPromotedParameters().forEach(param -> parent.addParam(param));
     getPromotedControls().forEach(control -> {
       parent.addControl(control);
@@ -120,7 +120,7 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  public void applyTo(@NotNull Control parent) {
+  public void applyTo(@Nonnull Control parent) {
     getPromotedParameters().forEach(param -> parent.addParam(param));
     getPromotedControls().forEach(control -> {
       parent.addControl(control);

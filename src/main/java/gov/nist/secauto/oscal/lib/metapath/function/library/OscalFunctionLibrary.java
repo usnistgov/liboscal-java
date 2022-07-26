@@ -26,10 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
-import gov.nist.secauto.metaschema.model.common.metapath.function.AbstractFunctionLibrary;
+import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionLibrary;
 
 public class OscalFunctionLibrary
-    extends AbstractFunctionLibrary {
+    extends FunctionLibrary {
 
   public OscalFunctionLibrary() {
     registerFunction(ResolveProfile.SIGNATURE_NO_ARG);

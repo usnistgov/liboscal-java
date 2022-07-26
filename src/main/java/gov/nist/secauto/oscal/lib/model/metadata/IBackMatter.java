@@ -28,15 +28,15 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface IBackMatter {
-  List<@NotNull Resource> getResources();
+  List<@Nonnull Resource> getResources();
 
   @Nullable
-  Resource getResourceByUuid(@NotNull UUID uuid);
+  Resource getResourceByUuid(@Nonnull UUID uuid);
 }

@@ -36,7 +36,7 @@ import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -71,12 +71,12 @@ public abstract class AbstractControl
   }
 
   @SuppressWarnings("null")
-  @NotNull
+  @Nonnull
   @Override
-  public Stream<@NotNull String> getReferencedParameterIds() {
+  public Stream<@Nonnull String> getReferencedParameterIds() {
 
     // get parameters referenced by the group's parts
-    Stream<@NotNull String> insertIds = CollectionUtil.listOrEmpty(getParts()).stream()
+    Stream<@Nonnull String> insertIds = CollectionUtil.listOrEmpty(getParts()).stream()
         // Get the full part hierarchy
         .flatMap(part -> Stream.concat(Stream.of(part), part.getPartsRecursively()))
         // Get the inserts for each part
@@ -86,7 +86,7 @@ public abstract class AbstractControl
         .flatMap(ObjectUtils::filterNull);
 
     // get parameters referenced by the control's parameters
-    Stream<@NotNull String> parameterIds = CollectionUtil.listOrEmpty(getParams()).stream()
+    Stream<@Nonnull String> parameterIds = CollectionUtil.listOrEmpty(getParams()).stream()
         .flatMap(ObjectUtils::filterNull)
         .flatMap(param -> param.getParameterReferences());
 
@@ -94,13 +94,13 @@ public abstract class AbstractControl
         .distinct();
   }
 
-  @NotNull
-  public static Builder builder(@NotNull String id) {
+  @Nonnull
+  public static Builder builder(@Nonnull String id) {
     return new Builder(id);
   }
 
   public static class Builder {
-    @NotNull
+    @Nonnull
     private final String id;
 
     private String clazz;
@@ -112,62 +112,62 @@ public abstract class AbstractControl
     private final List<Control> controls = new LinkedList<>();
 
     @SuppressWarnings("null")
-    public Builder(@NotNull String id) {
+    public Builder(@Nonnull String id) {
       this.id = Objects.requireNonNull(id, "id");
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder clazz(@NotNull String value) {
+    @Nonnull
+    public Builder clazz(@Nonnull String value) {
       this.clazz = Objects.requireNonNull(value, "value");
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder title(@NotNull String markdown) {
+    @Nonnull
+    public Builder title(@Nonnull String markdown) {
       this.title = MarkupLine.fromMarkdown(Objects.requireNonNull(markdown, "markdown"));
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder title(@NotNull MarkupLine value) {
+    @Nonnull
+    public Builder title(@Nonnull MarkupLine value) {
       this.title = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @NotNull
-    public Builder param(@NotNull Parameter value) {
+    @Nonnull
+    public Builder param(@Nonnull Parameter value) {
       this.params.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder prop(@NotNull Property value) {
+    @Nonnull
+    public Builder prop(@Nonnull Property value) {
       this.props.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder link(@NotNull Link value) {
+    @Nonnull
+    public Builder link(@Nonnull Link value) {
       this.links.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder part(@NotNull ControlPart value) {
+    @Nonnull
+    public Builder part(@Nonnull ControlPart value) {
       this.parts.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder control(@NotNull Control value) {
+    @Nonnull
+    public Builder control(@Nonnull Control value) {
       this.controls.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
+    @Nonnull
     public Control build() {
       Control retval = new Control();
       retval.setId(id);

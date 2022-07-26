@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
 
@@ -35,7 +35,7 @@ public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
    * 
    * @return the parser
    */
-  @NotNull
+  @Nonnull
   IIdentifierParser getIdentifierParser();
 
   /**
@@ -45,7 +45,7 @@ public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
    *          the reference object
    * @return the reference text or {@code null} if there is no text
    */
-  String getReferenceText(@NotNull TYPE reference);
+  String getReferenceText(@Nonnull TYPE reference);
 
   /**
    * Update the reference text used in the {@code reference} object.
@@ -55,5 +55,5 @@ public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
    * @param newReferenceText
    *          the reference text replacement
    */
-  void setReferenceText(@NotNull TYPE reference, @NotNull String newReferenceText);
+  void setReferenceText(@Nonnull TYPE reference, @Nonnull String newReferenceText);
 }

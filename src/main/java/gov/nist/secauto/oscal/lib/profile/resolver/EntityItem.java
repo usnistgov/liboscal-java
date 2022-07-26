@@ -35,7 +35,7 @@ import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControlContainer;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferenceVisitor;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.net.URI;
 import java.util.Objects;
@@ -56,15 +56,15 @@ public final class EntityItem {
     RESOURCE;
   }
 
-  @NotNull
+  @Nonnull
   private final String originalIdentifier;
-  @NotNull
+  @Nonnull
   private final String identifier;
-  @NotNull
+  @Nonnull
   private final IRequiredValueModelNodeItem instance;
-  @NotNull
+  @Nonnull
   private final ItemType itemType;
-  @NotNull
+  @Nonnull
   private final URI source;
   private int referenceCount; // 0 by default
   private boolean resolved; // false by default
@@ -74,7 +74,7 @@ public final class EntityItem {
   }
 
   @SuppressWarnings("null")
-  private EntityItem(@NotNull Builder builder) {
+  private EntityItem(@Nonnull Builder builder) {
     this.originalIdentifier = builder.originalIdentifier == null ? builder.identifier : builder.originalIdentifier;
     this.identifier = Objects.requireNonNull(builder.identifier, "identifier");
     this.instance = Objects.requireNonNull(builder.instance, "instance");
@@ -82,33 +82,33 @@ public final class EntityItem {
     this.source = Objects.requireNonNull(builder.source, "source");
   }
 
-  @NotNull
+  @Nonnull
   public String getOriginalIdentifier() {
     return originalIdentifier;
   }
 
-  @NotNull
+  @Nonnull
   public String getIdentifier() {
     return identifier;
   }
 
-  @NotNull
+  @Nonnull
   public IRequiredValueModelNodeItem getInstance() {
     return instance;
   }
 
-  @NotNull
+  @Nonnull
   @SuppressWarnings("unchecked")
   public <T> T getInstanceValue() {
     return (T) instance.getValue();
   }
 
-  @NotNull
+  @Nonnull
   public ItemType getItemType() {
     return itemType;
   }
 
-  @NotNull
+  @Nonnull
   public URI getSource() {
     return source;
   }
@@ -133,7 +133,7 @@ public final class EntityItem {
     referenceCount += 1;
   }
 
-  public boolean isSelected(@NotNull Index index) {
+  public boolean isSelected(@Nonnull Index index) {
     boolean retval;
     switch (getItemType()) {
     case CONTROL:
@@ -164,7 +164,7 @@ public final class EntityItem {
     return retval;
   }
 
-  public void accept(@NotNull IReferenceVisitor visitor) {
+  public void accept(@Nonnull IReferenceVisitor visitor) {
     IRequiredValueModelNodeItem instance = getInstance();
     switch (getItemType()) {
     case CONTROL:
@@ -203,33 +203,33 @@ public final class EntityItem {
     private ItemType itemType;
     private URI source;
 
-    public Builder instance(@NotNull IRequiredValueModelNodeItem item, @NotNull UUID identifier) {
+    public Builder instance(@Nonnull IRequiredValueModelNodeItem item, @Nonnull UUID identifier) {
       return instance(item, ObjectUtils.notNull(identifier.toString()));
     }
 
     @SuppressWarnings("null")
-    public Builder instance(@NotNull IRequiredValueModelNodeItem item, @NotNull String identifier) {
+    public Builder instance(@Nonnull IRequiredValueModelNodeItem item, @Nonnull String identifier) {
       this.identifier = Objects.requireNonNull(identifier, "identifier");
       this.instance = Objects.requireNonNull(item, "item");
       return this;
     }
 
-    public Builder originalIdentifier(@NotNull String identifier) {
+    public Builder originalIdentifier(@Nonnull String identifier) {
       this.originalIdentifier = identifier;
       return this;
     }
 
-    public Builder itemType(@NotNull ItemType itemType) {
+    public Builder itemType(@Nonnull ItemType itemType) {
       this.itemType = itemType;
       return this;
     }
 
-    public Builder source(@NotNull URI source) {
+    public Builder source(@Nonnull URI source) {
       this.source = source;
       return this;
     }
 
-    @NotNull
+    @Nonnull
     public EntityItem build() {
       return new EntityItem(this);
     }

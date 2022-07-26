@@ -34,7 +34,7 @@ import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.net.URI;
 import java.util.LinkedList;
@@ -47,11 +47,11 @@ public abstract class AbstractPart implements IPart {
 
   @SuppressWarnings({ "null" })
   @Override
-  @NotNull
-  public Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter) {
+  @Nonnull
+  public Stream<InsertAnchorNode> getInserts(@Nonnull Predicate<InsertAnchorNode> filter) {
     MarkupMultiline prose = getProse();
 
-    @NotNull
+    @Nonnull
     Stream<InsertAnchorNode> retval;
     if (prose == null) {
       retval = Stream.empty();
@@ -62,21 +62,21 @@ public abstract class AbstractPart implements IPart {
     return retval;
   }
 
-  public Stream<@NotNull IPart> getPartsRecursively() {
+  public Stream<@Nonnull IPart> getPartsRecursively() {
     return Stream.concat(
         Stream.of(this),
         CollectionUtil.listOrEmpty(getParts()).stream()
             .flatMap(part -> part.getPartsRecursively()));
   }
 
-  @NotNull
-  public static Builder builder(@NotNull String name) {
+  @Nonnull
+  public static Builder builder(@Nonnull String name) {
     return new Builder(name);
   }
 
   public static class Builder {
     private String id;
-    @NotNull
+    @Nonnull
     private final String name;
     private URI namespace;
     private String clazz;
@@ -87,74 +87,74 @@ public abstract class AbstractPart implements IPart {
     private final List<ControlPart> parts = new LinkedList<>();
 
     @SuppressWarnings("null")
-    public Builder(@NotNull String name) {
+    public Builder(@Nonnull String name) {
       this.name = Objects.requireNonNull(name, "name");
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder id(@NotNull String value) {
+    @Nonnull
+    public Builder id(@Nonnull String value) {
       this.id = Objects.requireNonNull(value, "value");
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder namespace(@NotNull URI value) {
+    @Nonnull
+    public Builder namespace(@Nonnull URI value) {
       this.namespace = Objects.requireNonNull(value, "value");
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder clazz(@NotNull String value) {
+    @Nonnull
+    public Builder clazz(@Nonnull String value) {
       this.clazz = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @NotNull
-    public Builder title(@NotNull String markdown) {
+    @Nonnull
+    public Builder title(@Nonnull String markdown) {
       return title(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder title(@NotNull MarkupLine value) {
+    @Nonnull
+    public Builder title(@Nonnull MarkupLine value) {
       this.title = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @NotNull
-    public Builder prose(@NotNull String markdown) {
+    @Nonnull
+    public Builder prose(@Nonnull String markdown) {
       return prose(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder prose(@NotNull MarkupMultiline value) {
+    @Nonnull
+    public Builder prose(@Nonnull MarkupMultiline value) {
       this.prose = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @NotNull
-    public Builder prop(@NotNull Property value) {
+    @Nonnull
+    public Builder prop(@Nonnull Property value) {
       this.props.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder link(@NotNull Link value) {
+    @Nonnull
+    public Builder link(@Nonnull Link value) {
       this.links.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
-    public Builder part(@NotNull ControlPart value) {
+    @Nonnull
+    public Builder part(@Nonnull ControlPart value) {
       this.parts.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @NotNull
+    @Nonnull
     public ControlPart build() {
       ControlPart retval = new ControlPart();
 

@@ -34,7 +34,7 @@ import gov.nist.secauto.oscal.lib.model.control.catalog.ICatalog;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControlContainer;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -51,16 +51,16 @@ public class Index {
   public static final MetapathExpression HAS_PROP_KEEP = MetapathExpression
       .compile("prop[@name='keep' and has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@value = 'always'");
 
-  @NotNull
+  @Nonnull
   private final Map<ItemType, ItemGroup> entityMap;
-  @NotNull
+  @Nonnull
   private final Set<IControlContainer> selectedContainers;
 
   public static <T, K> Stream<T> merge(
-      @NotNull Stream<T> resolvedItems,
-      @NotNull Index index,
-      @NotNull ItemType itemType,
-      @NotNull Function<? super T, ? extends K> keyMapper) {
+      @Nonnull Stream<T> resolvedItems,
+      @Nonnull Index index,
+      @Nonnull ItemType itemType,
+      @Nonnull Function<? super T, ? extends K> keyMapper) {
     @SuppressWarnings("unchecked")
     Stream<T> importedStream = index.getEntitiesByItemType(itemType).stream()
         .filter(entity -> {
@@ -81,43 +81,43 @@ public class Index {
     this.selectedContainers = new HashSet<>();
   }
 
-  public void markSelected(@NotNull IControlContainer container) {
+  public void markSelected(@Nonnull IControlContainer container) {
     selectedContainers.add(container);
   }
 
-  public boolean isSelected(@NotNull IControlContainer container) {
+  public boolean isSelected(@Nonnull IControlContainer container) {
     return container instanceof ICatalog || selectedContainers.contains(container);
   }
 
   @Nullable
-  protected ItemGroup getItemGroup(@NotNull ItemType itemType) {
+  protected ItemGroup getItemGroup(@Nonnull ItemType itemType) {
     return entityMap.get(itemType);
   }
 
-  protected ItemGroup newItemGroup(@NotNull ItemType itemType) {
+  protected ItemGroup newItemGroup(@Nonnull ItemType itemType) {
     ItemGroup retval = new ItemGroup(itemType);
     entityMap.put(itemType, retval);
     return retval;
   }
 
-  @NotNull
-  public Collection<@NotNull EntityItem>
-      getEntitiesByItemType(@NotNull ItemType itemType) {
+  @Nonnull
+  public Collection<@Nonnull EntityItem>
+      getEntitiesByItemType(@Nonnull ItemType itemType) {
     ItemGroup group = getItemGroup(itemType);
     return group == null ? CollectionUtil.emptyList() : group.getEntities();
   }
 
   @SuppressWarnings("null")
-  public EntityItem getEntity(@NotNull ItemType itemType, @NotNull UUID identifier) {
+  public EntityItem getEntity(@Nonnull ItemType itemType, @Nonnull UUID identifier) {
     return getEntity(itemType, identifier.toString());
   }
 
-  public EntityItem getEntity(@NotNull ItemType itemType, @NotNull String identifier) {
+  public EntityItem getEntity(@Nonnull ItemType itemType, @Nonnull String identifier) {
     ItemGroup group = getItemGroup(itemType);
     return group == null ? null : group.getEntity(identifier);
   }
 
-  public <T> EntityItem addItem(@NotNull EntityItem item) {
+  public <T> EntityItem addItem(@Nonnull EntityItem item) {
     ItemType type = item.getItemType();
 
     ItemGroup group = getItemGroup(type);
@@ -136,13 +136,13 @@ public class Index {
   // return count;
   // }
   //
-  // public void incrementParameterReferenceCount(@NotNull String parameterId) {
+  // public void incrementParameterReferenceCount(@Nonnull String parameterId) {
   // int count = getParameterReferenceCount(parameterId);
   //
   // parameterReferenceCountMap.put(parameterId, ++count);
   // }
   //
-  // public void decrementParameterReferenceCount(@NotNull String parameterId) {
+  // public void decrementParameterReferenceCount(@Nonnull String parameterId) {
   // int count = getParameterReferenceCount(parameterId);
   //
   // if (count == 0) {
@@ -159,26 +159,26 @@ public class Index {
   // }
 
   private static class ItemGroup {
-    @NotNull
+    @Nonnull
     private final ItemType itemType;
-    Map<@NotNull String, EntityItem> idToEntityMap;
+    Map<@Nonnull String, EntityItem> idToEntityMap;
 
-    public ItemGroup(@NotNull ItemType itemType) {
+    public ItemGroup(@Nonnull ItemType itemType) {
       this.itemType = itemType;
       this.idToEntityMap = new LinkedHashMap<>();
     }
 
-    public EntityItem getEntity(@NotNull String identifier) {
+    public EntityItem getEntity(@Nonnull String identifier) {
       return idToEntityMap.get(identifier);
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Collection<@NotNull EntityItem> getEntities() {
+    @Nonnull
+    public Collection<@Nonnull EntityItem> getEntities() {
       return idToEntityMap.values();
     }
 
-    public EntityItem add(@NotNull EntityItem entity) {
+    public EntityItem add(@Nonnull EntityItem entity) {
       assert itemType.equals(entity.getItemType());
       return idToEntityMap.put(entity.getOriginalIdentifier(), entity);
     }

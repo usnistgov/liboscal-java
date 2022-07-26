@@ -29,25 +29,25 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public interface IReferenceVisitor {
-  @NotNull
+  @Nonnull
   Index getIndex();
 
-  void visitGroup(@NotNull IRequiredValueModelNodeItem item);
+  void visitGroup(@Nonnull IRequiredValueModelNodeItem item);
 
-  void visitControl(@NotNull IRequiredValueModelNodeItem item);
+  void visitControl(@Nonnull IRequiredValueModelNodeItem item);
 
-  void visitParameter(@NotNull IRequiredValueModelNodeItem item);
+  void visitParameter(@Nonnull IRequiredValueModelNodeItem item);
 
-  void visitPart(@NotNull IRequiredValueModelNodeItem item);
+  void visitPart(@Nonnull IRequiredValueModelNodeItem item);
 
-  void visitRole(@NotNull IRequiredValueModelNodeItem item);
+  void visitRole(@Nonnull IRequiredValueModelNodeItem item);
 
-  void visitParty(@NotNull IRequiredValueModelNodeItem item);
+  void visitParty(@Nonnull IRequiredValueModelNodeItem item);
 
-  void visitLocation(@NotNull IRequiredValueModelNodeItem item);
+  void visitLocation(@Nonnull IRequiredValueModelNodeItem item);
 
-  void visitResource(@NotNull IRequiredValueModelNodeItem item);
+  void visitResource(@Nonnull IRequiredValueModelNodeItem item);
 }

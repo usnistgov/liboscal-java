@@ -38,7 +38,7 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -136,7 +136,7 @@ class OscalBindingContextTest {
     // out.delete();
   }
 
-  static Path newPath(@NotNull Path dir, @NotNull String filename) {
+  static Path newPath(@Nonnull Path dir, @Nonnull String filename) {
     return dir.resolve(filename);
     // return Path.of("target",filename);
   }

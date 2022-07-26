@@ -29,7 +29,7 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.net.URI;
 import java.util.List;
@@ -41,17 +41,17 @@ import javax.xml.namespace.QName;
 
 public abstract class AbstractProperty implements IProperty {
 
-  @NotNull
-  public static QName qname(URI namespace, @NotNull String name) {
+  @Nonnull
+  public static QName qname(URI namespace, @Nonnull String name) {
     return new QName(normalizeNamespace(namespace).toString(), name);
   }
 
-  @NotNull
-  public static QName qname(@NotNull String name) {
+  @Nonnull
+  public static QName qname(@Nonnull String name) {
     return new QName(OSCAL_NAMESPACE.toString(), name);
   }
 
-  @NotNull
+  @Nonnull
   public static URI normalizeNamespace(URI namespace) {
     URI propertyNamespace = namespace;
     if (propertyNamespace == null) {
@@ -61,8 +61,8 @@ public abstract class AbstractProperty implements IProperty {
   }
 
   @SuppressWarnings("null")
-  @NotNull
-  public static Optional<Property> find(List<Property> props, @NotNull QName qname) {
+  @Nonnull
+  public static Optional<Property> find(List<Property> props, @Nonnull QName qname) {
     return CollectionUtil.listOrEmpty(props).stream().filter(prop -> qname.equals(prop.getQName())).findFirst();
   }
 
@@ -71,22 +71,22 @@ public abstract class AbstractProperty implements IProperty {
   }
 
   @Override
-  public boolean isNamespaceEqual(@NotNull URI namespace) {
+  public boolean isNamespaceEqual(@Nonnull URI namespace) {
     return normalizeNamespace(getNs()).equals(namespace);
   }
 
-  @NotNull
+  @Nonnull
   public QName getQName() {
     return new QName(normalizeNamespace(getNs()).toString(), getName());
   }
 
-  @NotNull
-  public static Builder builder(@NotNull String name) {
+  @Nonnull
+  public static Builder builder(@Nonnull String name) {
     return new Builder(name);
   }
 
   public static class Builder {
-    @NotNull
+    @Nonnull
     private final String name;
 
     private UUID uuid;
@@ -95,20 +95,20 @@ public abstract class AbstractProperty implements IProperty {
     private String clazz;
 
     @SuppressWarnings("null")
-    public Builder(@NotNull String name) {
+    public Builder(@Nonnull String name) {
       this.name = Objects.requireNonNull(name, "name");
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder uuid(@NotNull UUID uuid) {
+    @Nonnull
+    public Builder uuid(@Nonnull UUID uuid) {
       this.uuid = Objects.requireNonNull(uuid, "uuid");
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder namespace(@NotNull URI namespace) {
+    @Nonnull
+    public Builder namespace(@Nonnull URI namespace) {
       if (IProperty.OSCAL_NAMESPACE.equals(namespace)) {
         this.namespace = null;
       } else {
@@ -118,20 +118,20 @@ public abstract class AbstractProperty implements IProperty {
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder value(@NotNull String value) {
+    @Nonnull
+    public Builder value(@Nonnull String value) {
       this.value = Objects.requireNonNull(value, "value");
       return this;
     }
 
     @SuppressWarnings("null")
-    @NotNull
-    public Builder clazz(@NotNull String clazz) {
+    @Nonnull
+    public Builder clazz(@Nonnull String clazz) {
       this.clazz = Objects.requireNonNull(clazz, "clazz");
       return this;
     }
 
-    @NotNull
+    @Nonnull
     public Property build() {
       Property retval = new Property();
       retval.setName(name);

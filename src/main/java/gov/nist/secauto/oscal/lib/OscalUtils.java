@@ -33,7 +33,7 @@ import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -55,7 +55,7 @@ public final class OscalUtils {
     // disable construction
   }
 
-  public static boolean isInternalReference(@NotNull URI uri) {
+  public static boolean isInternalReference(@Nonnull URI uri) {
     if (uri.isAbsolute()) {
       return false;
     }
@@ -66,13 +66,13 @@ public final class OscalUtils {
   }
 
   @SuppressWarnings("null")
-  @NotNull
-  public static String internalReferenceFragmentToId(@NotNull URI fragment) throws IllegalArgumentException {
+  @Nonnull
+  public static String internalReferenceFragmentToId(@Nonnull URI fragment) throws IllegalArgumentException {
     return internalReferenceFragmentToId(fragment.toString());
   }
 
-  @NotNull
-  public static String internalReferenceFragmentToId(@NotNull String fragment) throws IllegalArgumentException {
+  @Nonnull
+  public static String internalReferenceFragmentToId(@Nonnull String fragment) throws IllegalArgumentException {
     Matcher matcher = INTERNAL_REFERENCE_FRAGMENT_PATTERN.matcher(fragment);
     String retval;
     if (matcher.matches()) {
@@ -84,12 +84,12 @@ public final class OscalUtils {
     return retval;
   }
 
-  public static boolean hasBase64Data(@NotNull Resource resource) {
+  public static boolean hasBase64Data(@Nonnull Resource resource) {
     return resource.getBase64() != null;
   }
 
   @Nullable
-  public static ByteBuffer getBase64Data(@NotNull Resource resource) {
+  public static ByteBuffer getBase64Data(@Nonnull Resource resource) {
     Base64 base64 = resource.getBase64();
 
     ByteBuffer retval = null;
@@ -100,7 +100,7 @@ public final class OscalUtils {
   }
 
   @Nullable
-  public static URI getResourceURI(@NotNull Resource resource, @Nullable String preferredMediaType) {
+  public static URI getResourceURI(@Nonnull Resource resource, @Nullable String preferredMediaType) {
     URI retval;
     if (hasBase64Data(resource)) {
       UUID uuid = resource.getUuid();
@@ -116,7 +116,7 @@ public final class OscalUtils {
   }
 
   @Nullable
-  public static Rlink findMatchingRLink(@NotNull Resource resource, @Nullable String preferredMediaType) {
+  public static Rlink findMatchingRLink(@Nonnull Resource resource, @Nullable String preferredMediaType) {
     // find a suitable rlink reference
     List<Rlink> rlinks = resource.getRlinks();
 
@@ -136,7 +136,7 @@ public final class OscalUtils {
   }
 
   @Nullable
-  public static InputSource newInputSource(@NotNull Resource resource, @NotNull EntityResolver resolver,
+  public static InputSource newInputSource(@Nonnull Resource resource, @Nonnull EntityResolver resolver,
       @Nullable String preferredMediaType) throws IOException {
     URI uri = getResourceURI(resource, null);
     if (uri == null) {

@@ -32,7 +32,7 @@ import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -40,16 +40,16 @@ import java.util.List;
 public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomReferencePolicy<TYPE> {
   private static final Logger LOGGER = LogManager.getLogger(AbstractCustomReferencePolicy.class);
 
-  @NotNull
+  @Nonnull
   private final IIdentifierParser identifierParser;
 
   protected AbstractCustomReferencePolicy(
-      @NotNull IIdentifierParser identifierParser) {
+      @Nonnull IIdentifierParser identifierParser) {
     this.identifierParser = identifierParser;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public IIdentifierParser getIdentifierParser() {
     return identifierParser;
   }
@@ -64,13 +64,13 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *          the reference object
    * @return a list of item types to search for
    */
-  @NotNull
-  protected abstract List<@NotNull ItemType> getEntityItemTypes(@NotNull TYPE reference);
+  @Nonnull
+  protected abstract List<@Nonnull ItemType> getEntityItemTypes(@Nonnull TYPE reference);
 
   protected boolean handleIndexHit(
-      @NotNull TYPE reference,
-      @NotNull EntityItem item,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull TYPE reference,
+      @Nonnull EntityItem item,
+      @Nonnull IReferenceVisitor visitor) {
 
     if (item.isSelected(visitor.getIndex())) {
       if (item.getReferenceCount() == 0 && !item.isResolved()) {
@@ -96,37 +96,37 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
   }
 
   protected void handleUnselected( // NOPMD - intentional
-      @NotNull TYPE reference,
-      @NotNull EntityItem item,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull TYPE reference,
+      @Nonnull EntityItem item,
+      @Nonnull IReferenceVisitor visitor) {
     // do nothing by default
   }
 
   protected void handleSelected( // NOPMD - intentional
-      @NotNull TYPE reference,
-      @NotNull EntityItem item,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull TYPE reference,
+      @Nonnull EntityItem item,
+      @Nonnull IReferenceVisitor visitor) {
     // do nothing by default
   }
 
   protected boolean handleIndexMiss(
-      @NotNull TYPE reference,
-      @NotNull List<@NotNull ItemType> itemTypes,
-      @NotNull String identifier,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull TYPE reference,
+      @Nonnull List<@Nonnull ItemType> itemTypes,
+      @Nonnull String identifier,
+      @Nonnull IReferenceVisitor visitor) {
     // provide no handler by default
     return false;
   }
 
   protected boolean handleIdentifierNonMatch(
-      @NotNull TYPE reference,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull TYPE reference,
+      @Nonnull IReferenceVisitor visitor) {
     // provide no handler by default
     return false;
   }
 
   @Override
-  public boolean handleReference(@NotNull TYPE type, @NotNull IReferenceVisitor visitor) {
+  public boolean handleReference(@Nonnull TYPE type, @Nonnull IReferenceVisitor visitor) {
     String referenceText = getReferenceText(type);
 
     // if the reference text does not exist, ignore the reference; otherwise, handle it.
@@ -134,14 +134,14 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
   }
 
   protected boolean handleIdentifier(
-      @NotNull TYPE type,
+      @Nonnull TYPE type,
       @Nullable String identifier,
-      @NotNull IReferenceVisitor visitor) {
+      @Nonnull IReferenceVisitor visitor) {
     boolean retval;
     if (identifier == null) {
       retval = handleIdentifierNonMatch(type, visitor);
     } else {
-      List<@NotNull ItemType> itemTypes = getEntityItemTypes(type);
+      List<@Nonnull ItemType> itemTypes = getEntityItemTypes(type);
       EntityItem item = null;
       for (ItemType itemType : itemTypes) {
         item = visitor.getIndex().getEntity(itemType, identifier);

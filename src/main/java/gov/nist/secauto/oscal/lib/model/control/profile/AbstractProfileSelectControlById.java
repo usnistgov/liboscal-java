@@ -29,7 +29,7 @@ package gov.nist.secauto.oscal.lib.model.control.profile;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById.Matching;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractProfileSelectControlById implements IProfileSelectControlById {
   // TODO: move implementation from profile resolver selection code here
 
-  @NotNull
+  @Nonnull
   public static Builder builder() {
     return new Builder();
   }
@@ -51,31 +51,31 @@ public abstract class AbstractProfileSelectControlById implements IProfileSelect
     private final List<String> withIds = new LinkedList<>();
     private final List<Pattern> matching = new LinkedList<>();
 
-    @NotNull
+    @Nonnull
     public Builder withChildControls(boolean value) {
       this.withChildControls = value;
       return this;
     }
 
-    @NotNull
-    public Builder withId(@NotNull String id) {
+    @Nonnull
+    public Builder withId(@Nonnull String id) {
       withIds.add(id);
       return this;
     }
 
-    @NotNull
-    public Builder withIds(@NotNull Collection<String> ids) {
+    @Nonnull
+    public Builder withIds(@Nonnull Collection<String> ids) {
       withIds.addAll(ids);
       return this;
     }
 
-    @NotNull
-    public Builder matching(@NotNull Pattern pattern) {
+    @Nonnull
+    public Builder matching(@Nonnull Pattern pattern) {
       matching.add(pattern);
       return this;
     }
 
-    @NotNull
+    @Nonnull
     public ProfileSelectControlById build() {
       ProfileSelectControlById retval = new ProfileSelectControlById();
       retval.setWithChildControls(withChildControls ? "yes" : "no");

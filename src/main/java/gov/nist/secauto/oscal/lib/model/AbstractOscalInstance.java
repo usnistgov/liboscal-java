@@ -29,14 +29,14 @@ package gov.nist.secauto.oscal.lib.model;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.metadata.IBackMatter;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.UUID;
 
 public abstract class AbstractOscalInstance implements IOscalInstance {
 
   @Override
-  public Resource getResourceByUuid(@NotNull UUID uuid) {
+  public Resource getResourceByUuid(@Nonnull UUID uuid) {
     IBackMatter backMatter = getBackMatter();
 
     Resource retval = null;

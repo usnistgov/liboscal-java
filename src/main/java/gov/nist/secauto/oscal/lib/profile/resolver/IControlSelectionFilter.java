@@ -30,44 +30,44 @@ import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public interface IControlSelectionFilter extends Function<@NotNull IControl, Pair<@NotNull Boolean, @NotNull Boolean>> {
+public interface IControlSelectionFilter extends Function<@Nonnull IControl, Pair<@Nonnull Boolean, @Nonnull Boolean>> {
 
-  @NotNull
-  Pair<@NotNull Boolean, @NotNull Boolean> NON_MATCH = ObjectUtils.notNull(Pair.of(false, false));
-  @NotNull
-  Pair<@NotNull Boolean, @NotNull Boolean> MATCH = ObjectUtils.notNull(Pair.of(true, true));
+  @Nonnull
+  Pair<@Nonnull Boolean, @Nonnull Boolean> NON_MATCH = ObjectUtils.notNull(Pair.of(false, false));
+  @Nonnull
+  Pair<@Nonnull Boolean, @Nonnull Boolean> MATCH = ObjectUtils.notNull(Pair.of(true, true));
 
-  @NotNull
+  @Nonnull
   IControlSelectionFilter ALL_MATCH = new IControlSelectionFilter() {
     @Override
-    public Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
+    public Pair<@Nonnull Boolean, @Nonnull Boolean> apply(@Nonnull IControl control) {
       return MATCH;
     }
   };
 
-  @NotNull
+  @Nonnull
   IControlSelectionFilter NONE_MATCH = new IControlSelectionFilter() {
     @Override
-    public Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
+    public Pair<@Nonnull Boolean, @Nonnull Boolean> apply(@Nonnull IControl control) {
       return NON_MATCH;
     }
   };
 
-  @NotNull
-  static IControlSelectionFilter matchIds(@NotNull String... identifiers) {
+  @Nonnull
+  static IControlSelectionFilter matchIds(@Nonnull String... identifiers) {
     return new IControlSelectionFilter() {
-      private Set<@NotNull String> keys = Arrays.stream(identifiers).collect(Collectors.toUnmodifiableSet());
+      private Set<@Nonnull String> keys = Arrays.stream(identifiers).collect(Collectors.toUnmodifiableSet());
 
       @SuppressWarnings("null")
       @Override
-      public @NotNull Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
+      public @Nonnull Pair<@Nonnull Boolean, @Nonnull Boolean> apply(@Nonnull IControl control) {
         return Pair.of(keys.contains(control.getId()), false);
       }
 
@@ -84,7 +84,7 @@ public interface IControlSelectionFilter extends Function<@NotNull IControl, Pai
    * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
    *         otherwise), and if a match applies to child controls
    */
-  @NotNull
+  @Nonnull
   @Override
-  Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control);
+  Pair<@Nonnull Boolean, @Nonnull Boolean> apply(@Nonnull IControl control);
 }

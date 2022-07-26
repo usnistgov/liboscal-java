@@ -28,7 +28,7 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,8 +36,8 @@ import java.util.UUID;
 public abstract class AbstractBackMatter implements IBackMatter {
 
   @Override
-  public Resource getResourceByUuid(@NotNull UUID uuid) {
-    List<@NotNull Resource> resources = getResources();
+  public Resource getResourceByUuid(@Nonnull UUID uuid) {
+    List<@Nonnull Resource> resources = getResources();
 
     Resource retval = null;
     if (resources != null) {

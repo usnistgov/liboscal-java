@@ -38,38 +38,38 @@ import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Property;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.nio.file.Paths;
 import java.util.UUID;
 
 public final class TestUtil {
 
-  @NotNull
+  @Nonnull
   public static final IIdentifierMapper UUID_CONCAT_ID_MAPPER = new IIdentifierMapper() {
 
     @Override
-    public String mapRoleIdentifier(@NotNull String identifier) {
+    public String mapRoleIdentifier(@Nonnull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
-    public String mapControlIdentifier(@NotNull String identifier) {
+    public String mapControlIdentifier(@Nonnull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
-    public String mapGroupIdentifier(@NotNull String identifier) {
+    public String mapGroupIdentifier(@Nonnull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
-    public String mapParameterIdentifier(@NotNull String identifier) {
+    public String mapParameterIdentifier(@Nonnull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
-    public @NotNull String mapPartIdentifier(@NotNull String identifier) {
+    public @Nonnull String mapPartIdentifier(@Nonnull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
   };
@@ -78,7 +78,7 @@ public final class TestUtil {
     // disable construction
   }
 
-  @NotNull
+  @Nonnull
   public static IDocumentNodeItem newImportedCatalog() {
 
     // setup the imported catalog

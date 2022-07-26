@@ -48,7 +48,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -102,12 +102,12 @@ class ProfileResolutionTests {
     return profileResolver;
   }
 
-  private Catalog resolveProfile(@NotNull Path profileFile)
+  private Catalog resolveProfile(@Nonnull Path profileFile)
       throws FileNotFoundException, BindingException, IOException {
     return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
   }
 
-  private Catalog resolveProfile(@NotNull File profileFile)
+  private Catalog resolveProfile(@Nonnull File profileFile)
       throws FileNotFoundException, BindingException, IOException {
     return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
   }
@@ -152,7 +152,7 @@ class ProfileResolutionTests {
     Assertions.assertThat(catalog.getMetadata().getProps()).filteredOn("name", "resolution-tool").extracting("value")
         .hasSize(1);
 
-    ISerializer<@NotNull Catalog> serializer = OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class);
+    ISerializer<@Nonnull Catalog> serializer = OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class);
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
 

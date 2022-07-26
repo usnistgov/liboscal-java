@@ -42,7 +42,7 @@ import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -51,7 +51,7 @@ import java.util.Collections;
 
 class ImportTest {
 
-  @NotNull
+  @Nonnull
   private IDocumentNodeItem newImportedCatalog() {
 
     // setup the imported catalog

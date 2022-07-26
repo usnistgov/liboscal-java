@@ -28,25 +28,25 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public interface IIndexer {
-  @NotNull
+  @Nonnull
   Index getIndex();
 
-  EntityItem addRole(@NotNull IRequiredValueModelNodeItem role);
+  EntityItem addRole(@Nonnull IRequiredValueModelNodeItem role);
 
-  EntityItem addLocation(@NotNull IRequiredValueModelNodeItem location);
+  EntityItem addLocation(@Nonnull IRequiredValueModelNodeItem location);
 
-  EntityItem addParty(@NotNull IRequiredValueModelNodeItem party);
+  EntityItem addParty(@Nonnull IRequiredValueModelNodeItem party);
 
-  EntityItem addGroup(@NotNull IRequiredValueModelNodeItem group, boolean selected);
+  EntityItem addGroup(@Nonnull IRequiredValueModelNodeItem group, boolean selected);
 
-  EntityItem addControl(@NotNull IRequiredValueModelNodeItem control, boolean selected);
+  EntityItem addControl(@Nonnull IRequiredValueModelNodeItem control, boolean selected);
 
-  EntityItem addParameter(@NotNull IRequiredValueModelNodeItem parameter);
+  EntityItem addParameter(@Nonnull IRequiredValueModelNodeItem parameter);
 
-  EntityItem addPart(@NotNull IRequiredValueModelNodeItem part);
+  EntityItem addPart(@Nonnull IRequiredValueModelNodeItem part);
 
-  EntityItem addResource(@NotNull IRequiredValueModelNodeItem resource);
+  EntityItem addResource(@Nonnull IRequiredValueModelNodeItem resource);
 }

@@ -28,7 +28,7 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.oscal.lib.model.Party;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,8 +36,8 @@ import java.util.UUID;
 public abstract class AbstractMetadata implements IMetadata {
 
   @Override
-  public Party getPartyByUuid(@NotNull UUID uuid) {
-    List<@NotNull Party> parties = getParties();
+  public Party getPartyByUuid(@Nonnull UUID uuid) {
+    List<@Nonnull Party> parties = getParties();
 
     Party retval = null;
     if (parties != null) {

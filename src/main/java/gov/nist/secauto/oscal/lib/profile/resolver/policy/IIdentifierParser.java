@@ -26,22 +26,22 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IIdentifierParser {
-  @NotNull
+  @Nonnull
   IIdentifierParser FRAGMENT_PARSER = new PatternIdentifierParser("^#([^#]+)(?:#.*)?$", 1);
-  @NotNull
+  @Nonnull
   IIdentifierParser IDENTITY_PARSER = new IIdentifierParser() {
 
     @Override
-    public String parse(@NotNull String reference) {
+    public String parse(@Nonnull String reference) {
       return reference;
     }
 
     @Override
-    public String update(@NotNull String reference, @NotNull String newIdentifier) {
+    public String update(@Nonnull String reference, @Nonnull String newIdentifier) {
       return newIdentifier;
     }
   };
@@ -54,7 +54,7 @@ public interface IIdentifierParser {
    * @return the identifier, or {@code null} if the identifier could not be parsed
    */
   @Nullable
-  String parse(@NotNull String referenceText);
+  String parse(@Nonnull String referenceText);
 
   /**
    * Substitute the provided {@code newIdentifier} with the identifier in the {@code referenceText}.
@@ -65,6 +65,6 @@ public interface IIdentifierParser {
    *          the new identifier to replace the existing identifier
    * @return the updated reference text with the identifier replaced
    */
-  @NotNull
-  String update(@NotNull String referenceText, @NotNull String newIdentifier);
+  @Nonnull
+  String update(@Nonnull String referenceText, @Nonnull String newIdentifier);
 }

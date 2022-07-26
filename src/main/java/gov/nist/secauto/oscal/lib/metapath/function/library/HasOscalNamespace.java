@@ -42,13 +42,13 @@ import gov.nist.secauto.oscal.lib.model.AssessmentPart;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.net.URI;
 import java.util.List;
 
 public final class HasOscalNamespace {
-  @NotNull
+  @Nonnull
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("has-oscal-namespace")
       .argument(IArgument.newBuilder()
@@ -64,7 +64,7 @@ public final class HasOscalNamespace {
       .functionHandler(HasOscalNamespace::executeOneArg)
       .build();
 
-  @NotNull
+  @Nonnull
   static final IFunction SIGNATURE_TWO_ARGS = IFunction.builder()
       .name("has-oscal-namespace")
       .argument(IArgument.newBuilder()
@@ -89,9 +89,9 @@ public final class HasOscalNamespace {
     // disable construction
   }
 
-  @NotNull
-  public static ISequence<?> executeOneArg(@NotNull IFunction function,
-      @NotNull List<@NotNull ISequence<?>> arguments, @NotNull DynamicContext dynamicContext,
+  @Nonnull
+  public static ISequence<?> executeOneArg(@Nonnull IFunction function,
+      @Nonnull List<@Nonnull ISequence<?>> arguments, @Nonnull DynamicContext dynamicContext,
       INodeItem focus) {
     INodeItem node = focus;
     if (node == null) {
@@ -106,9 +106,9 @@ public final class HasOscalNamespace {
     return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs, dynamicContext));
   }
 
-  @NotNull
-  public static ISequence<?> executeTwoArg(@NotNull IFunction function,
-      @NotNull List<@NotNull ISequence<?>> arguments, @NotNull DynamicContext dynamicContext,
+  @Nonnull
+  public static ISequence<?> executeTwoArg(@Nonnull IFunction function,
+      @Nonnull List<@Nonnull ISequence<?>> arguments, @Nonnull DynamicContext dynamicContext,
       INodeItem focus) {
     ISequence<? extends IDefinitionNodeItem> nodeSequence = FunctionUtils.asType(arguments.get(0));
 
@@ -125,9 +125,9 @@ public final class HasOscalNamespace {
     return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs, dynamicContext));
   }
 
-  @NotNull
-  public static IBooleanItem hasNamespace(@NotNull IDefinitionNodeItem propOrPart,
-      @NotNull ISequence<? extends IStringItem> namespaces, @NotNull DynamicContext dynamicContext)
+  @Nonnull
+  public static IBooleanItem hasNamespace(@Nonnull IDefinitionNodeItem propOrPart,
+      @Nonnull ISequence<? extends IStringItem> namespaces, @Nonnull DynamicContext dynamicContext)
       throws MetapathException {
     Object propOrPartObject = propOrPart.getValue();
     if (propOrPartObject == null) {
