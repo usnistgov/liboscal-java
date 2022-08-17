@@ -32,24 +32,25 @@ import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.annotation.Nonnull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomReferencePolicy<TYPE> {
   private static final Logger LOGGER = LogManager.getLogger(AbstractCustomReferencePolicy.class);
 
-  @Nonnull
+  @NonNull
   private final IIdentifierParser identifierParser;
 
   protected AbstractCustomReferencePolicy(
-      @Nonnull IIdentifierParser identifierParser) {
+      @NonNull IIdentifierParser identifierParser) {
     this.identifierParser = identifierParser;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public IIdentifierParser getIdentifierParser() {
     return identifierParser;
   }
@@ -64,13 +65,25 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *          the reference object
    * @return a list of item types to search for
    */
-  @Nonnull
-  protected abstract List<@Nonnull ItemType> getEntityItemTypes(@Nonnull TYPE reference);
+  @NonNull
+  protected abstract List<ItemType> getEntityItemTypes(@NonNull TYPE reference);
 
+  /**
+   * Handle an index hit.
+   * 
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param item
+   *          the referenced item
+   * @param visitor
+   *          the reference visitor, which can be used for further processing
+   * @return {@code true} if the hit was handled or {@code false} otherwise
+   * @throw ProfileResolutionEvaluationException if there was an error handing the index hit
+   */
   protected boolean handleIndexHit(
-      @Nonnull TYPE reference,
-      @Nonnull EntityItem item,
-      @Nonnull IReferenceVisitor visitor) {
+      @NonNull TYPE reference,
+      @NonNull EntityItem item,
+      @NonNull IReferenceVisitor visitor) {
 
     if (item.isSelected(visitor.getIndex())) {
       if (item.getReferenceCount() == 0 && !item.isResolved()) {
@@ -95,55 +108,126 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
     return true;
   }
 
-  protected void handleUnselected( // NOPMD - intentional
-      @Nonnull TYPE reference,
-      @Nonnull EntityItem item,
-      @Nonnull IReferenceVisitor visitor) {
+  /**
+   * Handle an index hit against an item related to an unselected control.
+   * <p>
+   * Subclasses can override this method to perform extra processing.
+   * 
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param item
+   *          the referenced item
+   * @param visitor
+   *          the reference visitor, which can be used for further processing
+   * @throw ProfileResolutionEvaluationException if there was an error handing the index hit
+   */
+  protected void handleUnselected( // NOPMD - do nothing by default
+      @NonNull TYPE reference,
+      @NonNull EntityItem item,
+      @NonNull IReferenceVisitor visitor) {
     // do nothing by default
   }
 
-  protected void handleSelected( // NOPMD - intentional
-      @Nonnull TYPE reference,
-      @Nonnull EntityItem item,
-      @Nonnull IReferenceVisitor visitor) {
+  /**
+   * Handle an index hit against an item related to an selected control.
+   * <p>
+   * Subclasses can override this method to perform extra processing.
+   * 
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param item
+   *          the referenced item
+   * @param visitor
+   *          the reference visitor, which can be used for further processing
+   * @throw ProfileResolutionEvaluationException if there was an error handing the index hit
+   */
+  protected void handleSelected( // NOPMD - do nothing by default
+      @NonNull TYPE reference,
+      @NonNull EntityItem item,
+      @NonNull IReferenceVisitor visitor) {
     // do nothing by default
   }
 
+  /**
+   * Handle an index miss for a reference. This occurs when the referenced item was not found in the
+   * index.
+   * <p>
+   * Subclasses can override this method to perform extra processing.
+   * 
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param itemTypes
+   *          the possible item types for this reference
+   * @param identifier
+   *          the parsed identifier
+   * @param visitor
+   *          the reference visitor, which can be used for further processing
+   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   * @throw ProfileResolutionEvaluationException if there was an error handing the index miss
+   */
   protected boolean handleIndexMiss(
-      @Nonnull TYPE reference,
-      @Nonnull List<@Nonnull ItemType> itemTypes,
-      @Nonnull String identifier,
-      @Nonnull IReferenceVisitor visitor) {
+      @NonNull TYPE reference,
+      @NonNull List<ItemType> itemTypes,
+      @NonNull String identifier,
+      @NonNull IReferenceVisitor visitor) {
     // provide no handler by default
     return false;
   }
 
+  /**
+   * Handle the case where the identifier was not a syntax match for an expected identifier. This can
+   * occur when the reference is malformed, using an unrecognized syntax.
+   * <p>
+   * Subclasses can override this method to perform extra processing.
+   * 
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param visitor
+   *          the reference visitor, which can be used for further processing
+   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   * @throw ProfileResolutionEvaluationException if there was an error handing the index miss due to a
+   *        non match
+   */
   protected boolean handleIdentifierNonMatch(
-      @Nonnull TYPE reference,
-      @Nonnull IReferenceVisitor visitor) {
+      @NonNull TYPE reference,
+      @NonNull IReferenceVisitor visitor) {
     // provide no handler by default
     return false;
   }
 
   @Override
-  public boolean handleReference(@Nonnull TYPE type, @Nonnull IReferenceVisitor visitor) {
+  public boolean handleReference(@NonNull TYPE type, @NonNull IReferenceVisitor visitor) {
     String referenceText = getReferenceText(type);
 
     // if the reference text does not exist, ignore the reference; otherwise, handle it.
     return referenceText == null || handleIdentifier(type, getIdentifierParser().parse(referenceText), visitor);
   }
 
+  /**
+   * Handle the provided {@code identifier} for a given {@code type} of reference.
+   * 
+   * @param type
+   *          the item type of the reference
+   * @param identifier
+   *          the identifier
+   * @param visitor
+   *          the reference visitor, which can be used for further processing
+   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   * @throw ProfileResolutionEvaluationException if there was an error handing the reference
+   */
   protected boolean handleIdentifier(
-      @Nonnull TYPE type,
+      @NonNull TYPE type,
       @Nullable String identifier,
-      @Nonnull IReferenceVisitor visitor) {
+      @NonNull IReferenceVisitor visitor) {
     boolean retval;
     if (identifier == null) {
       retval = handleIdentifierNonMatch(type, visitor);
     } else {
-      List<@Nonnull ItemType> itemTypes = getEntityItemTypes(type);
+      List<ItemType> itemTypes = getEntityItemTypes(type);
       EntityItem item = null;
       for (ItemType itemType : itemTypes) {
+        assert itemType != null;
+
         item = visitor.getIndex().getEntity(itemType, identifier);
         if (item != null) {
           break;

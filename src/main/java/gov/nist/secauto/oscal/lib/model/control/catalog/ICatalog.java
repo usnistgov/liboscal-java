@@ -27,5 +27,5 @@
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
 public interface ICatalog extends IGroupContainer {
-
+  // no additional methods
 }

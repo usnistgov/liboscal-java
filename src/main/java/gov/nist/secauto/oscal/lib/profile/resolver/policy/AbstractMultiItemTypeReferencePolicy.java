@@ -29,25 +29,25 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 
 public abstract class AbstractMultiItemTypeReferencePolicy<TYPE>
     extends AbstractCustomReferencePolicy<TYPE> {
 
-  @Nonnull
-  private final List<@Nonnull ItemType> itemTypes;
+  @NonNull
+  private final List<ItemType> itemTypes;
 
   public AbstractMultiItemTypeReferencePolicy(
-      @Nonnull IIdentifierParser identifierParser,
-      @Nonnull List<@Nonnull ItemType> itemTypes) {
+      @NonNull IIdentifierParser identifierParser,
+      @NonNull List<ItemType> itemTypes) {
     super(identifierParser);
     this.itemTypes = CollectionUtil.requireNonEmpty(itemTypes, "itemTypes");
   }
 
   @Override
-  protected List<@Nonnull ItemType> getEntityItemTypes(@Nonnull TYPE type) {
+  protected List<ItemType> getEntityItemTypes(@NonNull TYPE type) {
     return itemTypes;
   }
 }

@@ -28,55 +28,55 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IIdentifierMapper {
-  @Nonnull
+  @NonNull
   IIdentifierMapper IDENTITY = new IIdentifierMapper() {
 
     @Override
-    public String mapRoleIdentifier(@Nonnull String identifier) {
+    public String mapRoleIdentifier(@NonNull String identifier) {
       return identifier;
     }
 
     @Override
-    public String mapControlIdentifier(@Nonnull String identifier) {
+    public String mapControlIdentifier(@NonNull String identifier) {
       return identifier;
     }
 
     @Override
-    public String mapGroupIdentifier(@Nonnull String identifier) {
+    public String mapGroupIdentifier(@NonNull String identifier) {
       return identifier;
     }
 
     @Override
-    public String mapParameterIdentifier(@Nonnull String identifier) {
+    public String mapParameterIdentifier(@NonNull String identifier) {
       return identifier;
     }
 
     @Override
-    public @Nonnull String mapPartIdentifier(@Nonnull String identifier) {
+    public @NonNull String mapPartIdentifier(@NonNull String identifier) {
       return identifier;
     }
   };
 
-  @Nonnull
-  String mapRoleIdentifier(@Nonnull String identifier);
+  @NonNull
+  String mapRoleIdentifier(@NonNull String identifier);
 
-  @Nonnull
-  String mapControlIdentifier(@Nonnull String identifier);
+  @NonNull
+  String mapControlIdentifier(@NonNull String identifier);
 
-  @Nonnull
-  String mapGroupIdentifier(@Nonnull String identifier);
+  @NonNull
+  String mapGroupIdentifier(@NonNull String identifier);
 
-  @Nonnull
-  String mapParameterIdentifier(@Nonnull String identifier);
+  @NonNull
+  String mapParameterIdentifier(@NonNull String identifier);
 
-  @Nonnull
-  String mapPartIdentifier(@Nonnull String identifier);
+  @NonNull
+  String mapPartIdentifier(@NonNull String identifier);
 
-  @Nonnull
-  default String mapByItemType(@Nonnull ItemType itemType, @Nonnull String identifier) { // NOPMD - intentional
+  @NonNull
+  default String mapByItemType(@NonNull ItemType itemType, @NonNull String identifier) { // NOPMD - intentional
     String retval;
     switch (itemType) {
     case CONTROL:

@@ -24,36 +24,38 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
+public class ProfileResolutionException
+    extends Exception {
 
   /**
-   * Get the parser to use to parse an entity identifier from the reference text.
-   * 
-   * @return the parser
+   * the serial version UID.
    */
-  @NonNull
-  IIdentifierParser getIdentifierParser();
+  private static final long serialVersionUID = 1L;
 
   /**
-   * Retrieve the reference text from the {@code reference} object.
+   * Create a new profile resolution exception with the provided {@code message}.
    * 
-   * @param reference
-   *          the reference object
-   * @return the reference text or {@code null} if there is no text
+   * @param message
+   *          a description of the error that occurred
    */
-  String getReferenceText(@NonNull TYPE reference);
+  public ProfileResolutionException(String message) {
+    super(message);
+  }
 
   /**
-   * Update the reference text used in the {@code reference} object.
+   * Create a new profile resolution exception with the provided {@code message} based on the provided
+   * {@code cause}.
    * 
-   * @param reference
-   *          the reference object
-   * @param newReferenceText
-   *          the reference text replacement
+   * @param message
+   *          a description of the error that occurred
+   * @param cause
+   *          the initial cause of the exception
    */
-  void setReferenceText(@NonNull TYPE reference, @NonNull String newReferenceText);
+  public ProfileResolutionException(String message, @NonNull Throwable cause) {
+    super(message, cause);
+  }
 }

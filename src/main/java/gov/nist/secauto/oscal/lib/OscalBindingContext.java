@@ -33,11 +33,10 @@ import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
+import gov.nist.secauto.oscal.lib.model.MappingCollection;
 import gov.nist.secauto.oscal.lib.model.PlanOfActionAndMilestones;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
-
-import javax.annotation.Nonnull;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,14 +47,16 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public class OscalBindingContext
     extends DefaultBindingContext {
-  @Nonnull
-  private static final OscalBindingContext INSTANCE = new OscalBindingContext();
+  @NonNull
+  private static final OscalBindingContext SINGLETON = new OscalBindingContext();
 
-  @Nonnull
+  @NonNull
   public static OscalBindingContext instance() {
-    return INSTANCE;
+    return SINGLETON;
   }
 
   /**
@@ -64,7 +65,7 @@ public class OscalBindingContext
    * @param constraintSets
    *          a set of additional constraints to apply
    */
-  public OscalBindingContext(@Nonnull Set<@Nonnull IConstraintSet> constraintSets) {
+  public OscalBindingContext(@NonNull Set<IConstraintSet> constraintSets) {
     super(constraintSets);
     registerBindingMatcher(new Matcher());
   }
@@ -76,115 +77,128 @@ public class OscalBindingContext
     registerBindingMatcher(new Matcher());
   }
 
-  @Nonnull
-  public Catalog loadCatalog(@Nonnull URL url) throws IOException, URISyntaxException {
+  @NonNull
+  public Catalog loadCatalog(@NonNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(Catalog.class, url);
   }
 
-  @Nonnull
-  public Catalog loadCatalog(@Nonnull Path path) throws IOException {
+  @NonNull
+  public Catalog loadCatalog(@NonNull Path path) throws IOException {
     return newBoundLoader().load(Catalog.class, path);
   }
 
-  @SuppressWarnings("null")
-  @Nonnull
-  public Catalog loadCatalog(@Nonnull File file) throws IOException {
-    return loadCatalog(file.toPath());
+  @NonNull
+  public Catalog loadCatalog(@NonNull File file) throws IOException {
+    return newBoundLoader().load(Catalog.class, file);
   }
 
-  @Nonnull
-  public Profile loadProfile(@Nonnull URL url) throws IOException, URISyntaxException {
+  @NonNull
+  public Profile loadProfile(@NonNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(Profile.class, url);
   }
 
-  @Nonnull
-  public Profile loadProfile(@Nonnull Path path) throws IOException {
+  @NonNull
+  public Profile loadProfile(@NonNull Path path) throws IOException {
     return newBoundLoader().load(Profile.class, path);
   }
 
-  @Nonnull
-  public Profile loadProfile(@Nonnull File file) throws IOException {
+  @NonNull
+  public Profile loadProfile(@NonNull File file) throws IOException {
     return newBoundLoader().load(Profile.class, file);
   }
 
-  @Nonnull
-  public SystemSecurityPlan loadSystemSecurityPlan(@Nonnull URL url) throws IOException, URISyntaxException {
+  @NonNull
+  public MappingCollection loadMapping(@NonNull URL url) throws IOException, URISyntaxException {
+    return newBoundLoader().load(MappingCollection.class, url);
+  }
+
+  @NonNull
+  public MappingCollection loadMapping(@NonNull Path path) throws IOException {
+    return newBoundLoader().load(MappingCollection.class, path);
+  }
+
+  @NonNull
+  public MappingCollection loadMapping(@NonNull File file) throws IOException {
+    return newBoundLoader().load(MappingCollection.class, file);
+  }
+
+  @NonNull
+  public SystemSecurityPlan loadSystemSecurityPlan(@NonNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(SystemSecurityPlan.class, url);
   }
 
-  @Nonnull
-  public SystemSecurityPlan loadSystemSecurityPlan(@Nonnull Path path) throws IOException {
+  @NonNull
+  public SystemSecurityPlan loadSystemSecurityPlan(@NonNull Path path) throws IOException {
     return newBoundLoader().load(SystemSecurityPlan.class, path);
   }
 
-  @Nonnull
-  public SystemSecurityPlan loadSystemSecurityPlan(@Nonnull File file) throws IOException {
+  @NonNull
+  public SystemSecurityPlan loadSystemSecurityPlan(@NonNull File file) throws IOException {
     return newBoundLoader().load(SystemSecurityPlan.class, file);
   }
 
-  @Nonnull
-  public ComponentDefinition loadComponentDefinition(@Nonnull URL url) throws IOException, URISyntaxException {
+  @NonNull
+  public ComponentDefinition loadComponentDefinition(@NonNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(ComponentDefinition.class, url);
   }
 
-  @Nonnull
-  public ComponentDefinition loadComponentDefinition(@Nonnull Path path) throws IOException {
+  @NonNull
+  public ComponentDefinition loadComponentDefinition(@NonNull Path path) throws IOException {
     return newBoundLoader().load(ComponentDefinition.class, path);
   }
 
-  @Nonnull
-  public ComponentDefinition loadComponentDefinition(@Nonnull File file) throws IOException {
+  @NonNull
+  public ComponentDefinition loadComponentDefinition(@NonNull File file) throws IOException {
     return newBoundLoader().load(ComponentDefinition.class, file);
   }
 
-  @Nonnull
-  public AssessmentPlan loadAssessmentPlan(@Nonnull URL url) throws IOException, URISyntaxException {
+  @NonNull
+  public AssessmentPlan loadAssessmentPlan(@NonNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(AssessmentPlan.class, url);
   }
 
-  @Nonnull
-  public AssessmentPlan loadAssessmentPlan(@Nonnull Path path) throws IOException {
+  @NonNull
+  public AssessmentPlan loadAssessmentPlan(@NonNull Path path) throws IOException {
     return newBoundLoader().load(AssessmentPlan.class, path);
   }
 
-  @Nonnull
-  public AssessmentPlan loadAssessmentPlan(@Nonnull File file) throws IOException {
+  @NonNull
+  public AssessmentPlan loadAssessmentPlan(@NonNull File file) throws IOException {
     return newBoundLoader().load(AssessmentPlan.class, file);
   }
 
-  @Nonnull
-  public AssessmentResults loadAssessmentResults(@Nonnull URL url) throws IOException, URISyntaxException {
+  @NonNull
+  public AssessmentResults loadAssessmentResults(@NonNull URL url) throws IOException, URISyntaxException {
     return newBoundLoader().load(AssessmentResults.class, url);
   }
 
-  @Nonnull
-  public AssessmentResults loadAssessmentResults(@Nonnull Path path) throws IOException {
+  @NonNull
+  public AssessmentResults loadAssessmentResults(@NonNull Path path) throws IOException {
     return newBoundLoader().load(AssessmentResults.class, path);
   }
 
-  @Nonnull
-  public AssessmentResults loadAssessmentResults(@Nonnull File file) throws IOException {
+  @NonNull
+  public AssessmentResults loadAssessmentResults(@NonNull File file) throws IOException {
     return newBoundLoader().load(AssessmentResults.class, file);
   }
 
-  @Nonnull
-  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@Nonnull URL url)
+  @NonNull
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull URL url)
       throws IOException, URISyntaxException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, url);
   }
 
-  @Nonnull
-  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@Nonnull Path path) throws IOException {
+  @NonNull
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull Path path) throws IOException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, path);
   }
 
-  @Nonnull
-  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@Nonnull File file) throws IOException {
+  @NonNull
+  public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull File file) throws IOException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, file);
   }
 
-  private class Matcher implements IBindingMatcher {
-
+  private static class Matcher implements IBindingMatcher {
     @Override
     public Class<?> getBoundClassForXmlQName(QName startElementQName) {
       Class<?> clazz = null;
@@ -195,6 +209,9 @@ public class OscalBindingContext
           break;
         case "profile":
           clazz = Profile.class;
+          break;
+        case "mapping-collection":
+          clazz = MappingCollection.class;
           break;
         case "system-security-plan":
           clazz = SystemSecurityPlan.class;

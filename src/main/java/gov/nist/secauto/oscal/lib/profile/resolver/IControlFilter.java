@@ -33,44 +33,45 @@ import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
 
 import org.apache.commons.lang3.tuple.Pair;
-import javax.annotation.Nonnull;
 
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public interface IControlFilter {
-  @Nonnull
+  @NonNull
   IControlFilter ALWAYS_MATCH = new IControlFilter() {
     @Override
-    public @Nonnull Pair<@Nonnull Boolean, @Nonnull Boolean> match(@Nonnull IControl control, boolean defaultMatch) {
+    public @NonNull Pair<Boolean, Boolean> match(@NonNull IControl control, boolean defaultMatch) {
       return IControlSelectionFilter.MATCH;
     }
 
     @Override
-    public @Nonnull IControlSelectionFilter getInclusionFilter() {
+    public @NonNull IControlSelectionFilter getInclusionFilter() {
       return IControlSelectionFilter.ALL_MATCH;
     }
 
     @Override
-    public @Nonnull IControlSelectionFilter getExclusionFilter() {
+    public @NonNull IControlSelectionFilter getExclusionFilter() {
       return IControlSelectionFilter.NONE_MATCH;
     }
   };
 
-  @Nonnull
+  @NonNull
   IControlFilter NONE_MATCH = new IControlFilter() {
 
     @Override
-    public @Nonnull Pair<@Nonnull Boolean, @Nonnull Boolean> match(@Nonnull IControl control, boolean defaultMatch) {
+    public @NonNull Pair<Boolean, Boolean> match(@NonNull IControl control, boolean defaultMatch) {
       return IControlSelectionFilter.NON_MATCH;
     }
 
     @Override
-    public @Nonnull IControlSelectionFilter getInclusionFilter() {
+    public @NonNull IControlSelectionFilter getInclusionFilter() {
       return IControlSelectionFilter.NONE_MATCH;
     }
 
     @Override
-    public @Nonnull IControlSelectionFilter getExclusionFilter() {
+    public @NonNull IControlSelectionFilter getExclusionFilter() {
       return IControlSelectionFilter.NONE_MATCH;
     }
   };
@@ -82,14 +83,14 @@ public interface IControlFilter {
    *          an OSCAL profile import statement
    * @return a new control filter
    */
-  @Nonnull
-  static IControlFilter newInstance(@Nonnull ProfileImport profileImport) {
+  @NonNull
+  static IControlFilter newInstance(@NonNull ProfileImport profileImport) {
     return new Filter(profileImport);
   }
 
-  @Nonnull
-  static IControlFilter newInstance(@Nonnull IControlSelectionFilter includes,
-      @Nonnull IControlSelectionFilter excludes) {
+  @NonNull
+  static IControlFilter newInstance(@NonNull IControlSelectionFilter includes,
+      @NonNull IControlSelectionFilter excludes) {
     return new Filter(includes, excludes);
   }
 
@@ -103,8 +104,8 @@ public interface IControlFilter {
    * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
    *         otherwise), and if a match applies to child controls
    */
-  @Nonnull
-  default Pair<@Nonnull Boolean, @Nonnull Boolean> match(@Nonnull IControl control) {
+  @NonNull
+  default Pair<Boolean, Boolean> match(@NonNull IControl control) {
     return match(control, false);
   }
 
@@ -120,22 +121,22 @@ public interface IControlFilter {
    * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
    *         otherwise), and if a match applies to child controls
    */
-  @Nonnull
-  Pair<@Nonnull Boolean, @Nonnull Boolean> match(@Nonnull IControl control, boolean defaultMatch);
+  @NonNull
+  Pair<Boolean, Boolean> match(@NonNull IControl control, boolean defaultMatch);
 
-  @Nonnull
+  @NonNull
   IControlSelectionFilter getInclusionFilter();
 
-  @Nonnull
+  @NonNull
   IControlSelectionFilter getExclusionFilter();
 
   class Filter implements IControlFilter {
-    @Nonnull
+    @NonNull
     private final IControlSelectionFilter inclusionFilter;
-    @Nonnull
+    @NonNull
     private final IControlSelectionFilter exclusionFilter;
 
-    public Filter(@Nonnull ProfileImport profileImport) {
+    public Filter(@NonNull ProfileImport profileImport) {
       IncludeAll includeAll = profileImport.getIncludeAll();
 
       if (includeAll == null) {
@@ -158,31 +159,31 @@ public interface IControlFilter {
 
     }
 
-    public Filter(@Nonnull IControlSelectionFilter includes, @Nonnull IControlSelectionFilter excludes) {
+    public Filter(@NonNull IControlSelectionFilter includes, @NonNull IControlSelectionFilter excludes) {
       this.inclusionFilter = includes;
       this.exclusionFilter = excludes;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public IControlSelectionFilter getInclusionFilter() {
       return inclusionFilter;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public IControlSelectionFilter getExclusionFilter() {
       return exclusionFilter;
     }
 
     @Override
-    public Pair<@Nonnull Boolean, @Nonnull Boolean> match(@Nonnull IControl control, boolean defaultMatch) {
-      @Nonnull
-      Pair<@Nonnull Boolean, @Nonnull Boolean> result = getInclusionFilter().apply(control);
+    public Pair<Boolean, Boolean> match(@NonNull IControl control, boolean defaultMatch) {
+      @NonNull
+      Pair<Boolean, Boolean> result = getInclusionFilter().apply(control);
       boolean left = ObjectUtils.notNull(result.getLeft());
       if (left) {
         // this is a positive include match. Is it excluded?
-        Pair<@Nonnull Boolean, @Nonnull Boolean> excluded = getExclusionFilter().apply(control);
+        Pair<Boolean, Boolean> excluded = getExclusionFilter().apply(control);
         if (ObjectUtils.notNull(excluded.getLeft())) {
           // the effective result is a non-match
           result = IControlSelectionFilter.NON_MATCH;

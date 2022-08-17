@@ -29,20 +29,20 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 
 public interface ICustomReferencePolicyHandler<TYPE> {
-  @Nonnull
+  @NonNull
   ICustomReferencePolicyHandler<?> IGNORE_INDEX_MISS_POLICY = new AbstractIndexMissPolicyHandler<>() {
     @Override
     public boolean handleIndexMiss(
-        @Nonnull ICustomReferencePolicy<Object> policy,
-        @Nonnull Object type,
-        @Nonnull List<@Nonnull ItemType> itemTypes,
-        @Nonnull String identifier,
-        @Nonnull IReferenceVisitor visitor) {
+        @NonNull ICustomReferencePolicy<Object> policy,
+        @NonNull Object type,
+        @NonNull List<ItemType> itemTypes,
+        @NonNull String identifier,
+        @NonNull IReferenceVisitor visitor) {
       // do nothing
       return true;
     }
@@ -61,9 +61,9 @@ public interface ICustomReferencePolicyHandler<TYPE> {
    * @return {@code true} if the reference is considered handled, or {@code false} otherwise
    */
   default boolean handleIdentifierNonMatch(
-      @Nonnull ICustomReferencePolicy<TYPE> policy,
-      @Nonnull TYPE reference,
-      @Nonnull IReferenceVisitor visitor) {
+      @NonNull ICustomReferencePolicy<TYPE> policy,
+      @NonNull TYPE reference,
+      @NonNull IReferenceVisitor visitor) {
     return false;
   }
 
@@ -84,11 +84,11 @@ public interface ICustomReferencePolicyHandler<TYPE> {
    * @return {@code true} if the reference is considered handled, or {@code false} otherwise
    */
   default boolean handleIndexMiss(
-      @Nonnull ICustomReferencePolicy<TYPE> policy,
-      @Nonnull TYPE reference,
-      @Nonnull List<@Nonnull ItemType> itemTypes,
-      @Nonnull String identifier,
-      @Nonnull IReferenceVisitor visitor) {
+      @NonNull ICustomReferencePolicy<TYPE> policy,
+      @NonNull TYPE reference,
+      @NonNull List<ItemType> itemTypes,
+      @NonNull String identifier,
+      @NonNull IReferenceVisitor visitor) {
     return false;
   }
 
@@ -107,10 +107,10 @@ public interface ICustomReferencePolicyHandler<TYPE> {
    * @return {@code true} if the reference is considered handled, or {@code false} otherwise
    */
   default boolean handleIndexHit(
-      @Nonnull ICustomReferencePolicy<TYPE> policy,
-      @Nonnull TYPE reference,
-      @Nonnull EntityItem item,
-      @Nonnull IReferenceVisitor visitor) {
+      @NonNull ICustomReferencePolicy<TYPE> policy,
+      @NonNull TYPE reference,
+      @NonNull EntityItem item,
+      @NonNull IReferenceVisitor visitor) {
     return false;
   }
 }

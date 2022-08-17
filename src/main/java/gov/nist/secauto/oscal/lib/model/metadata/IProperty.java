@@ -26,21 +26,21 @@
 
 package gov.nist.secauto.oscal.lib.model.metadata;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.net.URI;
 
 public interface IProperty {
   @SuppressWarnings("null")
-  @Nonnull
+  @NonNull
   URI OSCAL_NAMESPACE = URI.create("http://csrc.nist.gov/ns/oscal");
   @SuppressWarnings("null")
-  @Nonnull
+  @NonNull
   URI RMF_NAMESPACE = URI.create("http://csrc.nist.gov/ns/rmf");
 
   String getName();
 
   URI getNs();
 
-  boolean isNamespaceEqual(@Nonnull URI namespace);
+  boolean isNamespaceEqual(@NonNull URI namespace);
 }

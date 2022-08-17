@@ -33,43 +33,45 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.CatalogGroup;
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
-import gov.nist.secauto.oscal.lib.model.Parameter;
-import gov.nist.secauto.oscal.lib.model.Property;
-import javax.annotation.Nonnull;
+import gov.nist.secauto.oscal.lib.model.control.AbstractParameter;
+import gov.nist.secauto.oscal.lib.model.control.AbstractPart;
+import gov.nist.secauto.oscal.lib.model.control.catalog.AbstractCatalogGroup;
+import gov.nist.secauto.oscal.lib.model.control.catalog.AbstractControl;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
+import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
 
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public final class TestUtil {
 
-  @Nonnull
+  @NonNull
   public static final IIdentifierMapper UUID_CONCAT_ID_MAPPER = new IIdentifierMapper() {
 
     @Override
-    public String mapRoleIdentifier(@Nonnull String identifier) {
+    public String mapRoleIdentifier(@NonNull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
-    public String mapControlIdentifier(@Nonnull String identifier) {
+    public String mapControlIdentifier(@NonNull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
-    public String mapGroupIdentifier(@Nonnull String identifier) {
+    public String mapGroupIdentifier(@NonNull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
-    public String mapParameterIdentifier(@Nonnull String identifier) {
+    public String mapParameterIdentifier(@NonNull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
 
     @Override
-    public @Nonnull String mapPartIdentifier(@Nonnull String identifier) {
+    public @NonNull String mapPartIdentifier(@NonNull String identifier) {
       return identifier + "-" + UUID.randomUUID().toString();
     }
   };
@@ -78,86 +80,86 @@ public final class TestUtil {
     // disable construction
   }
 
-  @Nonnull
+  @NonNull
   public static IDocumentNodeItem newImportedCatalog() {
 
     // setup the imported catalog
     Catalog importedCatalog = new Catalog();
     importedCatalog.setUuid(UUID.randomUUID());
 
-    importedCatalog.addParam(Parameter.builder("param1")
+    importedCatalog.addParam(AbstractParameter.builder("param1")
         .build());
 
-    importedCatalog.addGroup(CatalogGroup.builder("group1")
+    importedCatalog.addGroup(AbstractCatalogGroup.builder("group1")
         .title("Group 1")
-        .part(ControlPart.builder("statement") // NOPMD - no need to reduce literals
+        .part(AbstractPart.builder("statement") // NOPMD - no need to reduce literals
             .prose("group 1 part 1")
             .build())
-        .param(Parameter.builder("param2")
+        .param(AbstractParameter.builder("param2")
             .build())
-        .control(Control.builder("control1")
+        .control(AbstractControl.builder("control1")
             .title("Control 1")
-            .param(Parameter.builder("param3")
+            .param(AbstractParameter.builder("param3")
                 .build())
-            .part(ControlPart.builder("statement")
+            .part(AbstractPart.builder("statement")
                 .prose("A {{ insert: param, param1}} reference.")
                 .build())
-            .part(ControlPart.builder("statement")
+            .part(AbstractPart.builder("statement")
                 .prose("group 1 control 1 part 1")
-                .part(ControlPart.builder("statement")
+                .part(AbstractPart.builder("statement")
                     .prose("group 1 control 1 part 1.a")
                     .build())
-                .part(ControlPart.builder("statement")
+                .part(AbstractPart.builder("statement")
                     .prose("group 1 control 1 part 1.b")
                     .build())
                 .build())
-            .part(ControlPart.builder("statement")
+            .part(AbstractPart.builder("statement")
                 .prose("group 1 control 1 part 2")
                 .build())
             .build())
         // to be filtered
-        .control(Control.builder("control2")
+        .control(AbstractControl.builder("control2")
             .title("Control 2")
-            .part(ControlPart.builder("statement")
+            .part(AbstractPart.builder("statement")
                 .prose("A {{ insert: param, param2}} reference.")
                 .build())
             .build())
         .build());
-    importedCatalog.addGroup(CatalogGroup.builder("group2")
+    importedCatalog.addGroup(AbstractCatalogGroup.builder("group2")
         .title("Group 2")
-        .param(Parameter.builder("param4")
-            .prop(Property.builder("aggregates")
-                .namespace(Property.RMF_NAMESPACE)
+        .param(AbstractParameter.builder("param4")
+            .prop(AbstractProperty.builder("aggregates")
+                .namespace(IProperty.RMF_NAMESPACE)
                 .value("param2")
                 .build())
             .build())
-        .control(Control.builder("control3")
+        .control(AbstractControl.builder("control3")
             .title("Control 3")
             .build())
-        .control(Control.builder("control4")
+        .control(AbstractControl.builder("control4")
             .title("Control 4")
             .build())
-        .group(CatalogGroup.builder("group3")
+        .group(AbstractCatalogGroup.builder("group3")
             .title("Group 3")
             // to be filtered
-            .control(Control.builder("control5")
+            .control(AbstractControl.builder("control5")
                 .title("Control 5")
                 .build())
             .build())
-        .control(Control.builder("control6")
+        .control(AbstractControl.builder("control6")
             .title("Control 6")
-            .part(ControlPart.builder("statement")
+            .part(AbstractPart.builder("statement")
                 .prose("A {{ insert: param, param4}} reference.")
                 .build())
             .build())
         // to be filtered
-        .control(Control.builder("control7")
+        .control(AbstractControl.builder("control7")
             .title("Control 7")
-            .param(Parameter.builder("param5")
+            .param(AbstractParameter.builder("param5")
                 .build())
-            .control(Control.builder("control8")
+            .control(AbstractControl.builder("control8")
                 .title("Control 8")
-                .part(ControlPart.builder("statement")
+                .part(AbstractPart.builder("statement")
                     .prose("A {{ insert: param, param5}} reference.")
                     .build())
                 .build())
@@ -166,7 +168,8 @@ public final class TestUtil {
 
     return DefaultNodeItemFactory.instance().newDocumentNodeItem(
         IRootAssemblyDefinition.toRootAssemblyDefinition(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
+            ObjectUtils.notNull(
+                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
         importedCatalog,
         ObjectUtils.notNull(Paths.get("").toUri()));
   }

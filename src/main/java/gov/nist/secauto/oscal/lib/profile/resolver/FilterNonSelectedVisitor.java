@@ -46,24 +46,27 @@ import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.annotation.Nonnull;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class FilterNonSelectedVisitor {
   private static final Logger LOGGER = LogManager.getLogger(FilterNonSelectedVisitor.class);
 
-  @Nonnull
+  @NonNull
   private final Index index;
 
-  public FilterNonSelectedVisitor(@Nonnull Index index) {
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intending to store this parameter")
+  public FilterNonSelectedVisitor(@NonNull Index index) {
     this.index = index;
   }
 
-  @Nonnull
+  @NonNull
   protected Index getIndex() {
     return index;
   }
 
-  public void visitCatalog(@Nonnull IDocumentNodeItem catalogItem) {
+  public void visitCatalog(@NonNull IDocumentNodeItem catalogItem) {
     IRootAssemblyNodeItem root = catalogItem.getRootAssemblyNodeItem();
 
     Catalog catalog = (Catalog) catalogItem.getValue();
@@ -154,7 +157,7 @@ public class FilterNonSelectedVisitor {
         });
   }
 
-  @Nonnull
+  @NonNull
   protected IResult visitGroup(IRequiredValueModelNodeItem item, IGroupContainer container) {
 
     CatalogGroup group = (CatalogGroup) item.getValue();
@@ -206,7 +209,7 @@ public class FilterNonSelectedVisitor {
     return retval;
   }
 
-  @Nonnull
+  @NonNull
   protected IResult visitControl(IRequiredValueModelNodeItem item, IControlContainer container) {
     Control control = (Control) item.getValue();
 

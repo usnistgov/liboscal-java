@@ -29,7 +29,6 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
@@ -45,23 +44,23 @@ import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.ReferenceCountingVisitor;
 
-import javax.annotation.Nonnull;
-
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public class Import {
 
-  @Nonnull
+  @NonNull
   private final IDocumentNodeItem profileDocument;
-  @Nonnull
+  @NonNull
   private final IModelNodeItem profileImportItem;
 
   public Import(
-      @Nonnull IDocumentNodeItem profileDocument,
-      @Nonnull IModelNodeItem profileImportItem) throws BindingException {
+      @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IModelNodeItem profileImportItem) {
 
     this.profileDocument = profileDocument;
     this.profileImportItem = profileImportItem;
@@ -76,26 +75,27 @@ public class Import {
   }
 
   @SuppressWarnings("null")
-  @Nonnull
+  @NonNull
   protected ProfileImport getProfileImport() {
-    return (@Nonnull ProfileImport) profileImportItem.getValue();
+    return ObjectUtils.requireNonNull((ProfileImport) profileImportItem.getValue());
   }
 
   private Catalog toCatalog(IDocumentNodeItem catalogDocument) {
     return (Catalog) catalogDocument.getValue();
   }
 
-  @Nonnull
+  @NonNull
   protected IControlFilter newControlFilter() {
     return IControlFilter.newInstance(getProfileImport());
   }
 
-  @Nonnull
+  @NonNull
   protected IIdentifierMapper newIdentifierMapper() {
     return IIdentifierMapper.IDENTITY;
   }
 
-  public Index resolve(@Nonnull IDocumentNodeItem importedCatalogDocument, @Nonnull Catalog resolvedCatalog) {
+  public Index resolve(@NonNull IDocumentNodeItem importedCatalogDocument, @NonNull Catalog resolvedCatalog)
+      throws ProfileResolutionException {
     ProfileImport profileImport = getProfileImport();
     URI uri = ObjectUtils.requireNonNull(profileImport.getHref(), "profile import href is null");
 
@@ -103,15 +103,22 @@ public class Import {
     IControlFilter filter = newControlFilter();
     IIdentifierMapper mapper = newIdentifierMapper();
     ControlSelectionVisitor selectionVisitor = new ControlSelectionVisitor(filter, mapper);
-    selectionVisitor.visitCatalog(importedCatalogDocument);
-    Index index = selectionVisitor.getIndex();
 
-    // process references
-    new ReferenceCountingVisitor(index, uri).visitCatalog(importedCatalogDocument);
+    Index index;
+    try {
+      selectionVisitor.visitCatalog(importedCatalogDocument);
+      index = selectionVisitor.getIndex();
 
-    // filter based on selections
-    FilterNonSelectedVisitor pruneVisitor = new FilterNonSelectedVisitor(index);
-    pruneVisitor.visitCatalog(importedCatalogDocument);
+      // process references
+      new ReferenceCountingVisitor(index, uri).visitCatalog(importedCatalogDocument);
+
+      // filter based on selections
+      FilterNonSelectedVisitor pruneVisitor = new FilterNonSelectedVisitor(index);
+      pruneVisitor.visitCatalog(importedCatalogDocument);
+    } catch (ProfileResolutionEvaluationException ex) {
+      throw new ProfileResolutionException(
+          String.format("Unable to resolve profile import '%s'. %s", uri.toString(), ex.getMessage()), ex);
+    }
 
     Catalog importedCatalog = toCatalog(importedCatalogDocument);
     for (Parameter param : CollectionUtil.listOrEmpty(importedCatalog.getParams())) {
@@ -135,8 +142,8 @@ public class Import {
     return index;
   }
 
-  private void generateMetadata(@Nonnull IDocumentNodeItem importedCatalogDocument, @Nonnull Catalog resolvedCatalog,
-      @Nonnull Index index) {
+  private void generateMetadata(@NonNull IDocumentNodeItem importedCatalogDocument, @NonNull Catalog resolvedCatalog,
+      @NonNull Index index) {
     Metadata importedMetadata = toCatalog(importedCatalogDocument).getMetadata();
 
     if (importedMetadata != null) {
@@ -183,7 +190,7 @@ public class Import {
     }
   }
 
-  private void generateBackMatter(@Nonnull IDocumentNodeItem importedCatalogDocument, @Nonnull Catalog resolvedCatalog,
+  private void generateBackMatter(@NonNull IDocumentNodeItem importedCatalogDocument, @NonNull Catalog resolvedCatalog,
       Index index) {
     BackMatter importedBackMatter = toCatalog(importedCatalogDocument).getBackMatter();
 

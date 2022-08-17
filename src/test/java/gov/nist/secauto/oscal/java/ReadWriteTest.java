@@ -144,7 +144,6 @@ class ReadWriteTest {
     // outDir.mkdirs();
     // Path outPath = outDir.toPath();
     Path outPath = tempDir;
-     chainReadWrite(catalogSourceXml, Catalog.class, tempDir, 10);
-//    chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
+    chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
   }
 }

@@ -36,7 +36,7 @@ import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -47,13 +47,12 @@ import java.util.stream.Stream;
 public abstract class AbstractCatalogGroup
     implements ICatalogGroup, IGroupContainer {
 
-  @SuppressWarnings("null")
-  @Nonnull
+  @NonNull
   @Override
-  public Stream<@Nonnull String> getReferencedParameterIds() {
+  public Stream<String> getReferencedParameterIds() {
 
     // get parameters referenced by the group's parts
-    Stream<@Nonnull String> insertIds = CollectionUtil.listOrEmpty(getParts()).stream()
+    Stream<String> insertIds = CollectionUtil.listOrEmpty(getParts()).stream()
         // Get the full part hierarchy
         .flatMap(part -> Stream.concat(Stream.of(part), part.getPartsRecursively()))
         // Get the inserts for each part
@@ -63,7 +62,7 @@ public abstract class AbstractCatalogGroup
         .flatMap(ObjectUtils::filterNull);
 
     // get parameters referenced by the control's parameters
-    Stream<@Nonnull String> parameterIds = CollectionUtil.listOrEmpty(getParams()).stream()
+    Stream<String> parameterIds = CollectionUtil.listOrEmpty(getParams()).stream()
         .flatMap(ObjectUtils::filterNull)
         .flatMap(param -> param.getParameterReferences());
 
@@ -71,13 +70,13 @@ public abstract class AbstractCatalogGroup
         .distinct();
   }
 
-  @Nonnull
-  public static Builder builder(@Nonnull String id) {
+  @NonNull
+  public static Builder builder(@NonNull String id) {
     return new Builder(id);
   }
 
   public static class Builder {
-    @Nonnull
+    @NonNull
     private final String id;
 
     private String clazz;
@@ -89,68 +88,66 @@ public abstract class AbstractCatalogGroup
     private final List<CatalogGroup> groups = new LinkedList<>();
     private final List<Control> controls = new LinkedList<>();
 
-    @SuppressWarnings("null")
-    public Builder(@Nonnull String id) {
+    public Builder(@NonNull String id) {
       this.id = Objects.requireNonNull(id, "id");
     }
 
-    @SuppressWarnings("null")
-    @Nonnull
-    public Builder clazz(@Nonnull String value) {
+    @NonNull
+    public Builder clazz(@NonNull String value) {
       this.clazz = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @Nonnull
-    public Builder title(@Nonnull String markdown) {
+    @NonNull
+    public Builder title(@NonNull String markdown) {
       this.title = MarkupLine.fromMarkdown(Objects.requireNonNull(markdown, "markdown"));
       return this;
     }
 
     @SuppressWarnings("null")
-    @Nonnull
-    public Builder title(@Nonnull MarkupLine value) {
+    @NonNull
+    public Builder title(@NonNull MarkupLine value) {
       this.title = Objects.requireNonNull(value, "value");
       return this;
     }
 
-    @Nonnull
-    public Builder param(@Nonnull Parameter value) {
+    @NonNull
+    public Builder param(@NonNull Parameter value) {
       this.params.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @Nonnull
-    public Builder prop(@Nonnull Property value) {
+    @NonNull
+    public Builder prop(@NonNull Property value) {
       this.props.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @Nonnull
-    public Builder link(@Nonnull Link value) {
+    @NonNull
+    public Builder link(@NonNull Link value) {
       this.links.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @Nonnull
-    public Builder part(@Nonnull ControlPart value) {
+    @NonNull
+    public Builder part(@NonNull ControlPart value) {
       this.parts.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @Nonnull
-    public Builder group(@Nonnull CatalogGroup value) {
+    @NonNull
+    public Builder group(@NonNull CatalogGroup value) {
       this.groups.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @Nonnull
-    public Builder control(@Nonnull Control value) {
+    @NonNull
+    public Builder control(@NonNull Control value) {
       this.controls.add(Objects.requireNonNull(value, "value"));
       return this;
     }
 
-    @Nonnull
+    @NonNull
     public CatalogGroup build() {
       CatalogGroup retval = new CatalogGroup();
       retval.setId(id);

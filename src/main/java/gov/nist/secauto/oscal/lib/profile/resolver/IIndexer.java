@@ -28,25 +28,25 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IIndexer {
-  @Nonnull
+  @NonNull
   Index getIndex();
 
-  EntityItem addRole(@Nonnull IRequiredValueModelNodeItem role);
+  EntityItem addRole(@NonNull IRequiredValueModelNodeItem role);
 
-  EntityItem addLocation(@Nonnull IRequiredValueModelNodeItem location);
+  EntityItem addLocation(@NonNull IRequiredValueModelNodeItem location);
 
-  EntityItem addParty(@Nonnull IRequiredValueModelNodeItem party);
+  EntityItem addParty(@NonNull IRequiredValueModelNodeItem party);
 
-  EntityItem addGroup(@Nonnull IRequiredValueModelNodeItem group, boolean selected);
+  EntityItem addGroup(@NonNull IRequiredValueModelNodeItem group, boolean selected);
 
-  EntityItem addControl(@Nonnull IRequiredValueModelNodeItem control, boolean selected);
+  EntityItem addControl(@NonNull IRequiredValueModelNodeItem control, boolean selected);
 
-  EntityItem addParameter(@Nonnull IRequiredValueModelNodeItem parameter);
+  EntityItem addParameter(@NonNull IRequiredValueModelNodeItem parameter);
 
-  EntityItem addPart(@Nonnull IRequiredValueModelNodeItem part);
+  EntityItem addPart(@NonNull IRequiredValueModelNodeItem part);
 
-  EntityItem addResource(@Nonnull IRequiredValueModelNodeItem resource);
+  EntityItem addResource(@NonNull IRequiredValueModelNodeItem resource);
 }

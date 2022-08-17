@@ -36,35 +36,36 @@ import gov.nist.secauto.oscal.lib.model.Control;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.annotation.Nonnull;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class ControlSelectionVisitor
-    extends AbstractCatalogControlItemVisitor<@Nonnull Boolean, @Nonnull Boolean> {
+    extends AbstractCatalogControlItemVisitor<Boolean, Boolean> {
   private static final Logger LOGGER = LogManager.getLogger(ControlSelectionVisitor.class);
 
-  @Nonnull
+  @NonNull
   private static final MetapathExpression BACK_MATTER_RESOURCES_METAPATH
       = MetapathExpression.compile("back-matter/resource");
-  @Nonnull
+  @NonNull
   private static final MetapathExpression PART_METAPATH
       = MetapathExpression.compile("part|part//part");
 
-  @Nonnull
+  @NonNull
   private final IControlFilter filter;
-  @Nonnull
+  @NonNull
   private final IIndexer indexer;
 
-  public ControlSelectionVisitor(@Nonnull IControlFilter filter, @Nonnull IIdentifierMapper mapper) {
+  public ControlSelectionVisitor(@NonNull IControlFilter filter, @NonNull IIdentifierMapper mapper) {
     this.filter = filter;
     this.indexer = new DefaultIndexer(mapper);
   }
 
-  @Nonnull
+  @NonNull
   protected IIndexer getIndexer() {
     return indexer;
   }
 
-  @Nonnull
+  @NonNull
   public Index getIndex() {
     return indexer.getIndex();
   }
@@ -79,13 +80,13 @@ public class ControlSelectionVisitor
     return first || second;
   }
 
-  public void visitProfile(@Nonnull IDocumentNodeItem profileItem) {
+  public void visitProfile(@NonNull IDocumentNodeItem profileItem) {
     IRootAssemblyNodeItem root = profileItem.getRootAssemblyNodeItem();
     indexMetadata(root);
     indexBackMatter(root);
   }
 
-  public void visitCatalog(@Nonnull IDocumentNodeItem catalogItem) {
+  public void visitCatalog(@NonNull IDocumentNodeItem catalogItem) {
     visitCatalog(catalogItem, false);
 
     IRootAssemblyNodeItem root = catalogItem.getRootAssemblyNodeItem();
@@ -94,7 +95,7 @@ public class ControlSelectionVisitor
   }
 
   @Override
-  protected Boolean visitGroup(@Nonnull IRequiredValueModelNodeItem groupItem, Boolean defaultMatch) {
+  protected Boolean visitGroup(@NonNull IRequiredValueModelNodeItem groupItem, Boolean defaultMatch) {
     boolean result = super.visitGroup(groupItem, defaultMatch);
 
     CatalogGroup group = (CatalogGroup) groupItem.getValue();
@@ -107,11 +108,11 @@ public class ControlSelectionVisitor
   }
 
   @Override
-  protected Boolean visitControl(@Nonnull IRequiredValueModelNodeItem controlItem, Boolean defaultMatch) {
+  protected Boolean visitControl(@NonNull IRequiredValueModelNodeItem controlItem, Boolean defaultMatch) {
     Control control = (Control) controlItem.getValue();
 
     // determine if the control is a match
-    Pair<@Nonnull Boolean, @Nonnull Boolean> matchResult = filter.match(control, defaultMatch);
+    Pair<Boolean, Boolean> matchResult = filter.match(control, defaultMatch);
     @SuppressWarnings("null")
     boolean isMatch = matchResult.getLeft();
     @SuppressWarnings("null")
@@ -129,7 +130,7 @@ public class ControlSelectionVisitor
   }
 
   @Override
-  protected Boolean visitControlContainer(@Nonnull IRequiredValueModelNodeItem catalogOrGroupOrControl,
+  protected Boolean visitControlContainer(@NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,
       Boolean defaultMatch) {
     boolean retval = super.visitControlContainer(catalogOrGroupOrControl, defaultMatch);
 
@@ -140,14 +141,14 @@ public class ControlSelectionVisitor
 
     // handle parts
     PART_METAPATH.evaluate(catalogOrGroupOrControl).asStream()
-        .map(item -> (@Nonnull IRequiredValueModelNodeItem) item)
+        .map(item -> (IRequiredValueModelNodeItem) item)
         .forEachOrdered(partItem -> {
           indexer.addPart(partItem);
         });
     return retval;
   }
 
-  protected void indexMetadata(@Nonnull IRootAssemblyNodeItem rootItem) {
+  protected void indexMetadata(@NonNull IRootAssemblyNodeItem rootItem) {
     IIndexer indexer = getIndexer();
 
     rootItem.getModelItemsByName("metadata").forEach(metadataItem -> {
@@ -165,10 +166,10 @@ public class ControlSelectionVisitor
     });
   }
 
-  protected void indexBackMatter(@Nonnull IRootAssemblyNodeItem rootItem) {
+  protected void indexBackMatter(@NonNull IRootAssemblyNodeItem rootItem) {
     IIndexer indexer = getIndexer();
     BACK_MATTER_RESOURCES_METAPATH.evaluate(rootItem).asStream()
-        .map(item -> (@Nonnull IRequiredValueModelNodeItem) item)
+        .map(item -> (IRequiredValueModelNodeItem) item)
         .forEachOrdered(resourceItem -> {
           indexer.addResource(resourceItem);
         });

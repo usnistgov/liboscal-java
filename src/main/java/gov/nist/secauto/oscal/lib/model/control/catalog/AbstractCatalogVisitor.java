@@ -26,12 +26,13 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -43,48 +44,45 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
     return current;
   }
 
-  @SuppressWarnings("null")
   @Override
   public RESULT visitCatalog(Catalog catalog, CONTEXT context) {
-    RESULT result = catalog.getGroups().stream()
+    RESULT result = CollectionUtil.listOrEmpty(catalog.getGroups()).stream()
         .filter(Objects::nonNull)
         .map(childGroup -> visitGroup(childGroup, context))
         .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
-    result = catalog.getControls().stream()
+    result = CollectionUtil.listOrEmpty(catalog.getControls()).stream()
         .filter(Objects::nonNull)
         .map(childControl -> visitControl(childControl, context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
-    return catalog.getParams().stream()
+    return CollectionUtil.listOrEmpty(catalog.getParams()).stream()
         .filter(Objects::nonNull)
         .map(childParameter -> visitParameter(childParameter, context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
   }
 
-  @SuppressWarnings("null")
   @Override
-  public RESULT visitGroup(@Nonnull CatalogGroup group, CONTEXT context) {
-    RESULT result = group.getGroups().stream()
+  public RESULT visitGroup(@NonNull CatalogGroup group, CONTEXT context) {
+    RESULT result = CollectionUtil.listOrEmpty(group.getGroups()).stream()
         .filter(Objects::nonNull)
         .map(childGroup -> visitGroup(childGroup, context))
         .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
-    result = group.getControls().stream()
+    result = CollectionUtil.listOrEmpty(group.getControls()).stream()
         .filter(Objects::nonNull)
         .map(childControl -> visitControl(childControl, context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
-    return group.getParams().stream()
+    return CollectionUtil.listOrEmpty(group.getParams()).stream()
         .filter(Objects::nonNull)
         .map(childParameter -> visitParameter(childParameter, context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
   }
 
-  @SuppressWarnings("null")
   @Override
   public RESULT visitControl(Control control, CONTEXT context) {
-    RESULT result = control.getControls().stream()
+    RESULT result = CollectionUtil.listOrEmpty(control.getControls()).stream()
         .filter(Objects::nonNull)
         .map(childControl -> visitControl(childControl, context))
         .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
-    return control.getParams().stream()
+    return CollectionUtil.listOrEmpty(control.getParams()).stream()
         .filter(Objects::nonNull)
         .map(childParameter -> visitParameter(childParameter, context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));

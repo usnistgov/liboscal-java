@@ -26,7 +26,6 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import gov.nist.secauto.metaschema.model.common.IRootAssemblyDefinition;
 import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
@@ -36,44 +35,46 @@ import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.IncludeAll;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
-import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
+import gov.nist.secauto.oscal.lib.model.control.catalog.AbstractControl;
+import gov.nist.secauto.oscal.lib.model.control.profile.AbstractProfileSelectControlById;
 
-import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 class ImportTest {
 
-  @Nonnull
-  private IDocumentNodeItem newImportedCatalog() {
+  @NonNull
+  private static IDocumentNodeItem newImportedCatalog() {
 
     // setup the imported catalog
     Catalog importedCatalog = new Catalog();
 
-    importedCatalog.addControl(Control.builder("control1")
+    importedCatalog.addControl(AbstractControl.builder("control1")
         .title("Control 1")
         .build());
-    importedCatalog.addControl(Control.builder("control2")
+    importedCatalog.addControl(AbstractControl.builder("control2")
         .title("Control 2")
         .build());
 
     return DefaultNodeItemFactory.instance().newDocumentNodeItem(
         IRootAssemblyDefinition.toRootAssemblyDefinition(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
+            ObjectUtils.notNull(
+                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
         importedCatalog,
         ObjectUtils.notNull(Paths.get("").toUri()));
   }
 
   @SuppressWarnings("null")
   @Test
-  void test() throws BindingException {
+  void test() throws ProfileResolutionException {
     URI cwd = Paths.get("").toUri();
 
     // setup the imported catalog
@@ -85,7 +86,7 @@ class ImportTest {
     ProfileImport profileImport = new ProfileImport();
     profileImport.setIncludeAll(new IncludeAll());
     profileImport.setExcludeControls(Collections.singletonList(
-        ProfileSelectControlById.builder()
+        AbstractProfileSelectControlById.builder()
             .withId("control1")
             .build()));
     profileImport.setHref(cwd);
@@ -93,7 +94,8 @@ class ImportTest {
 
     IDocumentNodeItem profileDocumentItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
         IRootAssemblyDefinition.toRootAssemblyDefinition(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Profile.class)),
+            ObjectUtils.notNull(
+                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Profile.class))),
         profile,
         cwd);
 
@@ -104,7 +106,7 @@ class ImportTest {
         profileDocumentItem.getModelItemsByName("profile").stream()
             .flatMap(root -> root.getModelItemsByName("import").stream()))) {
 
-      Import catalogImport = new Import(profileDocumentItem, importItem);
+      Import catalogImport = new Import(profileDocumentItem, importItem); // NOPMD - intentional
       catalogImport.resolve(importedCatalogDocumentItem, resolvedCatalog);
     }
   }

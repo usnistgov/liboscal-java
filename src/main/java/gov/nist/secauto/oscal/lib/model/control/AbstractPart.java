@@ -34,7 +34,7 @@ import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.net.URI;
 import java.util.LinkedList;
@@ -45,13 +45,12 @@ import java.util.stream.Stream;
 
 public abstract class AbstractPart implements IPart {
 
-  @SuppressWarnings({ "null" })
   @Override
-  @Nonnull
-  public Stream<InsertAnchorNode> getInserts(@Nonnull Predicate<InsertAnchorNode> filter) {
+  @NonNull
+  public Stream<InsertAnchorNode> getInserts(@NonNull Predicate<InsertAnchorNode> filter) {
     MarkupMultiline prose = getProse();
 
-    @Nonnull
+    @NonNull
     Stream<InsertAnchorNode> retval;
     if (prose == null) {
       retval = Stream.empty();
@@ -62,99 +61,93 @@ public abstract class AbstractPart implements IPart {
     return retval;
   }
 
-  public Stream<@Nonnull IPart> getPartsRecursively() {
+  public Stream<IPart> getPartsRecursively() {
     return Stream.concat(
         Stream.of(this),
         CollectionUtil.listOrEmpty(getParts()).stream()
             .flatMap(part -> part.getPartsRecursively()));
   }
 
-  @Nonnull
-  public static Builder builder(@Nonnull String name) {
+  @NonNull
+  public static Builder builder(@NonNull String name) {
     return new Builder(name);
   }
 
   public static class Builder {
-    private String id;
-    @Nonnull
+    private String id; // NOPMD - intentional
+    @NonNull
     private final String name;
-    private URI namespace;
-    private String clazz;
-    private MarkupMultiline prose;
-    private MarkupLine title;
+    private URI namespace; // NOPMD - intentional
+    private String clazz; // NOPMD - intentional
+    private MarkupMultiline prose; // NOPMD - intentional
+    private MarkupLine title; // NOPMD - intentional
     private final List<Property> props = new LinkedList<>();
     private final List<Link> links = new LinkedList<>();
     private final List<ControlPart> parts = new LinkedList<>();
 
-    @SuppressWarnings("null")
-    public Builder(@Nonnull String name) {
-      this.name = Objects.requireNonNull(name, "name");
+    public Builder(@NonNull String name) {
+      this.name = Objects.requireNonNull(name);
     }
 
-    @SuppressWarnings("null")
-    @Nonnull
-    public Builder id(@Nonnull String value) {
-      this.id = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder id(@NonNull String value) { // NOPMD - intentional
+      this.id = Objects.requireNonNull(value);
       return this;
     }
 
-    @SuppressWarnings("null")
-    @Nonnull
-    public Builder namespace(@Nonnull URI value) {
-      this.namespace = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder namespace(@NonNull URI value) {
+      this.namespace = Objects.requireNonNull(value);
       return this;
     }
 
-    @SuppressWarnings("null")
-    @Nonnull
-    public Builder clazz(@Nonnull String value) {
-      this.clazz = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder clazz(@NonNull String value) {
+      this.clazz = Objects.requireNonNull(value);
       return this;
     }
 
-    @Nonnull
-    public Builder title(@Nonnull String markdown) {
-      return title(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
+    @NonNull
+    public Builder title(@NonNull String markdown) {
+      return title(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown)));
     }
 
-    @SuppressWarnings("null")
-    @Nonnull
-    public Builder title(@Nonnull MarkupLine value) {
-      this.title = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder title(@NonNull MarkupLine value) {
+      this.title = Objects.requireNonNull(value);
       return this;
     }
 
-    @Nonnull
-    public Builder prose(@Nonnull String markdown) {
-      return prose(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
+    @NonNull
+    public Builder prose(@NonNull String markdown) {
+      return prose(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown)));
     }
 
-    @SuppressWarnings("null")
-    @Nonnull
-    public Builder prose(@Nonnull MarkupMultiline value) {
-      this.prose = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder prose(@NonNull MarkupMultiline value) {
+      this.prose = Objects.requireNonNull(value);
       return this;
     }
 
-    @Nonnull
-    public Builder prop(@Nonnull Property value) {
-      this.props.add(Objects.requireNonNull(value, "value"));
+    @NonNull
+    public Builder prop(@NonNull Property value) {
+      this.props.add(Objects.requireNonNull(value));
       return this;
     }
 
-    @Nonnull
-    public Builder link(@Nonnull Link value) {
-      this.links.add(Objects.requireNonNull(value, "value"));
+    @NonNull
+    public Builder link(@NonNull Link value) {
+      this.links.add(Objects.requireNonNull(value));
       return this;
     }
 
-    @Nonnull
-    public Builder part(@Nonnull ControlPart value) {
-      this.parts.add(Objects.requireNonNull(value, "value"));
+    @NonNull
+    public Builder part(@NonNull ControlPart value) {
+      this.parts.add(Objects.requireNonNull(value));
       return this;
     }
 
-    @Nonnull
+    @NonNull
     public ControlPart build() {
       ControlPart retval = new ControlPart();
 

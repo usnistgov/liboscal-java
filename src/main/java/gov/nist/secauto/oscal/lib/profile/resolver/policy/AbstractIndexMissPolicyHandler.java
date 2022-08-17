@@ -28,16 +28,16 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 
 public abstract class AbstractIndexMissPolicyHandler<TYPE> implements ICustomReferencePolicyHandler<TYPE> {
   @Override
   public abstract boolean handleIndexMiss(
-      @Nonnull ICustomReferencePolicy<TYPE> policy,
-      @Nonnull TYPE type,
-      @Nonnull List<@Nonnull ItemType> itemTypes,
-      @Nonnull String identifier,
-      @Nonnull IReferenceVisitor visitor);
+      @NonNull ICustomReferencePolicy<TYPE> policy,
+      @NonNull TYPE type,
+      @NonNull List<ItemType> itemTypes,
+      @NonNull String identifier,
+      @NonNull IReferenceVisitor visitor);
 }

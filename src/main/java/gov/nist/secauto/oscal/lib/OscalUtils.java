@@ -33,8 +33,7 @@ import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;
 
-import javax.annotation.Nonnull;
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -47,6 +46,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public final class OscalUtils {
   public static final String OSCAL_VERSION = "1.0.4";
   private static final Pattern INTERNAL_REFERENCE_FRAGMENT_PATTERN = Pattern.compile("^#(.+)$");
@@ -55,9 +56,9 @@ public final class OscalUtils {
     // disable construction
   }
 
-  public static boolean isInternalReference(@Nonnull URI uri) {
+  public static boolean isInternalReference(@NonNull URI uri) {
     if (uri.isAbsolute()) {
-      return false;
+      return false; // NOPMD - readability
     }
 
     String schemeSpecificPart = uri.getSchemeSpecificPart();
@@ -65,14 +66,31 @@ public final class OscalUtils {
         && uri.getFragment() != null;
   }
 
-  @SuppressWarnings("null")
-  @Nonnull
-  public static String internalReferenceFragmentToId(@Nonnull URI fragment) throws IllegalArgumentException {
+  /**
+   * Get the id based on a URI's fragment.
+   * 
+   * @param fragment
+   *          the URI to extract the identifier from
+   * @return the identifier
+   * @throws IllegalArgumentException
+   *           if the fragment does not contain an identifier
+   */
+  @NonNull
+  public static String internalReferenceFragmentToId(@NonNull URI fragment) {
     return internalReferenceFragmentToId(fragment.toString());
   }
 
-  @Nonnull
-  public static String internalReferenceFragmentToId(@Nonnull String fragment) throws IllegalArgumentException {
+  /**
+   * Get the id based on a URI's fragment.
+   * 
+   * @param fragment
+   *          the URI to extract the identifier from
+   * @return the identifier
+   * @throws IllegalArgumentException
+   *           if the fragment does not contain an identifier
+   */
+  @NonNull
+  public static String internalReferenceFragmentToId(@NonNull String fragment) {
     Matcher matcher = INTERNAL_REFERENCE_FRAGMENT_PATTERN.matcher(fragment);
     String retval;
     if (matcher.matches()) {
@@ -84,12 +102,12 @@ public final class OscalUtils {
     return retval;
   }
 
-  public static boolean hasBase64Data(@Nonnull Resource resource) {
+  public static boolean hasBase64Data(@NonNull Resource resource) {
     return resource.getBase64() != null;
   }
 
   @Nullable
-  public static ByteBuffer getBase64Data(@Nonnull Resource resource) {
+  public static ByteBuffer getBase64Data(@NonNull Resource resource) {
     Base64 base64 = resource.getBase64();
 
     ByteBuffer retval = null;
@@ -100,7 +118,7 @@ public final class OscalUtils {
   }
 
   @Nullable
-  public static URI getResourceURI(@Nonnull Resource resource, @Nullable String preferredMediaType) {
+  public static URI getResourceURI(@NonNull Resource resource, @Nullable String preferredMediaType) {
     URI retval;
     if (hasBase64Data(resource)) {
       UUID uuid = resource.getUuid();
@@ -116,7 +134,7 @@ public final class OscalUtils {
   }
 
   @Nullable
-  public static Rlink findMatchingRLink(@Nonnull Resource resource, @Nullable String preferredMediaType) {
+  public static Rlink findMatchingRLink(@NonNull Resource resource, @Nullable String preferredMediaType) {
     // find a suitable rlink reference
     List<Rlink> rlinks = resource.getRlinks();
 
@@ -136,7 +154,7 @@ public final class OscalUtils {
   }
 
   @Nullable
-  public static InputSource newInputSource(@Nonnull Resource resource, @Nonnull EntityResolver resolver,
+  public static InputSource newInputSource(@NonNull Resource resource, @NonNull EntityResolver resolver,
       @Nullable String preferredMediaType) throws IOException {
     URI uri = getResourceURI(resource, null);
     if (uri == null) {

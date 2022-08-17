@@ -30,19 +30,19 @@ import gov.nist.secauto.oscal.lib.model.Location;
 import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Role;
 
-import javax.annotation.Nonnull;
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface IMetadata {
   @Nullable
-  Party getPartyByUuid(@Nonnull UUID uuid);
+  Party getPartyByUuid(@NonNull UUID uuid);
 
-  List<@Nonnull Role> getRoles();
+  List<Role> getRoles();
 
-  List<@Nonnull Location> getLocations();
+  List<Location> getLocations();
 
-  List<@Nonnull Party> getParties();
+  List<Party> getParties();
 }

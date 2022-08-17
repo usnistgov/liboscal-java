@@ -34,22 +34,24 @@ import gov.nist.secauto.oscal.lib.model.Parameter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class DefaultResult implements IResult {
   private static final Logger LOGGER = LogManager.getLogger(DefaultResult.class);
 
-  @Nonnull
-  private final Set<@Nonnull Parameter> promotedParameters;
-  @Nonnull
-  private final Set<@Nonnull Control> promotedControls;
-  @Nonnull
-  private final Set<@Nonnull String> requiredParameterIds;
+  @NonNull
+  private final Set<Parameter> promotedParameters;
+  @NonNull
+  private final Set<Control> promotedControls;
+  @NonNull
+  private final Set<String> requiredParameterIds;
 
   public DefaultResult() {
     this.promotedParameters = new LinkedHashSet<>();
@@ -58,35 +60,37 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  @Nonnull
-  public Collection<@Nonnull Parameter> getPromotedParameters() {
+  @NonNull
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intending to expose this field")
+  public Collection<Parameter> getPromotedParameters() {
     return promotedParameters;
   }
 
   @Override
-  @Nonnull
-  public Collection<@Nonnull Control> getPromotedControls() {
+  @NonNull
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intending to expose this field")
+  public Collection<Control> getPromotedControls() {
     return promotedControls;
   }
 
   @Override
-  @Nonnull
-  public Set<@Nonnull String> getRequiredParameterIds() {
+  @NonNull
+  public Set<String> getRequiredParameterIds() {
     return CollectionUtil.unmodifiableSet(requiredParameterIds);
   }
 
   @Override
-  public void requireParameters(@Nonnull Set<@Nonnull String> requiredParameterIds) {
+  public void requireParameters(@NonNull Set<String> requiredParameterIds) {
     this.requiredParameterIds.addAll(requiredParameterIds);
   }
 
   @Override
-  public boolean isParameterRequired(@Nonnull String id) {
+  public boolean isParameterRequired(@NonNull String id) {
     return getRequiredParameterIds().contains(id);
   }
 
   @Override
-  public void promoteParameter(@Nonnull Parameter param) {
+  public void promoteParameter(@NonNull Parameter param) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.atDebug().log("promoting parameter '{}'", param.getId());
     }
@@ -94,7 +98,7 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  public void promoteControl(@Nonnull Control control) {
+  public void promoteControl(@NonNull Control control) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.atDebug().log("promoting control '{}'", control.getId());
     }
@@ -102,7 +106,7 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  public void applyTo(@Nonnull Catalog parent) {
+  public void applyTo(@NonNull Catalog parent) {
     getPromotedParameters().forEach(param -> parent.addParam(param));
     getPromotedControls().forEach(control -> {
       parent.addControl(control);
@@ -111,7 +115,7 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  public void applyTo(@Nonnull CatalogGroup parent) {
+  public void applyTo(@NonNull CatalogGroup parent) {
     getPromotedParameters().forEach(param -> parent.addParam(param));
     getPromotedControls().forEach(control -> {
       parent.addControl(control);
@@ -120,7 +124,7 @@ public class DefaultResult implements IResult {
   }
 
   @Override
-  public void applyTo(@Nonnull Control parent) {
+  public void applyTo(@NonNull Control parent) {
     getPromotedParameters().forEach(param -> parent.addParam(param));
     getPromotedControls().forEach(control -> {
       parent.addControl(control);

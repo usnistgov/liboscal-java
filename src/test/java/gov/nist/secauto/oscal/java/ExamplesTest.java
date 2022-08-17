@@ -39,6 +39,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,7 @@ class ExamplesTest {
   }
 
   @Test
-  void testConstraintValidation() throws MalformedURLException, IOException, URISyntaxException {
+  void testConstraintValidation() throws MalformedURLException, IOException, URISyntaxException, ProfileResolutionException {
     // Initialize the Metaschema framework
     OscalBindingContext bindingContext = OscalBindingContext.instance(); // manages the Metaschema model
     IBoundLoader loader = bindingContext.newBoundLoader(); // supports loading OSCAL documents
@@ -94,12 +95,10 @@ class ExamplesTest {
     assertTrue(handler.isPassing());
 
     IDocumentNodeItem resolvedCatalog = new ProfileResolver().resolve(nodeItem);
-    
 
     // Create a serializer which can be used to write multiple catalogs
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
     // serialize the catalog as yaml
-    serializer.serialize((Catalog)resolvedCatalog.getValue(), System.out);
+    serializer.serialize((Catalog) resolvedCatalog.getValue(), System.out);
   }
-
 }

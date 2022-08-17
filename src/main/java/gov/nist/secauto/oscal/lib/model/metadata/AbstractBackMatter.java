@@ -28,16 +28,16 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 
-import javax.annotation.Nonnull;
-
 import java.util.List;
 import java.util.UUID;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractBackMatter implements IBackMatter {
 
   @Override
-  public Resource getResourceByUuid(@Nonnull UUID uuid) {
-    List<@Nonnull Resource> resources = getResources();
+  public Resource getResourceByUuid(@NonNull UUID uuid) {
+    List<Resource> resources = getResources();
 
     Resource retval = null;
     if (resources != null) {
