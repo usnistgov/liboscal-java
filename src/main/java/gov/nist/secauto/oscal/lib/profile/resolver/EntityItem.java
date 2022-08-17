@@ -26,6 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
@@ -35,11 +36,12 @@ import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControlContainer;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.IReferenceVisitor;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.net.URI;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public final class EntityItem {
   private static final MetapathExpression CONTAINER_METAPATH
@@ -56,15 +58,15 @@ public final class EntityItem {
     RESOURCE;
   }
 
-  @NotNull
+  @NonNull
   private final String originalIdentifier;
-  @NotNull
+  @NonNull
   private final String identifier;
-  @NotNull
+  @NonNull
   private final IRequiredValueModelNodeItem instance;
-  @NotNull
+  @NonNull
   private final ItemType itemType;
-  @NotNull
+  @NonNull
   private final URI source;
   private int referenceCount; // 0 by default
   private boolean resolved; // false by default
@@ -73,8 +75,7 @@ public final class EntityItem {
     return new Builder();
   }
 
-  @SuppressWarnings("null")
-  private EntityItem(@NotNull Builder builder) {
+  private EntityItem(@NonNull Builder builder) {
     this.originalIdentifier = builder.originalIdentifier == null ? builder.identifier : builder.originalIdentifier;
     this.identifier = Objects.requireNonNull(builder.identifier, "identifier");
     this.instance = Objects.requireNonNull(builder.instance, "instance");
@@ -82,33 +83,33 @@ public final class EntityItem {
     this.source = Objects.requireNonNull(builder.source, "source");
   }
 
-  @NotNull
+  @NonNull
   public String getOriginalIdentifier() {
     return originalIdentifier;
   }
 
-  @NotNull
+  @NonNull
   public String getIdentifier() {
     return identifier;
   }
 
-  @NotNull
+  @NonNull
   public IRequiredValueModelNodeItem getInstance() {
     return instance;
   }
 
-  @NotNull
+  @NonNull
   @SuppressWarnings("unchecked")
   public <T> T getInstanceValue() {
     return (T) instance.getValue();
   }
 
-  @NotNull
+  @NonNull
   public ItemType getItemType() {
     return itemType;
   }
 
-  @NotNull
+  @NonNull
   public URI getSource() {
     return source;
   }
@@ -133,7 +134,7 @@ public final class EntityItem {
     referenceCount += 1;
   }
 
-  public boolean isSelected(@NotNull Index index) {
+  public boolean isSelected(@NonNull Index index) {
     boolean retval;
     switch (getItemType()) {
     case CONTROL:
@@ -159,12 +160,12 @@ public final class EntityItem {
       retval = true;
       break;
     default:
-      throw new IllegalStateException(getItemType().name());
+      throw new UnsupportedOperationException(getItemType().name());
     }
     return retval;
   }
 
-  public void accept(@NotNull IReferenceVisitor visitor) {
+  public void accept(@NonNull IReferenceVisitor visitor) {
     IRequiredValueModelNodeItem instance = getInstance();
     switch (getItemType()) {
     case CONTROL:
@@ -192,44 +193,61 @@ public final class EntityItem {
       visitor.visitRole(instance);
       break;
     default:
-      throw new IllegalStateException(getItemType().name());
+      throw new UnsupportedOperationException(getItemType().name());
     }
   }
 
+  @NonNull
+  public static String normalizeIdentifier(@NonNull ItemType type, @NonNull String identifier) {
+    String retval = identifier;
+    switch (type) {
+    case LOCATION:
+    case PARTY:
+    case RESOURCE:
+      if (UuidAdapter.UUID_PATTERN.matches(identifier)) {
+        // normalize the UUID
+        retval = identifier.toLowerCase(Locale.ROOT);
+      }
+      break;
+    default:
+      // do nothing
+      break;
+    }
+
+    return retval;
+  }
+
   public static class Builder {
-    private String originalIdentifier;
+    private String originalIdentifier; // NOPMD - builder method
     private String identifier;
-    private IRequiredValueModelNodeItem instance;
+    private IRequiredValueModelNodeItem instance; // NOPMD - builder method
     private ItemType itemType;
-    private URI source;
+    private URI source; // NOPMD - builder method
 
-    public Builder instance(@NotNull IRequiredValueModelNodeItem item, @NotNull UUID identifier) {
-      return instance(item, ObjectUtils.notNull(identifier.toString()));
+    public Builder instance(@NonNull IRequiredValueModelNodeItem item, @NonNull ItemType itemType,
+        @NonNull UUID identifier) {
+      return instance(item, itemType, ObjectUtils.notNull(identifier.toString()));
     }
 
-    @SuppressWarnings("null")
-    public Builder instance(@NotNull IRequiredValueModelNodeItem item, @NotNull String identifier) {
-      this.identifier = Objects.requireNonNull(identifier, "identifier");
+    public Builder instance(@NonNull IRequiredValueModelNodeItem item, @NonNull ItemType itemType,
+        @NonNull String identifier) {
+      this.identifier = normalizeIdentifier(itemType, ObjectUtils.requireNonNull(identifier, "identifier"));
       this.instance = Objects.requireNonNull(item, "item");
-      return this;
-    }
-
-    public Builder originalIdentifier(@NotNull String identifier) {
-      this.originalIdentifier = identifier;
-      return this;
-    }
-
-    public Builder itemType(@NotNull ItemType itemType) {
       this.itemType = itemType;
       return this;
     }
 
-    public Builder source(@NotNull URI source) {
+    public Builder originalIdentifier(@NonNull String identifier) {
+      this.originalIdentifier = normalizeIdentifier(itemType, identifier);
+      return this;
+    }
+
+    public Builder source(@NonNull URI source) {
       this.source = source;
       return this;
     }
 
-    @NotNull
+    @NonNull
     public EntityItem build() {
       return new EntityItem(this);
     }

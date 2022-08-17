@@ -28,16 +28,16 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.oscal.lib.model.Party;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.UUID;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractMetadata implements IMetadata {
 
   @Override
-  public Party getPartyByUuid(@NotNull UUID uuid) {
-    List<@NotNull Party> parties = getParties();
+  public Party getPartyByUuid(@NonNull UUID uuid) {
+    List<Party> parties = getParties();
 
     Party retval = null;
     if (parties != null) {

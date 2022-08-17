@@ -31,6 +31,14 @@
 		</define-assembly-binding>
 	</metaschema-binding>
 	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_mapping-common_metaschema.xml">
+		<define-assembly-binding name="map">
+			<java>
+				<use-class-name>MappingEntry</use-class-name>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
+	<metaschema-binding
 		href="../../../oscal/src/metaschema/oscal_control-common_metaschema.xml">
 		<define-assembly-binding name="parameter">
 			<java>

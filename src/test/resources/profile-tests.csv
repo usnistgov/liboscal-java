@@ -11,4 +11,4 @@ include-loose-param-test
 include-match-test
 merge-implicit-keep
 merge-keep-resources
-#modify-adds
+modify-adds

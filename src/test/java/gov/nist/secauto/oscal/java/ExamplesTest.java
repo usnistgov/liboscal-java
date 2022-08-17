@@ -26,15 +26,28 @@
 
 package gov.nist.secauto.oscal.java;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
+import gov.nist.secauto.metaschema.model.common.constraint.DefaultConstraintValidator;
+import gov.nist.secauto.metaschema.model.common.constraint.FindingCollectingConstraintValidationHandler;
+import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -59,5 +72,33 @@ class ExamplesTest {
 
     // serialize the catalog as yaml
     serializer.serialize(catalog, outDir.resolve("test-catalog.yaml"));
+  }
+
+  @Test
+  void testConstraintValidation() throws MalformedURLException, IOException, URISyntaxException, ProfileResolutionException {
+    // Initialize the Metaschema framework
+    OscalBindingContext bindingContext = OscalBindingContext.instance(); // manages the Metaschema model
+    IBoundLoader loader = bindingContext.newBoundLoader(); // supports loading OSCAL documents
+    loader.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
+
+    IDocumentNodeItem nodeItem = loader.loadAsNodeItem(new URL(
+        "https://raw.githubusercontent.com/Rene2mt/fedramp-automation/a692b9385d8fbcacbb1d3e3d0b0d7e3c45a205d0/src/content/baselines/rev5/xml/FedRAMP_rev5_HIGH-baseline_profile.xml"));
+
+    DynamicContext dynamicContext = new StaticContext().newDynamicContext();
+    dynamicContext.setDocumentLoader(loader);
+    FindingCollectingConstraintValidationHandler handler = new FindingCollectingConstraintValidationHandler();
+    DefaultConstraintValidator validator = new DefaultConstraintValidator(dynamicContext, handler);
+
+    validator.validate(nodeItem);
+    validator.finalizeValidation();
+
+    assertTrue(handler.isPassing());
+
+    IDocumentNodeItem resolvedCatalog = new ProfileResolver().resolve(nodeItem);
+
+    // Create a serializer which can be used to write multiple catalogs
+    ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
+    // serialize the catalog as yaml
+    serializer.serialize((Catalog) resolvedCatalog.getValue(), System.out);
   }
 }

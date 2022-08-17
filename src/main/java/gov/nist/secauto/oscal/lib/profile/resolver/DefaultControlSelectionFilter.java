@@ -34,7 +34,6 @@ import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlByI
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,11 +42,13 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public class DefaultControlSelectionFilter implements IControlSelectionFilter {
   private static final Logger LOGGER = LogManager.getLogger(DefaultControlSelectionFilter.class);
 
-  @NotNull
-  private final List<@NotNull Selection> selections;
+  @NonNull
+  private final List<Selection> selections;
 
   /**
    * Construct a new selection filter based on the provided list of select criteria.
@@ -56,7 +57,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
    *          a list of select criteria
    */
   @SuppressWarnings("null")
-  public DefaultControlSelectionFilter(@NotNull List<? extends IProfileSelectControlById> selections) {
+  public DefaultControlSelectionFilter(@NonNull List<? extends IProfileSelectControlById> selections) {
     this.selections = selections.stream()
         // ignore null entries
         .filter(Objects::nonNull)
@@ -65,12 +66,12 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
         .collect(Collectors.toUnmodifiableList());
   }
 
-  @NotNull
+  @NonNull
   @Override
-  public Pair<@NotNull Boolean, @NotNull Boolean> apply(@NotNull IControl control) {
+  public Pair<Boolean, Boolean> apply(IControl control) {
     String id = control.getId();
     if (id == null) {
-      throw new IllegalArgumentException("control is missing an identifier");
+      throw new ProfileResolutionEvaluationException("control is missing an identifier");
     }
     return match(id);
   }
@@ -85,15 +86,15 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
    *         {@code false} otherwise
    */
   @SuppressWarnings("null")
-  @NotNull
-  protected Pair<@NotNull Boolean, @NotNull Boolean> match(String id) {
+  @NonNull
+  protected Pair<Boolean, Boolean> match(String id) {
     return selections.parallelStream()
         .map(selection -> selection.match(id))
         // filter out non-matches
         .filter(pair -> pair.getLeft())
         // aggregate matches
         .reduce((first, second) -> {
-          Pair<@NotNull Boolean, @NotNull Boolean> result;
+          Pair<Boolean, Boolean> result;
           if (first.getLeft() || second.getLeft()) {
             // at least one matches
             boolean withChild = first.getLeft() && first.getRight() || second.getLeft() && second.getRight();
@@ -106,11 +107,8 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
         .orElse(NON_MATCH);
   }
 
-  private static Pattern toPattern(@NotNull ProfileSelectControlById.Matching matching) {
-    String pattern = matching.getPattern();
-    if (pattern == null) {
-      throw new IllegalArgumentException("pattern is null");
-    }
+  private static Pattern toPattern(@NonNull ProfileSelectControlById.Matching matching) {
+    String pattern = ObjectUtils.requireNonNull(matching.getPattern());
     String regex = pattern.chars().boxed().map(ch -> (char) ch.intValue()).map(ch -> {
 
       String value;
@@ -146,7 +144,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
     return Pattern.compile(regex);
   }
 
-  private class Selection {
+  private static class Selection {
 
     private final boolean withChildControls;
     private final Set<String> identifiers;
@@ -181,8 +179,8 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
       return withChildControls;
     }
 
-    @NotNull
-    protected Pair<@NotNull Boolean, @NotNull Boolean> match(String id) {
+    @NonNull
+    protected Pair<Boolean, Boolean> match(String id) {
       // first check for direct match
       boolean result = identifiers.stream().anyMatch(controlIdentifier -> controlIdentifier.equals(id));
       if (!result) {

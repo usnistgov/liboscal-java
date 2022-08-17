@@ -32,19 +32,19 @@ import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Iterator;
 import java.util.List;
 
 public class FlatStructureCatalogVisitor {
 
-  public void visitCatalog(@NotNull Catalog catalog) {
+  public void visitCatalog(@NonNull Catalog catalog) {
     DefaultResult result = new DefaultResult();
     // process children
     for (Iterator<CatalogGroup> iter = CollectionUtil.listOrEmpty(catalog.getGroups()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
-      @NotNull
+      @NonNull
       CatalogGroup child = iter.next();
       DefaultResult childResult = visitGroup(child);
 
@@ -55,7 +55,7 @@ public class FlatStructureCatalogVisitor {
 
     for (Iterator<Control> iter = CollectionUtil.listOrEmpty(catalog.getControls()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
-      @NotNull
+      @NonNull
       Control child = iter.next();
       DefaultResult childResult = visitControl(child);
 
@@ -65,15 +65,15 @@ public class FlatStructureCatalogVisitor {
     result.applyTo(catalog);
   }
 
-  @NotNull
-  public DefaultResult visitGroup(@NotNull CatalogGroup group) {
+  @NonNull
+  public DefaultResult visitGroup(@NonNull CatalogGroup group) {
     // process children
     DefaultResult retval = new DefaultResult();
 
     // groups
     for (Iterator<CatalogGroup> iter = CollectionUtil.listOrEmpty(group.getGroups()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
-      @NotNull
+      @NonNull
       CatalogGroup child = iter.next();
       DefaultResult result = visitGroup(child);
       retval.append(result);
@@ -81,14 +81,14 @@ public class FlatStructureCatalogVisitor {
 
     for (Iterator<Parameter> iter = CollectionUtil.listOrEmpty(group.getParams()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
-      @NotNull
+      @NonNull
       Parameter child = iter.next();
       retval.promoteParameter(child);
     }
 
     for (Iterator<Control> iter = CollectionUtil.listOrEmpty(group.getControls()).iterator(); iter.hasNext();) {
       @SuppressWarnings("null")
-      @NotNull
+      @NonNull
       Control child = iter.next();
       retval.promoteControl(child);
       DefaultResult result = visitControl(child);
@@ -98,8 +98,8 @@ public class FlatStructureCatalogVisitor {
     return retval;
   }
 
-  @NotNull
-  public DefaultResult visitControl(@NotNull Control control) {
+  @NonNull
+  public DefaultResult visitControl(@NonNull Control control) {
     DefaultResult result = new DefaultResult();
 
     List<Control> controlChildren = CollectionUtil.listOrEmpty(control.getControls());
@@ -107,7 +107,7 @@ public class FlatStructureCatalogVisitor {
 
       for (Iterator<Control> iter = CollectionUtil.listOrEmpty(control.getControls()).iterator(); iter.hasNext();) {
         @SuppressWarnings("null")
-        @NotNull
+        @NonNull
         Control child = iter.next();
         DefaultResult childResult = visitControl(child);
 

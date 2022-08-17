@@ -24,36 +24,60 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+package gov.nist.secauto.oscal.lib.profile.resolver;
+
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
-
-  /**
-   * Get the parser to use to parse an entity identifier from the reference text.
-   * 
-   * @return the parser
-   */
+public class ControlIndexingVisitor
+    extends AbstractCatalogControlItemVisitor<Void, Void> {
   @NonNull
-  IIdentifierParser getIdentifierParser();
+  private final IIndexer indexer;
 
-  /**
-   * Retrieve the reference text from the {@code reference} object.
-   * 
-   * @param reference
-   *          the reference object
-   * @return the reference text or {@code null} if there is no text
-   */
-  String getReferenceText(@NonNull TYPE reference);
+  public ControlIndexingVisitor(@NonNull IIdentifierMapper mapper) {
+    this.indexer = new DefaultIndexer(mapper);
+  }
 
-  /**
-   * Update the reference text used in the {@code reference} object.
-   * 
-   * @param reference
-   *          the reference object
-   * @param newReferenceText
-   *          the reference text replacement
-   */
-  void setReferenceText(@NonNull TYPE reference, @NonNull String newReferenceText);
+  @NonNull
+  protected IIndexer getIndexer() {
+    return indexer;
+  }
+
+  @NonNull
+  public Index getIndex() {
+    return indexer.getIndex();
+  }
+
+  @Override
+  protected Void visitCatalog(@NonNull IDocumentNodeItem catalogItem, Void context) {
+    return super.visitCatalog(catalogItem, null);
+  }
+
+  @Override
+  protected Void visitControl(@NonNull IRequiredValueModelNodeItem controlItem, Void context) {
+    getIndexer().addControl(controlItem, true);
+    return super.visitControl(controlItem, context);
+  }
+
+  @Override
+  protected Void visitControlContainer(@NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,
+      Void context) {
+    // handle parameters
+    catalogOrGroupOrControl.getModelItemsByName("param").forEach(paramItem -> {
+      getIndexer().addParameter(paramItem);
+    });
+    return super.visitControlContainer(catalogOrGroupOrControl, null);
+  }
+
+  @Override
+  protected Void newDefaultResult(Void context) {
+    return null;
+  }
+
+  @Override
+  protected Void aggregateResults(Void first, Void second, Void context) {
+    return null;
+  }
 }

@@ -37,8 +37,6 @@ import gov.nist.secauto.oscal.lib.model.ParameterSelection;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,10 +45,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public abstract class AbstractParameter implements IParameter {
 
   @Override
-  public Stream<@NotNull String> getParameterReferences() {
+  public Stream<String> getParameterReferences() {
 
     // handle prop name="aggregates"
     Stream<String> aggregatesIds = CollectionUtil.listOrEmpty(getProps()).stream()
@@ -71,112 +71,112 @@ public abstract class AbstractParameter implements IParameter {
               .map(insert -> insert.getIdReference().toStringOrNull()));
     }
     @SuppressWarnings("null")
-    Stream<@NotNull String> retval = Stream.concat(aggregatesIds, selectInsertIds)
+    Stream<String> retval = Stream.concat(aggregatesIds, selectInsertIds)
         .filter(Objects::nonNull)
         .distinct();
     return retval;
   }
 
-  @NotNull
-  public static Builder builder(@NotNull String id) {
+  @NonNull
+  public static Builder builder(@NonNull String id) {
     return new Builder(id);
   }
 
   public static class Builder {
-    @NotNull
+    @NonNull
     private final String id;
 
-    private String clazz;
+    private String clazz; // NOPMD - intentional
     private final List<Property> props = new LinkedList<>();
     private final List<Link> links = new LinkedList<>();
-    private MarkupLine label;
-    private MarkupMultiline usage;
+    private MarkupLine label; // NOPMD - intentional
+    private MarkupMultiline usage; // NOPMD - intentional
     private final List<ParameterConstraint> constraints = new LinkedList<>();
     private final List<ParameterGuideline> guidelines = new LinkedList<>();
-    private List<String> values = new LinkedList<>();
+    private List<String> values = new LinkedList<>(); // NOPMD - intentional
     private ParameterSelection selection;
-    private MarkupMultiline remarks;
+    private MarkupMultiline remarks; // NOPMD - intentional
 
-    @SuppressWarnings("null")
-    public Builder(@NotNull String id) {
-      this.id = Objects.requireNonNull(id, "id");
+    public Builder(@NonNull String id) {
+      this.id = Objects.requireNonNull(id);
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder clazz(@NotNull String value) {
-      this.clazz = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder clazz(@NonNull String value) {
+      this.clazz = Objects.requireNonNull(value);
       return this;
     }
 
-    @NotNull
-    public Builder prop(@NotNull Property value) {
-      this.props.add(Objects.requireNonNull(value, "value"));
+    @NonNull
+    public Builder prop(@NonNull Property value) {
+      this.props.add(Objects.requireNonNull(value));
       return this;
     }
 
-    @NotNull
-    public Builder link(@NotNull Link value) {
-      this.links.add(Objects.requireNonNull(value, "value"));
+    @NonNull
+    public Builder link(@NonNull Link value) {
+      this.links.add(Objects.requireNonNull(value));
       return this;
     }
 
-    @NotNull
-    public Builder label(@NotNull String markdown) {
-      return label(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
+    @NonNull
+    public Builder label(@NonNull String markdown) {
+      return label(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown)));
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder label(@NotNull MarkupLine value) {
-      this.label = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder label(@NonNull MarkupLine value) {
+      this.label = Objects.requireNonNull(value);
       return this;
     }
 
-    @NotNull
-    public Builder usage(@NotNull String markdown) {
-      return usage(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown, "markdown")));
+    @NonNull
+    public Builder usage(@NonNull String markdown) {
+      return usage(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown)));
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder usage(@NotNull MarkupMultiline value) {
-      this.usage = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder usage(@NonNull MarkupMultiline value) {
+      this.usage = Objects.requireNonNull(value);
       return this;
     }
 
-    @NotNull
-    public Builder constraint(@NotNull ParameterConstraint value) {
-      this.constraints.add(Objects.requireNonNull(value, "value"));
+    @NonNull
+    public Builder constraint(@NonNull ParameterConstraint value) {
+      this.constraints.add(Objects.requireNonNull(value));
       return this;
     }
 
-    @NotNull
-    public Builder guideline(@NotNull ParameterGuideline value) {
-      this.guidelines.add(Objects.requireNonNull(value, "value"));
+    @NonNull
+    public Builder guideline(@NonNull ParameterGuideline value) {
+      this.guidelines.add(Objects.requireNonNull(value));
       return this;
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder values(@NotNull String... values) {
+    @NonNull
+    public Builder values(@NonNull String... values) {
       return values(Arrays.asList(values));
     }
 
-    @NotNull
-    public Builder values(@NotNull Collection<String> values) {
+    @NonNull
+    public Builder values(@NonNull Collection<String> values) {
       this.values = new ArrayList<>(values);
       return this;
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder select(@NotNull ParameterSelection value) {
-      this.selection = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder select(@NonNull ParameterSelection value) {
+      this.selection = Objects.requireNonNull(value);
       return this;
     }
 
-    @NotNull
+    @NonNull
+    public Builder remarks(@NonNull MarkupMultiline value) {
+      this.remarks = Objects.requireNonNull(value);
+      return this;
+    }
+
+    @NonNull
     public Parameter build() {
       Parameter retval = new Parameter();
       retval.setId(id);

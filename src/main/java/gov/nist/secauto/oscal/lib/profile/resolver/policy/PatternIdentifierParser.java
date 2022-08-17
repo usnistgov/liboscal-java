@@ -27,24 +27,24 @@
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
-
-import org.jetbrains.annotations.NotNull;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class PatternIdentifierParser implements IIdentifierParser {
   private final Pattern pattern;
   private final int identifierGroup;
 
   @SuppressWarnings("null")
-  public PatternIdentifierParser(@NotNull String pattern, int identifierGroup) {
+  public PatternIdentifierParser(@NonNull String pattern, int identifierGroup) {
     this(Pattern.compile(pattern), identifierGroup);
   }
 
-  @SuppressWarnings("null")
-  public PatternIdentifierParser(@NotNull Pattern pattern, int identifierGroup) {
+  public PatternIdentifierParser(@NonNull Pattern pattern, int identifierGroup) {
     this.pattern = Objects.requireNonNull(pattern, "pattern");
     this.identifierGroup = identifierGroup;
   }
@@ -58,18 +58,23 @@ public class PatternIdentifierParser implements IIdentifierParser {
   }
 
   @Override
-  public String parse(@NotNull String referenceText) {
+  public String parse(@NonNull String referenceText) {
     Matcher matcher = getPattern().matcher(referenceText);
 
-    return matcher.matches() ? matcher.group(getIdentifierGroup()) : null;
+    String retval = null;
+    if (matcher.matches()) {
+      retval = matcher.group(getIdentifierGroup());
+    }
+    return retval;
   }
 
   @Override
-  public String update(@NotNull String referenceText, @NotNull String newIdentifier) {
+  public String update(@NonNull String referenceText, @NonNull String newIdentifier) {
     Matcher matcher = getPattern().matcher(referenceText);
     if (!matcher.matches()) {
-      throw new IllegalStateException(String.format("The original reference '%s' did not match the pattern '%s'.",
-          referenceText, getPattern().pattern()));
+      throw new ProfileResolutionEvaluationException(
+          String.format("The original reference '%s' did not match the pattern '%s'.",
+              referenceText, getPattern().pattern()));
     }
 
     return ObjectUtils.notNull(new StringBuilder(referenceText)

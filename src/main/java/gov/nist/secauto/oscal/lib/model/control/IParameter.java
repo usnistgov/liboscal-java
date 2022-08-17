@@ -29,8 +29,6 @@ package gov.nist.secauto.oscal.lib.model.control;
 import gov.nist.secauto.oscal.lib.model.ParameterSelection;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -39,5 +37,5 @@ public interface IParameter {
 
   ParameterSelection getSelect();
 
-  Stream<@NotNull String> getParameterReferences();
+  Stream<String> getParameterReferences();
 }

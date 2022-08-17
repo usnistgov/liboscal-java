@@ -26,14 +26,14 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IReferencePolicy<T> {
-  @NotNull
+  @NonNull
   IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
 
     @Override
-    public boolean handleReference(@NotNull Object reference, @NotNull IReferenceVisitor visitor) {
+    public boolean handleReference(@NonNull Object reference, @NonNull IReferenceVisitor visitor) {
       return true;
     }
   };
@@ -46,9 +46,9 @@ public interface IReferencePolicy<T> {
    * @return the policy
    */
   @SuppressWarnings("unchecked")
-  @NotNull
+  @NonNull
   static <T> IReferencePolicy<T> ignore() {
-    return (@NotNull IReferencePolicy<T>) IGNORE_POLICY;
+    return (IReferencePolicy<T>) IGNORE_POLICY;
   }
 
   /**
@@ -59,6 +59,7 @@ public interface IReferencePolicy<T> {
    * @param visitor
    *          used to lookup and resolve items
    * @return {@code true} if the reference was handled, or {@code false} otherwise
+   * @throw ProfileResolutionEvaluationException if there was an error handing the reference
    */
-  boolean handleReference(@NotNull T reference, @NotNull IReferenceVisitor visitor);
+  boolean handleReference(@NonNull T reference, @NonNull IReferenceVisitor visitor);
 }

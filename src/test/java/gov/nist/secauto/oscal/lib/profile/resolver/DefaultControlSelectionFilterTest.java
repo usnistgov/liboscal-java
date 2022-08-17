@@ -32,8 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
+
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
 import org.jmock.imposters.ByteBuddyClassImposteriser;
@@ -44,6 +44,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import java.util.Collections;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 class DefaultControlSelectionFilterTest {
   @RegisterExtension
   final JUnit5Mockery context = new JUnit5Mockery() {
@@ -53,15 +55,15 @@ class DefaultControlSelectionFilterTest {
   };
 
   @Mock
-  private IProfileSelectControlById selectControlByIdA;
+  private IProfileSelectControlById selectControlByIdA; // NOPMD - injected
   @Mock
-  private ProfileSelectControlById.Matching matchingA;
+  private ProfileSelectControlById.Matching matchingA; // NOPMD - injected
   @Mock
-  private ProfileSelectControlById.Matching matchingB;
+  private ProfileSelectControlById.Matching matchingB; // NOPMD - injected
   @Mock
-  private IProfileSelectControlById selectControlByIdB;
+  private IProfileSelectControlById selectControlByIdB; // NOPMD - injected
 
-  @SuppressWarnings("null")
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   private IControlSelectionFilter newEmptyFilter() {
     context.checking(new Expectations() {
       { // NOPMD - intentional
@@ -77,7 +79,7 @@ class DefaultControlSelectionFilterTest {
     return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
   }
 
-  @SuppressWarnings("null")
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   private IControlSelectionFilter newSingleSelectionFilter() {
     final List<String> withIds = List.of("test1", "test2");
     context.checking(new Expectations() {
@@ -96,7 +98,7 @@ class DefaultControlSelectionFilterTest {
     return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
   }
 
-  @SuppressWarnings("null")
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   private IControlSelectionFilter newSingleSelectionWithChildFilter() {
     final List<String> withIds = List.of("test1", "test2");
     context.checking(new Expectations() {
@@ -115,7 +117,7 @@ class DefaultControlSelectionFilterTest {
     return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
   }
 
-  @SuppressWarnings("null")
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   private IControlSelectionFilter newMultipleSelectionFilter() {
     final List<String> withIdsA = List.of("test1", "test2", "example1");
     final List<String> withIdsB = List.of("test3", "test4");
@@ -148,6 +150,7 @@ class DefaultControlSelectionFilterTest {
    * Test the filtering of an empty set of match criteria
    */
   @Test
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   void testEmpty() {
     @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class);
@@ -159,7 +162,7 @@ class DefaultControlSelectionFilterTest {
     });
 
     IControlSelectionFilter filter = newEmptyFilter();
-    Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);
+    Pair<Boolean, Boolean> pair = filter.apply(control1);
     assertFalse(pair.getLeft());
     assertFalse(pair.getRight());
   }
@@ -168,6 +171,7 @@ class DefaultControlSelectionFilterTest {
    * Test the filtering of a single match criteria using "with-ids".
    */
   @Test
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   void testSingleSelectionWithIdsFilter() {
     @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class, "control1");
@@ -183,7 +187,7 @@ class DefaultControlSelectionFilterTest {
     });
 
     IControlSelectionFilter filter = newSingleSelectionFilter();
-    Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);
+    Pair<Boolean, Boolean> pair = filter.apply(control1);
     assertFalse(pair.getLeft());
     assertFalse(pair.getRight());
 
@@ -196,6 +200,7 @@ class DefaultControlSelectionFilterTest {
    * Test the filtering of a single match criteria using "with-ids" and "with-child=yes".
    */
   @Test
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   void testSingleSelectionWithIdsWithChildFilter() {
     @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class, "control1");
@@ -211,7 +216,7 @@ class DefaultControlSelectionFilterTest {
     });
 
     IControlSelectionFilter filter = newSingleSelectionWithChildFilter();
-    Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);
+    Pair<Boolean, Boolean> pair = filter.apply(control1);
     assertFalse(pair.getLeft());
     assertFalse(pair.getRight());
 
@@ -224,6 +229,7 @@ class DefaultControlSelectionFilterTest {
    * Test the filtering of multiple match criteria.
    */
   @Test
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   void testMultipleSelectionFilter() {
     @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class, "control1");
@@ -259,7 +265,7 @@ class DefaultControlSelectionFilterTest {
     });
 
     IControlSelectionFilter filter = newMultipleSelectionFilter();
-    Pair<@NotNull Boolean, @NotNull Boolean> pair = filter.apply(control1);
+    Pair<Boolean, Boolean> pair = filter.apply(control1);
     assertFalse(pair.getLeft());
     assertFalse(pair.getRight());
 

@@ -31,14 +31,14 @@ import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface ICatalogVisitor<RESULT, CONTEXT> {
-  RESULT visitCatalog(@NotNull Catalog catalog, CONTEXT context);
+  RESULT visitCatalog(@NonNull Catalog catalog, CONTEXT context);
 
-  RESULT visitGroup(@NotNull CatalogGroup group, CONTEXT context);
+  RESULT visitGroup(@NonNull CatalogGroup group, CONTEXT context);
 
-  RESULT visitControl(@NotNull Control control, CONTEXT context);
+  RESULT visitControl(@NonNull Control control, CONTEXT context);
 
-  RESULT visitParameter(@NotNull Parameter parameter, CONTEXT context);
+  RESULT visitParameter(@NonNull Parameter parameter, CONTEXT context);
 }

@@ -30,7 +30,7 @@ import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -41,6 +41,6 @@ public interface IPart {
 
   List<ControlPart> getParts();
 
-  @NotNull
-  Stream<InsertAnchorNode> getInserts(@NotNull Predicate<InsertAnchorNode> filter);
+  @NonNull
+  Stream<InsertAnchorNode> getInserts(@NonNull Predicate<InsertAnchorNode> filter);
 }

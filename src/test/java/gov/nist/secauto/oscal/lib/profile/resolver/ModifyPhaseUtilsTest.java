@@ -24,36 +24,78 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+package gov.nist.secauto.oscal.lib.profile.resolver;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
-public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
+class ModifyPhaseUtilsTest {
 
-  /**
-   * Get the parser to use to parse an entity identifier from the reference text.
-   * 
-   * @return the parser
-   */
-  @NonNull
-  IIdentifierParser getIdentifierParser();
+  @Test
+  void testMergeOrdering() {
+    List<TestItem> originalItems = List.of(
+        item("A"),
+        item("id1", "B"),
+        item("C"));
 
-  /**
-   * Retrieve the reference text from the {@code reference} object.
-   * 
-   * @param reference
-   *          the reference object
-   * @return the reference text or {@code null} if there is no text
-   */
-  String getReferenceText(@NonNull TYPE reference);
+    List<TestItem> newItems = List.of(
+        item("D"),
+        item("id1", "E"),
+        item("F"));
 
-  /**
-   * Update the reference text used in the {@code reference} object.
-   * 
-   * @param reference
-   *          the reference object
-   * @param newReferenceText
-   *          the reference text replacement
-   */
-  void setReferenceText(@NonNull TYPE reference, @NonNull String newReferenceText);
+    List<TestItem> result
+        = ModifyPhaseUtils.merge(originalItems, newItems, ModifyPhaseUtils.identifierKey(TestItem::getIdentifier));
+
+    assertEquals(
+        List.of("A", "C", "D", "E", "F"),
+        result.stream()
+            .map(item -> item.getValue())
+            .collect(Collectors.toList()));
+  }
+
+  private TestItem item(@NonNull String value) {
+    return item(null, value);
+  }
+
+  private TestItem item(@Nullable String identifier, @NonNull String value) {
+    return new TestItem(identifier, value);
+  }
+
+  private static class TestItem {
+    @Nullable
+    private final String identifier;
+    @NonNull
+    private final String value;
+
+    private TestItem(@Nullable String identifier, @NonNull String value) {
+      this.identifier = identifier;
+      this.value = value;
+    }
+
+    public String getIdentifier() {
+      return identifier;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return new StringBuffer()
+          .append('[')
+          .append(getIdentifier())
+          .append(',')
+          .append(getValue())
+          .append(']')
+          .toString();
+    }
+  }
 }

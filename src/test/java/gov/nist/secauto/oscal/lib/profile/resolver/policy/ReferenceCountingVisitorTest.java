@@ -28,6 +28,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.ControlSelectionVisitor;
@@ -42,6 +43,7 @@ import java.io.IOException;
 
 class ReferenceCountingVisitorTest {
 
+  @SuppressWarnings("null")
   @Test
   void test() throws IOException {
     // setup the imported catalog
@@ -65,7 +67,7 @@ class ReferenceCountingVisitorTest {
 
     OscalBindingContext.instance()
         .newSerializer(Format.YAML, Catalog.class)
-        .serialize((Catalog) importedCatalogDocumentItem.getValue(), System.out);
+        .serialize(ObjectUtils.requireNonNull((Catalog) importedCatalogDocumentItem.getValue()), System.out);
   }
 
 }

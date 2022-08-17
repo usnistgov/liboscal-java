@@ -26,22 +26,24 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 public interface IIdentifierParser {
-  @NotNull
+  @NonNull
   IIdentifierParser FRAGMENT_PARSER = new PatternIdentifierParser("^#([^#]+)(?:#.*)?$", 1);
-  @NotNull
+  @NonNull
   IIdentifierParser IDENTITY_PARSER = new IIdentifierParser() {
 
     @Override
-    public String parse(@NotNull String reference) {
+    public String parse(@NonNull String reference) {
       return reference;
     }
 
     @Override
-    public String update(@NotNull String reference, @NotNull String newIdentifier) {
+    public String update(@NonNull String reference, @NonNull String newIdentifier) {
       return newIdentifier;
     }
   };
@@ -54,7 +56,7 @@ public interface IIdentifierParser {
    * @return the identifier, or {@code null} if the identifier could not be parsed
    */
   @Nullable
-  String parse(@NotNull String referenceText);
+  String parse(@NonNull String referenceText);
 
   /**
    * Substitute the provided {@code newIdentifier} with the identifier in the {@code referenceText}.
@@ -64,7 +66,8 @@ public interface IIdentifierParser {
    * @param newIdentifier
    *          the new identifier to replace the existing identifier
    * @return the updated reference text with the identifier replaced
+   * @throws ProfileResolutionEvaluationException if the identifier could not be updated
    */
-  @NotNull
-  String update(@NotNull String referenceText, @NotNull String newIdentifier);
+  @NonNull
+  String update(@NonNull String referenceText, @NonNull String newIdentifier);
 }

@@ -31,36 +31,36 @@ import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Collection;
 import java.util.Set;
 
 public interface IResult {
 
-  @NotNull
-  Collection<@NotNull Parameter> getPromotedParameters();
+  @NonNull
+  Collection<Parameter> getPromotedParameters();
 
-  @NotNull
-  Collection<@NotNull Control> getPromotedControls();
+  @NonNull
+  Collection<Control> getPromotedControls();
 
-  @NotNull
-  Set<@NotNull String> getRequiredParameterIds();
+  @NonNull
+  Set<String> getRequiredParameterIds();
 
-  boolean isParameterRequired(@NotNull String id);
+  boolean isParameterRequired(@NonNull String id);
 
-  void promoteParameter(@NotNull Parameter param);
+  void promoteParameter(@NonNull Parameter param);
 
-  void promoteControl(@NotNull Control control);
+  void promoteControl(@NonNull Control control);
 
-  void requireParameters(@NotNull Set<@NotNull String> requiredParameterIds);
+  void requireParameters(@NonNull Set<String> requiredParameterIds);
 
-  void applyTo(@NotNull Catalog parent);
+  void applyTo(@NonNull Catalog parent);
 
-  void applyTo(@NotNull CatalogGroup parent);
+  void applyTo(@NonNull CatalogGroup parent);
 
-  void applyTo(@NotNull Control parent);
+  void applyTo(@NonNull Control parent);
 
-  @NotNull
-  IResult append(@NotNull IResult that);
+  @NonNull
+  IResult append(@NonNull IResult that);
 }

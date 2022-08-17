@@ -28,15 +28,16 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public interface IBackMatter {
-  List<@NotNull Resource> getResources();
+  List<Resource> getResources();
 
   @Nullable
-  Resource getResourceByUuid(@NotNull UUID uuid);
+  Resource getResourceByUuid(@NonNull UUID uuid);
 }

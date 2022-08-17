@@ -26,10 +26,14 @@
 
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
-import gov.nist.secauto.metaschema.model.common.metapath.function.AbstractFunctionLibrary;
+import com.google.auto.service.AutoService;
 
+import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionLibrary;
+import gov.nist.secauto.metaschema.model.common.metapath.function.IFunctionLibrary;
+
+@AutoService(IFunctionLibrary.class)
 public class OscalFunctionLibrary
-    extends AbstractFunctionLibrary {
+    extends FunctionLibrary {
 
   public OscalFunctionLibrary() {
     registerFunction(ResolveProfile.SIGNATURE_NO_ARG);

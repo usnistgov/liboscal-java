@@ -31,13 +31,10 @@ import com.vladsch.flexmark.util.ast.Node;
 
 import gov.nist.secauto.metaschema.model.common.datatype.markup.IMarkupText;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
-import gov.nist.secauto.metaschema.model.common.metapath.ISequence;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
 import gov.nist.secauto.metaschema.model.common.metapath.function.library.FnData;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IMarkupItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
@@ -52,68 +49,71 @@ import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.Role;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
+import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
 
-public class ReferenceCountingVisitor implements IReferenceVisitor {
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+public class ReferenceCountingVisitor implements IReferenceVisitor { // NOPMD - ok
   private static final Logger LOGGER = LogManager.getLogger(ReferenceCountingVisitor.class);
-  @NotNull
+  @NonNull
   private static final MetapathExpression PART_METAPATH
       = MetapathExpression.compile("part|part//part");
-  @NotNull
+  @NonNull
   private static final MetapathExpression PARAM_MARKUP_METAPATH
       = MetapathExpression
           .compile("label|usage|constraint/(description|tests/remarks)|guideline/prose|select/choice|remarks");
-  @NotNull
+  @NonNull
   private static final MetapathExpression ROLE_MARKUP_METAPATH
       = MetapathExpression.compile("title|description|remarks");
-  @NotNull
+  @NonNull
   private static final MetapathExpression LOCATION_MARKUP_METAPATH
       = MetapathExpression.compile("title|remarks");
-  @NotNull
+  @NonNull
   private static final MetapathExpression PARTY_MARKUP_METAPATH
       = MetapathExpression.compile("title|remarks");
-  @NotNull
+  @NonNull
   private static final MetapathExpression RESOURCE_MARKUP_METAPATH
       = MetapathExpression.compile("title|description|remarks");
 
-  @NotNull
+  @NonNull
   private static final IReferencePolicy<Property> PROPERTY_POLICY_IGNORE = IReferencePolicy.ignore();
-  @NotNull
+  @NonNull
   private static final IReferencePolicy<Link> LINK_POLICY_IGNORE = IReferencePolicy.ignore();
 
-  @NotNull
+  @NonNull
   private static final Map<QName, IReferencePolicy<Property>> PROPERTY_POLICIES;
-  @NotNull
+  @NonNull
   private static final Map<String, IReferencePolicy<Link>> LINK_POLICIES;
-  @NotNull
+  @NonNull
   private static final InsertReferencePolicy INSERT_POLICY = new InsertReferencePolicy();
-  @NotNull
+  @NonNull
   private static final AnchorReferencePolicy ANCHOR_POLICY = new AnchorReferencePolicy();
 
   static {
     PROPERTY_POLICIES = new HashMap<>();
-    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "resolution-tool"), PROPERTY_POLICY_IGNORE);
-    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "label"), PROPERTY_POLICY_IGNORE);
-    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "sort-id"), PROPERTY_POLICY_IGNORE);
-    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "alt-label"), PROPERTY_POLICY_IGNORE);
-    PROPERTY_POLICIES.put(Property.qname(Property.OSCAL_NAMESPACE, "alt-identifier"), PROPERTY_POLICY_IGNORE);
-    PROPERTY_POLICIES.put(Property.qname(Property.RMF_NAMESPACE, "method"), PROPERTY_POLICY_IGNORE);
-    PROPERTY_POLICIES.put(Property.qname(Property.RMF_NAMESPACE, "aggregates"),
+    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "resolution-tool"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "label"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "sort-id"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "alt-label"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "alt-identifier"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.RMF_NAMESPACE, "method"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.RMF_NAMESPACE, "aggregates"),
         PropertyReferencePolicy.create(IIdentifierParser.IDENTITY_PARSER, ItemType.PARAMETER));
 
     LINK_POLICIES = new HashMap<>();
@@ -124,29 +124,31 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
     LINK_POLICIES.put("required", LinkReferencePolicy.create(ItemType.CONTROL));
   }
 
-  @NotNull
+  @NonNull
   private final Index index;
-  @NotNull
+  @NonNull
   private final URI source;
 
-  public ReferenceCountingVisitor(@NotNull Index index, @NotNull URI source) {
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intending to store this parameter")
+  public ReferenceCountingVisitor(@NonNull Index index, @NonNull URI source) {
     this.index = index;
     this.source = source;
   }
 
   @Override
-  @NotNull
+  @NonNull
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intending to expose this field")
   public Index getIndex() {
     return index;
   }
 
-  @NotNull
+  @NonNull
   protected URI getSource() {
     return source;
   }
 
   //
-  // public void visitProfile(@NotNull Profile profile) {
+  // public void visitProfile(@NonNull Profile profile) {
   // // process children
   // Metadata metadata = profile.getMetadata();
   // if (metadata != null) {
@@ -161,26 +163,26 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
   // }
   // }
 
-  public void visitCatalog(@NotNull IDocumentNodeItem catalogItem) {
+  public void visitCatalog(@NonNull IDocumentNodeItem catalogItem) {
 
     // process children
     IRootAssemblyNodeItem rootItem = catalogItem.getRootAssemblyNodeItem();
 
     rootItem.getModelItemsByName("group").forEach(groupItem -> {
-      visitGroup(groupItem);
+      visitGroup(ObjectUtils.notNull(groupItem));
     });
 
     rootItem.getModelItemsByName("control").forEach(controlItem -> {
-      visitControl(controlItem);
+      visitControl(ObjectUtils.notNull(controlItem));
     });
-    index.getEntitiesByItemType(ItemType.ROLE).forEach(item -> resolveItem(item));
-    index.getEntitiesByItemType(ItemType.LOCATION).forEach(item -> resolveItem(item));
-    index.getEntitiesByItemType(ItemType.PARTY).forEach(item -> resolveItem(item));
-    index.getEntitiesByItemType(ItemType.PARAMETER).forEach(item -> resolveItem(item));
-    index.getEntitiesByItemType(ItemType.RESOURCE).forEach(item -> resolveItem(item));
+    index.getEntitiesByItemType(ItemType.ROLE).forEach(item -> resolveItem(ObjectUtils.notNull(item)));
+    index.getEntitiesByItemType(ItemType.LOCATION).forEach(item -> resolveItem(ObjectUtils.notNull(item)));
+    index.getEntitiesByItemType(ItemType.PARTY).forEach(item -> resolveItem(ObjectUtils.notNull(item)));
+    index.getEntitiesByItemType(ItemType.PARAMETER).forEach(item -> resolveItem(ObjectUtils.notNull(item)));
+    index.getEntitiesByItemType(ItemType.RESOURCE).forEach(item -> resolveItem(ObjectUtils.notNull(item)));
   }
 
-  private void resolveItem(EntityItem item) {
+  private void resolveItem(@NonNull EntityItem item) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.atDebug().log("Resolving {} identified as '{}'", item.getItemType().name(), item.getIdentifier());
     }
@@ -190,91 +192,91 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
   }
 
   @Override
-  public void visitRole(@NotNull IRequiredValueModelNodeItem item) {
+  public void visitRole(@NonNull IRequiredValueModelNodeItem item) {
     Role role = (Role) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.ROLE, ObjectUtils.notNull(role.getId()));
 
     if (!entity.isResolved()) {
       entity.markResolved();
 
-      item.getModelItemsByName("prop").forEach(child -> handleProperty(child));
-      item.getModelItemsByName("link").forEach(child -> handleLink(child));
-      evaluateToList(ROLE_MARKUP_METAPATH, item).forEach(child -> handleMarkup(child));
+      item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child)));
+      ROLE_MARKUP_METAPATH.evaluate(item).asList()
+          .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child)));
     }
   }
 
   @Override
-  public void visitParty(@NotNull IRequiredValueModelNodeItem item) {
+  public void visitParty(@NonNull IRequiredValueModelNodeItem item) {
     Party party = (Party) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.PARTY, ObjectUtils.notNull(party.getUuid()));
 
     if (!entity.isResolved()) {
       entity.markResolved();
 
-      item.getModelItemsByName("prop").forEach(child -> handleProperty(child));
-      item.getModelItemsByName("link").forEach(child -> handleLink(child));
-      evaluateToList(PARTY_MARKUP_METAPATH, item).forEach(child -> handleMarkup(child));
+      item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child)));
+      PARTY_MARKUP_METAPATH.evaluate(item).asList()
+          .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child)));
     }
   }
 
   @Override
-  public void visitLocation(@NotNull IRequiredValueModelNodeItem item) {
+  public void visitLocation(@NonNull IRequiredValueModelNodeItem item) {
     Location location = (Location) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.LOCATION, ObjectUtils.notNull(location.getUuid()));
 
     if (!entity.isResolved()) {
       entity.markResolved();
 
-      item.getModelItemsByName("prop").forEach(child -> handleProperty(child));
-      item.getModelItemsByName("link").forEach(child -> handleLink(child));
-      evaluateToList(LOCATION_MARKUP_METAPATH, item).forEach(child -> handleMarkup(child));
+      item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child)));
+      LOCATION_MARKUP_METAPATH.evaluate(item).asList()
+          .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child)));
     }
   }
 
   @Override
-  public void visitResource(@NotNull IRequiredValueModelNodeItem item) {
+  public void visitResource(@NonNull IRequiredValueModelNodeItem item) {
     Resource resource = (Resource) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.RESOURCE, ObjectUtils.notNull(resource.getUuid()));
 
     if (!entity.isResolved()) {
       entity.markResolved();
 
-      item.getModelItemsByName("prop").forEach(child -> handleProperty(child));
+      item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child)));
 
       item.getModelItemsByName("citation").forEach(child -> {
-        child.getModelItemsByName("text").forEach(citationChild -> handleMarkup(citationChild));
-        child.getModelItemsByName("prop").forEach(citationChild -> handleProperty(citationChild));
-        child.getModelItemsByName("link").forEach(citationChild -> handleLink(citationChild));
+        if (child != null) {
+          child.getModelItemsByName("text").forEach(citationChild -> handleMarkup(ObjectUtils.notNull(citationChild)));
+          child.getModelItemsByName("prop")
+              .forEach(citationChild -> handleProperty(ObjectUtils.notNull(citationChild)));
+          child.getModelItemsByName("link").forEach(citationChild -> handleLink(ObjectUtils.notNull(citationChild)));
+        }
       });
 
-      evaluateToList(RESOURCE_MARKUP_METAPATH, item).forEach(child -> handleMarkup(child));
+      RESOURCE_MARKUP_METAPATH.evaluate(item).asList()
+          .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child)));
     }
   }
 
   @Override
-  public void visitParameter(@NotNull IRequiredValueModelNodeItem item) {
+  public void visitParameter(@NonNull IRequiredValueModelNodeItem item) {
     Parameter parameter = (Parameter) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.PARAMETER, ObjectUtils.notNull(parameter.getId()));
 
     if (!entity.isResolved()) {
       entity.markResolved();
 
-      item.getModelItemsByName("prop").forEach(child -> handleProperty(child));
-      item.getModelItemsByName("link").forEach(child -> handleLink(child));
-      evaluateToList(PARAM_MARKUP_METAPATH, item).forEach(child -> handleMarkup(child));
+      item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child)));
+      PARAM_MARKUP_METAPATH.evaluate(item).asList()
+          .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child)));
     }
   }
 
-  @NotNull
-  @SuppressWarnings("unchecked")
-  private <T extends INodeItem, R extends IRequiredValueModelNodeItem> List<@NotNull R> evaluateToList(
-      @NotNull MetapathExpression metapath,
-      @NotNull T item) {
-    return ((ISequence<R>) metapath.evaluateAs(item, ResultType.SEQUENCE)).asList();
-  }
-
   @Override
-  public void visitGroup(@NotNull IRequiredValueModelNodeItem item) {
+  public void visitGroup(@NonNull IRequiredValueModelNodeItem item) {
     CatalogGroup group = (CatalogGroup) item.getValue();
     String id = group.getId();
 
@@ -293,22 +295,22 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
 
     if (resolve && getIndex().isSelected(group)) {
       // process children
-      item.getModelItemsByName("title").forEach(child -> handleMarkup(child));
-      item.getModelItemsByName("prop").forEach(child -> handleProperty(child));
-      item.getModelItemsByName("link").forEach(child -> handleLink(child));
+      item.getModelItemsByName("title").forEach(child -> handleMarkup(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child)));
       visitParts(item);
 
       // only process these if the current group is selected, since the group will only be selected if a
       // child is selected
-      item.getModelItemsByName("group").forEach(child -> visitGroup(child));
-      item.getModelItemsByName("control").forEach(child -> visitControl(child));
+      item.getModelItemsByName("group").forEach(child -> visitGroup(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("control").forEach(child -> visitControl(ObjectUtils.notNull(child)));
 
       // skip parameters for now. These will be processed by a separate pass.
     }
   }
 
   @Override
-  public void visitControl(@NotNull IRequiredValueModelNodeItem item) {
+  public void visitControl(@NonNull IRequiredValueModelNodeItem item) {
     Control control = (Control) item.getValue();
     EntityItem entity = getIndex().getEntity(ItemType.CONTROL, ObjectUtils.notNull(control.getId()));
 
@@ -316,29 +318,29 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
       entity.markResolved();
       if (getIndex().isSelected(control)) {
         // process non-control, non-param children
-        item.getModelItemsByName("title").forEach(child -> handleMarkup(child));
-        item.getModelItemsByName("prop").forEach(child -> handleProperty(child));
-        item.getModelItemsByName("link").forEach(child -> handleLink(child));
+        item.getModelItemsByName("title").forEach(child -> handleMarkup(ObjectUtils.notNull(child)));
+        item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child)));
+        item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child)));
         visitParts(item);
 
         // skip parameters for now. These will be processed by a separate pass.
       }
 
       // Always process these, since we don't know if the child control is selected
-      item.getModelItemsByName("control").forEach(child -> visitControl(child));
+      item.getModelItemsByName("control").forEach(child -> visitControl(ObjectUtils.notNull(child)));
     }
   }
 
-  protected void visitParts(@NotNull IRequiredValueModelNodeItem groupOrControlItem) {
+  protected void visitParts(@NonNull IRequiredValueModelNodeItem groupOrControlItem) {
     PART_METAPATH.evaluate(groupOrControlItem).asStream()
-        .map(item -> (@NotNull IRequiredValueModelNodeItem) item)
+        .map(item -> (IRequiredValueModelNodeItem) item)
         .forEachOrdered(partItem -> {
-          visitPart(partItem);
+          visitPart(ObjectUtils.notNull(partItem));
         });
   }
 
   @Override
-  public void visitPart(@NotNull IRequiredValueModelNodeItem item) {
+  public void visitPart(@NonNull IRequiredValueModelNodeItem item) {
     ControlPart part = (ControlPart) item.getValue();
     String id = part.getId();
 
@@ -356,25 +358,21 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
     }
 
     if (resolve) {
-      item.getModelItemsByName("title").forEach(child -> handleMarkup(child));
-      item.getModelItemsByName("prop").forEach(child -> handleProperty(child));
-      item.getModelItemsByName("link").forEach(child -> handleLink(child));
-      item.getModelItemsByName("prose").forEach(child -> handleMarkup(child));
-      item.getModelItemsByName("part").forEach(child -> visitParts(child));
+      item.getModelItemsByName("title").forEach(child -> handleMarkup(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("prose").forEach(child -> handleMarkup(ObjectUtils.notNull(child)));
+      item.getModelItemsByName("part").forEach(child -> visitParts(ObjectUtils.notNull(child)));
     }
   }
 
-  @NotNull
-  private void handleMarkup(@NotNull IRequiredValueModelNodeItem item) {
+  private void handleMarkup(@NonNull IRequiredValueModelNodeItem item) {
     IMarkupItem markupItem = (IMarkupItem) FnData.fnDataItem(item);
     IMarkupText markup = markupItem.getValue();
-    if (markup != null) {
-      handleMarkup(markup);
-    }
+    handleMarkup(markup);
   }
 
-  @NotNull
-  private void handleMarkup(@NotNull IMarkupText text) {
+  private void handleMarkup(@NonNull IMarkupText text) {
     for (Node node : CollectionUtil.toIterable(text.getNodesAsStream().iterator())) {
       if (node instanceof InsertAnchorNode) {
         handleInsert((InsertAnchorNode) node);
@@ -384,24 +382,21 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
     }
   }
 
-  @NotNull
-  private void handleInsert(@NotNull InsertAnchorNode node) {
+  private void handleInsert(@NonNull InsertAnchorNode node) {
     boolean retval = INSERT_POLICY.handleReference(node, this);
     if (LOGGER.isWarnEnabled() && !retval) {
       LOGGER.atWarn().log("unsupported insert type '{}'", node.getType().toString());
     }
   }
 
-  @NotNull
-  private void handleAnchor(@NotNull InlineLinkNode node) {
+  private void handleAnchor(@NonNull InlineLinkNode node) {
     boolean result = ANCHOR_POLICY.handleReference(node, this);
     if (LOGGER.isWarnEnabled() && !result) {
       LOGGER.atWarn().log("unsupported anchor with href '{}'", node.getUrl().toString());
     }
   }
 
-  @NotNull
-  private void handleProperty(@NotNull IRequiredValueModelNodeItem item) {
+  private void handleProperty(@NonNull IRequiredValueModelNodeItem item) {
     Property property = (Property) item.getValue();
     QName qname = property.getQName();
 
@@ -413,8 +408,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
     }
   }
 
-  @NotNull
-  private void handleLink(@NotNull IRequiredValueModelNodeItem item) {
+  private void handleLink(@NonNull IRequiredValueModelNodeItem item) {
     Link link = (Link) item.getValue();
     IReferencePolicy<Link> policy = null;
     String rel = link.getRel();
@@ -428,12 +422,11 @@ public class ReferenceCountingVisitor implements IReferenceVisitor {
     }
   }
 
-  @SuppressWarnings("null")
-  protected void incrementReferenceCount(@NotNull ItemType type, @NotNull UUID identifier) {
-    incrementReferenceCount(type, identifier.toString());
+  protected void incrementReferenceCount(@NonNull ItemType type, @NonNull UUID identifier) {
+    incrementReferenceCount(type, ObjectUtils.notNull(identifier.toString()));
   }
 
-  protected void incrementReferenceCount(@NotNull ItemType type, @NotNull String identifier) {
+  protected void incrementReferenceCount(@NonNull ItemType type, @NonNull String identifier) {
     EntityItem item = getIndex().getEntity(type, identifier);
     if (item == null) {
       if (LOGGER.isErrorEnabled()) {

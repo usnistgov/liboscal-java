@@ -38,7 +38,7 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -136,7 +136,7 @@ class OscalBindingContextTest {
     // out.delete();
   }
 
-  static Path newPath(@NotNull Path dir, @NotNull String filename) {
+  static Path newPath(@NonNull Path dir, @NonNull String filename) {
     return dir.resolve(filename);
     // return Path.of("target",filename);
   }
@@ -159,7 +159,11 @@ class OscalBindingContextTest {
 
     // File out = new File(tempDir.toFile(), "out.xml");
     Path out = Paths.get("target/generated-test-resources/catalog-with-lists.xml");
-    Files.createDirectories(out.getParent());
+
+    Path parent = out.getParent();
+    if (parent != null) {
+      Files.createDirectories(parent);
+    }
     IBindingContext context = IBindingContext.instance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);

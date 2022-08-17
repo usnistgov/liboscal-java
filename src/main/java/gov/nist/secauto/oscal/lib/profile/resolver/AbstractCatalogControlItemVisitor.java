@@ -29,7 +29,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractCatalogControlItemVisitor<T, R> {
 
@@ -37,11 +37,11 @@ public abstract class AbstractCatalogControlItemVisitor<T, R> {
 
   protected abstract R aggregateResults(R first, R second, T context);
 
-  protected R visitCatalog(@NotNull IDocumentNodeItem profileDocument, T context) {
+  protected R visitCatalog(@NonNull IDocumentNodeItem profileDocument, T context) {
     return visitGroupContainer(profileDocument.getRootAssemblyNodeItem(), context);
   }
 
-  protected R visitGroupContainer(@NotNull IRequiredValueModelNodeItem catalogOrGroup, T context) {
+  protected R visitGroupContainer(@NonNull IRequiredValueModelNodeItem catalogOrGroup, T context) {
     R groupResult = catalogOrGroup.getModelItemsByName("group").stream()
         .map(groupItem -> {
           return visitGroup(groupItem, context);
@@ -52,7 +52,7 @@ public abstract class AbstractCatalogControlItemVisitor<T, R> {
     return aggregateResults(groupResult, controlResult, context);
   }
 
-  protected R visitControlContainer(@NotNull IRequiredValueModelNodeItem catalogOrGroupOrControl, T context) {
+  protected R visitControlContainer(@NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl, T context) {
     return catalogOrGroupOrControl.getModelItemsByName("control").stream()
         .map(controlItem -> {
           return visitControl(controlItem, context);
@@ -60,11 +60,11 @@ public abstract class AbstractCatalogControlItemVisitor<T, R> {
         .reduce(newDefaultResult(context), (first, second) -> aggregateResults(first, second, context));
   }
 
-  protected R visitGroup(@NotNull IRequiredValueModelNodeItem groupItem, T context) {
+  protected R visitGroup(@NonNull IRequiredValueModelNodeItem groupItem, T context) {
     return visitGroupContainer(groupItem, context);
   }
 
-  protected R visitControl(@NotNull IRequiredValueModelNodeItem controlItem, T context) {
+  protected R visitControl(@NonNull IRequiredValueModelNodeItem controlItem, T context) {
     return visitControlContainer(controlItem, context);
   }
 

@@ -29,29 +29,32 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public abstract class AbstractProperty implements IProperty {
 
-  @NotNull
-  public static QName qname(URI namespace, @NotNull String name) {
+  @NonNull
+  public static QName qname(URI namespace, @NonNull String name) {
     return new QName(normalizeNamespace(namespace).toString(), name);
   }
 
-  @NotNull
-  public static QName qname(@NotNull String name) {
+  @NonNull
+  public static QName qname(@NonNull String name) {
     return new QName(OSCAL_NAMESPACE.toString(), name);
   }
 
-  @NotNull
+  @NonNull
   public static URI normalizeNamespace(URI namespace) {
     URI propertyNamespace = namespace;
     if (propertyNamespace == null) {
@@ -61,8 +64,8 @@ public abstract class AbstractProperty implements IProperty {
   }
 
   @SuppressWarnings("null")
-  @NotNull
-  public static Optional<Property> find(List<Property> props, @NotNull QName qname) {
+  @NonNull
+  public static Optional<Property> find(List<Property> props, @NonNull QName qname) {
     return CollectionUtil.listOrEmpty(props).stream().filter(prop -> qname.equals(prop.getQName())).findFirst();
   }
 
@@ -70,68 +73,68 @@ public abstract class AbstractProperty implements IProperty {
     // only concrete classes should construct
   }
 
+  public static List<Property> merge(@NonNull List<Property> original, @NonNull List<Property> additional) {
+    return Stream.concat(original.stream(), additional.stream())
+      .collect(Collectors.toCollection(LinkedList::new));
+  }
+  
   @Override
-  public boolean isNamespaceEqual(@NotNull URI namespace) {
+  public boolean isNamespaceEqual(@NonNull URI namespace) {
     return normalizeNamespace(getNs()).equals(namespace);
   }
 
-  @NotNull
+  @NonNull
   public QName getQName() {
     return new QName(normalizeNamespace(getNs()).toString(), getName());
   }
 
-  @NotNull
-  public static Builder builder(@NotNull String name) {
+  @NonNull
+  public static Builder builder(@NonNull String name) {
     return new Builder(name);
   }
 
   public static class Builder {
-    @NotNull
+    @NonNull
     private final String name;
 
-    private UUID uuid;
-    private URI namespace;
-    private String value;
-    private String clazz;
+    private UUID uuid; // NOPMD - intentional
+    private URI namespace; // NOPMD - intentional
+    private String value; // NOPMD - intentional
+    private String clazz; // NOPMD - intentional
 
-    @SuppressWarnings("null")
-    public Builder(@NotNull String name) {
+    public Builder(@NonNull String name) {
       this.name = Objects.requireNonNull(name, "name");
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder uuid(@NotNull UUID uuid) {
-      this.uuid = Objects.requireNonNull(uuid, "uuid");
+    @NonNull
+    public Builder uuid(@NonNull UUID uuid) {
+      this.uuid = Objects.requireNonNull(uuid);
       return this;
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder namespace(@NotNull URI namespace) {
+    @NonNull
+    public Builder namespace(@NonNull URI namespace) {
       if (IProperty.OSCAL_NAMESPACE.equals(namespace)) {
-        this.namespace = null;
+        this.namespace = null; // NOPMD - ok
       } else {
-        this.namespace = Objects.requireNonNull(namespace, "namespace");
+        this.namespace = Objects.requireNonNull(namespace);
       }
       return this;
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder value(@NotNull String value) {
-      this.value = Objects.requireNonNull(value, "value");
+    @NonNull
+    public Builder value(@NonNull String value) {
+      this.value = Objects.requireNonNull(value);
       return this;
     }
 
-    @SuppressWarnings("null")
-    @NotNull
-    public Builder clazz(@NotNull String clazz) {
-      this.clazz = Objects.requireNonNull(clazz, "clazz");
+    @NonNull
+    public Builder clazz(@NonNull String clazz) {
+      this.clazz = Objects.requireNonNull(clazz);
       return this;
     }
 
-    @NotNull
+    @NonNull
     public Property build() {
       Property retval = new Property();
       retval.setName(name);

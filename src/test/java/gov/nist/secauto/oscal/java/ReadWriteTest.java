@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
+import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
@@ -99,6 +100,7 @@ class ReadWriteTest {
     // XML
     {
       IDeserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz);
+      deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
 
       File out = new File(tempDir.toFile(), "out.xml");
@@ -113,6 +115,7 @@ class ReadWriteTest {
       measureSerializer(obj, "JSON", out, serializer, iterations);
 
       IDeserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
+      deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
       obj = measureDeserializer("JSON", out, deserializer, iterations);
     }
 
@@ -123,6 +126,7 @@ class ReadWriteTest {
       measureSerializer(obj, "YAML", out, serializer, iterations);
 
       IDeserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
+      deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
       measureDeserializer("YAML", out, deserializer, iterations);
     }
   }
@@ -140,7 +144,6 @@ class ReadWriteTest {
     // outDir.mkdirs();
     // Path outPath = outDir.toPath();
     Path outPath = tempDir;
-    // chainReadWrite(catalogSourceXml, Catalog.class, tempDir, 50);
     chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
   }
 }

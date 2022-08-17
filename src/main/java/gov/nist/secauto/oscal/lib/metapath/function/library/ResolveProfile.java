@@ -36,16 +36,17 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.io.IOException;
 import java.util.List;
 
 public final class ResolveProfile {
 
-  @NotNull
+  @NonNull
   static final IFunction SIGNATURE_NO_ARG = IFunction.builder()
       .name("resolve-profile")
       .returnType(INodeItem.class)
@@ -56,7 +57,7 @@ public final class ResolveProfile {
       .functionHandler(ResolveProfile::executeNoArg)
       .build();
 
-  @NotNull
+  @NonNull
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("resolve-profile")
       .argument(IArgument.newBuilder()
@@ -76,35 +77,35 @@ public final class ResolveProfile {
     // disable construction
   }
 
-  @NotNull
-  public static ISequence<?> executeNoArg(@NotNull IFunction function,
-      @NotNull List<@NotNull ISequence<?>> arguments, @NotNull DynamicContext dynamicContext,
+  @NonNull
+  public static ISequence<?> executeNoArg(@NonNull IFunction function,
+      @NonNull List<ISequence<?>> arguments, @NonNull DynamicContext dynamicContext,
       INodeItem focus) {
 
     INodeItem item = focus;
     if (item == null) {
-      return ISequence.empty();
+      return ISequence.empty(); // NOPMD - readability
     }
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
 
-  @NotNull
-  public static ISequence<?> executeOneArg(@NotNull IFunction function,
-      @NotNull List<@NotNull ISequence<?>> arguments, @NotNull DynamicContext dynamicContext,
+  @NonNull
+  public static ISequence<?> executeOneArg(@NonNull IFunction function,
+      @NonNull List<ISequence<?>> arguments, @NonNull DynamicContext dynamicContext,
       INodeItem focus) {
     ISequence<? extends IDocumentNodeItem> arg = FunctionUtils.asType(arguments.get(0));
 
     IItem item = FunctionUtils.getFirstItem(arg, true);
     if (item == null) {
-      return ISequence.empty();
+      return ISequence.empty(); // NOPMD - readability
     }
 
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
 
-  @NotNull
-  public static IDocumentNodeItem resolveProfile(@NotNull IDocumentNodeItem profile,
-      @NotNull DynamicContext dynamicContext) {
+  @NonNull
+  public static IDocumentNodeItem resolveProfile(@NonNull IDocumentNodeItem profile,
+      @NonNull DynamicContext dynamicContext) {
     Object profileObject = profile.getValue();
 
     IDocumentNodeItem retval;
@@ -116,7 +117,7 @@ public final class ResolveProfile {
       resolver.setDynamicContext(dynamicContext);
       try {
         retval = resolver.resolve(profile);
-      } catch (IOException ex) {
+      } catch (IOException | ProfileResolutionException ex) {
         throw new MetapathException(String.format("Unable to resolve profile '%s'", profile.getBaseUri()), ex);
       }
     }

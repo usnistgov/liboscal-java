@@ -37,7 +37,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.metapath.function.library.ResolveProfile;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -57,7 +57,7 @@ class MetaschemaVisitorTest {
 
     StaticContext staticContext = new StaticContext();
     @SuppressWarnings("null")
-    @NotNull
+    @NonNull
     URI baseUri = new File("").getAbsoluteFile().toURI();
     staticContext.setBaseUri(baseUri);
     DynamicContext dynamicContext = staticContext.newDynamicContext();
@@ -70,7 +70,7 @@ class MetaschemaVisitorTest {
     IDocumentNodeItem nodeItem = loader.loadAsNodeItem(new URL(
         "https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_HIGH-baseline_profile.xml"));
 
-    // @NotNull
+    // @NonNull
     // Profile profile = nodeItem.toBoundObject();
 
     IDocumentNodeItem resolvedProfile = ResolveProfile.resolveProfile(nodeItem, dynamicContext);
@@ -110,8 +110,8 @@ class MetaschemaVisitorTest {
   }
 
   @SuppressWarnings("PMD")
-  private void evaluatePath(@NotNull MetapathExpression path, @NotNull INodeContext nodeContext,
-      @NotNull DynamicContext dynamicContext) {
+  private void evaluatePath(@NonNull MetapathExpression path, @NonNull INodeContext nodeContext,
+      @NonNull DynamicContext dynamicContext) {
     System.out.println("Path: " + path.getPath());
     System.out.println("Compiled Path: " + path.toString());
 

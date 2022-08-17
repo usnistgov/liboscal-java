@@ -27,5 +27,5 @@
 package gov.nist.secauto.oscal.lib.model.metadata;
 
 public interface ILink {
-
+  // no additional methods
 }
