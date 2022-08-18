@@ -112,6 +112,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor { // NOPMD - 
     PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "sort-id"), PROPERTY_POLICY_IGNORE);
     PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "alt-label"), PROPERTY_POLICY_IGNORE);
     PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "alt-identifier"), PROPERTY_POLICY_IGNORE);
+    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, "method"), PROPERTY_POLICY_IGNORE);
     PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.RMF_NAMESPACE, "method"), PROPERTY_POLICY_IGNORE);
     PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.RMF_NAMESPACE, "aggregates"),
         PropertyReferencePolicy.create(IIdentifierParser.IDENTITY_PARSER, ItemType.PARAMETER));
@@ -122,6 +123,7 @@ public class ReferenceCountingVisitor implements IReferenceVisitor { // NOPMD - 
     LINK_POLICIES.put("reference", LinkReferencePolicy.create(ItemType.RESOURCE));
     LINK_POLICIES.put("related", LinkReferencePolicy.create(ItemType.CONTROL));
     LINK_POLICIES.put("required", LinkReferencePolicy.create(ItemType.CONTROL));
+    LINK_POLICIES.put("corresp", LinkReferencePolicy.create(ItemType.PART));
   }
 
   @NonNull

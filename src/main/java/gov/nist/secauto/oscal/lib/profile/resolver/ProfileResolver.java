@@ -458,9 +458,8 @@ public class ProfileResolver { // NOPMD - ok
               handleSetParameter(setParameter, index);
             } catch (ProfileResolutionEvaluationException ex) {
               throw new ProfileResolutionEvaluationException(
-                  String.format("Unable to apply the set-parameter at '%s' in '%s'. %s",
+                  String.format("Unable to apply the set-parameter at '%s'. %s",
                       setParameter.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
-                      ObjectUtils.notNull(setParameter.getBaseUri()).toString(),
                       ex.getLocalizedMessage()),
                   ex);
             }
@@ -471,11 +470,7 @@ public class ProfileResolver { // NOPMD - ok
             handleAlter((IRequiredValueAssemblyNodeItem) item, index);
           });
     } catch (ProfileResolutionEvaluationException ex) {
-      throw new ProfileResolutionException(
-          String.format("Unable to apply the modify in '%s'. %s",
-              resolvedCatalogDocument.getDocumentUri().toString(),
-              ex.getLocalizedMessage()),
-          ex);
+      throw new ProfileResolutionException(ex.getLocalizedMessage(), ex);
     }
   }
 
@@ -529,9 +524,9 @@ public class ProfileResolver { // NOPMD - ok
             }
           } catch (ProfileResolutionEvaluationException ex) {
             throw new ProfileResolutionEvaluationException(
-                String.format("Unable to apply the remove at '%s' in '%s'. %s",
+                String.format("Unable to apply the remove targeting control '%s' at '%s'. %s",
+                    control.getId(),
                     removeItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
-                    ObjectUtils.notNull(removeItem.getBaseUri()).toString(),
                     ex.getLocalizedMessage()),
                 ex);
           }
@@ -540,24 +535,27 @@ public class ProfileResolver { // NOPMD - ok
         .forEach(nodeItem -> {
           IRequiredValueNodeItem addItem = (IRequiredValueNodeItem) nodeItem;
           Modify.Alter.Add add = ObjectUtils.notNull((Modify.Alter.Add) addItem.getValue());
+          String byId = add.getById();
           try {
             if (!AddVisitor.add(
                 control,
                 AddVisitor.Position.forName(add.getPosition()),
-                add.getById(),
+                byId,
                 add.getTitle(),
                 CollectionUtil.listOrEmpty(add.getParams()),
                 CollectionUtil.listOrEmpty(add.getProps()),
                 CollectionUtil.listOrEmpty(add.getLinks()),
                 CollectionUtil.listOrEmpty(add.getParts()))) {
+              
               throw new ProfileResolutionEvaluationException(
                   String.format("The add did not match a valid target"));
             }
           } catch (ProfileResolutionEvaluationException ex) {
             throw new ProfileResolutionEvaluationException(
-                String.format("Unable to apply the add at '%s' in '%s'. %s",
+                String.format("Unable to apply the add targeting control '%s'%s at '%s'. %s",
+                    control.getId(),
+                    byId == null ? "" : String.format(" having by-id '%s'", byId),
                     addItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
-                    ObjectUtils.notNull(addItem.getBaseUri()).toString(),
                     ex.getLocalizedMessage()),
                 ex);
           }
