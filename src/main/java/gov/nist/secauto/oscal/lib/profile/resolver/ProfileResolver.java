@@ -481,7 +481,9 @@ public class ProfileResolver { // NOPMD - ok
     EntityItem entity = index.getEntity(ItemType.PARAMETER, paramId);
     if (entity == null) {
       throw new ProfileResolutionEvaluationException(
-          String.format("Unable to apply the set-parameter targeting parameter '%s' at '%s'. The parameter does not exist in the resolved catalog.",
+          String.format(
+              "Unable to apply the set-parameter targeting parameter '%s' at '%s'."
+                  + " The parameter does not exist in the resolved catalog.",
               paramId,
               item.toPath(IPathFormatter.METAPATH_PATH_FORMATER)));
     }
@@ -509,7 +511,9 @@ public class ProfileResolver { // NOPMD - ok
     EntityItem entity = index.getEntity(ItemType.CONTROL, controlId);
     if (entity == null) {
       throw new ProfileResolutionEvaluationException(
-          String.format("Unable to apply the alter targeting control '%s' at '%s'. The control does not exist in the resolved catalog.",
+          String.format(
+              "Unable to apply the alter targeting control '%s' at '%s'."
+                  + " The control does not exist in the resolved catalog.",
               controlId,
               item.toPath(IPathFormatter.METAPATH_PATH_FORMATER)));
     }
@@ -555,7 +559,7 @@ public class ProfileResolver { // NOPMD - ok
                 CollectionUtil.listOrEmpty(add.getProps()),
                 CollectionUtil.listOrEmpty(add.getLinks()),
                 CollectionUtil.listOrEmpty(add.getParts()))) {
-              
+
               throw new ProfileResolutionEvaluationException(
                   String.format("The add did not match a valid target"));
             }
