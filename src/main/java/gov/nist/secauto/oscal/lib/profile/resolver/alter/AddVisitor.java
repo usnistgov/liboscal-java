@@ -488,7 +488,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
     return retval;
   }
 
-  static class Context {
+  static class Context { // NOPMD - false positive
     @NonNull
     private static final Set<TargetType> TITLE_TYPES = ObjectUtils.notNull(
         Set.of(TargetType.CONTROL, TargetType.PART));
