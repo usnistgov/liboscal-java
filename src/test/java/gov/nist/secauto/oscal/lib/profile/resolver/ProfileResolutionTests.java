@@ -29,6 +29,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.nist.secauto.metaschema.binding.io.DefaultBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Format;
@@ -48,6 +49,7 @@ import org.assertj.core.api.Assertions;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
@@ -58,6 +60,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneOffset;
@@ -110,6 +114,11 @@ class ProfileResolutionTests {
   private static Catalog resolveProfile(@NonNull File profileFile)
       throws FileNotFoundException, IOException, ProfileResolutionException {
     return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
+  }
+
+  private static Catalog resolveProfile(@NonNull URL profileUrl)
+      throws IOException, ProfileResolutionException, URISyntaxException {
+    return (Catalog) getProfileResolver().resolveProfile(profileUrl).getValue();
   }
 
   private static String transformXml(Source source) throws SaxonApiException {
@@ -205,6 +214,16 @@ class ProfileResolutionTests {
   void testImportResourceRelativeLink() throws IOException, ProfileResolutionException {
     Path profilePath = Paths.get(JUNIT_TEST_PATH, "content/profile-relative-links-resource.xml");
     Catalog resolvedCatalog = resolveProfile(profilePath);
+    assertNotNull(resolvedCatalog);
+  }
+  
+
+  @Test
+  @Disabled
+  void testRemove() throws IOException, ProfileResolutionException, URISyntaxException {
+    URL url = new URL("https://raw.githubusercontent.com/GSA/fedramp-automation/2229f10cc0b143410522026b793f4947eebb0872/dist/content/baselines/rev4/xml/FedRAMP_rev4_LI-SaaS-baseline_profile.xml");
+    
+    Catalog resolvedCatalog = resolveProfile(url);
     assertNotNull(resolvedCatalog);
   }
 }

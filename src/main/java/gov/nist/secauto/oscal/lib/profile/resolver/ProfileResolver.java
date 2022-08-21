@@ -37,6 +37,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
 import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueAssemblyNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueNodeItem;
@@ -479,8 +480,12 @@ public class ProfileResolver { // NOPMD - ok
     String paramId = setParameter.getParamId();
     EntityItem entity = index.getEntity(ItemType.PARAMETER, paramId);
     if (entity == null) {
-      throw new IllegalStateException(
-          String.format("The parameter '%s' was not found in the resolved catalog", paramId));
+      throw new ProfileResolutionEvaluationException(
+          String.format(
+              "Unable to apply the set-parameter targeting parameter '%s' at '%s'."
+                  + " The parameter does not exist in the resolved catalog.",
+              paramId,
+              item.toPath(IPathFormatter.METAPATH_PATH_FORMATER)));
     }
 
     Parameter param = entity.getInstanceValue();
@@ -504,6 +509,14 @@ public class ProfileResolver { // NOPMD - ok
     Modify.Alter alter = (Modify.Alter) item.getValue();
     String controlId = alter.getControlId();
     EntityItem entity = index.getEntity(ItemType.CONTROL, controlId);
+    if (entity == null) {
+      throw new ProfileResolutionEvaluationException(
+          String.format(
+              "Unable to apply the alter targeting control '%s' at '%s'."
+                  + " The control does not exist in the resolved catalog.",
+              controlId,
+              item.toPath(IPathFormatter.METAPATH_PATH_FORMATER)));
+    }
     Control control = entity.getInstanceValue();
 
     METAPATH_ALTER_REMOVE.evaluate(item)
@@ -546,7 +559,7 @@ public class ProfileResolver { // NOPMD - ok
                 CollectionUtil.listOrEmpty(add.getProps()),
                 CollectionUtil.listOrEmpty(add.getLinks()),
                 CollectionUtil.listOrEmpty(add.getParts()))) {
-              
+
               throw new ProfileResolutionEvaluationException(
                   String.format("The add did not match a valid target"));
             }

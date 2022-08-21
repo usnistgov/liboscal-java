@@ -423,6 +423,14 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
         () -> context.getParts(),
         child -> visitPart(child, context),
         context);
+    
+    // visit control children
+    for (Control childControl : CollectionUtil.listOrEmpty(control.getControls()) ) {
+      Set<TargetType> applicableTypes = getApplicableTypes(TargetType.CONTROL);
+      if (!Collections.disjoint(context.getTargetItemTypes(), applicableTypes)) {
+        retval = retval || visitControl(childControl, context);
+      }
+    }
     return retval;
   }
 
@@ -480,7 +488,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
     return retval;
   }
 
-  static class Context {
+  static class Context { // NOPMD - false positive
     @NonNull
     private static final Set<TargetType> TITLE_TYPES = ObjectUtils.notNull(
         Set.of(TargetType.CONTROL, TargetType.PART));

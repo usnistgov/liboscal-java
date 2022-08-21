@@ -452,7 +452,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     }
 
     protected boolean checkValue(@Nullable String actual, @Nullable String expected) {
-      return expected != null && expected.equals(actual);
+      return expected == null || expected.equals(actual);
     }
 
     public boolean appliesTo(@NonNull Object obj) {
@@ -499,16 +499,10 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
           throw new UnsupportedOperationException(objectType.name().toLowerCase(Locale.ROOT));
         }
 
-        retval = checkValue(actualName, getObjectName());
-        if (retval) {
-          checkValue(actualClass, getObjectClass());
-        }
-        if (retval) {
-          checkValue(actualId, getObjectId());
-        }
-        if (retval) {
-          checkValue(actualNamespace, getObjectNamespace());
-        }
+        retval = checkValue(actualName, getObjectName())
+            && checkValue(actualClass, getObjectClass())
+            && checkValue(actualId, getObjectId())
+            && checkValue(actualNamespace, getObjectNamespace());
       }
       return retval;
     }
