@@ -29,6 +29,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,7 +79,8 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param visitor
    *          the reference visitor, which can be used for further processing
    * @return {@code true} if the hit was handled or {@code false} otherwise
-   * @throw ProfileResolutionEvaluationException if there was an error handing the index hit
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index hit
    */
   protected boolean handleIndexHit(
       @NonNull TYPE reference,
@@ -119,7 +121,8 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *          the referenced item
    * @param visitor
    *          the reference visitor, which can be used for further processing
-   * @throw ProfileResolutionEvaluationException if there was an error handing the index hit
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index hit
    */
   protected void handleUnselected( // NOPMD - do nothing by default
       @NonNull TYPE reference,
@@ -139,7 +142,8 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *          the referenced item
    * @param visitor
    *          the reference visitor, which can be used for further processing
-   * @throw ProfileResolutionEvaluationException if there was an error handing the index hit
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index hit
    */
   protected void handleSelected( // NOPMD - do nothing by default
       @NonNull TYPE reference,
@@ -163,7 +167,8 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param visitor
    *          the reference visitor, which can be used for further processing
    * @return {@code true} if the reference is handled by this method or {@code false} otherwise
-   * @throw ProfileResolutionEvaluationException if there was an error handing the index miss
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index miss
    */
   protected boolean handleIndexMiss(
       @NonNull TYPE reference,
@@ -185,8 +190,8 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param visitor
    *          the reference visitor, which can be used for further processing
    * @return {@code true} if the reference is handled by this method or {@code false} otherwise
-   * @throw ProfileResolutionEvaluationException if there was an error handing the index miss due to a
-   *        non match
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index miss due to a non match
    */
   protected boolean handleIdentifierNonMatch(
       @NonNull TYPE reference,
@@ -213,7 +218,8 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param visitor
    *          the reference visitor, which can be used for further processing
    * @return {@code true} if the reference is handled by this method or {@code false} otherwise
-   * @throw ProfileResolutionEvaluationException if there was an error handing the reference
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the reference
    */
   protected boolean handleIdentifier(
       @NonNull TYPE type,

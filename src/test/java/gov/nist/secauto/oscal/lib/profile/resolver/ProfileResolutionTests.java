@@ -216,13 +216,13 @@ class ProfileResolutionTests {
     Catalog resolvedCatalog = resolveProfile(profilePath);
     assertNotNull(resolvedCatalog);
   }
-  
 
   @Test
   @Disabled
   void testRemove() throws IOException, ProfileResolutionException, URISyntaxException {
-    URL url = new URL("https://raw.githubusercontent.com/GSA/fedramp-automation/2229f10cc0b143410522026b793f4947eebb0872/dist/content/baselines/rev4/xml/FedRAMP_rev4_LI-SaaS-baseline_profile.xml");
-    
+    URL url = new URL(
+        "https://raw.githubusercontent.com/GSA/fedramp-automation/2229f10cc0b143410522026b793f4947eebb0872/dist/content/baselines/rev4/xml/FedRAMP_rev4_LI-SaaS-baseline_profile.xml");
+
     Catalog resolvedCatalog = resolveProfile(url);
     assertNotNull(resolvedCatalog);
   }

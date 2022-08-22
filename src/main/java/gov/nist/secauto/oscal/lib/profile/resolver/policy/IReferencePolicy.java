@@ -26,6 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
+
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IReferencePolicy<T> {
@@ -59,7 +61,8 @@ public interface IReferencePolicy<T> {
    * @param visitor
    *          used to lookup and resolve items
    * @return {@code true} if the reference was handled, or {@code false} otherwise
-   * @throw ProfileResolutionEvaluationException if there was an error handing the reference
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the reference
    */
   boolean handleReference(@NonNull T reference, @NonNull IReferenceVisitor visitor);
 }

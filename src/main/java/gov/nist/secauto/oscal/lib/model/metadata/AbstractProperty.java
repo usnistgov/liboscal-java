@@ -75,9 +75,9 @@ public abstract class AbstractProperty implements IProperty {
 
   public static List<Property> merge(@NonNull List<Property> original, @NonNull List<Property> additional) {
     return Stream.concat(original.stream(), additional.stream())
-      .collect(Collectors.toCollection(LinkedList::new));
+        .collect(Collectors.toCollection(LinkedList::new));
   }
-  
+
   @Override
   public boolean isNamespaceEqual(@NonNull URI namespace) {
     return normalizeNamespace(getNs()).equals(namespace);

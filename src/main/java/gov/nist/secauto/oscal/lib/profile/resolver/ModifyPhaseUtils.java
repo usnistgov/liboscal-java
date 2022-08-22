@@ -45,7 +45,6 @@ public final class ModifyPhaseUtils {
     // disable construction
   }
 
-
   public static <T> Function<? super T, String> identityKey() {
     return (item) -> Integer.toString(Objects.hashCode(item));
   }

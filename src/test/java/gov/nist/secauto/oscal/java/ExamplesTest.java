@@ -75,7 +75,8 @@ class ExamplesTest {
   }
 
   @Test
-  void testConstraintValidation() throws MalformedURLException, IOException, URISyntaxException, ProfileResolutionException {
+  void testConstraintValidation()
+      throws MalformedURLException, IOException, URISyntaxException, ProfileResolutionException {
     // Initialize the Metaschema framework
     OscalBindingContext bindingContext = OscalBindingContext.instance(); // manages the Metaschema model
     IBoundLoader loader = bindingContext.newBoundLoader(); // supports loading OSCAL documents

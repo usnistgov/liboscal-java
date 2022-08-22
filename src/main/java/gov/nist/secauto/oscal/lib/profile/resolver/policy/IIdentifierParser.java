@@ -66,7 +66,8 @@ public interface IIdentifierParser {
    * @param newIdentifier
    *          the new identifier to replace the existing identifier
    * @return the updated reference text with the identifier replaced
-   * @throws ProfileResolutionEvaluationException if the identifier could not be updated
+   * @throws ProfileResolutionEvaluationException
+   *           if the identifier could not be updated
    */
   @NonNull
   String update(@NonNull String referenceText, @NonNull String newIdentifier);

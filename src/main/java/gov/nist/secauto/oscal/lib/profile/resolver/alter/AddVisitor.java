@@ -423,9 +423,9 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
         () -> context.getParts(),
         child -> visitPart(child, context),
         context);
-    
+
     // visit control children
-    for (Control childControl : CollectionUtil.listOrEmpty(control.getControls()) ) {
+    for (Control childControl : CollectionUtil.listOrEmpty(control.getControls())) {
       Set<TargetType> applicableTypes = getApplicableTypes(TargetType.CONTROL);
       if (!Collections.disjoint(context.getTargetItemTypes(), applicableTypes)) {
         retval = retval || visitControl(childControl, context);

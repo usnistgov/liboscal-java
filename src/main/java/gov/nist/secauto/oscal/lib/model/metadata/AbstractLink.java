@@ -42,7 +42,7 @@ public abstract class AbstractLink implements ILink {
 
   public static List<Link> merge(@NonNull List<Link> original, @NonNull List<Link> additional) {
     return Stream.concat(original.stream(), additional.stream())
-      .collect(Collectors.toCollection(LinkedList::new));
+        .collect(Collectors.toCollection(LinkedList::new));
   }
 
   @NonNull
