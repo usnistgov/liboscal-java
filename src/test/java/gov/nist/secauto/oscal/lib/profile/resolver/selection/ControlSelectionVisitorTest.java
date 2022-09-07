@@ -24,58 +24,48 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.oscal.lib.OscalBindingContext;
-import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControlContainer;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.ReferenceCountingVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.TestUtil;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.ControlSelectionVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlFilter;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlSelectionFilter;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.BasicIndexer;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class FilterNonSelectedVisitorTest {
+class ControlSelectionVisitorTest {
 
-  @SuppressWarnings("null")
   @Test
-  void test() throws BindingException, IOException {
+  void test() throws BindingException {
     // setup the imported catalog
     IDocumentNodeItem importedCatalogDocumentItem = TestUtil.newImportedCatalog();
 
-    // setup the selection visitor
     IControlFilter filter = IControlFilter.newInstance(
         IControlSelectionFilter.ALL_MATCH,
         IControlSelectionFilter.matchIds("control2", "control5", "control7"));
-    IIdentifierMapper mapper = IIdentifierMapper.IDENTITY;
-    ControlSelectionVisitor selectionVisitor = new ControlSelectionVisitor(filter, mapper);
 
-    // process selections
-    selectionVisitor.visitCatalog(importedCatalogDocumentItem);
-    Index index = selectionVisitor.getIndex();
-
-    // setup reference counting
-    new ReferenceCountingVisitor(index, importedCatalogDocumentItem.getBaseUri())
-        .visitCatalog(importedCatalogDocumentItem);
-
-    FilterNonSelectedVisitor pruneVisitor = new FilterNonSelectedVisitor(index);
-    pruneVisitor.visitCatalog(importedCatalogDocumentItem);
+    IIndexer indexer = new BasicIndexer();
+    IControlSelectionState state = new ControlSelectionState(indexer, filter);
+    ControlSelectionVisitor.instance().visitCatalog(importedCatalogDocumentItem, state);
 
     Set<String> selected = Stream.concat(
-        index.getEntitiesByItemType(ItemType.GROUP).stream(),
-        index.getEntitiesByItemType(ItemType.CONTROL).stream())
-        .filter(entry -> entry.isSelected(index))
+        indexer.getEntitiesByItemType(IEntityItem.ItemType.GROUP).stream(),
+        indexer.getEntitiesByItemType(IEntityItem.ItemType.CONTROL).stream())
+        .filter(entry -> indexer.isSelected(entry))
         .map(entry -> {
           IControlContainer container = entry.getInstanceValue();
           String id;
@@ -90,11 +80,6 @@ class FilterNonSelectedVisitorTest {
           return id;
         })
         .collect(Collectors.toSet());
-    assertEquals(
-        Set.of("control1", "control3", "control4", "control6", "control8", "group1", "group2"),
-        selected);
-
-    OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class)
-        .serialize((Catalog) importedCatalogDocumentItem.getValue(), System.out);
+    assertEquals(Set.of("control1", "control3", "control4", "control6", "control8", "group1", "group2"), selected);
   }
 }

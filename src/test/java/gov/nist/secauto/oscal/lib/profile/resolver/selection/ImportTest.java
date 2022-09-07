@@ -24,7 +24,7 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import gov.nist.secauto.metaschema.model.common.IRootAssemblyDefinition;
@@ -40,6 +40,8 @@ import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.control.catalog.AbstractControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.AbstractProfileSelectControlById;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.Import;
 
 import org.junit.jupiter.api.Test;
 

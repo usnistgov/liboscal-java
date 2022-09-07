@@ -24,54 +24,89 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
+
+import java.net.URI;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public interface IReferencePolicy<T> {
-  @NonNull
-  IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
+public interface IEntityItem {
 
-    @Override
-    public boolean handleReference(
-        @NonNull IRequiredValueModelNodeItem contextItem,
-        @NonNull Object reference,
-        @NonNull ReferenceCountingVisitor.Context referenceVisitorContext) {
-      return true;
+  public enum ItemType {
+    ROLE(false),
+    LOCATION(true),
+    PARTY(true),
+    GROUP(false),
+    CONTROL(false),
+    PART(false),
+    PARAMETER(false),
+    RESOURCE(true);
+
+    private final boolean uuid;
+
+    private ItemType(boolean isUuid) {
+      this.uuid = isUuid;
     }
-  };
 
-  /**
-   * Get a reference policy that will ignore processing the reference.
-   * 
-   * @param <T>
-   *          the type of the reference object
-   * @return the policy
-   */
-  @SuppressWarnings("unchecked")
-  @NonNull
-  static <T> IReferencePolicy<T> ignore() {
-    return (IReferencePolicy<T>) IGNORE_POLICY;
+    public boolean isUuid() {
+      return uuid;
+    }
   }
 
   /**
-   * Handle the provided {@code reference}.
+   * Get the identifier originally assigned to this entity.
+   * <p>
+   * If the identifier value was reassigned, the return value of this method will be different than
+   * value returned by {@link #getIdentifier()}. In such cases, a call to
+   * {@link #isIdentifierReassigned()} is expected to return {@code true}.
+   * <p>
+   * If the value was not reassigned, the return value of this method will be the same value returned
+   * by {@link #getIdentifier()}. In this case, {@link #isIdentifierReassigned()} is expected to
+   * return {@code false}.
    * 
-   * @param contextItem
-   *          the nodes containing the reference
-   * @param reference
-   *          the reference object to process
-   * @param referenceVisitorContext
-   *          used to lookup and resolve items
-   * @return {@code true} if the reference was handled, or {@code false} otherwise
-   * @throws ProfileResolutionEvaluationException
-   *           if there was an error handing the reference
+   * @return the original identifier value before reassignment
    */
-  boolean handleReference(
-      @NonNull IRequiredValueModelNodeItem contextItem,
-      @NonNull T reference,
-      @NonNull ReferenceCountingVisitor.Context referenceVisitorContext);
+  @NonNull
+  String getOriginalIdentifier();
+
+  /**
+   * Get the entity's current identifier value.
+   * 
+   * @return the identifier value
+   */
+  @NonNull
+  String getIdentifier();
+
+  /**
+   * Determine if the identifier was reassigned.
+   * 
+   * @return {@code true} if the identifier was reassigned, or {@code false} otherwise
+   */
+  boolean isIdentifierReassigned();
+
+  @NonNull
+  IRequiredValueModelNodeItem getInstance();
+
+  void setInstance(@NonNull IRequiredValueModelNodeItem item);
+
+  @NonNull
+  <T> T getInstanceValue();
+
+  @NonNull
+  ItemType getItemType();
+
+  URI getSource();
+
+  int getReferenceCount();
+
+  void incrementReferenceCount();
+
+  // FIXME: make private
+  public static class Builder {
+
+  }
+
+  int resetReferenceCount();
 }

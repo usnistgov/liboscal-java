@@ -23,21 +23,43 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
-
-import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
-
-import java.util.List;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public abstract class AbstractIndexMissPolicyHandler<TYPE> implements ICustomReferencePolicyHandler<TYPE> {
+public class ReassignmentIndexer
+    extends BasicIndexer {
+  @NonNull
+  private final IIdentifierMapper mapper;
+
+  public ReassignmentIndexer(@NonNull IIdentifierMapper mapper) {
+    this.mapper = mapper;
+  }
+  
+  @NonNull
+  protected IIdentifierMapper getMapper() {
+    return mapper;
+  }
+
   @Override
-  public abstract boolean handleIndexMiss(
-      @NonNull ICustomReferencePolicy<TYPE> policy,
-      @NonNull TYPE type,
-      @NonNull List<IEntityItem.ItemType> itemTypes,
-      @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor);
+  protected AbstractEntityItem.Builder newBuilder(IRequiredValueModelNodeItem item, ItemType itemType, String identifier) {
+    AbstractEntityItem.Builder builder = super.newBuilder(item, itemType, identifier);
+
+    String reassignment = getMapper().mapByItemType(itemType, identifier);
+    if (!identifier.equals(reassignment)) {
+      builder.reassignedIdentifier(reassignment);
+    }
+    return builder;
+  }
+
+  @Override
+  public IEntityItem getEntity(ItemType itemType, String identifier, boolean normalize) {
+    // reassign the identifier
+    String reassignment = getMapper().mapByItemType(itemType, identifier);
+    // lookup using the reassigned identifier
+    return super.getEntity(itemType, reassignment, normalize);
+  }
 }

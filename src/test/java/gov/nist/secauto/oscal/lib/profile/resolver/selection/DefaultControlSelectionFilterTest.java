@@ -24,7 +24,7 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.DefaultControlSelectionFilter;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlSelectionFilter;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jmock.Expectations;

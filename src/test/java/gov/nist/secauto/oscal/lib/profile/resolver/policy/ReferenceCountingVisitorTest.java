@@ -31,18 +31,22 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.profile.resolver.ControlSelectionVisitor;
-import gov.nist.secauto.oscal.lib.profile.resolver.IControlFilter;
-import gov.nist.secauto.oscal.lib.profile.resolver.IControlSelectionFilter;
-import gov.nist.secauto.oscal.lib.profile.resolver.IIdentifierMapper;
-import gov.nist.secauto.oscal.lib.profile.resolver.Index;
 import gov.nist.secauto.oscal.lib.profile.resolver.TestUtil;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.ControlSelectionState;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.ControlSelectionVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlFilter;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlSelectionFilter;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlSelectionState;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIdentifierMapper;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.ReassignmentIndexer;
+
+import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 class ReferenceCountingVisitorTest {
-
   @SuppressWarnings("null")
   @Test
   void test() throws IOException {
@@ -54,16 +58,19 @@ class ReferenceCountingVisitorTest {
         IControlSelectionFilter.ALL_MATCH,
         IControlSelectionFilter.matchIds("control2", "control5", "control7"));
     IIdentifierMapper mapper = TestUtil.UUID_CONCAT_ID_MAPPER;
-    ControlSelectionVisitor selectionVisitor = new ControlSelectionVisitor(filter, mapper);
+    IIndexer indexer = new ReassignmentIndexer(mapper);
+    IControlSelectionState state = new ControlSelectionState(indexer, filter);
 
     // process selections
-    selectionVisitor.visitCatalog(importedCatalogDocumentItem);
+    ControlSelectionVisitor.instance().visitCatalog(importedCatalogDocumentItem, state);
+
+    IIndexer.logIndex(indexer, Level.DEBUG);
 
     // setup reference counting
-    Index index = selectionVisitor.getIndex();
+    ReferenceCountingVisitor.instance()
+        .visitCatalog(importedCatalogDocumentItem, indexer, importedCatalogDocumentItem.getBaseUri());
 
-    new ReferenceCountingVisitor(index, importedCatalogDocumentItem.getBaseUri())
-        .visitCatalog(importedCatalogDocumentItem);
+    IIndexer.logIndex(indexer, Level.DEBUG);
 
     OscalBindingContext.instance()
         .newSerializer(Format.YAML, Catalog.class)

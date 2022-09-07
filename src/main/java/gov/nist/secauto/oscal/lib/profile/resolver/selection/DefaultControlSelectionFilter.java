@@ -24,12 +24,13 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -138,8 +139,8 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
       return value;
     }).collect(Collectors.joining("", "^", "$"));
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.atDebug().log("regex: {}", regex);
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.atTrace().log("regex: {}", regex);
     }
     return Pattern.compile(regex);
   }

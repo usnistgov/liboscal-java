@@ -42,6 +42,7 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -74,6 +75,7 @@ class ExamplesTest {
     serializer.serialize(catalog, outDir.resolve("test-catalog.yaml"));
   }
 
+  @Disabled
   @Test
   void testConstraintValidation()
       throws MalformedURLException, IOException, URISyntaxException, ProfileResolutionException {

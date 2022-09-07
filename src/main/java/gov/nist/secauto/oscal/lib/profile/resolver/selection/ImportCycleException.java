@@ -24,43 +24,33 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.CatalogGroup;
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.Parameter;
+public class ImportCycleException
+    extends Exception {
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+  /**
+   * the serial version UUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-import java.util.Collection;
-import java.util.Set;
+  public ImportCycleException() {
+    // no message or cause
+  }
 
-public interface IResult {
+  public ImportCycleException(String message) {
+    super(message);
+  }
 
-  @NonNull
-  Collection<Parameter> getPromotedParameters();
+  public ImportCycleException(Throwable cause) {
+    super(cause);
+  }
 
-  @NonNull
-  Collection<Control> getPromotedControls();
+  public ImportCycleException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-  @NonNull
-  Set<String> getRequiredParameterIds();
-
-  boolean isParameterRequired(@NonNull String id);
-
-  void promoteParameter(@NonNull Parameter param);
-
-  void promoteControl(@NonNull Control control);
-
-  void requireParameters(@NonNull Set<String> requiredParameterIds);
-
-  void applyTo(@NonNull Catalog parent);
-
-  void applyTo(@NonNull CatalogGroup parent);
-
-  void applyTo(@NonNull Control parent);
-
-  @NonNull
-  IResult append(@NonNull IResult that);
+  public ImportCycleException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
 }

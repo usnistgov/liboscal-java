@@ -24,29 +24,24 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public interface IIndexer {
-  @NonNull
-  Index getIndex();
+public interface IResult {
 
-  EntityItem addRole(@NonNull IRequiredValueModelNodeItem role);
+  void promoteParameter(@NonNull Parameter param);
 
-  EntityItem addLocation(@NonNull IRequiredValueModelNodeItem location);
+  void promoteControl(@NonNull Control control);
 
-  EntityItem addParty(@NonNull IRequiredValueModelNodeItem party);
+  void applyTo(@NonNull Catalog parent);
 
-  EntityItem addGroup(@NonNull IRequiredValueModelNodeItem group, boolean selected);
+  void applyTo(@NonNull CatalogGroup parent);
 
-  EntityItem addControl(@NonNull IRequiredValueModelNodeItem control, boolean selected);
-
-  EntityItem addParameter(@NonNull IRequiredValueModelNodeItem parameter);
-
-  EntityItem addPart(@NonNull IRequiredValueModelNodeItem part);
-
-  EntityItem addResource(@NonNull IRequiredValueModelNodeItem resource);
+  void applyTo(@NonNull Control parent);
 }

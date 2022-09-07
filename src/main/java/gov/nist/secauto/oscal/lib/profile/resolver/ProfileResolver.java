@@ -28,6 +28,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
+import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
@@ -37,7 +38,6 @@ import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
 import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueAssemblyNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueNodeItem;
@@ -50,7 +50,6 @@ import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Merge;
 import gov.nist.secauto.oscal.lib.model.Metadata;
 import gov.nist.secauto.oscal.lib.model.Modify;
@@ -59,11 +58,20 @@ import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.Property;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractLink;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
 import gov.nist.secauto.oscal.lib.profile.resolver.alter.AddVisitor;
 import gov.nist.secauto.oscal.lib.profile.resolver.alter.RemoveVisitor;
-import gov.nist.secauto.oscal.lib.profile.resolver.policy.ReferenceCountingVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.merge.FlatteningStructuringVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.Import;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.ImportCycleException;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.BasicIndexer;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.ControlIndexingVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.EntityResolver;
@@ -78,7 +86,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -194,10 +202,16 @@ public class ProfileResolver { // NOPMD - ok
 
     generateMetadata(resolvedCatalog, profileDocument);
 
-    resolveImports(resolvedCatalog, profileDocument, importHistory);
-    handleMerge(resolvedCatalog, profileDocument);
+    IIndexer index = resolveImports(resolvedCatalog, profileDocument, importHistory);
+
+    handleReferences(resolvedCatalog, profileDocument, index);
+
+    handleMerge(resolvedCatalog, profileDocument, index);
+    
+    // REMOVE
+    OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(resolvedCatalog, System.out);
+
     handleModify(resolvedCatalog, profileDocument);
-    handleReferences(resolvedCatalog, profileDocument);
 
     return DefaultNodeItemFactory.instance().newDocumentNodeItem(
         new RootAssemblyDefinition(
@@ -263,15 +277,17 @@ public class ProfileResolver { // NOPMD - ok
 
     resolvedMetadata.setLastModified(ZonedDateTime.now(ZoneOffset.UTC));
 
-    resolvedMetadata.addProp(Property.builder("resolution-tool").value("libOSCAL-Java").build());
+    resolvedMetadata.addProp(AbstractProperty.builder("resolution-tool").value("libOSCAL-Java").build());
 
     URI profileUri = profileDocument.getDocumentUri();
-    resolvedMetadata.addLink(Link.builder(profileUri).relation("source-profile").build());
+    resolvedMetadata.addLink(AbstractLink.builder(profileUri).relation("source-profile").build());
 
     resolvedCatalog.setMetadata(resolvedMetadata);
   }
 
-  private void resolveImports(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+  private IIndexer resolveImports(
+      @NonNull Catalog resolvedCatalog,
+      @NonNull IDocumentNodeItem profileDocument,
       @NonNull Stack<URI> importHistory)
       throws IOException, ProfileResolutionException {
 
@@ -284,12 +300,15 @@ public class ProfileResolver { // NOPMD - ok
     }
 
     // now process each import
+    IIndexer retval = new BasicIndexer();
     for (IRequiredValueModelNodeItem profileImportItem : profileImports) {
-      resolveImport(profileImportItem, profileDocument, importHistory, resolvedCatalog);
+      IIndexer result = resolveImport(profileImportItem, profileDocument, importHistory, resolvedCatalog);
+      retval.append(result);
     }
+    return retval;
   }
 
-  protected void resolveImport(
+  protected IIndexer resolveImport(
       @NonNull IRequiredValueModelNodeItem profileImportItem,
       @NonNull IDocumentNodeItem profileDocument,
       @NonNull Stack<URI> importHistory,
@@ -305,7 +324,7 @@ public class ProfileResolver { // NOPMD - ok
       LOGGER.atDebug().log("resolving profile import '{}'", importUri);
     }
 
-    InputSource source = newImportSource(importUri, profileDocument, importHistory);
+    InputSource source = newImportSource(importUri, profileDocument);
     URI sourceUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
 
     // check for import cycle
@@ -331,8 +350,10 @@ public class ProfileResolver { // NOPMD - ok
             OscalBindingContext.instance().copyBoundObject(importedCatalog.getValue(), null),
             importedCatalog.getDocumentUri());
 
-        new Import(profileDocument, profileImportItem) // NOPMD - intentional
+        IIndexer retval = new Import(profileDocument, profileImportItem) // NOPMD - intentional
             .resolve(importedCatalog, resolvedCatalog);
+
+        return retval;
       } catch (BindingException ex) {
         throw new IOException(ex);
       }
@@ -346,8 +367,7 @@ public class ProfileResolver { // NOPMD - ok
   @NonNull
   protected InputSource newImportSource(
       @NonNull URI importUri,
-      @NonNull IDocumentNodeItem profileDocument,
-      @NonNull Stack<URI> importHistory) throws IOException {
+      @NonNull IDocumentNodeItem profileDocument) throws IOException {
 
     // Get the entity resolver to resolve relative references in the profile
     EntityResolver resolver = getEntityResolver(profileDocument.getDocumentUri());
@@ -396,9 +416,9 @@ public class ProfileResolver { // NOPMD - ok
 
     List<URI> retval;
     if (index == -1) {
-      retval = Collections.emptyList();
+      retval = CollectionUtil.emptyList();
     } else {
-      retval = Collections.unmodifiableList(importHistory.subList(0, index + 1));
+      retval = CollectionUtil.unmodifiableList(importHistory.subList(0, index + 1));
     }
     return retval;
   }
@@ -420,7 +440,8 @@ public class ProfileResolver { // NOPMD - ok
     return retval;
   }
 
-  protected void handleMerge(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument) {
+  protected void handleMerge(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IIndexer importIndex) {
     // handle combine
 
     // handle structuring
@@ -432,10 +453,43 @@ public class ProfileResolver { // NOPMD - ok
       throw new UnsupportedOperationException("custom structuring");
     case FLAT:
     default:
-      structureFlat(resolvedCatalog);
+      structureFlat(resolvedCatalog, profileDocument, importIndex);
       break;
     }
 
+  }
+
+  protected void structureFlat(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IIndexer importIndex) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("applying flat structuring directive");
+    }
+
+    // {
+    // // rebuild an index
+    // IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
+    // new RootAssemblyDefinition(
+    // ObjectUtils.notNull(
+    // (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+    // resolvedCatalog,
+    // profileDocument.getBaseUri());
+    //
+    // // FIXME: need to find a better way to create an index that doesn't auto select groups
+    // IIndexer indexer = new BasicIndexer();
+    // ControlSelectionVisitor selectionVisitor
+    // = new ControlSelectionVisitor(IControlFilter.ALWAYS_MATCH, indexer);
+    // selectionVisitor.visitCatalog(resolvedCatalogItem);
+    // }
+
+    // rebuild the document, since the paths have changed
+    IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
+        new RootAssemblyDefinition(
+            ObjectUtils.notNull(
+                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+        resolvedCatalog,
+        profileDocument.getBaseUri());
+
+    FlatteningStructuringVisitor.instance().visitCatalog(resolvedCatalogItem, importIndex);
   }
 
   protected void handleModify(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument)
@@ -448,15 +502,18 @@ public class ProfileResolver { // NOPMD - ok
         profileDocument.getBaseUri());
 
     try {
-      ControlIndexingVisitor visitor = new ControlIndexingVisitor(IIdentifierMapper.IDENTITY);
-      visitor.visitCatalog(resolvedCatalogDocument, null);
-      Index index = visitor.getIndex();
+      IIndexer indexer = new BasicIndexer();
+      ControlIndexingVisitor visitor = new ControlIndexingVisitor(
+          ObjectUtils.notNull(EnumSet.of(IEntityItem.ItemType.CONTROL, IEntityItem.ItemType.PARAMETER)));
+      visitor.visitCatalog(resolvedCatalogDocument, indexer);
+      
+      IIndexer.logIndex(indexer, Level.DEBUG);
 
       METAPATH_SET_PARAMETER.evaluate(profileDocument)
           .forEach(item -> {
             IRequiredValueAssemblyNodeItem setParameter = (IRequiredValueAssemblyNodeItem) item;
             try {
-              handleSetParameter(setParameter, index);
+              handleSetParameter(setParameter, indexer);
             } catch (ProfileResolutionEvaluationException ex) {
               throw new ProfileResolutionEvaluationException(
                   String.format("Unable to apply the set-parameter at '%s'. %s",
@@ -468,17 +525,17 @@ public class ProfileResolver { // NOPMD - ok
 
       METAPATH_ALTER.evaluate(profileDocument)
           .forEach(item -> {
-            handleAlter((IRequiredValueAssemblyNodeItem) item, index);
+            handleAlter((IRequiredValueAssemblyNodeItem) item, indexer);
           });
     } catch (ProfileResolutionEvaluationException ex) {
       throw new ProfileResolutionException(ex.getLocalizedMessage(), ex);
     }
   }
 
-  protected void handleSetParameter(IRequiredValueAssemblyNodeItem item, Index index) {
+  protected void handleSetParameter(IRequiredValueAssemblyNodeItem item, IIndexer indexer) {
     ProfileSetParameter setParameter = (Modify.ProfileSetParameter) item.getValue();
     String paramId = setParameter.getParamId();
-    EntityItem entity = index.getEntity(ItemType.PARAMETER, paramId);
+    IEntityItem entity = indexer.getEntity(IEntityItem.ItemType.PARAMETER, paramId, false);
     if (entity == null) {
       throw new ProfileResolutionEvaluationException(
           String.format(
@@ -505,10 +562,10 @@ public class ProfileResolver { // NOPMD - ok
     param.setSelect(setParameter.getSelect());
   }
 
-  protected void handleAlter(IRequiredValueAssemblyNodeItem item, Index index) {
+  protected void handleAlter(IRequiredValueAssemblyNodeItem item, IIndexer indexer) {
     Modify.Alter alter = (Modify.Alter) item.getValue();
     String controlId = alter.getControlId();
-    EntityItem entity = index.getEntity(ItemType.CONTROL, controlId);
+    IEntityItem entity = indexer.getEntity(IEntityItem.ItemType.CONTROL, controlId, false);
     if (entity == null) {
       throw new ProfileResolutionEvaluationException(
           String.format(
@@ -575,55 +632,32 @@ public class ProfileResolver { // NOPMD - ok
         });
   }
 
-  protected void structureFlat(@NonNull Catalog catalog) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("applying flat structuring directive");
-    }
-    new FlatStructureCatalogVisitor().visitCatalog(catalog);
-  }
+  private static void handleReferences(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IIndexer index) {
 
-  private static void handleReferences(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument) {
-    IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
-        new RootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
-        resolvedCatalog,
-        profileDocument.getBaseUri());
+    BasicIndexer profileIndex = new BasicIndexer();
 
-    ControlSelectionVisitor selectionVisitor
-        = new ControlSelectionVisitor(IControlFilter.ALWAYS_MATCH, IIdentifierMapper.IDENTITY);
-    selectionVisitor.visitCatalog(resolvedCatalogItem);
-    selectionVisitor.visitProfile(profileDocument);
-    Index index = selectionVisitor.getIndex();
-
-    // process references
-    new ReferenceCountingVisitor(index, profileDocument.getBaseUri()).visitCatalog(resolvedCatalogItem);
-
-    // filter based on selections
-    FilterNonSelectedVisitor pruneVisitor = new FilterNonSelectedVisitor(index);
-    pruneVisitor.visitCatalog(resolvedCatalogItem);
+    new ControlIndexingVisitor(ObjectUtils.notNull(EnumSet.allOf(ItemType.class)))
+        .visitProfile(profileDocument, profileIndex);
 
     // copy roles, parties, and locations with prop name:keep and any referenced
     Metadata resolvedMetadata = resolvedCatalog.getMetadata();
     resolvedMetadata.setRoles(
-        Index.merge(
+        IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getRoles()).stream()),
-            index,
-            ItemType.ROLE,
+            profileIndex.getEntitiesByItemType(IEntityItem.ItemType.ROLE),
             item -> item.getId())
             .collect(Collectors.toCollection(LinkedList::new)));
     resolvedMetadata.setParties(
-        Index.merge(
+        IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getParties()).stream()),
-            index,
-            ItemType.PARTY,
+            profileIndex.getEntitiesByItemType(IEntityItem.ItemType.PARTY),
             item -> item.getUuid())
             .collect(Collectors.toCollection(LinkedList::new)));
     resolvedMetadata.setLocations(
-        Index.merge(
+        IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getLocations()).stream()),
-            index,
-            ItemType.LOCATION,
+            profileIndex.getEntitiesByItemType(IEntityItem.ItemType.LOCATION),
             item -> item.getUuid())
             .collect(Collectors.toCollection(LinkedList::new)));
 
@@ -632,10 +666,9 @@ public class ProfileResolver { // NOPMD - ok
     List<Resource> resolvedResources = resolvedBackMatter == null ? CollectionUtil.emptyList()
         : CollectionUtil.listOrEmpty(resolvedBackMatter.getResources());
 
-    List<Resource> resources = Index.merge(
+    List<Resource> resources = IIndexer.filterDistinct(
         ObjectUtils.notNull(resolvedResources.stream()),
-        index,
-        ItemType.RESOURCE,
+        profileIndex.getEntitiesByItemType(IEntityItem.ItemType.RESOURCE),
         item -> item.getUuid())
         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -647,6 +680,8 @@ public class ProfileResolver { // NOPMD - ok
 
       resolvedBackMatter.setResources(resources);
     }
+
+    index.append(profileIndex);
   }
 
   private class DocumentEntityResolver implements EntityResolver {

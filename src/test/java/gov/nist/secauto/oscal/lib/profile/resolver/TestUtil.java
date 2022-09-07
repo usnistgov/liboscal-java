@@ -39,9 +39,12 @@ import gov.nist.secauto.oscal.lib.model.control.catalog.AbstractCatalogGroup;
 import gov.nist.secauto.oscal.lib.model.control.catalog.AbstractControl;
 import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
 import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIdentifierMapper;
 
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
@@ -49,30 +52,41 @@ public final class TestUtil {
 
   @NonNull
   public static final IIdentifierMapper UUID_CONCAT_ID_MAPPER = new IIdentifierMapper() {
+    private final Map<String, String> idToReassignmentMap = new ConcurrentHashMap<>();
 
+    @NonNull
+    private String reassign(@NonNull String identifier) {
+      String retval = idToReassignmentMap.get(identifier);
+      if (retval == null) {
+        retval = identifier + "-" + UUID.randomUUID().toString();
+        idToReassignmentMap.put(identifier, retval);
+      }
+      return retval;
+    }
+    
     @Override
     public String mapRoleIdentifier(@NonNull String identifier) {
-      return identifier + "-" + UUID.randomUUID().toString();
+      return reassign(identifier);
     }
 
     @Override
     public String mapControlIdentifier(@NonNull String identifier) {
-      return identifier + "-" + UUID.randomUUID().toString();
+      return reassign(identifier);
     }
 
     @Override
     public String mapGroupIdentifier(@NonNull String identifier) {
-      return identifier + "-" + UUID.randomUUID().toString();
+      return reassign(identifier);
     }
 
     @Override
     public String mapParameterIdentifier(@NonNull String identifier) {
-      return identifier + "-" + UUID.randomUUID().toString();
+      return reassign(identifier);
     }
 
     @Override
     public @NonNull String mapPartIdentifier(@NonNull String identifier) {
-      return identifier + "-" + UUID.randomUUID().toString();
+      return reassign(identifier);
     }
   };
 

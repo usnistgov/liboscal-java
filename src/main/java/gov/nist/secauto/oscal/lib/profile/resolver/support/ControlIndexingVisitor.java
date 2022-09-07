@@ -24,20 +24,45 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
-import java.util.List;
+import java.util.Set;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public abstract class AbstractIndexMissPolicyHandler<TYPE> implements ICustomReferencePolicyHandler<TYPE> {
+/**
+ * A visitor that walks a catalog visiting controls and parameters.
+ */
+public class ControlIndexingVisitor
+    extends AbstractIndexingVisitor<IIndexer, Void> {
+
+  public ControlIndexingVisitor(@NonNull Set<ItemType> itemTypesToIndex) {
+    super(itemTypesToIndex);
+  }
+
+  @SuppressWarnings("null")
   @Override
-  public abstract boolean handleIndexMiss(
-      @NonNull ICustomReferencePolicy<TYPE> policy,
-      @NonNull TYPE type,
-      @NonNull List<IEntityItem.ItemType> itemTypes,
-      @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor);
+  protected IIndexer getIndexer(IIndexer state) {
+    return state;
+  }
+
+  @Override
+  protected Void newDefaultResult(IIndexer state) {
+    return null;
+  }
+
+  @Override
+  protected Void aggregateResults(Void first, Void second, IIndexer state) {
+    return null;
+  }
+
+  public void visitProfile(@NonNull IDocumentNodeItem profileDocument, @NonNull IIndexer index) {
+    IRootAssemblyNodeItem root = profileDocument.getRootAssemblyNodeItem();
+    visitMetadata(root, index);
+    visitBackMatter(root, index);
+  }
 }

@@ -38,6 +38,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.ImportCycleException;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -224,6 +225,16 @@ class ProfileResolutionTests {
         "https://raw.githubusercontent.com/GSA/fedramp-automation/2229f10cc0b143410522026b793f4947eebb0872/dist/content/baselines/rev4/xml/FedRAMP_rev4_LI-SaaS-baseline_profile.xml");
 
     Catalog resolvedCatalog = resolveProfile(url);
+    assertNotNull(resolvedCatalog);
+  }
+
+  @Test
+  void testArsModerateProfile() throws IOException, ProfileResolutionException, URISyntaxException {
+    URL url = new URL(
+        "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/4850049d550772672be855c5551a727aa57eb1bd/ODP-extract/ars-5.0-moderate-profile.xml");
+
+    Catalog resolvedCatalog = resolveProfile(url);
+
     assertNotNull(resolvedCatalog);
   }
 }

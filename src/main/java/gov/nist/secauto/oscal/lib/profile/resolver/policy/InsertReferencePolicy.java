@@ -29,9 +29,11 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
 
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,12 +52,12 @@ public class InsertReferencePolicy
   }
 
   @Override
-  protected List<ItemType> getEntityItemTypes(@NonNull InsertAnchorNode insert) {
+  protected List<IEntityItem.ItemType> getEntityItemTypes(@NonNull InsertAnchorNode insert) {
     String type = insert.getType().toString();
 
-    List<ItemType> itemTypes;
+    List<IEntityItem.ItemType> itemTypes;
     if ("param".equals(type)) {
-      itemTypes = CollectionUtil.singletonList(ItemType.PARAMETER);
+      itemTypes = CollectionUtil.singletonList(IEntityItem.ItemType.PARAMETER);
     } else {
       throw new UnsupportedOperationException("unrecognized insert type: " + type);
     }
@@ -74,14 +76,16 @@ public class InsertReferencePolicy
 
   @Override
   protected boolean handleIndexMiss(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull InsertAnchorNode insert,
-      @NonNull List<ItemType> itemTypes,
+      @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isErrorEnabled()) {
       LOGGER.atError().log(
-          "the '{}' insert should reference a '{}' identified by '{}'. The index did not contain the identifier.",
+          "The '{}' insert at '{}' should reference a '{}' identified by '{}'. The index did not contain the identifier.",
           insert.getType().toString(),
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
           itemTypes.stream()
               .map(type -> type.name().toLowerCase(Locale.ROOT))
               .collect(CustomCollectors.joiningWithOxfordComma("or")),

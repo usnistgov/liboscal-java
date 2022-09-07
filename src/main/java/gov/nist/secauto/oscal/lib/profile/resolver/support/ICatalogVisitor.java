@@ -23,34 +23,55 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
-public class ImportCycleException
-    extends Exception {
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+/**
+ * Used to visit a catalog containing groups and controls
+ * 
+ * @param <T>
+ *          the type of the context object used to pass calling context information
+ * @param <R>
+ *          the type of the result for visiting a collection of groups and/or controls
+ */
+public interface ICatalogVisitor<T, R> {
+  
+  /**
+   * Called when visiting a group.
+   * <p>
+   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * 
+   * @param item
+   *          the Metapath item for the group
+   * @param childResult
+   *          the result of evaluating the group's children
+   * @param state
+   *          the calling context information
+   * @return a meaningful result of the given type
+   */
+  default R visitGroup(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
+    // do nothing by default
+    return childResult;
+  }
 
   /**
-   * the serial version UUID.
+   * Called when visiting a control.
+   * <p>
+   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * 
+   * @param item
+   *          the Metapath item for the control
+   * @param childResult
+   *          the result of evaluating the control's children
+   * @param state
+   *          the calling context information
+   * @return a meaningful result of the given type
    */
-  private static final long serialVersionUID = 1L;
-
-  public ImportCycleException() {
-    // no message or cause
-  }
-
-  public ImportCycleException(String message) {
-    super(message);
-  }
-
-  public ImportCycleException(Throwable cause) {
-    super(cause);
-  }
-
-  public ImportCycleException(String message, Throwable cause) {
-    super(message, cause);
-  }
-
-  public ImportCycleException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
+  default R visitControl(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
+    // do nothing by default
+    return childResult;
   }
 }
