@@ -42,6 +42,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  */
 public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
 
+  
   /**
    * Visit the provided {@code item} representing an OSCAL {@link CatalogGroup} and handle any
    * enclosed references.

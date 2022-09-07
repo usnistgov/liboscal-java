@@ -33,6 +33,8 @@ import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.DefaultControlSelectionFilter;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlSelectionFilter;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jmock.Expectations;
