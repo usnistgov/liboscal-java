@@ -7,7 +7,7 @@ This open-source, Metaschema Java library offers a programatic means to work wit
 The following features are supported by this library:
 - Reading and writing OSCAL documents in XML, JSON, and YAML formats into a common Java object model.
 - Resolution of OSCAL profiles to [produce resolved catalogs](https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/).
-- Validation of OSCAL content [well-formednes](https://pages.nist.gov/OSCAL/concepts/validation/) and validation of OSCAL syntax using XML and JSON schemas.
+- Validation of OSCAL content [well-formedness and validation](https://pages.nist.gov/OSCAL/concepts/validation/) of OSCAL syntax using XML and JSON schemas.
 - (Experimental) Validation of OSCAL content using [Metaschema](https://pages.nist.gov/metaschema/) constraints to enforce allowed values, cross-references, and some conditionally required data elements.
 - Builders for programmatically creating common OSCAL data elements.
 
