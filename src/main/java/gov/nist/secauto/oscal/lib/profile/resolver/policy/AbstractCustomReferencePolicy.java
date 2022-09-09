@@ -26,10 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,34 +67,37 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @return a list of item types to search for
    */
   @NonNull
-  protected abstract List<ItemType> getEntityItemTypes(@NonNull TYPE reference);
+  protected abstract List<IEntityItem.ItemType> getEntityItemTypes(@NonNull TYPE reference);
 
   /**
    * Handle an index hit.
    * 
+   * @param contextItem
+   *          the node containing the identifier reference
    * @param reference
    *          the identifier reference object generating the hit
    * @param item
    *          the referenced item
-   * @param visitor
-   *          the reference visitor, which can be used for further processing
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
    * @return {@code true} if the hit was handled or {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
    */
   protected boolean handleIndexHit(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE reference,
-      @NonNull EntityItem item,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
 
-    if (item.isSelected(visitor.getIndex())) {
-      if (item.getReferenceCount() == 0 && !item.isResolved()) {
+    if (visitorContext.getIndexer().isSelected(item)) {
+      if (!visitorContext.isResolved(item)) {
         // this referenced item will need to be resolved
-        item.accept(visitor);
+        visitorContext.resolveEntity(item, visitorContext);
       }
       item.incrementReferenceCount();
 
-      if (item.isIdentifierChanged()) {
+      if (item.isIdentifierReassigned()) {
         String referenceText = ObjectUtils.notNull(getReferenceText(reference));
         String newReferenceText = getIdentifierParser().update(referenceText, item.getIdentifier());
         setReferenceText(reference, newReferenceText);
@@ -103,9 +106,9 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
               newReferenceText);
         }
       }
-      handleSelected(reference, item, visitor);
+      handleSelected(contextItem, reference, item, visitorContext);
     } else {
-      handleUnselected(reference, item, visitor);
+      handleUnselected(contextItem, reference, item, visitorContext);
     }
     return true;
   }
@@ -115,19 +118,22 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * <p>
    * Subclasses can override this method to perform extra processing.
    * 
+   * @param contextItem
+   *          the node containing the identifier reference
    * @param reference
    *          the identifier reference object generating the hit
    * @param item
    *          the referenced item
-   * @param visitor
+   * @param visitorContext
    *          the reference visitor, which can be used for further processing
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
    */
   protected void handleUnselected( // NOPMD - do nothing by default
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE reference,
-      @NonNull EntityItem item,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // do nothing by default
   }
 
@@ -136,19 +142,22 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * <p>
    * Subclasses can override this method to perform extra processing.
    * 
+   * @param contextItem
+   *          the node containing the identifier reference
    * @param reference
    *          the identifier reference object generating the hit
    * @param item
    *          the referenced item
-   * @param visitor
-   *          the reference visitor, which can be used for further processing
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
    */
   protected void handleSelected( // NOPMD - do nothing by default
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE reference,
-      @NonNull EntityItem item,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // do nothing by default
   }
 
@@ -158,23 +167,26 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * <p>
    * Subclasses can override this method to perform extra processing.
    * 
+   * @param contextItem
+   *          the node containing the identifier reference
    * @param reference
    *          the identifier reference object generating the hit
    * @param itemTypes
    *          the possible item types for this reference
    * @param identifier
    *          the parsed identifier
-   * @param visitor
-   *          the reference visitor, which can be used for further processing
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
    * @return {@code true} if the reference is handled by this method or {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index miss
    */
   protected boolean handleIndexMiss(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE reference,
-      @NonNull List<ItemType> itemTypes,
+      @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // provide no handler by default
     return false;
   }
@@ -185,65 +197,75 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * <p>
    * Subclasses can override this method to perform extra processing.
    * 
+   * @param contextItem
+   *          the node containing the identifier reference
    * @param reference
    *          the identifier reference object generating the hit
-   * @param visitor
-   *          the reference visitor, which can be used for further processing
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
    * @return {@code true} if the reference is handled by this method or {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index miss due to a non match
    */
   protected boolean handleIdentifierNonMatch(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE reference,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // provide no handler by default
     return false;
   }
 
   @Override
-  public boolean handleReference(@NonNull TYPE type, @NonNull IReferenceVisitor visitor) {
+  public boolean handleReference(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull TYPE type,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     String referenceText = getReferenceText(type);
 
     // if the reference text does not exist, ignore the reference; otherwise, handle it.
-    return referenceText == null || handleIdentifier(type, getIdentifierParser().parse(referenceText), visitor);
+    return referenceText == null
+        || handleIdentifier(contextItem, type, getIdentifierParser().parse(referenceText), visitorContext);
   }
 
   /**
    * Handle the provided {@code identifier} for a given {@code type} of reference.
    * 
+   * @param contextItem
+   *          the node containing the identifier reference
    * @param type
    *          the item type of the reference
    * @param identifier
    *          the identifier
-   * @param visitor
-   *          the reference visitor, which can be used for further processing
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
    * @return {@code true} if the reference is handled by this method or {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the reference
    */
   protected boolean handleIdentifier(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE type,
       @Nullable String identifier,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     boolean retval;
     if (identifier == null) {
-      retval = handleIdentifierNonMatch(type, visitor);
+      retval = handleIdentifierNonMatch(contextItem, type, visitorContext);
     } else {
-      List<ItemType> itemTypes = getEntityItemTypes(type);
-      EntityItem item = null;
-      for (ItemType itemType : itemTypes) {
+      List<IEntityItem.ItemType> itemTypes = getEntityItemTypes(type);
+      IEntityItem item = null;
+      for (IEntityItem.ItemType itemType : itemTypes) {
         assert itemType != null;
 
-        item = visitor.getIndex().getEntity(itemType, identifier);
+        item = visitorContext.getEntity(itemType, identifier);
         if (item != null) {
           break;
         }
       }
 
       if (item == null) {
-        retval = handleIndexMiss(type, itemTypes, identifier, visitor);
+        retval = handleIndexMiss(contextItem, type, itemTypes, identifier, visitorContext);
       } else {
-        retval = handleIndexHit(type, item, visitor);
+        retval = handleIndexHit(contextItem, type, item, visitorContext);
       }
     }
     return retval;

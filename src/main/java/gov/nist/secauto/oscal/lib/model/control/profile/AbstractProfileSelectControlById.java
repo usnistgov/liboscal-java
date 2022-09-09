@@ -29,15 +29,14 @@ package gov.nist.secauto.oscal.lib.model.control.profile;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById.Matching;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("PMD")
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public abstract class AbstractProfileSelectControlById implements IProfileSelectControlById {
   // TODO: move implementation from profile resolver selection code here
 

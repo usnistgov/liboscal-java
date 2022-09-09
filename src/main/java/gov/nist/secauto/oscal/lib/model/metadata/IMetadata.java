@@ -30,11 +30,11 @@ import gov.nist.secauto.oscal.lib.model.Location;
 import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Role;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
-
 import java.util.List;
 import java.util.UUID;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 public interface IMetadata {
   @Nullable

@@ -24,43 +24,4 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
-
-import gov.nist.secauto.oscal.lib.model.Catalog;
-import gov.nist.secauto.oscal.lib.model.CatalogGroup;
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.Parameter;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
-
-import java.util.Collection;
-import java.util.Set;
-
-public interface IResult {
-
-  @NonNull
-  Collection<Parameter> getPromotedParameters();
-
-  @NonNull
-  Collection<Control> getPromotedControls();
-
-  @NonNull
-  Set<String> getRequiredParameterIds();
-
-  boolean isParameterRequired(@NonNull String id);
-
-  void promoteParameter(@NonNull Parameter param);
-
-  void promoteControl(@NonNull Control control);
-
-  void requireParameters(@NonNull Set<String> requiredParameterIds);
-
-  void applyTo(@NonNull Catalog parent);
-
-  void applyTo(@NonNull CatalogGroup parent);
-
-  void applyTo(@NonNull Control parent);
-
-  @NonNull
-  IResult append(@NonNull IResult that);
-}
+package gov.nist.secauto.oscal.lib.profile.resolver.support;

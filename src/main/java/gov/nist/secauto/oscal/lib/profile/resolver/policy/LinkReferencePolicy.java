@@ -26,11 +26,12 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.model.Link;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,16 +48,16 @@ public class LinkReferencePolicy
 
   @SuppressWarnings("null")
   @NonNull
-  public static LinkReferencePolicy create(@NonNull ItemType itemType) {
+  public static LinkReferencePolicy create(@NonNull IEntityItem.ItemType itemType) {
     return create(List.of(itemType));
   }
 
   @NonNull
-  public static LinkReferencePolicy create(@NonNull List<ItemType> itemTypes) {
+  public static LinkReferencePolicy create(@NonNull List<IEntityItem.ItemType> itemTypes) {
     return new LinkReferencePolicy(CollectionUtil.requireNonEmpty(itemTypes, "itemTypes"));
   }
 
-  public LinkReferencePolicy(@NonNull List<ItemType> itemTypes) {
+  public LinkReferencePolicy(@NonNull List<IEntityItem.ItemType> itemTypes) {
     super(IIdentifierParser.FRAGMENT_PARSER, itemTypes);
   }
 
@@ -72,28 +73,35 @@ public class LinkReferencePolicy
 
   @Override
   protected void handleUnselected(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull Link link,
-      @NonNull EntityItem item,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     URI linkHref = link.getHref();
     URI sourceUri = item.getSource();
 
     URI resolved = sourceUri.resolve(linkHref);
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      LOGGER.atTrace().log("At path '{}', remapping orphaned URI '{}' to '{}'",
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
+          linkHref.toString(),
+          resolved.toString());
     }
     link.setHref(resolved);
   }
 
   @Override
   protected boolean handleIndexMiss(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull Link link,
-      @NonNull List<ItemType> itemTypes,
+      @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.atWarn().log(
-          "link with rel '{}' should reference a {} identified by '{}'. The index did not contain the identifier.",
+          "The link at '{}' with rel '{}' should reference a {} identified by '{}'."
+              + " The index did not contain the identifier.",
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
           link.getRel(),
           itemTypes.stream()
               .map(en -> en.name().toLowerCase(Locale.ROOT))
@@ -104,9 +112,14 @@ public class LinkReferencePolicy
   }
 
   @Override
-  protected boolean handleIdentifierNonMatch(@NonNull Link reference, @NonNull IReferenceVisitor visitor) {
+  protected boolean handleIdentifierNonMatch(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull Link reference,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.atDebug().log("Ignoring URI '{}'", reference.getHref().toString());
+      LOGGER.atDebug().log("Ignoring URI '{}' at '{}'",
+          reference.getHref().toString(),
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER));
     }
 
     return true;

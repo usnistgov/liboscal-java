@@ -39,10 +39,10 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.io.IOException;
 import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public final class ResolveProfile {
 

@@ -27,12 +27,12 @@
 package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Link;
 
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,29 +57,25 @@ public abstract class AbstractLink implements ILink {
     private String mediaType;
     private MarkupLine text;
 
-    @SuppressWarnings("null")
     public Builder(@NonNull URI href) {
-      this.href = Objects.requireNonNull(href, "href");
+      this.href = ObjectUtils.requireNonNull(href, "href");
     }
 
-    @SuppressWarnings("null")
     @NonNull
     public Builder relation(@NonNull String relation) {
-      this.rel = Objects.requireNonNull(relation, "rel");
+      this.rel = ObjectUtils.requireNonNull(relation, "rel");
       return this;
     }
 
-    @SuppressWarnings("null")
     @NonNull
     public Builder value(@NonNull String mediaType) {
-      this.mediaType = Objects.requireNonNull(mediaType, "mediaType");
+      this.mediaType = ObjectUtils.requireNonNull(mediaType, "mediaType");
       return this;
     }
 
-    @SuppressWarnings("null")
     @NonNull
     public Builder clazz(@NonNull MarkupLine text) {
-      this.text = Objects.requireNonNull(text, "text");
+      this.text = ObjectUtils.requireNonNull(text, "text");
       return this;
     }
 

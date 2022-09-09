@@ -28,12 +28,11 @@ package gov.nist.secauto.oscal.lib.model.metadata;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
-
 import java.util.List;
 import java.util.UUID;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 public interface IBackMatter {
   List<Resource> getResources();

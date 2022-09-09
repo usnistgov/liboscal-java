@@ -35,10 +35,11 @@ public class ProfileResolutionEvaluationException
   private static final long serialVersionUID = 1L;
 
   public ProfileResolutionEvaluationException() {
+    // no arguments
   }
 
-  public ProfileResolutionEvaluationException(String s) {
-    super(s);
+  public ProfileResolutionEvaluationException(String str) {
+    super(str);
   }
 
   public ProfileResolutionEvaluationException(Throwable cause) {

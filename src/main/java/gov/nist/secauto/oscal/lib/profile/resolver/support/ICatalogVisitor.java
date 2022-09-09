@@ -24,78 +24,55 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 
-class ModifyPhaseUtilsTest {
-
-  @Test
-  void testMergeOrdering() {
-    List<TestItem> originalItems = List.of(
-        item("A"),
-        item("id1", "B"),
-        item("C"));
-
-    List<TestItem> newItems = List.of(
-        item("D"),
-        item("id1", "E"),
-        item("F"));
-
-    List<TestItem> result
-        = ModifyPhaseUtils.merge(originalItems, newItems, ModifyPhaseUtils.identifierKey(TestItem::getIdentifier));
-
-    assertEquals(
-        List.of("A", "C", "D", "E", "F"),
-        result.stream()
-            .map(item -> item.getValue())
-            .collect(Collectors.toList()));
+/**
+ * Used to visit a catalog containing groups and controls.
+ * 
+ * @param <T>
+ *          the type of the context object used to pass calling context information
+ * @param <R>
+ *          the type of the result for visiting a collection of groups and/or controls
+ */
+public interface ICatalogVisitor<T, R> {
+  
+  /**
+   * Called when visiting a group.
+   * <p>
+   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * 
+   * @param item
+   *          the Metapath item for the group
+   * @param childResult
+   *          the result of evaluating the group's children
+   * @param state
+   *          the calling context information
+   * @return a meaningful result of the given type
+   */
+  default R visitGroup(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
+    // do nothing by default
+    return childResult;
   }
 
-  private static TestItem item(@NonNull String value) {
-    return item(null, value);
-  }
-
-  private static TestItem item(@Nullable String identifier, @NonNull String value) {
-    return new TestItem(identifier, value);
-  }
-
-  private static class TestItem {
-    @Nullable
-    private final String identifier;
-    @NonNull
-    private final String value;
-
-    private TestItem(@Nullable String identifier, @NonNull String value) {
-      this.identifier = identifier;
-      this.value = value;
-    }
-
-    public String getIdentifier() {
-      return identifier;
-    }
-
-    public String getValue() {
-      return value;
-    }
-
-    @Override
-    public String toString() {
-      return new StringBuffer()
-          .append('[')
-          .append(getIdentifier())
-          .append(',')
-          .append(getValue())
-          .append(']')
-          .toString();
-    }
+  /**
+   * Called when visiting a control.
+   * <p>
+   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * 
+   * @param item
+   *          the Metapath item for the control
+   * @param childResult
+   *          the result of evaluating the control's children
+   * @param state
+   *          the calling context information
+   * @return a meaningful result of the given type
+   */
+  default R visitControl(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
+    // do nothing by default
+    return childResult;
   }
 }

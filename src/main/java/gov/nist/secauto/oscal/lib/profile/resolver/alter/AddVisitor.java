@@ -90,6 +90,14 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
       }
     }
 
+    /**
+     * Get the target type associated with the provided {@code clazz}.
+     * 
+     * @param clazz
+     *          the class to identify the target type for
+     * @return the associated target type or {@code null} if the class is not associated with a target
+     *         type
+     */
     @Nullable
     public static TargetType forClass(@NonNull Class<?> clazz) {
       Class<?> target = clazz;
@@ -101,6 +109,14 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
       return retval;
     }
 
+    /**
+     * Get the target type associated with the provided field {@code name}.
+     * 
+     * @param name
+     *          the field name to identify the target type for
+     * @return the associated target type or {@code null} if the name is not associated with a target
+     *         type
+     */
     @Nullable
     public static TargetType forFieldName(@Nullable String name) {
       return name == null ? null : NAME_TO_TYPE.get(name);
@@ -111,10 +127,20 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
       this.clazz = clazz;
     }
 
+    /**
+     * Get the field name associated with the target type.
+     * 
+     * @return the name
+     */
     public String fieldName() {
       return fieldName;
     }
 
+    /**
+     * Get the bound class associated with the target type.
+     * 
+     * @return the class
+     */
     public Class<?> getClazz() {
       return clazz;
     }
@@ -137,6 +163,13 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
       NAME_TO_POSITION = CollectionUtil.unmodifiableMap(map);
     }
 
+    /**
+     * Get the position associated with the provided {@code name}.
+     * 
+     * @param name
+     *          the name to identify the position for
+     * @return the associated position or {@code null} if the name is not associated with a position
+     */
     @Nullable
     public static Position forName(@Nullable String name) {
       return name == null ? null : NAME_TO_POSITION.get(name);
@@ -310,7 +343,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
   // }
   // }
 
-  private static <T> boolean handleChild(
+  private static <T> boolean handleChild( // NOPMD acceptable complexity
       @NonNull TargetType itemType,
       @NonNull Supplier<? extends List<T>> originalCollectionSupplier,
       @NonNull Supplier<? extends List<T>> newItemsSupplier,
@@ -428,7 +461,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
     for (Control childControl : CollectionUtil.listOrEmpty(control.getControls())) {
       Set<TargetType> applicableTypes = getApplicableTypes(TargetType.CONTROL);
       if (!Collections.disjoint(context.getTargetItemTypes(), applicableTypes)) {
-        retval = retval || visitControl(childControl, context);
+        retval = retval || visitControl(ObjectUtils.requireNonNull(childControl), context);
       }
     }
     return retval;
@@ -455,7 +488,16 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
         context);
   }
 
-  public Boolean visitPart(ControlPart part, Context context) {
+  /**
+   * Visit the control part.
+   * 
+   * @param part
+   *          the bound part object
+   * @param context
+   *          the visitor context
+   * @return {@code true} if the removal was applied or {@code false} otherwise
+   */
+  public boolean visitPart(ControlPart part, Context context) {
     assert context != null;
     if (part.getProps() == null) {
       part.setProps(new LinkedList<>());
@@ -524,7 +566,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
     @NonNull
     private final Set<TargetType> targetItemTypes;
 
-    public Context(
+    public Context( // NOPMD acceptable complexity
         @NonNull Control control,
         @NonNull Position position,
         @Nullable String byId,

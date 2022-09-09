@@ -26,12 +26,11 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
 import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface ICustomReferencePolicyHandler<TYPE> {
   @NonNull
@@ -40,9 +39,9 @@ public interface ICustomReferencePolicyHandler<TYPE> {
     public boolean handleIndexMiss(
         @NonNull ICustomReferencePolicy<Object> policy,
         @NonNull Object type,
-        @NonNull List<ItemType> itemTypes,
+        @NonNull List<IEntityItem.ItemType> itemTypes,
         @NonNull String identifier,
-        @NonNull IReferenceVisitor visitor) {
+        @NonNull IReferenceVisitor<?> visitor) {
       // do nothing
       return true;
     }
@@ -63,7 +62,7 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   default boolean handleIdentifierNonMatch(
       @NonNull ICustomReferencePolicy<TYPE> policy,
       @NonNull TYPE reference,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IReferenceVisitor<?> visitor) {
     return false;
   }
 
@@ -86,9 +85,9 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   default boolean handleIndexMiss(
       @NonNull ICustomReferencePolicy<TYPE> policy,
       @NonNull TYPE reference,
-      @NonNull List<ItemType> itemTypes,
+      @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IReferenceVisitor<?> visitor) {
     return false;
   }
 
@@ -109,8 +108,8 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   default boolean handleIndexHit(
       @NonNull ICustomReferencePolicy<TYPE> policy,
       @NonNull TYPE reference,
-      @NonNull EntityItem item,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IEntityItem item,
+      @NonNull IReferenceVisitor<?> visitor) {
     return false;
   }
 }

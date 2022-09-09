@@ -30,11 +30,11 @@ import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IPart {
   MarkupMultiline getProse();

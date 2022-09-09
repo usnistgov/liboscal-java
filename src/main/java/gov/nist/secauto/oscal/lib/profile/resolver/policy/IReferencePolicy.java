@@ -26,6 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -35,7 +36,10 @@ public interface IReferencePolicy<T> {
   IReferencePolicy<Object> IGNORE_POLICY = new IReferencePolicy<>() {
 
     @Override
-    public boolean handleReference(@NonNull Object reference, @NonNull IReferenceVisitor visitor) {
+    public boolean handleReference(
+        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull Object reference,
+        @NonNull ReferenceCountingVisitor.Context referenceVisitorContext) {
       return true;
     }
   };
@@ -56,13 +60,18 @@ public interface IReferencePolicy<T> {
   /**
    * Handle the provided {@code reference}.
    * 
+   * @param contextItem
+   *          the nodes containing the reference
    * @param reference
    *          the reference object to process
-   * @param visitor
+   * @param referenceVisitorContext
    *          used to lookup and resolve items
    * @return {@code true} if the reference was handled, or {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the reference
    */
-  boolean handleReference(@NonNull T reference, @NonNull IReferenceVisitor visitor);
+  boolean handleReference(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull T reference,
+      @NonNull ReferenceCountingVisitor.Context referenceVisitorContext);
 }

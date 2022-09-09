@@ -24,7 +24,7 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
@@ -41,8 +41,12 @@ import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Metadata;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.ReferenceCountingVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.BasicIndexer;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 
 import java.net.URI;
 import java.util.LinkedList;
@@ -74,13 +78,12 @@ public class Import {
     return profileImportItem;
   }
 
-  @SuppressWarnings("null")
   @NonNull
   protected ProfileImport getProfileImport() {
     return ObjectUtils.requireNonNull((ProfileImport) profileImportItem.getValue());
   }
 
-  private Catalog toCatalog(IDocumentNodeItem catalogDocument) {
+  private static Catalog toCatalog(IDocumentNodeItem catalogDocument) {
     return (Catalog) catalogDocument.getValue();
   }
 
@@ -90,31 +93,32 @@ public class Import {
   }
 
   @NonNull
-  protected IIdentifierMapper newIdentifierMapper() {
-    return IIdentifierMapper.IDENTITY;
+  protected IIndexer newIndexer() {
+    // TODO: add support for reassignment
+    // IIdentifierMapper mapper = IIdentifierMapper.IDENTITY;
+    // IIndexer indexer = new ReassignmentIndexer(mapper);
+    return new BasicIndexer();
   }
 
-  public Index resolve(@NonNull IDocumentNodeItem importedCatalogDocument, @NonNull Catalog resolvedCatalog)
+  @NonNull
+  public IIndexer resolve(@NonNull IDocumentNodeItem importedCatalogDocument, @NonNull Catalog resolvedCatalog)
       throws ProfileResolutionException {
     ProfileImport profileImport = getProfileImport();
     URI uri = ObjectUtils.requireNonNull(profileImport.getHref(), "profile import href is null");
 
     // determine which controls and groups to keep
     IControlFilter filter = newControlFilter();
-    IIdentifierMapper mapper = newIdentifierMapper();
-    ControlSelectionVisitor selectionVisitor = new ControlSelectionVisitor(filter, mapper);
+    IIndexer indexer = newIndexer();
+    IControlSelectionState state = new ControlSelectionState(indexer, filter);
 
-    Index index;
     try {
-      selectionVisitor.visitCatalog(importedCatalogDocument);
-      index = selectionVisitor.getIndex();
+      ControlSelectionVisitor.instance().visitCatalog(importedCatalogDocument, state);
 
       // process references
-      new ReferenceCountingVisitor(index, uri).visitCatalog(importedCatalogDocument);
+      ReferenceCountingVisitor.instance().visitCatalog(importedCatalogDocument, indexer, uri);
 
       // filter based on selections
-      FilterNonSelectedVisitor pruneVisitor = new FilterNonSelectedVisitor(index);
-      pruneVisitor.visitCatalog(importedCatalogDocument);
+      FilterNonSelectedVisitor.instance().visitCatalog(importedCatalogDocument, indexer);
     } catch (ProfileResolutionEvaluationException ex) {
       throw new ProfileResolutionException(
           String.format("Unable to resolve profile import '%s'. %s", uri.toString(), ex.getMessage()), ex);
@@ -137,13 +141,15 @@ public class Import {
       }
     }
 
-    generateMetadata(importedCatalogDocument, resolvedCatalog, index);
-    generateBackMatter(importedCatalogDocument, resolvedCatalog, index);
-    return index;
+    generateMetadata(importedCatalogDocument, resolvedCatalog, indexer);
+    generateBackMatter(importedCatalogDocument, resolvedCatalog, indexer);
+    return indexer;
   }
 
-  private void generateMetadata(@NonNull IDocumentNodeItem importedCatalogDocument, @NonNull Catalog resolvedCatalog,
-      @NonNull Index index) {
+  private static void generateMetadata(
+      @NonNull IDocumentNodeItem importedCatalogDocument,
+      @NonNull Catalog resolvedCatalog,
+      @NonNull IIndexer indexer) {
     Metadata importedMetadata = toCatalog(importedCatalogDocument).getMetadata();
 
     if (importedMetadata != null) {
@@ -167,31 +173,30 @@ public class Import {
 
       // copy roles, parties, and locations with prop name:keep and any referenced
       resolvedMetadata.setRoles(
-          Index.merge(
+          IIndexer.filterDistinct(
               ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getRoles()).stream()),
-              index,
-              ItemType.ROLE,
+              indexer.getEntitiesByItemType(IEntityItem.ItemType.ROLE),
               item -> item.getId())
               .collect(Collectors.toCollection(LinkedList::new)));
       resolvedMetadata.setParties(
-          Index.merge(
+          IIndexer.filterDistinct(
               ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getParties()).stream()),
-              index,
-              ItemType.PARTY,
+              indexer.getEntitiesByItemType(IEntityItem.ItemType.PARTY),
               item -> item.getUuid())
               .collect(Collectors.toCollection(LinkedList::new)));
       resolvedMetadata.setLocations(
-          Index.merge(
+          IIndexer.filterDistinct(
               ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getLocations()).stream()),
-              index,
-              ItemType.LOCATION,
+              indexer.getEntitiesByItemType(IEntityItem.ItemType.LOCATION),
               item -> item.getUuid())
               .collect(Collectors.toCollection(LinkedList::new)));
     }
   }
 
-  private void generateBackMatter(@NonNull IDocumentNodeItem importedCatalogDocument, @NonNull Catalog resolvedCatalog,
-      Index index) {
+  private static void generateBackMatter(
+      @NonNull IDocumentNodeItem importedCatalogDocument,
+      @NonNull Catalog resolvedCatalog,
+      @NonNull IIndexer indexer) {
     BackMatter importedBackMatter = toCatalog(importedCatalogDocument).getBackMatter();
 
     if (importedBackMatter != null) {
@@ -200,10 +205,9 @@ public class Import {
       List<Resource> resolvedResources = resolvedBackMatter == null ? CollectionUtil.emptyList()
           : CollectionUtil.listOrEmpty(resolvedBackMatter.getResources());
 
-      List<Resource> resources = Index.merge(
+      List<Resource> resources = IIndexer.filterDistinct(
           ObjectUtils.notNull(resolvedResources.stream()),
-          index,
-          ItemType.RESOURCE,
+          indexer.getEntitiesByItemType(IEntityItem.ItemType.RESOURCE),
           item -> item.getUuid())
           .collect(Collectors.toCollection(LinkedList::new));
 

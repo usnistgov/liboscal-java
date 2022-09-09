@@ -24,60 +24,46 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public class ControlIndexingVisitor
-    extends AbstractCatalogControlItemVisitor<Void, Void> {
+public class ReassignmentIndexer
+    extends BasicIndexer {
   @NonNull
-  private final IIndexer indexer;
+  private final IIdentifierMapper mapper;
 
-  public ControlIndexingVisitor(@NonNull IIdentifierMapper mapper) {
-    this.indexer = new DefaultIndexer(mapper);
+  public ReassignmentIndexer(@NonNull IIdentifierMapper mapper) {
+    this.mapper = mapper;
   }
-
+  
   @NonNull
-  protected IIndexer getIndexer() {
-    return indexer;
-  }
-
-  @NonNull
-  public Index getIndex() {
-    return indexer.getIndex();
+  protected IIdentifierMapper getMapper() {
+    return mapper;
   }
 
   @Override
-  protected Void visitCatalog(@NonNull IDocumentNodeItem catalogItem, Void context) {
-    return super.visitCatalog(catalogItem, null);
+  protected AbstractEntityItem.Builder newBuilder(
+      IRequiredValueModelNodeItem item,
+      ItemType itemType,
+      String identifier) {
+    AbstractEntityItem.Builder builder = super.newBuilder(item, itemType, identifier);
+
+    String reassignment = getMapper().mapByItemType(itemType, identifier);
+    if (!identifier.equals(reassignment)) {
+      builder.reassignedIdentifier(reassignment);
+    }
+    return builder;
   }
 
   @Override
-  protected Void visitControl(@NonNull IRequiredValueModelNodeItem controlItem, Void context) {
-    getIndexer().addControl(controlItem, true);
-    return super.visitControl(controlItem, context);
-  }
-
-  @Override
-  protected Void visitControlContainer(@NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,
-      Void context) {
-    // handle parameters
-    catalogOrGroupOrControl.getModelItemsByName("param").forEach(paramItem -> {
-      getIndexer().addParameter(paramItem);
-    });
-    return super.visitControlContainer(catalogOrGroupOrControl, null);
-  }
-
-  @Override
-  protected Void newDefaultResult(Void context) {
-    return null;
-  }
-
-  @Override
-  protected Void aggregateResults(Void first, Void second, Void context) {
-    return null;
+  public IEntityItem getEntity(ItemType itemType, String identifier, boolean normalize) {
+    // reassign the identifier
+    String reassignment = getMapper().mapByItemType(itemType, identifier);
+    // lookup using the reassigned identifier
+    return super.getEntity(itemType, reassignment, normalize);
   }
 }

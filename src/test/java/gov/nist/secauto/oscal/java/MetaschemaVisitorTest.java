@@ -26,7 +26,6 @@
 
 package gov.nist.secauto.oscal.java;
 
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.INodeContext;
@@ -37,7 +36,6 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.metapath.function.library.ResolveProfile;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -48,10 +46,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 class MetaschemaVisitorTest {
 
   @Test
-  void test() throws FileNotFoundException, IOException, BindingException, URISyntaxException {
+  void test() throws FileNotFoundException, IOException, URISyntaxException {
     OscalBindingContext bindingContext = OscalBindingContext.instance();
     IBoundLoader loader = bindingContext.newBoundLoader();
 
@@ -109,8 +109,7 @@ class MetaschemaVisitorTest {
     // dynamicContext);
   }
 
-  @SuppressWarnings("PMD")
-  private void evaluatePath(@NonNull MetapathExpression path, @NonNull INodeContext nodeContext,
+  private static void evaluatePath(@NonNull MetapathExpression path, @NonNull INodeContext nodeContext,
       @NonNull DynamicContext dynamicContext) {
     System.out.println("Path: " + path.getPath());
     System.out.println("Compiled Path: " + path.toString());

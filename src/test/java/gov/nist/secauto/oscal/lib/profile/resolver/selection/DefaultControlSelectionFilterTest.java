@@ -24,11 +24,12 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
@@ -44,6 +45,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import java.util.Collections;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 class DefaultControlSelectionFilterTest {
@@ -64,6 +66,7 @@ class DefaultControlSelectionFilterTest {
   private IProfileSelectControlById selectControlByIdB; // NOPMD - injected
 
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
+  @NonNull
   private IControlSelectionFilter newEmptyFilter() {
     context.checking(new Expectations() {
       { // NOPMD - intentional
@@ -76,10 +79,12 @@ class DefaultControlSelectionFilterTest {
       }
     });
 
-    return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
+    return new DefaultControlSelectionFilter(
+        ObjectUtils.notNull(List.of(selectControlByIdA)));
   }
 
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
+  @NonNull
   private IControlSelectionFilter newSingleSelectionFilter() {
     final List<String> withIds = List.of("test1", "test2");
     context.checking(new Expectations() {
@@ -95,10 +100,12 @@ class DefaultControlSelectionFilterTest {
       }
     });
 
-    return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
+    return new DefaultControlSelectionFilter(
+        ObjectUtils.notNull(List.of(selectControlByIdA)));
   }
 
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
+  @NonNull
   private IControlSelectionFilter newSingleSelectionWithChildFilter() {
     final List<String> withIds = List.of("test1", "test2");
     context.checking(new Expectations() {
@@ -114,10 +121,12 @@ class DefaultControlSelectionFilterTest {
       }
     });
 
-    return new DefaultControlSelectionFilter(List.of(selectControlByIdA));
+    return new DefaultControlSelectionFilter(
+        ObjectUtils.notNull(List.of(selectControlByIdA)));
   }
 
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
+  @NonNull
   private IControlSelectionFilter newMultipleSelectionFilter() {
     final List<String> withIdsA = List.of("test1", "test2", "example1");
     final List<String> withIdsB = List.of("test3", "test4");
@@ -143,7 +152,8 @@ class DefaultControlSelectionFilterTest {
       }
     });
 
-    return new DefaultControlSelectionFilter(List.of(selectControlByIdA, selectControlByIdB));
+    return new DefaultControlSelectionFilter(
+        ObjectUtils.notNull(List.of(selectControlByIdA, selectControlByIdB)));
   }
 
   /**
@@ -152,7 +162,6 @@ class DefaultControlSelectionFilterTest {
   @Test
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   void testEmpty() {
-    @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class);
     context.checking(new Expectations() {
       { // NOPMD - intentional
@@ -173,9 +182,7 @@ class DefaultControlSelectionFilterTest {
   @Test
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   void testSingleSelectionWithIdsFilter() {
-    @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class, "control1");
-    @SuppressWarnings("null")
     final IControl control2 = context.mock(IControl.class, "control2");
     context.checking(new Expectations() {
       { // NOPMD - intentional
@@ -202,9 +209,7 @@ class DefaultControlSelectionFilterTest {
   @Test
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   void testSingleSelectionWithIdsWithChildFilter() {
-    @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class, "control1");
-    @SuppressWarnings("null")
     final IControl control2 = context.mock(IControl.class, "control2");
     context.checking(new Expectations() {
       { // NOPMD - intentional
@@ -231,19 +236,12 @@ class DefaultControlSelectionFilterTest {
   @Test
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   void testMultipleSelectionFilter() {
-    @SuppressWarnings("null")
     final IControl control1 = context.mock(IControl.class, "control1");
-    @SuppressWarnings("null")
     final IControl control2 = context.mock(IControl.class, "control2");
-    @SuppressWarnings("null")
     final IControl control3 = context.mock(IControl.class, "control3");
-    @SuppressWarnings("null")
     final IControl control4 = context.mock(IControl.class, "control4");
-    @SuppressWarnings("null")
     final IControl control5 = context.mock(IControl.class, "control5");
-    @SuppressWarnings("null")
     final IControl control6 = context.mock(IControl.class, "control6");
-    @SuppressWarnings("null")
     final IControl control7 = context.mock(IControl.class, "control7");
     context.checking(new Expectations() {
       { // NOPMD - intentional

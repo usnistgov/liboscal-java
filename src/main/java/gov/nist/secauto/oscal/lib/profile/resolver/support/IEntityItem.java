@@ -24,62 +24,84 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.model.control.catalog;
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.oscal.lib.model.Control;
-import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 
-import java.util.List;
-import java.util.stream.Stream;
+import java.net.URI;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public interface IControlContainer {
+public interface IEntityItem {
 
-  List<Control> getControls();
+  public enum ItemType {
+    ROLE(false),
+    LOCATION(true),
+    PARTY(true),
+    GROUP(false),
+    CONTROL(false),
+    PART(false),
+    PARAMETER(false),
+    RESOURCE(true);
 
-  /**
-   * Add a new {@link Control} item to the end of the underlying collection.
-   * 
-   * @param item
-   *          the item to add
-   * @return {@code true}
-   */
-  boolean addControl(@NonNull Control item);
+    private final boolean uuid;
 
-  /**
-   * Remove the first matching {@link Control} item from the underlying collection.
-   * 
-   * @param item
-   *          the item to remove
-   * @return {@code true} if the item was removed or {@code false} otherwise
-   */
-  boolean removeControl(@NonNull Control item);
+    private ItemType(boolean isUuid) {
+      this.uuid = isUuid;
+    }
 
-  List<Parameter> getParams();
-
-  /**
-   * Add a new {@link Parameter} item to the underlying collection.
-   * 
-   * @param item
-   *          the item to add
-   * @return {@code true}
-   */
-  boolean addParam(@NonNull Parameter item);
+    public boolean isUuid() {
+      return uuid;
+    }
+  }
 
   /**
-   * Remove the first matching {@link Parameter} item from the underlying collection.
+   * Get the identifier originally assigned to this entity.
+   * <p>
+   * If the identifier value was reassigned, the return value of this method will be different than
+   * value returned by {@link #getIdentifier()}. In such cases, a call to
+   * {@link #isIdentifierReassigned()} is expected to return {@code true}.
+   * <p>
+   * If the value was not reassigned, the return value of this method will be the same value returned
+   * by {@link #getIdentifier()}. In this case, {@link #isIdentifierReassigned()} is expected to
+   * return {@code false}.
    * 
-   * @param item
-   *          the item to remove
-   * @return {@code true} if the item was removed or {@code false} otherwise
+   * @return the original identifier value before reassignment
    */
-  boolean removeParam(@NonNull Parameter item);
+  @NonNull
+  String getOriginalIdentifier();
 
   /**
-   * Get the parameter identifiers referenced in the object's context, but not by their child objects.
+   * Get the entity's current identifier value.
    * 
-   * @return a stream of identifiers
+   * @return the identifier value
    */
-  Stream<String> getReferencedParameterIds();
+  @NonNull
+  String getIdentifier();
+
+  /**
+   * Determine if the identifier was reassigned.
+   * 
+   * @return {@code true} if the identifier was reassigned, or {@code false} otherwise
+   */
+  boolean isIdentifierReassigned();
+
+  @NonNull
+  IRequiredValueModelNodeItem getInstance();
+
+  void setInstance(@NonNull IRequiredValueModelNodeItem item);
+
+  @NonNull
+  <T> T getInstanceValue();
+
+  @NonNull
+  ItemType getItemType();
+
+  URI getSource();
+
+  int getReferenceCount();
+
+  void incrementReferenceCount();
+
+  int resetReferenceCount();
 }

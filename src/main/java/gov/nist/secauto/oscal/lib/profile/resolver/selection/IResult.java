@@ -24,33 +24,24 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-public class ImportCycleException
-    extends Exception {
+import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 
-  /**
-   * the serial version UUID.
-   */
-  private static final long serialVersionUID = 1L;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
-  public ImportCycleException() {
-    // no message or cause
-  }
+public interface IResult {
 
-  public ImportCycleException(String message) {
-    super(message);
-  }
+  void promoteParameter(@NonNull Parameter param);
 
-  public ImportCycleException(Throwable cause) {
-    super(cause);
-  }
+  void promoteControl(@NonNull Control control);
 
-  public ImportCycleException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  void applyTo(@NonNull Catalog parent);
 
-  public ImportCycleException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
-  }
+  void applyTo(@NonNull CatalogGroup parent);
+
+  void applyTo(@NonNull Control parent);
 }

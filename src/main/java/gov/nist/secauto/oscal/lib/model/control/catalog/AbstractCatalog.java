@@ -30,9 +30,9 @@ import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.AbstractOscalInstance;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.stream.Stream;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractCatalog
     extends AbstractOscalInstance

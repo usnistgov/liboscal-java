@@ -91,6 +91,14 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
       }
     }
 
+    /**
+     * Get the target type associated with the provided {@code clazz}.
+     * 
+     * @param clazz
+     *          the class to identify the target type for
+     * @return the associated target type or {@code null} if the class is not associated with a target
+     *         type
+     */
     @Nullable
     public static TargetType forClass(@NonNull Class<?> clazz) {
       Class<?> target = clazz;
@@ -102,6 +110,14 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
       return retval;
     }
 
+    /**
+     * Get the target type associated with the provided field {@code name}.
+     * 
+     * @param name
+     *          the field name to identify the target type for
+     * @return the associated target type or {@code null} if the name is not associated with a target
+     *         type
+     */
     @Nullable
     public static TargetType forFieldName(@Nullable String name) {
       return name == null ? null : NAME_TO_TYPE.get(name);
@@ -112,10 +128,20 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
       this.clazz = clazz;
     }
 
+    /**
+     * Get the field name associated with the target type.
+     * 
+     * @return the name
+     */
     public String fieldName() {
       return fieldName;
     }
 
+    /**
+     * Get the bound class associated with the target type.
+     * 
+     * @return the class
+     */
     public Class<?> getClazz() {
       return clazz;
     }
@@ -139,7 +165,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     return APPLICABLE_TARGETS.getOrDefault(type, CollectionUtil.emptySet());
   }
 
-  private static <T> boolean handle(
+  private static <T> boolean handle( // NOPMD - acceptable complexity
       @NonNull TargetType itemType,
       @NonNull Supplier<? extends Collection<T>> supplier,
       @Nullable Function<T, Boolean> handler,
@@ -153,7 +179,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
       while (iter.hasNext()) {
         T item = iter.next();
 
-        if (item == null || context.appliesTo(item)) {
+        if (item == null || context.isApplicableTo(item)) {
           iter.remove();
           retval = true;
           // ignore removed items and their children
@@ -194,7 +220,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
    * @throws ProfileResolutionEvaluationException
    *           if a processing error occurred during profile resolution
    */
-  public static boolean remove(
+  public static boolean remove( // NOPMD - intentional
       @NonNull Control control,
       @Nullable String objectName,
       @Nullable String objectClass,
@@ -278,7 +304,16 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     return retval;
   }
 
-  public Boolean visitPart(ControlPart part, Context context) {
+  /**
+   * Visit the control part.
+   * 
+   * @param part
+   *          the bound part object
+   * @param context
+   *          the visitor context
+   * @return {@code true} if the removal was applied or {@code false} otherwise
+   */
+  public boolean visitPart(ControlPart part, Context context) {
     assert context != null;
 
     // visit props
@@ -304,18 +339,36 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     return retval;
   }
 
-  public Boolean visitMapping(Control.Mapping mapping, Context context) {
+  /**
+   * Visit the control mapping.
+   * 
+   * @param mapping
+   *          the bound mapping object
+   * @param context
+   *          the visitor context
+   * @return {@code true} if the removal was applied or {@code false} otherwise
+   */
+  public boolean visitMapping(Control.Mapping mapping, Context context) {
     assert context != null;
 
     // visit maps
     return handle(
         TargetType.MAP,
         () -> CollectionUtil.listOrEmpty(mapping.getMaps()),
-        child -> visitMap(child, context),
+        child -> visitMappingEntry(child, context),
         context);
   }
 
-  public Boolean visitMap(MappingEntry map, Context context) {
+  /**
+   * Visit the mapping entry.
+   * 
+   * @param map
+   *          the bound mapping entry object
+   * @param context
+   *          the visitor context
+   * @return {@code true} if the removal was applied or {@code false} otherwise
+   */
+  public boolean visitMappingEntry(MappingEntry map, Context context) {
     assert context != null;
 
     // visit props
@@ -334,7 +387,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     return retval;
   }
 
-  static class Context {
+  static class Context { // NOPMD - this is a data class
     /**
      * Types with an "name" flag.
      */
@@ -455,7 +508,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
       return expected == null || expected.equals(actual);
     }
 
-    public boolean appliesTo(@NonNull Object obj) {
+    public boolean isApplicableTo(@NonNull Object obj) { // NOPMD acceptable complexity
       TargetType objectType = TargetType.forClass(obj.getClass());
 
       boolean retval = objectType != null && getTargetItemTypes().contains(objectType);

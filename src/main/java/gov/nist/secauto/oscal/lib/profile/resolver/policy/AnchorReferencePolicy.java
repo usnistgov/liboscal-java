@@ -30,9 +30,10 @@ import com.vladsch.flexmark.ast.InlineLinkNode;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
 import com.vladsch.flexmark.util.sequence.CharSubSequence;
 
+import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,8 +54,12 @@ public class AnchorReferencePolicy
 
   @SuppressWarnings("null")
   @Override
-  protected List<ItemType> getEntityItemTypes(@NonNull InlineLinkNode link) {
-    return List.of(ItemType.RESOURCE, ItemType.CONTROL, ItemType.GROUP, ItemType.PART);
+  protected List<IEntityItem.ItemType> getEntityItemTypes(@NonNull InlineLinkNode link) {
+    return List.of(
+        IEntityItem.ItemType.RESOURCE,
+        IEntityItem.ItemType.CONTROL,
+        IEntityItem.ItemType.GROUP,
+        IEntityItem.ItemType.PART);
   }
 
   @Override
@@ -68,27 +73,35 @@ public class AnchorReferencePolicy
   }
 
   @Override
-  protected void handleUnselected(@NonNull InlineLinkNode link, @NonNull EntityItem item,
-      @NonNull IReferenceVisitor visitor) {
+  protected void handleUnselected(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull InlineLinkNode link,
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     URI linkHref = URI.create(link.getUrl().toString());
     URI sourceUri = item.getSource();
 
     URI resolved = sourceUri.resolve(linkHref);
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.atTrace().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      LOGGER.atTrace().log("At path '{}', remapping orphaned URI '{}' to '{}'",
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
+          linkHref.toString(),
+          resolved.toString());
     }
     link.setUrl(CharSubSequence.of(resolved.toString()));
   }
 
   @Override
   protected boolean handleIndexMiss(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull InlineLinkNode reference,
-      @NonNull List<ItemType> itemTypes,
+      @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isErrorEnabled()) {
       LOGGER.atError().log(
-          "the anchor should reference a {} identified by '{}', but the identifier was not found in the index.",
+          "The anchor at '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
           itemTypes.stream()
               .map(en -> en.name().toLowerCase(Locale.ROOT))
               .collect(CustomCollectors.joiningWithOxfordComma("or")),
@@ -98,9 +111,14 @@ public class AnchorReferencePolicy
   }
 
   @Override
-  protected boolean handleIdentifierNonMatch(@NonNull InlineLinkNode reference, @NonNull IReferenceVisitor visitor) {
+  protected boolean handleIdentifierNonMatch(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull InlineLinkNode reference,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.atDebug().log("Ignoring URI '{}'", reference.getUrl().toStringOrNull());
+      LOGGER.atDebug().log("Ignoring URI '{}' at '{}'",
+          reference.getUrl().toStringOrNull(),
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER));
     }
 
     return true;

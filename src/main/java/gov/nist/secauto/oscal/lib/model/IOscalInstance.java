@@ -28,9 +28,9 @@ package gov.nist.secauto.oscal.lib.model;
 
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.UUID;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IOscalInstance {
   UUID getUuid();

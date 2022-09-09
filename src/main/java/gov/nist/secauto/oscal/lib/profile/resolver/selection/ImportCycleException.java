@@ -24,29 +24,33 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+public class ImportCycleException
+    extends Exception {
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+  /**
+   * the serial version UUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-public interface IIndexer {
-  @NonNull
-  Index getIndex();
+  public ImportCycleException() {
+    // no message or cause
+  }
 
-  EntityItem addRole(@NonNull IRequiredValueModelNodeItem role);
+  public ImportCycleException(String message) {
+    super(message);
+  }
 
-  EntityItem addLocation(@NonNull IRequiredValueModelNodeItem location);
+  public ImportCycleException(Throwable cause) {
+    super(cause);
+  }
 
-  EntityItem addParty(@NonNull IRequiredValueModelNodeItem party);
+  public ImportCycleException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-  EntityItem addGroup(@NonNull IRequiredValueModelNodeItem group, boolean selected);
-
-  EntityItem addControl(@NonNull IRequiredValueModelNodeItem control, boolean selected);
-
-  EntityItem addParameter(@NonNull IRequiredValueModelNodeItem parameter);
-
-  EntityItem addPart(@NonNull IRequiredValueModelNodeItem part);
-
-  EntityItem addResource(@NonNull IRequiredValueModelNodeItem resource);
+  public ImportCycleException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
 }

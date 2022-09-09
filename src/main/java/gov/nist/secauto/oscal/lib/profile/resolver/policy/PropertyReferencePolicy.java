@@ -26,10 +26,11 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
+import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.model.Property;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem;
-import gov.nist.secauto.oscal.lib.profile.resolver.EntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,17 +47,19 @@ public class PropertyReferencePolicy
 
   @NonNull
   public static PropertyReferencePolicy create(@NonNull IIdentifierParser identifierParser,
-      @NonNull ItemType itemType) {
+      @NonNull IEntityItem.ItemType itemType) {
     return create(identifierParser, List.of(itemType));
   }
 
   @NonNull
   public static PropertyReferencePolicy create(@NonNull IIdentifierParser identifierParser,
-      @NonNull List<ItemType> itemTypes) {
+      @NonNull List<IEntityItem.ItemType> itemTypes) {
     return new PropertyReferencePolicy(identifierParser, itemTypes);
   }
 
-  public PropertyReferencePolicy(@NonNull IIdentifierParser identifierParser, @NonNull List<ItemType> itemTypes) {
+  public PropertyReferencePolicy(
+      @NonNull IIdentifierParser identifierParser,
+      @NonNull List<IEntityItem.ItemType> itemTypes) {
     super(identifierParser, itemTypes);
   }
 
@@ -72,29 +75,36 @@ public class PropertyReferencePolicy
 
   @Override
   protected void handleUnselected(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull Property property,
-      @NonNull EntityItem item,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     URI linkHref = URI.create(property.getValue());
     URI sourceUri = item.getSource();
 
     URI resolved = sourceUri.resolve(linkHref);
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.atDebug().log("remapping orphaned URI '{}' to '{}'", linkHref.toString(), resolved.toString());
+      LOGGER.atTrace().log("At path '{}', remapping orphaned URI '{}' to '{}'",
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
+          linkHref.toString(),
+          resolved.toString());
     }
     property.setValue(resolved.toString());
   }
 
   @Override
   protected boolean handleIndexMiss(
+      @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull Property property,
-      @NonNull List<ItemType> itemTypes,
+      @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.atWarn().log(
-          "property '{}' should reference a {} identified by '{}', but the identifier was not found in the index.",
+          "The property '{}' at '{}' should reference a {} identified by '{}',"
+              + " but the identifier was not found in the index.",
           property.getQName(),
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
           itemTypes.stream()
               .map(en -> en.name().toLowerCase(Locale.ROOT))
               .collect(CustomCollectors.joiningWithOxfordComma("or")),

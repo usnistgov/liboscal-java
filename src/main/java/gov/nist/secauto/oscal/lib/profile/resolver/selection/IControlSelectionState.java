@@ -24,48 +24,16 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public abstract class AbstractCatalogControlItemVisitor<T, R> {
+public interface IControlSelectionState {
+  @NonNull
+  IIndexer getIndex();
 
-  protected abstract R newDefaultResult(T context);
-
-  protected abstract R aggregateResults(R first, R second, T context);
-
-  protected R visitCatalog(@NonNull IDocumentNodeItem profileDocument, T context) {
-    return visitGroupContainer(profileDocument.getRootAssemblyNodeItem(), context);
-  }
-
-  protected R visitGroupContainer(@NonNull IRequiredValueModelNodeItem catalogOrGroup, T context) {
-    R groupResult = catalogOrGroup.getModelItemsByName("group").stream()
-        .map(groupItem -> {
-          return visitGroup(groupItem, context);
-        })
-        .reduce(newDefaultResult(context), (first, second) -> aggregateResults(first, second, context));
-
-    R controlResult = visitControlContainer(catalogOrGroup, context);
-    return aggregateResults(groupResult, controlResult, context);
-  }
-
-  protected R visitControlContainer(@NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl, T context) {
-    return catalogOrGroupOrControl.getModelItemsByName("control").stream()
-        .map(controlItem -> {
-          return visitControl(controlItem, context);
-        })
-        .reduce(newDefaultResult(context), (first, second) -> aggregateResults(first, second, context));
-  }
-
-  protected R visitGroup(@NonNull IRequiredValueModelNodeItem groupItem, T context) {
-    return visitGroupContainer(groupItem, context);
-  }
-
-  protected R visitControl(@NonNull IRequiredValueModelNodeItem controlItem, T context) {
-    return visitControlContainer(controlItem, context);
-  }
-
+  boolean isSelected(@NonNull IRequiredValueModelNodeItem item);
 }
