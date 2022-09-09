@@ -4,9 +4,16 @@ A Java library to support processing OSCAL content.
 
 This open-source, Metaschema Java library offers a programatic means to work with [OSCAL](https://pages.nist.gov/OSCAL/) models defined by the [Metaschema modeling language](https://github.com/usnistgov/metaschema). This framework also supports programatically creating, modifying, parsing, and writing XML, JSON, and YAML OSCAL instance data. This work is intended to make it easier for Java software developers to incorporate OSCAL-based capabilities into their applications.
 
+The following features are supported by this library:
+- Reading and writing OSCAL documents in XML, JSON, and YAML formats into a common Java object model.
+- Resolution of OSCAL profiles to [produce resolved catalogs](https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/).
+- Validation of OSCAL content [well-formednes](https://pages.nist.gov/OSCAL/concepts/validation/) and validation of OSCAL syntax using XML and JSON schemas.
+- (Experimental) Validation of OSCAL content using [Metaschema](https://pages.nist.gov/metaschema/) constraints to enforce allowed values, cross-references, and some conditionally required data elements.
+- Builders for programmatically creating common OSCAL data elements.
+
 This library is based on the [Metaschema Java Tools](https://pages.nist.gov/metaschema-java/) project.
 
-This effort is part of the National Institute of Standards and Technology (NIST) OSCAL Program.
+This effort is part of the [National Institute of Standards and Technology](https://www.nist.gov/) (NIST) [OSCAL](https://www.nist.gov/oscal) Program.
 
 ## Contributing to this code base
 
@@ -62,8 +69,6 @@ Files.createDirectories(outDir);
 // serialize the catalog as yaml
 serializer.serialize(catalog, outDir.resolve("test-catalog.yaml"));
 ```
-
-tree/ddb1a4667b8c09b08300cd7ad9a2161ff4dc4d23#readme
 
 The [full code](src/test/java/gov/nist/secauto/oscal/java/ExamplesTest.javasrc/test/java/gov/nist/secauto/oscal/java/ExamplesTest.java) for this example is also available.
 
