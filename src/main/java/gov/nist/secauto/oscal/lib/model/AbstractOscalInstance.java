@@ -29,9 +29,9 @@ package gov.nist.secauto.oscal.lib.model;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.metadata.IBackMatter;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.UUID;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractOscalInstance implements IOscalInstance {
 

@@ -29,10 +29,10 @@ package gov.nist.secauto.oscal.lib.model.control.catalog;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.List;
 import java.util.stream.Stream;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IControlContainer {
 

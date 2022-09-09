@@ -41,6 +41,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IStringItem;
 import gov.nist.secauto.oscal.lib.model.AssessmentPart;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Property;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
 
 import java.net.URI;
 import java.util.List;
@@ -150,7 +151,7 @@ public final class HasOscalNamespace {
           String.format("Node of definition type '%s' has no OSCAL namespace", propOrPart.getDefinition().getName()));
     }
 
-    String nodeNamespaceString = Property.normalizeNamespace(nodeNamespace).toString();
+    String nodeNamespaceString = AbstractProperty.normalizeNamespace(nodeNamespace).toString();
     return IBooleanItem.valueOf(namespaces.asStream()
         .map(node -> nodeNamespaceString.equals(node.asString()))
         .anyMatch(bool -> bool));

@@ -34,9 +34,14 @@ import gov.nist.secauto.oscal.lib.profile.resolver.support.ICatalogVisitor;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
+/**
+ * A visitor used to process references.
+ *
+ * @param <T>
+ *          the visitor context type used to pass state while visiting
+ */
 public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
 
-  
   /**
    * Visit the provided {@code item} representing an OSCAL {@link CatalogGroup} and handle any
    * enclosed references.
@@ -47,7 +52,7 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
    *           if there was an error handing the reference
    */
   @Override
-  Void visitGroup(@NonNull IRequiredValueModelNodeItem item, Void childResult,  T context);
+  Void visitGroup(@NonNull IRequiredValueModelNodeItem item, Void childResult, T context);
 
   /**
    * Visit the provided {@code item} representing an OSCAL {@link Control} and handle any enclosed
@@ -60,70 +65,71 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
    */
   @Override
   Void visitControl(@NonNull IRequiredValueModelNodeItem item, Void childResult, T context);
-//
-//  /**
-//   * Visit the provided {@code item} representing an OSCAL {@link Parameter} and handle any enclosed
-//   * references.
-//   * 
-//   * @param item
-//   *          the Metapath node item containing reference nodes
-//   * @throws ProfileResolutionEvaluationException
-//   *           if there was an error handing the reference
-//   */
-//  void resolveParameter(@NonNull IRequiredValueModelNodeItem item);
-//
-//  /**
-//   * Visit the provided {@code item} representing an OSCAL {@link ControlPart} and handle any enclosed
-//   * references.
-//   * 
-//   * @param item
-//   *          the Metapath node item containing reference nodes
-//   * @throws ProfileResolutionEvaluationException
-//   *           if there was an error handing the reference
-//   */
-//  void resolvePart(@NonNull IRequiredValueModelNodeItem item, T context);
-//
-//  /**
-//   * Visit the provided {@code item} representing an OSCAL {@link Role} and handle any enclosed
-//   * references.
-//   * 
-//   * @param item
-//   *          the Metapath node item containing reference nodes
-//   * @throws ProfileResolutionEvaluationException
-//   *           if there was an error handing the reference
-//   */
-//  void resolveRole(@NonNull IRequiredValueModelNodeItem item);
-//
-//  /**
-//   * Visit the provided {@code item} representing an OSCAL {@link Party} and handle any enclosed
-//   * references.
-//   * 
-//   * @param item
-//   *          the Metapath node item containing reference nodes
-//   * @throws ProfileResolutionEvaluationException
-//   *           if there was an error handing the reference
-//   */
-//  void resolveParty(@NonNull IRequiredValueModelNodeItem item);
-//
-//  /**
-//   * Visit the provided {@code item} representing an OSCAL {@link Location} and handle any enclosed
-//   * references.
-//   * 
-//   * @param item
-//   *          the Metapath node item containing reference nodes
-//   * @throws ProfileResolutionEvaluationException
-//   *           if there was an error handing the reference
-//   */
-//  void resolveLocation(@NonNull IRequiredValueModelNodeItem item);
-//
-//  /**
-//   * Visit the provided {@code item} representing an OSCAL {@link Resource} and handle any enclosed
-//   * references.
-//   * 
-//   * @param item
-//   *          the Metapath node item containing reference nodes
-//   * @throws ProfileResolutionEvaluationException
-//   *           if there was an error handing the reference
-//   */
-//  void resolveResource(@NonNull IRequiredValueModelNodeItem item);
+  //
+  // /**
+  // * Visit the provided {@code item} representing an OSCAL {@link Parameter} and handle any enclosed
+  // * references.
+  // *
+  // * @param item
+  // * the Metapath node item containing reference nodes
+  // * @throws ProfileResolutionEvaluationException
+  // * if there was an error handing the reference
+  // */
+  // void resolveParameter(@NonNull IRequiredValueModelNodeItem item);
+  //
+  // /**
+  // * Visit the provided {@code item} representing an OSCAL {@link ControlPart} and handle any
+  // enclosed
+  // * references.
+  // *
+  // * @param item
+  // * the Metapath node item containing reference nodes
+  // * @throws ProfileResolutionEvaluationException
+  // * if there was an error handing the reference
+  // */
+  // void resolvePart(@NonNull IRequiredValueModelNodeItem item, T context);
+  //
+  // /**
+  // * Visit the provided {@code item} representing an OSCAL {@link Role} and handle any enclosed
+  // * references.
+  // *
+  // * @param item
+  // * the Metapath node item containing reference nodes
+  // * @throws ProfileResolutionEvaluationException
+  // * if there was an error handing the reference
+  // */
+  // void resolveRole(@NonNull IRequiredValueModelNodeItem item);
+  //
+  // /**
+  // * Visit the provided {@code item} representing an OSCAL {@link Party} and handle any enclosed
+  // * references.
+  // *
+  // * @param item
+  // * the Metapath node item containing reference nodes
+  // * @throws ProfileResolutionEvaluationException
+  // * if there was an error handing the reference
+  // */
+  // void resolveParty(@NonNull IRequiredValueModelNodeItem item);
+  //
+  // /**
+  // * Visit the provided {@code item} representing an OSCAL {@link Location} and handle any enclosed
+  // * references.
+  // *
+  // * @param item
+  // * the Metapath node item containing reference nodes
+  // * @throws ProfileResolutionEvaluationException
+  // * if there was an error handing the reference
+  // */
+  // void resolveLocation(@NonNull IRequiredValueModelNodeItem item);
+  //
+  // /**
+  // * Visit the provided {@code item} representing an OSCAL {@link Resource} and handle any enclosed
+  // * references.
+  // *
+  // * @param item
+  // * the Metapath node item containing reference nodes
+  // * @throws ProfileResolutionEvaluationException
+  // * if there was an error handing the reference
+  // */
+  // void resolveResource(@NonNull IRequiredValueModelNodeItem item);
 }

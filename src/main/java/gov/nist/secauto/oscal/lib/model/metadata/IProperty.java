@@ -26,9 +26,9 @@
 
 package gov.nist.secauto.oscal.lib.model.metadata;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.net.URI;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IProperty {
   @SuppressWarnings("null")

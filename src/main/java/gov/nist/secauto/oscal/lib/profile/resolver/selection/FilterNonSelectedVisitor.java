@@ -54,6 +54,7 @@ import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class FilterNonSelectedVisitor
     extends AbstractCatalogEntityVisitor<FilterNonSelectedVisitor.Context, DefaultResult> {
@@ -284,6 +285,7 @@ public class FilterNonSelectedVisitor
     }
 
     @NonNull
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "provides intentional access to index state")
     public IIndexer getIndexer() {
       return indexer;
     }

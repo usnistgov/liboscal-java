@@ -34,14 +34,14 @@ import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractPart implements IPart {
 
@@ -148,7 +148,7 @@ public abstract class AbstractPart implements IPart {
     }
 
     @NonNull
-    public ControlPart build() {
+    public ControlPart build() { // NOPMD acceptable complexity
       ControlPart retval = new ControlPart();
 
       retval.setName(name);

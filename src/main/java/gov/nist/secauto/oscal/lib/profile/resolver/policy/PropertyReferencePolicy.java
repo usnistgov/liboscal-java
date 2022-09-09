@@ -57,7 +57,9 @@ public class PropertyReferencePolicy
     return new PropertyReferencePolicy(identifierParser, itemTypes);
   }
 
-  public PropertyReferencePolicy(@NonNull IIdentifierParser identifierParser, @NonNull List<IEntityItem.ItemType> itemTypes) {
+  public PropertyReferencePolicy(
+      @NonNull IIdentifierParser identifierParser,
+      @NonNull List<IEntityItem.ItemType> itemTypes) {
     super(identifierParser, itemTypes);
   }
 

@@ -124,7 +124,7 @@ public abstract class AbstractEntityItem implements IEntityItem {
     return retval;
   }
 
-  final static class Builder {
+  static final class Builder {
     private String originalIdentifier; // NOPMD - builder method
     private String reassignedIdentifier;
     private IRequiredValueModelNodeItem instance; // NOPMD - builder method
@@ -174,7 +174,7 @@ public abstract class AbstractEntityItem implements IEntityItem {
     }
   }
 
-  final static class OriginalEntityItem
+  static final class OriginalEntityItem
       extends AbstractEntityItem {
 
     protected OriginalEntityItem(@NonNull Builder builder) {
@@ -192,7 +192,7 @@ public abstract class AbstractEntityItem implements IEntityItem {
     }
   }
 
-  final static class ReassignedEntityItem
+  static final class ReassignedEntityItem
       extends AbstractEntityItem {
     @NonNull
     private final String reassignedIdentifier;

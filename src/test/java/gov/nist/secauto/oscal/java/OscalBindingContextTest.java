@@ -29,7 +29,6 @@ package gov.nist.secauto.oscal.java;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
@@ -38,7 +37,6 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -49,6 +47,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 class OscalBindingContextTest {
   private static OscalBindingContext bindingContext;
@@ -61,7 +61,7 @@ class OscalBindingContextTest {
   }
 
   @Test
-  void testLoadCatalogYaml(@TempDir Path tempDir) throws BindingException, IOException {
+  void testLoadCatalogYaml(@TempDir Path tempDir) throws IOException {
     // the YAML catalog is currently malformed, this will create a proper one for this test
     Catalog catalog
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile());
@@ -77,7 +77,7 @@ class OscalBindingContextTest {
   }
 
   @Test
-  void testLoadCatalogJson(@TempDir Path tempDir) throws BindingException, IOException {
+  void testLoadCatalogJson(@TempDir Path tempDir) throws IOException {
     Catalog catalog
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.json").getCanonicalFile());
     assertNotNull(catalog);
@@ -95,7 +95,7 @@ class OscalBindingContextTest {
   }
 
   @Test
-  void testLoadCatalogXml(@TempDir Path tempDir) throws BindingException, IOException {
+  void testLoadCatalogXml(@TempDir Path tempDir) throws IOException {
     Catalog catalog
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile());
     assertNotNull(catalog);
@@ -112,7 +112,7 @@ class OscalBindingContextTest {
   }
 
   @Test
-  void testLoadProfileJson(@TempDir Path tempDir) throws BindingException, IOException {
+  void testLoadProfileJson(@TempDir Path tempDir) throws IOException {
     Profile profile
         = loader.load(
             new File("target/download/content/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json").getCanonicalFile());
@@ -152,7 +152,7 @@ class OscalBindingContextTest {
   }
 
   @Test
-  void testCatalogXmlListItems(@TempDir Path tempDir) throws BindingException, IOException {
+  void testCatalogXmlListItems(@TempDir Path tempDir) throws IOException {
     Catalog catalog
         = loader.load(new File("src/test/resources/content/catalog-with-lists.xml").getCanonicalFile());
     assertNotNull(catalog);

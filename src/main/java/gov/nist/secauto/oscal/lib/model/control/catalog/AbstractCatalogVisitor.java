@@ -27,19 +27,34 @@
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.Objects;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalogVisitor<RESULT, CONTEXT> {
 
+  /**
+   * Get a new initial/default result for the visitor.
+   * 
+   * @return the result
+   */
   protected abstract RESULT defaultResult();
 
+  /**
+   * Aggregate two results into one.
+   * 
+   * @param previous
+   *          the first result
+   * @param current
+   *          the next result
+   * @return the result produced by combining the two results
+   */
   protected RESULT aggregateResult(RESULT previous, RESULT current) {
     return current;
   }
@@ -48,15 +63,15 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
   public RESULT visitCatalog(Catalog catalog, CONTEXT context) {
     RESULT result = CollectionUtil.listOrEmpty(catalog.getGroups()).stream()
         .filter(Objects::nonNull)
-        .map(childGroup -> visitGroup(childGroup, context))
+        .map(childGroup -> visitGroup(ObjectUtils.notNull(childGroup), context))
         .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
     result = CollectionUtil.listOrEmpty(catalog.getControls()).stream()
         .filter(Objects::nonNull)
-        .map(childControl -> visitControl(childControl, context))
+        .map(childControl -> visitControl(ObjectUtils.notNull(childControl), context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
     return CollectionUtil.listOrEmpty(catalog.getParams()).stream()
         .filter(Objects::nonNull)
-        .map(childParameter -> visitParameter(childParameter, context))
+        .map(childParameter -> visitParameter(ObjectUtils.notNull(childParameter), context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
   }
 
@@ -64,15 +79,15 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
   public RESULT visitGroup(@NonNull CatalogGroup group, CONTEXT context) {
     RESULT result = CollectionUtil.listOrEmpty(group.getGroups()).stream()
         .filter(Objects::nonNull)
-        .map(childGroup -> visitGroup(childGroup, context))
+        .map(childGroup -> visitGroup(ObjectUtils.notNull(childGroup), context))
         .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
     result = CollectionUtil.listOrEmpty(group.getControls()).stream()
         .filter(Objects::nonNull)
-        .map(childControl -> visitControl(childControl, context))
+        .map(childControl -> visitControl(ObjectUtils.notNull(childControl), context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
     return CollectionUtil.listOrEmpty(group.getParams()).stream()
         .filter(Objects::nonNull)
-        .map(childParameter -> visitParameter(childParameter, context))
+        .map(childParameter -> visitParameter(ObjectUtils.notNull(childParameter), context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
   }
 
@@ -80,11 +95,11 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
   public RESULT visitControl(Control control, CONTEXT context) {
     RESULT result = CollectionUtil.listOrEmpty(control.getControls()).stream()
         .filter(Objects::nonNull)
-        .map(childControl -> visitControl(childControl, context))
+        .map(childControl -> visitControl(ObjectUtils.notNull(childControl), context))
         .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
     return CollectionUtil.listOrEmpty(control.getParams()).stream()
         .filter(Objects::nonNull)
-        .map(childParameter -> visitParameter(childParameter, context))
+        .map(childParameter -> visitParameter(ObjectUtils.notNull(childParameter), context))
         .reduce(result, (previous, current) -> aggregateResult(previous, current));
   }
 

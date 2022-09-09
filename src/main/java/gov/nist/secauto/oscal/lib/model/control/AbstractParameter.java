@@ -29,6 +29,7 @@ package gov.nist.secauto.oscal.lib.model.control;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.ParameterConstraint;
@@ -70,10 +71,10 @@ public abstract class AbstractParameter implements IParameter {
           .flatMap(choice -> choice.getInserts(insert -> "param".equals(insert.getType().toStringOrNull())).stream()
               .map(insert -> insert.getIdReference().toStringOrNull()));
     }
-    @SuppressWarnings("null")
     Stream<String> retval = Stream.concat(aggregatesIds, selectInsertIds)
         .filter(Objects::nonNull)
         .distinct();
+    assert retval != null;
     return retval;
   }
 
@@ -98,24 +99,24 @@ public abstract class AbstractParameter implements IParameter {
     private MarkupMultiline remarks; // NOPMD - intentional
 
     public Builder(@NonNull String id) {
-      this.id = Objects.requireNonNull(id);
+      this.id = ObjectUtils.requireNonNull(id);
     }
 
     @NonNull
     public Builder clazz(@NonNull String value) {
-      this.clazz = Objects.requireNonNull(value);
+      this.clazz = ObjectUtils.requireNonNull(value);
       return this;
     }
 
     @NonNull
     public Builder prop(@NonNull Property value) {
-      this.props.add(Objects.requireNonNull(value));
+      this.props.add(ObjectUtils.requireNonNull(value));
       return this;
     }
 
     @NonNull
     public Builder link(@NonNull Link value) {
-      this.links.add(Objects.requireNonNull(value));
+      this.links.add(ObjectUtils.requireNonNull(value));
       return this;
     }
 
@@ -126,33 +127,34 @@ public abstract class AbstractParameter implements IParameter {
 
     @NonNull
     public Builder label(@NonNull MarkupLine value) {
-      this.label = Objects.requireNonNull(value);
+      this.label = ObjectUtils.requireNonNull(value);
       return this;
     }
 
     @NonNull
     public Builder usage(@NonNull String markdown) {
-      return usage(MarkupMultiline.fromMarkdown(Objects.requireNonNull(markdown)));
+      return usage(MarkupMultiline.fromMarkdown(ObjectUtils.requireNonNull(markdown)));
     }
 
     @NonNull
     public Builder usage(@NonNull MarkupMultiline value) {
-      this.usage = Objects.requireNonNull(value);
+      this.usage = ObjectUtils.requireNonNull(value);
       return this;
     }
 
     @NonNull
     public Builder constraint(@NonNull ParameterConstraint value) {
-      this.constraints.add(Objects.requireNonNull(value));
+      this.constraints.add(ObjectUtils.requireNonNull(value));
       return this;
     }
 
     @NonNull
     public Builder guideline(@NonNull ParameterGuideline value) {
-      this.guidelines.add(Objects.requireNonNull(value));
+      this.guidelines.add(ObjectUtils.requireNonNull(value));
       return this;
     }
 
+    @SuppressWarnings("null")
     @NonNull
     public Builder values(@NonNull String... values) {
       return values(Arrays.asList(values));
@@ -177,7 +179,7 @@ public abstract class AbstractParameter implements IParameter {
     }
 
     @NonNull
-    public Parameter build() {
+    public Parameter build() { // NOPMD acceptable complexity
       Parameter retval = new Parameter();
       retval.setId(id);
 

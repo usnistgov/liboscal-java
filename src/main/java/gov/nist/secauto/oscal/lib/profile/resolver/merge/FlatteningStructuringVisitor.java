@@ -185,10 +185,10 @@ public class FlatteningStructuringVisitor
   }
 
   private static void handlePartSelection(
-      @NonNull IRequiredValueModelNodeItem GroupOrControlItem,
+      @NonNull IRequiredValueModelNodeItem groupOrControlItem,
       @NonNull IIndexer index,
       @NonNull SelectionStatus selectionStatus) {
-    CHILD_PART_METAPATH.evaluate(GroupOrControlItem).asStream()
+    CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()
         .map(item -> (IRequiredValueModelNodeItem) item)
         .forEachOrdered(partItem -> {
           index.setSelectionStatus(ObjectUtils.requireNonNull(partItem), selectionStatus);

@@ -132,12 +132,15 @@ public class ControlSelectionVisitor
     return childSelected;
   }
 
-  private void handlePartSelection(@NonNull IRequiredValueModelNodeItem GroupOrControlItem, boolean selected, IControlSelectionState state) {
+  private void handlePartSelection(
+      @NonNull IRequiredValueModelNodeItem groupOrControlItem,
+      boolean selected,
+      IControlSelectionState state) {
     if (isVisitedItemType(IEntityItem.ItemType.PART)) {
       SelectionStatus selectionStatus = selected ? SelectionStatus.SELECTED : SelectionStatus.UNSELECTED;
 
       IIndexer index = getIndexer(state);
-      CHILD_PART_METAPATH.evaluate(GroupOrControlItem).asStream()
+      CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()
           .map(item -> (IRequiredValueModelNodeItem) item)
           .forEachOrdered(partItem -> {
             index.setSelectionStatus(ObjectUtils.requireNonNull(partItem), selectionStatus);

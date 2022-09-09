@@ -103,10 +103,5 @@ public interface IEntityItem {
 
   void incrementReferenceCount();
 
-  // FIXME: make private
-  public static class Builder {
-
-  }
-
   int resetReferenceCount();
 }

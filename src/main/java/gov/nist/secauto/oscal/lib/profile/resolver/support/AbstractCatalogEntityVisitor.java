@@ -44,8 +44,10 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * <p>
  * This implementation is stateless. The {@code T} parameter can be used to convey state as needed.
  *
- * @param <T> the state type
- * @param <R> the result type
+ * @param <T>
+ *          the state type
+ * @param <R>
+ *          the result type
  */
 public abstract class AbstractCatalogEntityVisitor<T, R>
     extends AbstractCatalogVisitor<T, R> {
@@ -71,8 +73,14 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   @NonNull
   private final Set<IEntityItem.ItemType> itemTypesToVisit;
 
+  /**
+   * Create a new visitor that will visit the item types identified by {@code itemTypesToVisit}.
+   * 
+   * @param itemTypesToVisit
+   *          the item type the visitor will visit
+   */
   public AbstractCatalogEntityVisitor(@NonNull Set<IEntityItem.ItemType> itemTypesToVisit) {
-    this.itemTypesToVisit = itemTypesToVisit;
+    this.itemTypesToVisit = CollectionUtil.unmodifiableSet(itemTypesToVisit);
   }
 
   public Set<IEntityItem.ItemType> getItemTypesToVisit() {
@@ -165,7 +173,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a parameter.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
    * 
    * @param item
    *          the Metapath item for the parameter
@@ -186,7 +195,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a part.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
    * 
    * @param item
    *          the Metapath item for the part
@@ -237,7 +247,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a role in the "metadata" section of an OSCAL document.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
    * 
    * @param item
    *          the role Metaschema node item which is a child of the "metadata" node
@@ -256,7 +267,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a location in the "metadata" section of an OSCAL document.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
    * 
    * @param item
    *          the location Metaschema node item which is a child of the "metadata" node
@@ -275,7 +287,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a party in the "metadata" section of an OSCAL document.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
    * 
    * @param item
    *          the party Metaschema node item which is a child of the "metadata" node
@@ -314,7 +327,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a resource in the "back-matter" section of an OSCAL document.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
    * 
    * @param item
    *          the resource Metaschema node item which is a child of the "metadata" node

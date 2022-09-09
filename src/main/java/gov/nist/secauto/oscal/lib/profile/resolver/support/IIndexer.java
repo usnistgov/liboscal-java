@@ -151,7 +151,7 @@ public interface IIndexer {
       }
     }
     
-    for (Map.Entry<INodeItem, SelectionStatus> entry : indexer.getSelectionStatus().entrySet()) {
+    for (Map.Entry<INodeItem, SelectionStatus> entry : indexer.getSelectionStatusMap().entrySet()) {
       INodeItem nodeItem = entry.getKey();
       if (!indexedItems.contains(nodeItem)) {
         Object value = nodeItem.getValue();
@@ -228,6 +228,9 @@ public interface IIndexer {
 
   boolean isSelected(@NonNull IEntityItem entity);
 
+
+  Map<INodeItem, SelectionStatus> getSelectionStatusMap();
+
   @NonNull
   SelectionStatus getSelectionStatus(@NonNull INodeItem item);
 
@@ -239,6 +242,4 @@ public interface IIndexer {
   void append(@NonNull IIndexer result);
 
   Map<ItemType, Map<String, IEntityItem>> getEntities();
-
-  Map<INodeItem, SelectionStatus> getSelectionStatus();
 }

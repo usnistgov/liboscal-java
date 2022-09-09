@@ -36,12 +36,12 @@ import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractControl
     implements IDeserializationHandler, IControl {
@@ -57,9 +57,8 @@ public abstract class AbstractControl
     this.parent = parent;
   }
 
-  @SuppressWarnings("PMD")
   @Override
-  public void beforeDeserialize(Object parent) {
+  public void beforeDeserialize(Object parent) { // NOPMD intentional
     // do nothing
   }
 
@@ -89,8 +88,8 @@ public abstract class AbstractControl
         .flatMap(ObjectUtils::filterNull)
         .flatMap(param -> param.getParameterReferences());
 
-    return Stream.concat(insertIds, parameterIds)
-        .distinct();
+    return ObjectUtils.notNull(
+        Stream.concat(insertIds, parameterIds).distinct());
   }
 
   @NonNull

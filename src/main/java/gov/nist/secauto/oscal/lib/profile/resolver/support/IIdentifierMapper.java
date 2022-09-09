@@ -74,7 +74,9 @@ public interface IIdentifierMapper {
   String mapPartIdentifier(@NonNull String identifier);
 
   @NonNull
-  default String mapByItemType(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier) { // NOPMD - intentional
+  default String mapByItemType(// NOPMD - intentional
+      @NonNull IEntityItem.ItemType itemType,
+      @NonNull String identifier) {
     String retval;
     switch (itemType) {
     case CONTROL:

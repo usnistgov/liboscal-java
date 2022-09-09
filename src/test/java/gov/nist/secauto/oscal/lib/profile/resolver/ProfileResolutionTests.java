@@ -29,7 +29,6 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.nist.secauto.metaschema.binding.io.DefaultBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Format;

@@ -60,11 +60,11 @@ class ModifyPhaseUtilsTest {
             .collect(Collectors.toList()));
   }
 
-  private TestItem item(@NonNull String value) {
+  private static TestItem item(@NonNull String value) {
     return item(null, value);
   }
 
-  private TestItem item(@Nullable String identifier, @NonNull String value) {
+  private static TestItem item(@Nullable String identifier, @NonNull String value) {
     return new TestItem(identifier, value);
   }
 

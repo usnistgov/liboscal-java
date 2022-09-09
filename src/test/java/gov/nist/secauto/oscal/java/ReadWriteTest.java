@@ -29,11 +29,11 @@ package gov.nist.secauto.oscal.java;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,15 +41,28 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 class ReadWriteTest {
   private static final Logger LOGGER = LogManager.getLogger(ReadWriteTest.class);
 
-  private static <CLASS> CLASS measureDeserializer(String format, File file, IDeserializer<CLASS> deserializer,
+  @NonNull
+  private static <CLASS> CLASS measureDeserializer(
+      @NonNull String format, 
+      @NonNull Path file, 
+      @NonNull IDeserializer<CLASS> deserializer,
       int iterations) throws IOException {
+
+    if (iterations < 1) {
+      throw new IllegalArgumentException(
+          String.format("Illegal iteration value '%d'. The value must be greater than zero.",
+              iterations));
+    }
+    
     CLASS retval = null;
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
@@ -66,10 +79,17 @@ class ReadWriteTest {
     if (iterations > 1 && LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("%s read in %d milliseconds (on average) from %s", format, average, file));
     }
+
+    assert retval != null;
+
     return retval;
   }
 
-  private static <CLASS> void measureSerializer(CLASS root, String format, File file, ISerializer<CLASS> serializer,
+  private static <CLASS> void measureSerializer(
+      @NonNull CLASS root,
+      @NonNull String format,
+      @NonNull Path file,
+      @NonNull ISerializer<CLASS> serializer,
       int iterations) throws IOException {
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
@@ -91,7 +111,11 @@ class ReadWriteTest {
     }
   }
 
-  private static <CLASS> void chainReadWrite(File xmlSource, Class<CLASS> clazz, Path tempDir, int iterations)
+  private static <CLASS> void chainReadWrite(
+      @NonNull Path xmlSource, 
+      @NonNull Class<CLASS> clazz, 
+      @NonNull Path tempDir, 
+      int iterations)
       throws IOException {
     IBindingContext context = IBindingContext.instance();
 
@@ -103,14 +127,14 @@ class ReadWriteTest {
       deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
 
-      File out = new File(tempDir.toFile(), "out.xml");
+      Path out = ObjectUtils.notNull(tempDir.resolve("out.xml"));
       ISerializer<CLASS> serializer = context.newSerializer(Format.XML, clazz);
       measureSerializer(obj, "XML", out, serializer, iterations);
     }
 
     // JSON
     {
-      File out = new File(tempDir.toFile(), "out.json");
+      Path out = ObjectUtils.notNull(tempDir.resolve("out.json"));
       ISerializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz);
       measureSerializer(obj, "JSON", out, serializer, iterations);
 
@@ -121,7 +145,7 @@ class ReadWriteTest {
 
     // YAML
     {
-      File out = new File(tempDir.toFile(), "out.yml");
+      Path out = ObjectUtils.notNull(tempDir.resolve("out.yaml"));
       ISerializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz);
       measureSerializer(obj, "YAML", out, serializer, iterations);
 
@@ -132,13 +156,14 @@ class ReadWriteTest {
   }
 
   @Test
-  void testOscalCatalogMetrics(@TempDir Path tempDir) throws IOException, BindingException {
+  void testOscalCatalogMetrics(@NonNull @TempDir Path tempDir) throws IOException {
 
-    File catalogSourceXml = new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml");
+    Path catalogSourceXml = ObjectUtils.notNull(
+        Path.of("target/download/content/NIST_SP-800-53_rev5_catalog.xml"));
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("Testing XML file: {}", catalogSourceXml.getName());
+      LOGGER.info("Testing XML file: {}", catalogSourceXml);
     }
-    assertTrue(catalogSourceXml.exists());
+    assertTrue(Files.exists(catalogSourceXml), "The source file does not exist");
 
     // File outDir = new File("target/test-content");
     // outDir.mkdirs();

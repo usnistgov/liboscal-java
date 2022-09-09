@@ -29,12 +29,10 @@ package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 
-import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
-import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -50,9 +48,6 @@ import gov.nist.secauto.oscal.lib.profile.resolver.support.BasicIndexer;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 
-import org.apache.logging.log4j.Level;
-
-import java.io.IOException;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
@@ -122,19 +117,8 @@ public class Import {
       // process references
       ReferenceCountingVisitor.instance().visitCatalog(importedCatalogDocument, indexer, uri);
 
-      // REMOVE
-      IIndexer.logIndex(indexer, Level.DEBUG);
-
       // filter based on selections
       FilterNonSelectedVisitor.instance().visitCatalog(importedCatalogDocument, indexer);
-
-      // REMOVE
-      try {
-        OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(resolvedCatalog, System.out);
-      } catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-
     } catch (ProfileResolutionEvaluationException ex) {
       throw new ProfileResolutionException(
           String.format("Unable to resolve profile import '%s'. %s", uri.toString(), ex.getMessage()), ex);

@@ -36,16 +36,15 @@ import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Property;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-@SuppressWarnings("PMD")
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public abstract class AbstractCatalogGroup
-    implements ICatalogGroup, IGroupContainer {
+    implements ICatalogGroup {
 
   @NonNull
   @Override
@@ -66,8 +65,8 @@ public abstract class AbstractCatalogGroup
         .flatMap(ObjectUtils::filterNull)
         .flatMap(param -> param.getParameterReferences());
 
-    return Stream.concat(insertIds, parameterIds)
-        .distinct();
+    return ObjectUtils.notNull(
+        Stream.concat(insertIds, parameterIds).distinct());
   }
 
   @NonNull
@@ -89,12 +88,12 @@ public abstract class AbstractCatalogGroup
     private final List<Control> controls = new LinkedList<>();
 
     public Builder(@NonNull String id) {
-      this.id = Objects.requireNonNull(id, "id");
+      this.id = ObjectUtils.requireNonNull(id, "id");
     }
 
     @NonNull
     public Builder clazz(@NonNull String value) {
-      this.clazz = Objects.requireNonNull(value, "value");
+      this.clazz = ObjectUtils.requireNonNull(value, "value");
       return this;
     }
 
@@ -104,10 +103,9 @@ public abstract class AbstractCatalogGroup
       return this;
     }
 
-    @SuppressWarnings("null")
     @NonNull
     public Builder title(@NonNull MarkupLine value) {
-      this.title = Objects.requireNonNull(value, "value");
+      this.title = ObjectUtils.requireNonNull(value, "value");
       return this;
     }
 

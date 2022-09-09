@@ -28,7 +28,6 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
-import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
@@ -71,7 +70,6 @@ import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.EntityResolver;
@@ -203,14 +201,8 @@ public class ProfileResolver { // NOPMD - ok
     generateMetadata(resolvedCatalog, profileDocument);
 
     IIndexer index = resolveImports(resolvedCatalog, profileDocument, importHistory);
-
     handleReferences(resolvedCatalog, profileDocument, index);
-
     handleMerge(resolvedCatalog, profileDocument, index);
-    
-    // REMOVE
-    OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(resolvedCatalog, System.out);
-
     handleModify(resolvedCatalog, profileDocument);
 
     return DefaultNodeItemFactory.instance().newDocumentNodeItem(
@@ -285,6 +277,7 @@ public class ProfileResolver { // NOPMD - ok
     resolvedCatalog.setMetadata(resolvedMetadata);
   }
 
+  @NonNull
   private IIndexer resolveImports(
       @NonNull Catalog resolvedCatalog,
       @NonNull IDocumentNodeItem profileDocument,
@@ -506,8 +499,6 @@ public class ProfileResolver { // NOPMD - ok
       ControlIndexingVisitor visitor = new ControlIndexingVisitor(
           ObjectUtils.notNull(EnumSet.of(IEntityItem.ItemType.CONTROL, IEntityItem.ItemType.PARAMETER)));
       visitor.visitCatalog(resolvedCatalogDocument, indexer);
-      
-      IIndexer.logIndex(indexer, Level.DEBUG);
 
       METAPATH_SET_PARAMETER.evaluate(profileDocument)
           .forEach(item -> {
@@ -534,7 +525,7 @@ public class ProfileResolver { // NOPMD - ok
 
   protected void handleSetParameter(IRequiredValueAssemblyNodeItem item, IIndexer indexer) {
     ProfileSetParameter setParameter = (Modify.ProfileSetParameter) item.getValue();
-    String paramId = setParameter.getParamId();
+    String paramId = ObjectUtils.requireNonNull(setParameter.getParamId());
     IEntityItem entity = indexer.getEntity(IEntityItem.ItemType.PARAMETER, paramId, false);
     if (entity == null) {
       throw new ProfileResolutionEvaluationException(
@@ -564,7 +555,7 @@ public class ProfileResolver { // NOPMD - ok
 
   protected void handleAlter(IRequiredValueAssemblyNodeItem item, IIndexer indexer) {
     Modify.Alter alter = (Modify.Alter) item.getValue();
-    String controlId = alter.getControlId();
+    String controlId = ObjectUtils.requireNonNull(alter.getControlId());
     IEntityItem entity = indexer.getEntity(IEntityItem.ItemType.CONTROL, controlId, false);
     if (entity == null) {
       throw new ProfileResolutionEvaluationException(

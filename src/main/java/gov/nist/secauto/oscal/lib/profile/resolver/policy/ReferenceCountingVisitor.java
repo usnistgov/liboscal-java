@@ -134,8 +134,16 @@ public class ReferenceCountingVisitor
   }
 
   public ReferenceCountingVisitor() {
-    // visit everything except parts, roles, locations, parties, parameters, and resources, which are handled differently by this visitor
-    super(EnumSet.complementOf(EnumSet.of(IEntityItem.ItemType.PART, IEntityItem.ItemType.ROLE, IEntityItem.ItemType.LOCATION, IEntityItem.ItemType.PARTY, IEntityItem.ItemType.PARAMETER, IEntityItem.ItemType.RESOURCE)));
+    // visit everything except parts, roles, locations, parties, parameters, and resources, which are
+    // handled differently by this visitor
+    super(ObjectUtils.notNull(EnumSet.complementOf(
+        EnumSet.of(
+            IEntityItem.ItemType.PART,
+            IEntityItem.ItemType.ROLE,
+            IEntityItem.ItemType.LOCATION,
+            IEntityItem.ItemType.PARTY,
+            IEntityItem.ItemType.PARAMETER,
+            IEntityItem.ItemType.RESOURCE))));
   }
 
   @Override
@@ -261,6 +269,8 @@ public class ReferenceCountingVisitor
   @Override
   protected void visitPart(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem groupOrControlItem,
       Context context) {
+    assert context != null;
+    
     ControlPart part = (ControlPart) item.getValue();
     String id = part.getId();
 
@@ -480,6 +490,13 @@ public class ReferenceCountingVisitor
     }
   }
 
+  @SuppressWarnings("null")
+  public void resolveEntity(
+      @NonNull IEntityItem entity,
+      @NonNull Context context) {
+    resolveEntity(entity, context, (theEntity, theContext) -> entityDispatch(theEntity, theContext));
+  }
+
   protected void entityDispatch(@NonNull IEntityItem entity, @NonNull Context context) {
     IRequiredValueModelNodeItem item = entity.getInstance();
     switch (entity.getItemType()) {
@@ -510,12 +527,6 @@ public class ReferenceCountingVisitor
     default:
       throw new UnsupportedOperationException(entity.getItemType().name());
     }
-  }
-
-  public void resolveEntity(
-      @NonNull IEntityItem entity,
-      @NonNull Context context) {
-    resolveEntity(entity, context, (theEntity, theContext) -> entityDispatch(theEntity, theContext));
   }
   //
   // @Override
@@ -565,7 +576,6 @@ public class ReferenceCountingVisitor
       return resolvedEntities.contains(entity);
     }
 
-
     public void incrementReferenceCount(
         @NonNull IRequiredValueModelNodeItem contextItem,
         @NonNull IEntityItem.ItemType type,
@@ -606,7 +616,7 @@ public class ReferenceCountingVisitor
       }
     }
 
-    public void resolveEntity(IEntityItem item, Context context) {
+    public void resolveEntity(@NonNull IEntityItem item, @NonNull Context context) {
       instance().resolveEntity(item, context);
     }
   }

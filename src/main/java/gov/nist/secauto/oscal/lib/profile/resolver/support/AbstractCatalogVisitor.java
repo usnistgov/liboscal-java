@@ -33,7 +33,7 @@ import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
- * Used to visit a catalog containing groups and controls
+ * Used to visit a catalog containing groups and controls.
  * 
  * @param <T>
  *          the type of the state object used to pass calling context information

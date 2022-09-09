@@ -33,7 +33,6 @@ import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -47,6 +46,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 public final class OscalUtils {
   public static final String OSCAL_VERSION = "1.0.4";

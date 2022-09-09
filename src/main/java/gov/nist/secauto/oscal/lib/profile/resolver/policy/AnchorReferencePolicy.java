@@ -55,7 +55,11 @@ public class AnchorReferencePolicy
   @SuppressWarnings("null")
   @Override
   protected List<IEntityItem.ItemType> getEntityItemTypes(@NonNull InlineLinkNode link) {
-    return List.of(IEntityItem.ItemType.RESOURCE, IEntityItem.ItemType.CONTROL, IEntityItem.ItemType.GROUP, IEntityItem.ItemType.PART);
+    return List.of(
+        IEntityItem.ItemType.RESOURCE,
+        IEntityItem.ItemType.CONTROL,
+        IEntityItem.ItemType.GROUP,
+        IEntityItem.ItemType.PART);
   }
 
   @Override

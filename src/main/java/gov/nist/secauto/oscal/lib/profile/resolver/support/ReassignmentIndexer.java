@@ -23,6 +23,7 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
@@ -45,7 +46,10 @@ public class ReassignmentIndexer
   }
 
   @Override
-  protected AbstractEntityItem.Builder newBuilder(IRequiredValueModelNodeItem item, ItemType itemType, String identifier) {
+  protected AbstractEntityItem.Builder newBuilder(
+      IRequiredValueModelNodeItem item,
+      ItemType itemType,
+      String identifier) {
     AbstractEntityItem.Builder builder = super.newBuilder(item, itemType, identifier);
 
     String reassignment = getMapper().mapByItemType(itemType, identifier);

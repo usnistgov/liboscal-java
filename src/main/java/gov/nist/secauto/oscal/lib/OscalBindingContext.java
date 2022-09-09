@@ -200,7 +200,7 @@ public class OscalBindingContext
 
   private static class Matcher implements IBindingMatcher {
     @Override
-    public Class<?> getBoundClassForXmlQName(QName startElementQName) {
+    public Class<?> getBoundClassForXmlQName(QName startElementQName) { // NOPMD acceptable complexity
       Class<?> clazz = null;
       if ("http://csrc.nist.gov/ns/oscal/1.0".equals(startElementQName.getNamespaceURI())) {
         switch (startElementQName.getLocalPart()) {

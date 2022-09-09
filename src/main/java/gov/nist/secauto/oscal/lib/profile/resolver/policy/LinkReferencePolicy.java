@@ -82,12 +82,10 @@ public class LinkReferencePolicy
 
     URI resolved = sourceUri.resolve(linkHref);
     if (LOGGER.isTraceEnabled()) {
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.atTrace().log("At path '{}', remapping orphaned URI '{}' to '{}'",
-            contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
-            linkHref.toString(),
-            resolved.toString());
-      }
+      LOGGER.atTrace().log("At path '{}', remapping orphaned URI '{}' to '{}'",
+          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
+          linkHref.toString(),
+          resolved.toString());
     }
     link.setHref(resolved);
   }
@@ -101,7 +99,8 @@ public class LinkReferencePolicy
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.atWarn().log(
-          "The link at '{}' with rel '{}' should reference a {} identified by '{}'. The index did not contain the identifier.",
+          "The link at '{}' with rel '{}' should reference a {} identified by '{}'."
+              + " The index did not contain the identifier.",
           contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
           link.getRel(),
           itemTypes.stream()

@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class ControlSelectionState implements IControlSelectionState {
   private static final MetapathExpression GROUP_CHILDREN = MetapathExpression.compile("group|descendant::control");
@@ -52,12 +53,14 @@ public class ControlSelectionState implements IControlSelectionState {
   @NonNull
   private final Map<IRequiredValueModelNodeItem, SelectionState> itemSelectionState = new ConcurrentHashMap<>();
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "provides intentional access to index state")
   public ControlSelectionState(@NonNull IIndexer index, @NonNull IControlFilter filter) {
     this.index = index;
     this.filter = filter;
   }
 
   @Override
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "provides intentional access to index state")
   public IIndexer getIndex() {
     return index;
   }

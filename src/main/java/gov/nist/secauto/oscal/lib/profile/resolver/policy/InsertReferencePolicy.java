@@ -83,7 +83,8 @@ public class InsertReferencePolicy
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isErrorEnabled()) {
       LOGGER.atError().log(
-          "The '{}' insert at '{}' should reference a '{}' identified by '{}'. The index did not contain the identifier.",
+          "The '{}' insert at '{}' should reference a '{}' identified by '{}'."
+              + " The index did not contain the identifier.",
           insert.getType().toString(),
           contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),
           itemTypes.stream()

@@ -28,15 +28,11 @@ package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControlContainer;
 import gov.nist.secauto.oscal.lib.profile.resolver.TestUtil;
-import gov.nist.secauto.oscal.lib.profile.resolver.selection.ControlSelectionVisitor;
-import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlFilter;
-import gov.nist.secauto.oscal.lib.profile.resolver.selection.IControlSelectionFilter;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.BasicIndexer;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
@@ -50,7 +46,7 @@ import java.util.stream.Stream;
 class ControlSelectionVisitorTest {
 
   @Test
-  void test() throws BindingException {
+  void test() {
     // setup the imported catalog
     IDocumentNodeItem importedCatalogDocumentItem = TestUtil.newImportedCatalog();
 

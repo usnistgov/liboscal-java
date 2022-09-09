@@ -39,5 +39,5 @@ public abstract class AbstractIndexMissPolicyHandler<TYPE> implements ICustomRef
       @NonNull TYPE type,
       @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor);
+      @NonNull IReferenceVisitor<?> visitor);
 }

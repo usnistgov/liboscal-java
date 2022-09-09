@@ -41,7 +41,7 @@ public interface ICustomReferencePolicyHandler<TYPE> {
         @NonNull Object type,
         @NonNull List<IEntityItem.ItemType> itemTypes,
         @NonNull String identifier,
-        @NonNull IReferenceVisitor visitor) {
+        @NonNull IReferenceVisitor<?> visitor) {
       // do nothing
       return true;
     }
@@ -62,7 +62,7 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   default boolean handleIdentifierNonMatch(
       @NonNull ICustomReferencePolicy<TYPE> policy,
       @NonNull TYPE reference,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IReferenceVisitor<?> visitor) {
     return false;
   }
 
@@ -87,7 +87,7 @@ public interface ICustomReferencePolicyHandler<TYPE> {
       @NonNull TYPE reference,
       @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IReferenceVisitor<?> visitor) {
     return false;
   }
 
@@ -109,7 +109,7 @@ public interface ICustomReferencePolicyHandler<TYPE> {
       @NonNull ICustomReferencePolicy<TYPE> policy,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,
-      @NonNull IReferenceVisitor visitor) {
+      @NonNull IReferenceVisitor<?> visitor) {
     return false;
   }
 }

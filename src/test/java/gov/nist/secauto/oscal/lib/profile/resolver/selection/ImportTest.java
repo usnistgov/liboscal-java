@@ -41,7 +41,6 @@ import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.model.control.catalog.AbstractControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.AbstractProfileSelectControlById;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
-import gov.nist.secauto.oscal.lib.profile.resolver.selection.Import;
 
 import org.junit.jupiter.api.Test;
 

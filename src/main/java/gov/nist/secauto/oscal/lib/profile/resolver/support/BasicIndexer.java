@@ -76,7 +76,7 @@ public class BasicIndexer implements IIndexer {
       }
     }
 
-    this.nodeItemToSelectionStatusMap.putAll(other.getSelectionStatus());
+    this.nodeItemToSelectionStatusMap.putAll(other.getSelectionStatusMap());
   }
 
   public BasicIndexer() {
@@ -97,7 +97,7 @@ public class BasicIndexer implements IIndexer {
     }
 
     // copy selection map
-    this.nodeItemToSelectionStatusMap = new ConcurrentHashMap<>(other.getSelectionStatus());
+    this.nodeItemToSelectionStatusMap = new ConcurrentHashMap<>(other.getSelectionStatusMap());
   }
 
   @Override
@@ -107,7 +107,7 @@ public class BasicIndexer implements IIndexer {
   }
 
   @Override
-  public Map<INodeItem, SelectionStatus> getSelectionStatus() {
+  public Map<INodeItem, SelectionStatus> getSelectionStatusMap() {
     return CollectionUtil.unmodifiableMap(nodeItemToSelectionStatusMap);
   }
 
@@ -207,6 +207,13 @@ public class BasicIndexer implements IIndexer {
     return oldEntity;
   }
 
+  @NonNull
+  protected IEntityItem addItem(@NonNull AbstractEntityItem.Builder builder) {
+    IEntityItem retval = builder.build();
+    addItem(retval);
+    return retval;
+  }
+
   @Override
   public boolean remove(@NonNull IEntityItem entity) {
     IEntityItem.ItemType type = entity.getItemType();
@@ -224,7 +231,9 @@ public class BasicIndexer implements IIndexer {
           LOGGER.atDebug().log("Removing {} '{}' from index.", type.name(), entity.getIdentifier());
         }
       } else if (LOGGER.isDebugEnabled()) {
-        LOGGER.atDebug().log("Removing {} '{}' from index.", type.name(), entity.getIdentifier());
+        LOGGER.atDebug().log("The {} entity '{}' was not found in the index to remove.",
+            type.name(),
+            entity.getIdentifier());
       }
     }
     return retval;
@@ -325,13 +334,6 @@ public class BasicIndexer implements IIndexer {
         .instance(item, itemType)
         .originalIdentifier(identifier)
         .source(ObjectUtils.requireNonNull(item.getBaseUri(), "item must have an associated URI"));
-  }
-
-  @NonNull
-  protected IEntityItem addItem(@NonNull AbstractEntityItem.Builder builder) {
-    IEntityItem retval = builder.build();
-    addItem(retval);
-    return retval;
   }
 
   /**
