@@ -242,9 +242,4 @@ public interface IIndexer {
   void append(@NonNull IIndexer result);
 
   Map<ItemType, Map<String, IEntityItem>> getEntities();
-<<<<<<< HEAD
-=======
-
-  Map<INodeItem, SelectionStatus> getSelectionStatus();
->>>>>>> c78c296 (Refactored the visitors used to process catalogs and profiles during profile resolution to improve performance.)
 }
