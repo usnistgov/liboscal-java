@@ -77,27 +77,33 @@ public final class ResolveProfile {
     // disable construction
   }
 
+  @SuppressWarnings("unused")
   @NonNull
-  public static ISequence<?> executeNoArg(@NonNull IFunction function,
-      @NonNull List<ISequence<?>> arguments, @NonNull DynamicContext dynamicContext,
+  public static ISequence<?> executeNoArg(
+      @NonNull IFunction function,
+      @NonNull List<ISequence<?>> arguments,
+      @NonNull DynamicContext dynamicContext,
       INodeItem focus) {
 
     INodeItem item = focus;
     if (item == null) {
-      return ISequence.empty(); // NOPMD - readability
+      return ISequence.empty(); 
     }
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
 
+  @SuppressWarnings("unused")
   @NonNull
-  public static ISequence<?> executeOneArg(@NonNull IFunction function,
-      @NonNull List<ISequence<?>> arguments, @NonNull DynamicContext dynamicContext,
+  public static ISequence<?> executeOneArg(
+      @NonNull IFunction function,
+      @NonNull List<ISequence<?>> arguments,
+      @NonNull DynamicContext dynamicContext,
       INodeItem focus) {
     ISequence<? extends IDocumentNodeItem> arg = FunctionUtils.asType(arguments.get(0));
 
     IItem item = FunctionUtils.getFirstItem(arg, true);
     if (item == null) {
-      return ISequence.empty(); // NOPMD - readability
+      return ISequence.empty(); 
     }
 
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));

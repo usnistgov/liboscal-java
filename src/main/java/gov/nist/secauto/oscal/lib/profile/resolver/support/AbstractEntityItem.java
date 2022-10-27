@@ -125,11 +125,11 @@ public abstract class AbstractEntityItem implements IEntityItem {
   }
 
   static final class Builder {
-    private String originalIdentifier; // NOPMD - builder method
+    private String originalIdentifier; 
     private String reassignedIdentifier;
-    private IRequiredValueModelNodeItem instance; // NOPMD - builder method
+    private IRequiredValueModelNodeItem instance; 
     private ItemType itemType;
-    private URI source; // NOPMD - builder method
+    private URI source; 
 
     @NonNull
     public Builder instance(@NonNull IRequiredValueModelNodeItem item, @NonNull ItemType itemType) {

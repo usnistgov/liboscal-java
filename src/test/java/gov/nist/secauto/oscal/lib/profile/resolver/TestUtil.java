@@ -106,7 +106,7 @@ public final class TestUtil {
 
     importedCatalog.addGroup(AbstractCatalogGroup.builder("group1")
         .title("Group 1")
-        .part(AbstractPart.builder("statement") // NOPMD - no need to reduce literals
+        .part(AbstractPart.builder("statement") 
             .prose("group 1 part 1")
             .build())
         .param(AbstractParameter.builder("param2")

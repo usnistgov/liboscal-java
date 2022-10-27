@@ -343,7 +343,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
   // }
   // }
 
-  private static <T> boolean handleChild( // NOPMD acceptable complexity
+  private static <T> boolean handleChild( 
       @NonNull TargetType itemType,
       @NonNull Supplier<? extends List<T>> originalCollectionSupplier,
       @NonNull Supplier<? extends List<T>> newItemsSupplier,
@@ -530,7 +530,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
     return retval;
   }
 
-  static class Context { // NOPMD - false positive
+  static class Context { 
     @NonNull
     private static final Set<TargetType> TITLE_TYPES = ObjectUtils.notNull(
         Set.of(TargetType.CONTROL, TargetType.PART));
@@ -566,7 +566,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
     @NonNull
     private final Set<TargetType> targetItemTypes;
 
-    public Context( // NOPMD acceptable complexity
+    public Context( 
         @NonNull Control control,
         @NonNull Position position,
         @Nullable String byId,

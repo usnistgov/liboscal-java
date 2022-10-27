@@ -55,7 +55,7 @@ class OscalBindingContextTest {
   private static IBoundLoader loader;
 
   @BeforeAll
-  private static void initialize() { // NOPMD - actually used by JUnit
+  private static void initialize() { // NOPMD actually used
     bindingContext = OscalBindingContext.instance();
     loader = bindingContext.newBoundLoader();
   }

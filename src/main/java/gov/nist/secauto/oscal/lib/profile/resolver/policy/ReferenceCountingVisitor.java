@@ -71,7 +71,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class ReferenceCountingVisitor
     extends AbstractCatalogEntityVisitor<ReferenceCountingVisitor.Context, Void>
-    implements IReferenceVisitor<ReferenceCountingVisitor.Context> { // NOPMD - ok
+    implements IReferenceVisitor<ReferenceCountingVisitor.Context> { 
   private static final Logger LOGGER = LogManager.getLogger(ReferenceCountingVisitor.class);
 
   private static final ReferenceCountingVisitor SINGLETON = new ReferenceCountingVisitor();
