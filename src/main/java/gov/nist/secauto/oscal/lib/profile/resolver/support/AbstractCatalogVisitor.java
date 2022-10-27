@@ -129,7 +129,6 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
         .reduce(initialResult, (first, second) -> aggregateResults(first, second, state));
   }
 
-
   /**
    * Called when visiting a control.
    * <p>

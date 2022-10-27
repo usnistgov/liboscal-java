@@ -71,7 +71,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class ReferenceCountingVisitor
     extends AbstractCatalogEntityVisitor<ReferenceCountingVisitor.Context, Void>
-    implements IReferenceVisitor<ReferenceCountingVisitor.Context> { 
+    implements IReferenceVisitor<ReferenceCountingVisitor.Context> {
   private static final Logger LOGGER = LogManager.getLogger(ReferenceCountingVisitor.class);
 
   private static final ReferenceCountingVisitor SINGLETON = new ReferenceCountingVisitor();
@@ -270,7 +270,7 @@ public class ReferenceCountingVisitor
   protected void visitPart(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem groupOrControlItem,
       Context context) {
     assert context != null;
-    
+
     ControlPart part = (ControlPart) item.getValue();
     String id = part.getId();
 

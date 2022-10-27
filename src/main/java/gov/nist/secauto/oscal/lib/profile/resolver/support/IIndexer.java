@@ -67,13 +67,13 @@ public interface IIndexer {
       return entity.getReferenceCount() > 0
           || (Boolean) IIndexer.HAS_PROP_KEEP_METAPATH.evaluateAs(entity.getInstance(), ResultType.BOOLEAN);
     }
-    
+
   };
 
   static boolean isReferencedEntity(@NonNull IEntityItem entity) {
     return KEEP_ENTITY_PREDICATE.test(entity);
   }
-  
+
   /**
    * Keep entities that have a reference count greater than zero or are required to be kept based on
    * the "keep"="always property.
@@ -85,11 +85,10 @@ public interface IIndexer {
   static Stream<IEntityItem> getReferencedEntitiesAsStream(@NonNull Collection<IEntityItem> entities) {
     return entities.stream().filter(KEEP_ENTITY_PREDICATE);
   }
-  
-  
+
   /**
-   * Keep entities that have a reference count of zero or are not required to be kept based on
-   * the "keep"="always property.
+   * Keep entities that have a reference count of zero or are not required to be kept based on the
+   * "keep"="always property.
    * 
    * @param entities
    *          the entity items to filter
@@ -150,12 +149,12 @@ public interface IIndexer {
         }
       }
     }
-    
+
     for (Map.Entry<INodeItem, SelectionStatus> entry : indexer.getSelectionStatusMap().entrySet()) {
       INodeItem nodeItem = entry.getKey();
       if (!indexedItems.contains(nodeItem)) {
         Object value = nodeItem.getValue();
-        logger.atLevel(logLevel).log("{}: {}",value == null ? "(null)" : value.getClass().getName(), entry.getValue());
+        logger.atLevel(logLevel).log("{}: {}", value == null ? "(null)" : value.getClass().getName(), entry.getValue());
       }
     }
   }
@@ -228,7 +227,6 @@ public interface IIndexer {
 
   boolean isSelected(@NonNull IEntityItem entity);
 
-
   Map<INodeItem, SelectionStatus> getSelectionStatusMap();
 
   @NonNull
@@ -236,7 +234,7 @@ public interface IIndexer {
 
   @NonNull
   SelectionStatus setSelectionStatus(@NonNull INodeItem item, @NonNull SelectionStatus selectionStatus);
-  
+
   void resetSelectionStatus();
 
   void append(@NonNull IIndexer result);

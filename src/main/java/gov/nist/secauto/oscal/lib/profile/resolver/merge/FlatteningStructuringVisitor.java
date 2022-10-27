@@ -99,7 +99,7 @@ public class FlatteningStructuringVisitor
 
   @Override
   public Void visitGroup(IRequiredValueModelNodeItem item, Void childResult, IIndexer index) {
-    CatalogGroup group = (CatalogGroup)item.getValue();
+    CatalogGroup group = (CatalogGroup) item.getValue();
     String id = group.getId();
     if (id != null) {
       IEntityItem entity = index.getEntity(ItemType.GROUP, id);
@@ -115,7 +115,7 @@ public class FlatteningStructuringVisitor
 
   @Override
   public Void visitControl(IRequiredValueModelNodeItem item, Void childResult, IIndexer index) {
-    Control control = (Control)item.getValue();
+    Control control = (Control) item.getValue();
     String id = ObjectUtils.requireNonNull(control.getId());
     IEntityItem entity = index.getEntity(ItemType.CONTROL, id);
     assert entity != null;
@@ -130,7 +130,7 @@ public class FlatteningStructuringVisitor
   @Override
   protected Void visitParameter(IRequiredValueModelNodeItem item,
       IRequiredValueModelNodeItem catalogOrGroupOrControl, IIndexer index) {
-    Parameter parameter = (Parameter)item.getValue();
+    Parameter parameter = (Parameter) item.getValue();
     String id = ObjectUtils.requireNonNull(parameter.getId());
     IEntityItem entity = index.getEntity(ItemType.PARAMETER, id);
     assert entity != null;
@@ -143,7 +143,7 @@ public class FlatteningStructuringVisitor
   @Override
   protected void visitRole(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
       IIndexer index) {
-    Role role = (Role)item.getValue();
+    Role role = (Role) item.getValue();
     String id = ObjectUtils.requireNonNull(role.getId());
     IEntityItem entity = index.getEntity(ItemType.ROLE, id);
     assert entity != null;
@@ -154,7 +154,7 @@ public class FlatteningStructuringVisitor
   @Override
   protected void visitLocation(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
       IIndexer index) {
-    Location location = (Location)item.getValue();
+    Location location = (Location) item.getValue();
     UUID uuid = ObjectUtils.requireNonNull(location.getUuid());
     IEntityItem entity = index.getEntity(ItemType.LOCATION, uuid);
     assert entity != null;
@@ -165,7 +165,7 @@ public class FlatteningStructuringVisitor
   @Override
   protected void visitParty(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
       IIndexer index) {
-    Party location = (Party)item.getValue();
+    Party location = (Party) item.getValue();
     UUID uuid = ObjectUtils.requireNonNull(location.getUuid());
     IEntityItem entity = index.getEntity(ItemType.PARTY, uuid);
     assert entity != null;
@@ -176,7 +176,7 @@ public class FlatteningStructuringVisitor
   @Override
   protected void visitResource(IRequiredValueModelNodeItem item, IRootAssemblyNodeItem rootItem,
       IIndexer index) {
-    Resource location = (Resource)item.getValue();
+    Resource location = (Resource) item.getValue();
     UUID uuid = ObjectUtils.requireNonNull(location.getUuid());
     IEntityItem entity = index.getEntity(ItemType.RESOURCE, uuid);
     assert entity != null;
@@ -192,8 +192,8 @@ public class FlatteningStructuringVisitor
         .map(item -> (IRequiredValueModelNodeItem) item)
         .forEachOrdered(partItem -> {
           index.setSelectionStatus(ObjectUtils.requireNonNull(partItem), selectionStatus);
-          
-          ControlPart part = (ControlPart)partItem.getValue();
+
+          ControlPart part = (ControlPart) partItem.getValue();
           String id = part.getId();
           if (id != null) {
             IEntityItem entity = index.getEntity(ItemType.PART, id);
@@ -203,8 +203,9 @@ public class FlatteningStructuringVisitor
           }
         });
   }
-  
-  private static class FlatteningFilterNonSelectedVisitor extends FilterNonSelectedVisitor {
+
+  private static class FlatteningFilterNonSelectedVisitor
+      extends FilterNonSelectedVisitor {
     private static final FlatteningFilterNonSelectedVisitor SINGLETON = new FlatteningFilterNonSelectedVisitor();
 
     public static FlatteningFilterNonSelectedVisitor instance() {
@@ -215,7 +216,7 @@ public class FlatteningStructuringVisitor
     public DefaultResult visitControl(IRequiredValueModelNodeItem item, DefaultResult childResult,
         Context context) {
       assert childResult != null;
-      
+
       Control control = (Control) item.getValue();
       IIndexer index = context.getIndexer();
       // this control should always be found in the index
@@ -238,7 +239,7 @@ public class FlatteningStructuringVisitor
         }
       } else {
         // remove this control and promote any needed children
-        
+
         if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {
           retval.removeControl(control);
         }

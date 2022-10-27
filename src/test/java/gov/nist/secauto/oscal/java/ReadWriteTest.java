@@ -52,8 +52,8 @@ class ReadWriteTest {
 
   @NonNull
   private static <CLASS> CLASS measureDeserializer(
-      @NonNull String format, 
-      @NonNull Path file, 
+      @NonNull String format,
+      @NonNull Path file,
       @NonNull IDeserializer<CLASS> deserializer,
       int iterations) throws IOException {
 
@@ -62,7 +62,7 @@ class ReadWriteTest {
           String.format("Illegal iteration value '%d'. The value must be greater than zero.",
               iterations));
     }
-    
+
     CLASS retval = null;
     long totalTime = 0;
     for (int i = 0; i < iterations; i++) {
@@ -112,9 +112,9 @@ class ReadWriteTest {
   }
 
   private static <CLASS> void chainReadWrite(
-      @NonNull Path xmlSource, 
-      @NonNull Class<CLASS> clazz, 
-      @NonNull Path tempDir, 
+      @NonNull Path xmlSource,
+      @NonNull Class<CLASS> clazz,
+      @NonNull Path tempDir,
       int iterations)
       throws IOException {
     IBindingContext context = IBindingContext.instance();

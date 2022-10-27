@@ -58,7 +58,7 @@ public abstract class AbstractControl
   }
 
   @Override
-  public void beforeDeserialize(Object parent) { 
+  public void beforeDeserialize(Object parent) { // NOPMD noop default
     // do nothing
   }
 
@@ -101,8 +101,8 @@ public abstract class AbstractControl
     @NonNull
     private final String id;
 
-    private String clazz; 
-    private MarkupLine title; 
+    private String clazz;
+    private MarkupLine title;
     private final List<Parameter> params = new LinkedList<>();
     private final List<Property> props = new LinkedList<>();
     private final List<Link> links = new LinkedList<>();

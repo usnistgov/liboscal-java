@@ -39,11 +39,12 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  *          the type of the result for visiting a collection of groups and/or controls
  */
 public interface ICatalogVisitor<T, R> {
-  
+
   /**
    * Called when visiting a group.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
    * 
    * @param item
    *          the Metapath item for the group
@@ -61,7 +62,8 @@ public interface ICatalogVisitor<T, R> {
   /**
    * Called when visiting a control.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited object.
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
    * 
    * @param item
    *          the Metapath item for the control

@@ -205,7 +205,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * @param state
    *          the calling context information
    */
-  protected void visitPart(
+  protected void visitPart( // NOPMD noop default
       @NonNull IRequiredValueModelNodeItem item,
       @NonNull IRequiredValueModelNodeItem groupOrControl,
       T state) {
@@ -257,7 +257,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * @param state
    *          the calling context information
    */
-  protected void visitRole(
+  protected void visitRole( // NOPMD noop default
       @NonNull IRequiredValueModelNodeItem item,
       @NonNull IRequiredValueModelNodeItem metadataItem,
       T state) {
@@ -277,7 +277,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * @param state
    *          the calling context information
    */
-  protected void visitLocation(
+  protected void visitLocation( // NOPMD noop default
       @NonNull IRequiredValueModelNodeItem item,
       @NonNull IRequiredValueModelNodeItem metadataItem,
       T state) {
@@ -297,7 +297,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * @param state
    *          the calling context information
    */
-  protected void visitParty(
+  protected void visitParty( // NOPMD noop default
       @NonNull IRequiredValueModelNodeItem item,
       @NonNull IRequiredValueModelNodeItem metadataItem,
       T state) {
@@ -337,7 +337,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * @param state
    *          the calling context information
    */
-  protected void visitResource(
+  protected void visitResource( // NOPMD noop default
       @NonNull IRequiredValueModelNodeItem item,
       @NonNull IRootAssemblyNodeItem backMatterItem,
       T state) {

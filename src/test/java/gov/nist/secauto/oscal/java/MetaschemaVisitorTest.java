@@ -111,17 +111,17 @@ class MetaschemaVisitorTest {
 
   private static void evaluatePath(@NonNull MetapathExpression path, @NonNull INodeContext nodeContext,
       @NonNull DynamicContext dynamicContext) {
-//    System.out.println("Path: " + path.getPath());
-//    System.out.println("Compiled Path: " + path.toString());
+    // System.out.println("Path: " + path.getPath());
+    // System.out.println("Compiled Path: " + path.toString());
 
     ISequence<?> result = path.evaluate(nodeContext, dynamicContext);
-//    System.out.println("Result: ");
+    // System.out.println("Result: ");
     AtomicInteger count = new AtomicInteger();
     result.asStream().forEachOrdered(x -> {
       Object value = x.getValue();
-//      System.out.println(String.format("  %s", value));
+      // System.out.println(String.format(" %s", value));
       count.incrementAndGet();
     });
-//    System.out.println(String.format("  %d items", count.get()));
+    // System.out.println(String.format(" %d items", count.get()));
   }
 }

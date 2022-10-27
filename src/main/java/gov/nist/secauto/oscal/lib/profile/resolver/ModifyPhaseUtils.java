@@ -64,7 +64,7 @@ public final class ModifyPhaseUtils {
 
   public static <T> T mergeItem(@Nullable T original, @Nullable T additional) {
     if (additional == null) {
-      return original; 
+      return original;
     }
 
     return additional;
@@ -73,11 +73,11 @@ public final class ModifyPhaseUtils {
   public static <T> List<T> merge(@Nullable List<T> original, @Nullable List<T> additional,
       Function<? super T, String> keyFunction) {
     if (additional == null || additional.isEmpty()) {
-      return original; 
+      return original;
     }
 
     if (original == null || original.isEmpty()) {
-      return additional; 
+      return additional;
     }
 
     // reverse the stream

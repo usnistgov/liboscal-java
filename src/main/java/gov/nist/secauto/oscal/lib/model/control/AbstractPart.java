@@ -74,13 +74,13 @@ public abstract class AbstractPart implements IPart {
   }
 
   public static class Builder {
-    private String id; 
+    private String id;
     @NonNull
     private final String name;
-    private URI namespace; 
-    private String clazz; 
-    private MarkupMultiline prose; 
-    private MarkupLine title; 
+    private URI namespace;
+    private String clazz;
+    private MarkupMultiline prose;
+    private MarkupLine title;
     private final List<Property> props = new LinkedList<>();
     private final List<Link> links = new LinkedList<>();
     private final List<ControlPart> parts = new LinkedList<>();
@@ -90,7 +90,7 @@ public abstract class AbstractPart implements IPart {
     }
 
     @NonNull
-    public Builder id(@NonNull String value) { 
+    public Builder id(@NonNull String value) {
       this.id = Objects.requireNonNull(value);
       return this;
     }
@@ -148,7 +148,7 @@ public abstract class AbstractPart implements IPart {
     }
 
     @NonNull
-    public ControlPart build() { 
+    public ControlPart build() {
       ControlPart retval = new ControlPart();
 
       retval.setName(name);

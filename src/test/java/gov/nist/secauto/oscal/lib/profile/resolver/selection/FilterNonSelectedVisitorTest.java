@@ -61,13 +61,14 @@ class FilterNonSelectedVisitorTest {
         IControlSelectionFilter.ALL_MATCH,
         IControlSelectionFilter.matchIds("control2", "control5", "control7"));
     IIndexer indexer = new BasicIndexer();
-    
+
     IControlSelectionState state = new ControlSelectionState(indexer, filter);
     // process selections
     ControlSelectionVisitor.instance().visitCatalog(importedCatalogDocumentItem, state);
 
     // setup reference counting
-    ReferenceCountingVisitor.instance().visitCatalog(importedCatalogDocumentItem, indexer, importedCatalogDocumentItem.getBaseUri());
+    ReferenceCountingVisitor.instance().visitCatalog(importedCatalogDocumentItem, indexer,
+        importedCatalogDocumentItem.getBaseUri());
 
     FilterNonSelectedVisitor.instance().visitCatalog(importedCatalogDocumentItem, indexer);
 

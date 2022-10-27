@@ -58,7 +58,7 @@ public final class OscalUtils {
 
   public static boolean isInternalReference(@NonNull URI uri) {
     if (uri.isAbsolute()) {
-      return false; 
+      return false;
     }
 
     String schemeSpecificPart = uri.getSchemeSpecificPart();

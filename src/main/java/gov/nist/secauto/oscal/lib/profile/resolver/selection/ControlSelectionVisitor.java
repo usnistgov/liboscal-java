@@ -66,13 +66,13 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public class ControlSelectionVisitor
     extends AbstractIndexingVisitor<IControlSelectionState, Boolean> {
   private static final Logger LOGGER = LogManager.getLogger(ControlSelectionVisitor.class);
-  
+
   private static final ControlSelectionVisitor SINGLETON = new ControlSelectionVisitor();
 
   public static ControlSelectionVisitor instance() {
     return SINGLETON;
   }
-  
+
   @Override
   protected IIndexer getIndexer(IControlSelectionState state) {
     return state.getIndex();
@@ -97,7 +97,7 @@ public class ControlSelectionVisitor
       @NonNull IDocumentNodeItem profileDocument,
       @NonNull IControlSelectionState state) {
     visit(catalogDocument, state);
-    
+
     IRootAssemblyNodeItem root = profileDocument.getRootAssemblyNodeItem();
 
     visitMetadata(root, state);

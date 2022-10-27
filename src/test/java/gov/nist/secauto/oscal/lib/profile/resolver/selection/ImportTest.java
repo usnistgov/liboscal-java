@@ -107,7 +107,7 @@ class ImportTest {
         profileDocumentItem.getModelItemsByName("profile").stream()
             .flatMap(root -> root.getModelItemsByName("import").stream()))) {
 
-      Import catalogImport = new Import(profileDocumentItem, importItem); 
+      Import catalogImport = new Import(profileDocumentItem, importItem);
       catalogImport.resolve(importedCatalogDocumentItem, resolvedCatalog);
     }
   }

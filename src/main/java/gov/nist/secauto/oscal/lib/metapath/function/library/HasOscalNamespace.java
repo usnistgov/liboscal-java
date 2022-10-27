@@ -101,12 +101,12 @@ public final class HasOscalNamespace {
       INodeItem focus) {
     INodeItem node = focus;
     if (node == null) {
-      return ISequence.empty(); 
+      return ISequence.empty();
     }
 
     ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(arguments.get(0));
     if (namespaceArgs.isEmpty()) {
-      return ISequence.empty(); 
+      return ISequence.empty();
     }
 
     return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));
@@ -123,19 +123,19 @@ public final class HasOscalNamespace {
 
     IItem node = FunctionUtils.getFirstItem(nodeSequence, true);
     if (node == null) {
-      return ISequence.empty(); 
+      return ISequence.empty();
     }
 
     ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(arguments.get(1));
     if (namespaceArgs.isEmpty()) {
-      return ISequence.empty(); 
+      return ISequence.empty();
     }
 
     return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));
   }
 
   @NonNull
-  public static IBooleanItem hasNamespace( 
+  public static IBooleanItem hasNamespace(
       @NonNull IDefinitionNodeItem propOrPart,
       @NonNull ISequence<? extends IStringItem> namespaces)
       throws MetapathException {

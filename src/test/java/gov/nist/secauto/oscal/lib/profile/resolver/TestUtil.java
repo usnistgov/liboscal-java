@@ -63,7 +63,7 @@ public final class TestUtil {
       }
       return retval;
     }
-    
+
     @Override
     public String mapRoleIdentifier(@NonNull String identifier) {
       return reassign(identifier);
@@ -106,7 +106,7 @@ public final class TestUtil {
 
     importedCatalog.addGroup(AbstractCatalogGroup.builder("group1")
         .title("Group 1")
-        .part(AbstractPart.builder("statement") 
+        .part(AbstractPart.builder("statement")
             .prose("group 1 part 1")
             .build())
         .param(AbstractParameter.builder("param2")

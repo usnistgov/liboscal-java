@@ -129,7 +129,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
    */
-  protected void handleUnselected( 
+  protected void handleUnselected( // NOPMD noop default
       @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,
@@ -153,7 +153,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
    */
-  protected void handleSelected( 
+  protected void handleSelected( // NOPMD noop default
       @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,

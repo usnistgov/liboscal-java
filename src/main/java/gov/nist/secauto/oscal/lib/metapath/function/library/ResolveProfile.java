@@ -87,7 +87,7 @@ public final class ResolveProfile {
 
     INodeItem item = focus;
     if (item == null) {
-      return ISequence.empty(); 
+      return ISequence.empty();
     }
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
@@ -103,7 +103,7 @@ public final class ResolveProfile {
 
     IItem item = FunctionUtils.getFirstItem(arg, true);
     if (item == null) {
-      return ISequence.empty(); 
+      return ISequence.empty();
     }
 
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));

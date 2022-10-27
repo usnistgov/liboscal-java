@@ -49,7 +49,7 @@ public class DefaultResult implements IResult {
   private static final Logger LOGGER = LogManager.getLogger(DefaultResult.class);
 
   @NonNull
-  private final Lazy<Set<Control>> promotedControls = ObjectUtils.notNull( Lazy.lazy(LinkedHashSet::new));
+  private final Lazy<Set<Control>> promotedControls = ObjectUtils.notNull(Lazy.lazy(LinkedHashSet::new));
   @NonNull
   private final Lazy<Set<Parameter>> promotedParameters = ObjectUtils.notNull(Lazy.lazy(LinkedHashSet::new));
   @NonNull
@@ -136,20 +136,20 @@ public class DefaultResult implements IResult {
   }
 
   public void applyRemovesTo(Catalog parent) {
-    removeItems(parent.getGroups(),getRemovedGroups());
-    removeItems(parent.getControls(),getRemovedControls());
-    removeItems(parent.getParams(),getRemovedParameters());
+    removeItems(parent.getGroups(), getRemovedGroups());
+    removeItems(parent.getControls(), getRemovedControls());
+    removeItems(parent.getParams(), getRemovedParameters());
   }
 
   public void applyRemovesTo(CatalogGroup parent) {
-    removeItems(parent.getGroups(),getRemovedGroups());
-    removeItems(parent.getControls(),getRemovedControls());
-    removeItems(parent.getParams(),getRemovedParameters());
+    removeItems(parent.getGroups(), getRemovedGroups());
+    removeItems(parent.getControls(), getRemovedControls());
+    removeItems(parent.getParams(), getRemovedParameters());
   }
 
   public void applyRemovesTo(Control parent) {
-    removeItems(parent.getControls(),getRemovedControls());
-    removeItems(parent.getParams(),getRemovedParameters());
+    removeItems(parent.getControls(), getRemovedControls());
+    removeItems(parent.getParams(), getRemovedParameters());
   }
 
   public DefaultResult append(@NonNull DefaultResult that) {
@@ -166,7 +166,7 @@ public class DefaultResult implements IResult {
     lazyAppend(promotedParameters, that.promotedParameters);
     return this;
   }
-  
+
   protected static <T> void lazyAppend(@NonNull Lazy<Set<T>> self, @NonNull Lazy<Set<T>> other) {
     if (other.isAvailable()) {
       Set<T> otherSet = other.get();

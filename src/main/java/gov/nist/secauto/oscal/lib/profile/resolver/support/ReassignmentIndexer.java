@@ -39,7 +39,7 @@ public class ReassignmentIndexer
   public ReassignmentIndexer(@NonNull IIdentifierMapper mapper) {
     this.mapper = mapper;
   }
-  
+
   @NonNull
   protected IIdentifierMapper getMapper() {
     return mapper;

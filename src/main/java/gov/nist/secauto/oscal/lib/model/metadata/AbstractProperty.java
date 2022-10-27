@@ -97,10 +97,10 @@ public abstract class AbstractProperty implements IProperty {
     @NonNull
     private final String name;
 
-    private UUID uuid; 
-    private URI namespace; 
-    private String value; 
-    private String clazz; 
+    private UUID uuid;
+    private URI namespace;
+    private String value;
+    private String clazz;
 
     public Builder(@NonNull String name) {
       this.name = Objects.requireNonNull(name, "name");
@@ -115,7 +115,7 @@ public abstract class AbstractProperty implements IProperty {
     @NonNull
     public Builder namespace(@NonNull URI namespace) {
       if (IProperty.OSCAL_NAMESPACE.equals(namespace)) {
-        this.namespace = null; 
+        this.namespace = null;
       } else {
         this.namespace = Objects.requireNonNull(namespace);
       }
