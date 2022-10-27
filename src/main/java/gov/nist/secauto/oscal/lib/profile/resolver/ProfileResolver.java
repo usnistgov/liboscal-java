@@ -94,7 +94,7 @@ import java.util.stream.Collectors;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class ProfileResolver { // NOPMD - ok
+public class ProfileResolver { 
   private static final Logger LOGGER = LogManager.getLogger(ProfileResolver.class);
   private static final MetapathExpression METAPATH_SET_PARAMETER
       = MetapathExpression.compile("/profile/modify/set-parameter");
@@ -343,7 +343,7 @@ public class ProfileResolver { // NOPMD - ok
             OscalBindingContext.instance().copyBoundObject(importedCatalog.getValue(), null),
             importedCatalog.getDocumentUri());
 
-        IIndexer retval = new Import(profileDocument, profileImportItem) // NOPMD - intentional
+        IIndexer retval = new Import(profileDocument, profileImportItem) 
             .resolve(importedCatalog, resolvedCatalog);
 
         return retval;

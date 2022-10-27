@@ -113,7 +113,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
     String regex = pattern.chars().boxed().map(ch -> (char) ch.intValue()).map(ch -> {
 
       String value;
-      switch (ch) { // NOPMD - intentional
+      switch (ch) { 
       case '*':
         value = ".*";
         break;

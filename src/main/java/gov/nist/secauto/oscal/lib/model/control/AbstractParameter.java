@@ -87,16 +87,16 @@ public abstract class AbstractParameter implements IParameter {
     @NonNull
     private final String id;
 
-    private String clazz; // NOPMD - intentional
+    private String clazz; 
     private final List<Property> props = new LinkedList<>();
     private final List<Link> links = new LinkedList<>();
-    private MarkupLine label; // NOPMD - intentional
-    private MarkupMultiline usage; // NOPMD - intentional
+    private MarkupLine label; 
+    private MarkupMultiline usage; 
     private final List<ParameterConstraint> constraints = new LinkedList<>();
     private final List<ParameterGuideline> guidelines = new LinkedList<>();
-    private List<String> values = new LinkedList<>(); // NOPMD - intentional
+    private List<String> values = new LinkedList<>(); 
     private ParameterSelection selection;
-    private MarkupMultiline remarks; // NOPMD - intentional
+    private MarkupMultiline remarks; 
 
     public Builder(@NonNull String id) {
       this.id = ObjectUtils.requireNonNull(id);
@@ -179,7 +179,7 @@ public abstract class AbstractParameter implements IParameter {
     }
 
     @NonNull
-    public Parameter build() { // NOPMD acceptable complexity
+    public Parameter build() { 
       Parameter retval = new Parameter();
       retval.setId(id);
 

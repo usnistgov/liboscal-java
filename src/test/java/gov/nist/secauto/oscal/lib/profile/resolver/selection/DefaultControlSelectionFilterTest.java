@@ -51,25 +51,25 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 class DefaultControlSelectionFilterTest {
   @RegisterExtension
   final JUnit5Mockery context = new JUnit5Mockery() {
-    { // NOPMD - intentional
+    { 
       setImposteriser(ByteBuddyClassImposteriser.INSTANCE);
     }
   };
 
   @Mock
-  private IProfileSelectControlById selectControlByIdA; // NOPMD - injected
+  private IProfileSelectControlById selectControlByIdA; 
   @Mock
-  private ProfileSelectControlById.Matching matchingA; // NOPMD - injected
+  private ProfileSelectControlById.Matching matchingA; 
   @Mock
-  private ProfileSelectControlById.Matching matchingB; // NOPMD - injected
+  private ProfileSelectControlById.Matching matchingB; 
   @Mock
-  private IProfileSelectControlById selectControlByIdB; // NOPMD - injected
+  private IProfileSelectControlById selectControlByIdB; 
 
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
   @NonNull
   private IControlSelectionFilter newEmptyFilter() {
     context.checking(new Expectations() {
-      { // NOPMD - intentional
+      { 
         allowing(selectControlByIdA).getWithChildControls();
         will(returnValue("no"));
         allowing(selectControlByIdA).getWithIds();
@@ -88,7 +88,7 @@ class DefaultControlSelectionFilterTest {
   private IControlSelectionFilter newSingleSelectionFilter() {
     final List<String> withIds = List.of("test1", "test2");
     context.checking(new Expectations() {
-      { // NOPMD - intentional
+      { 
         allowing(selectControlByIdA).getWithChildControls();
         will(returnValue("no"));
         allowing(selectControlByIdA).getWithIds();
@@ -109,7 +109,7 @@ class DefaultControlSelectionFilterTest {
   private IControlSelectionFilter newSingleSelectionWithChildFilter() {
     final List<String> withIds = List.of("test1", "test2");
     context.checking(new Expectations() {
-      { // NOPMD - intentional
+      { 
         allowing(selectControlByIdA).getWithChildControls();
         will(returnValue("yes"));
         allowing(selectControlByIdA).getWithIds();
@@ -131,7 +131,7 @@ class DefaultControlSelectionFilterTest {
     final List<String> withIdsA = List.of("test1", "test2", "example1");
     final List<String> withIdsB = List.of("test3", "test4");
     context.checking(new Expectations() {
-      { // NOPMD - intentional
+      { 
         allowing(selectControlByIdA).getWithChildControls();
         will(returnValue("yes"));
         allowing(selectControlByIdA).getWithIds();
@@ -164,7 +164,7 @@ class DefaultControlSelectionFilterTest {
   void testEmpty() {
     final IControl control1 = context.mock(IControl.class);
     context.checking(new Expectations() {
-      { // NOPMD - intentional
+      { 
         allowing(control1).getId();
         will(returnValue("test"));
       }
@@ -185,7 +185,7 @@ class DefaultControlSelectionFilterTest {
     final IControl control1 = context.mock(IControl.class, "control1");
     final IControl control2 = context.mock(IControl.class, "control2");
     context.checking(new Expectations() {
-      { // NOPMD - intentional
+      { 
         allowing(control1).getId();
         will(returnValue("test"));
         allowing(control2).getId();
@@ -212,7 +212,7 @@ class DefaultControlSelectionFilterTest {
     final IControl control1 = context.mock(IControl.class, "control1");
     final IControl control2 = context.mock(IControl.class, "control2");
     context.checking(new Expectations() {
-      { // NOPMD - intentional
+      { 
         allowing(control1).getId();
         will(returnValue("test"));
         allowing(control2).getId();
@@ -244,7 +244,7 @@ class DefaultControlSelectionFilterTest {
     final IControl control6 = context.mock(IControl.class, "control6");
     final IControl control7 = context.mock(IControl.class, "control7");
     context.checking(new Expectations() {
-      { // NOPMD - intentional
+      { 
         allowing(control1).getId();
         will(returnValue("test"));
         allowing(control2).getId();

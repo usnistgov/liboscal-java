@@ -193,7 +193,7 @@ public class BasicIndexer implements IIndexer {
 
     Map<String, IEntityItem> entityGroup = entityTypeToIdentifierToEntityMap.get(type);
     if (entityGroup == null) {
-      entityGroup = new LinkedHashMap<String, IEntityItem>();
+      entityGroup = new LinkedHashMap<>();
       entityTypeToIdentifierToEntityMap.put(type, entityGroup);
     }
     IEntityItem oldEntity = entityGroup.put(item.getIdentifier(), item);

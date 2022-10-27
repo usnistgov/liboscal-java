@@ -25,10 +25,8 @@
 
 	<scm>
 		<url>https://github.com/usnistgov/liboscal-java</url>
-		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git
-		</connection>
-		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git
-		</developerConnection>
+		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git</connection>
+		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git</developerConnection>
 		<tag>v1.0.4</tag>
 	</scm>
 
@@ -39,8 +37,7 @@
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
-			</url>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<site>
 			<id>nist-pages</id>
@@ -325,8 +322,7 @@
 				<directory>src/main/resources</directory>
 			</resource>
 			<resource>
-				<directory>${project.build.directory}/generated-resources/oscal
-				</directory>
+				<directory>${project.build.directory}/generated-resources/oscal</directory>
 				<includes>
 					<include>**/*.xsd</include>
 					<include>**/*.json</include>
@@ -355,10 +351,8 @@
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<configuration>
 						<sourceDirectories>
-							<sourceDirectory>${project.build.sourceDirectory}
-							</sourceDirectory>
-							<sourceDirectory>${project.build.testSourceDirectory}
-							</sourceDirectory>
+							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+							<sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
 						</sourceDirectories>
 					</configuration>
 				</plugin>
@@ -393,8 +387,7 @@
 						<includeTestScope>false</includeTestScope>
 						<includeLicenseText>false</includeLicenseText>
 						<outputFormat>all</outputFormat>
-						<outputName>${project.artifactId}-${project.version}-cyclonedx
-						</outputName>
+						<outputName>${project.artifactId}-${project.version}-cyclonedx</outputName>
 					</configuration>
 					<executions>
 						<execution>
@@ -422,8 +415,7 @@
 				<configuration>
 					<dotGitDirectory>${project.basedir}/oscal/.git</dotGitDirectory>
 					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>${project.build.directory}/oscal-git.properties
-					</generateGitPropertiesFilename>
+					<generateGitPropertiesFilename>${project.build.directory}/oscal-git.properties</generateGitPropertiesFilename>
 					<verbose>true</verbose>
 					<useNativeGit>false</useNativeGit>
 					<prefix>oscal-git</prefix>
@@ -434,11 +426,10 @@
 						<goals>
 							<goal>revision</goal>
 						</goals>
-						<phase>initialize</phase>
+						<phase>generate-resources</phase>
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
@@ -449,8 +440,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/xml
-							</outputDirectory>
+							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${project.basedir}/oscal/xml/schema</directory>
@@ -465,8 +455,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/json
-							</outputDirectory>
+							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${project.basedir}/oscal/json/schema</directory>
@@ -500,67 +489,57 @@
 				<executions>
 					<execution>
 						<id>download-catalog-xml</id>
-						<phase>generate-test-resources</phase>
+						<phase>test-compile</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml
-							</uri>
-							<outputDirectory>${project.build.directory}/download/content
-							</outputDirectory>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml</uri>
+							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
 						<id>download-catalog-json</id>
-						<phase>generate-test-resources</phase>
+						<phase>test-compile</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
-							</uri>
-							<outputDirectory>${project.build.directory}/download/content
-							</outputDirectory>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json</uri>
+							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
 						<id>download-catalog-yaml</id>
-						<phase>generate-test-resources</phase>
+						<phase>test-compile</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml
-							</uri>
-							<outputDirectory>${project.build.directory}/download/content
-							</outputDirectory>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml</uri>
+							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
 						<id>download-low-profile-xml</id>
-						<phase>generate-test-resources</phase>
+						<phase>test-compile</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_LOW-baseline_profile.xml
-							</uri>
-							<outputDirectory>${project.build.directory}/download/content
-							</outputDirectory>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_LOW-baseline_profile.xml</uri>
+							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
 						<id>download-moderate-profile-json</id>
-						<phase>generate-test-resources</phase>
+						<phase>test-compile</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json
-							</uri>
-							<outputDirectory>${project.build.directory}/download/content
-							</outputDirectory>
+							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json</uri>
+							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -576,11 +555,9 @@
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
-							<metaschemaDir>${project.basedir}/oscal/src/metaschema
-							</metaschemaDir>
+							<metaschemaDir>${project.basedir}/oscal/src/metaschema</metaschemaDir>
 							<configs>
-								<config>${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml
-								</config>
+								<config>${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
 							</configs>
 							<includes>
 								<include>oscal_complete_metaschema.xml</include>
@@ -601,8 +578,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/metaschema
-								</source>
+								<source>${project.build.directory}/generated-sources/metaschema</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -615,8 +591,7 @@
 						<configuration>
 							<resources>
 								<resource>
-									<directory>${project.build.directory}/generated-resources/oscal
-									</directory>
+									<directory>${project.build.directory}/generated-resources/oscal</directory>
 									<includes>
 										<include>**/*.xsd</include>
 										<include>**/*.json</include>
@@ -625,9 +600,6 @@
 							</resources>
 						</configuration>
 					</execution>
-					<!-- <execution> <id>attach-artifacts</id> <phase>package</phase> <goals> <goal>attach-artifact</goal> </goals> <configuration> 
-						<artifacts> <artifact> <file>${project.build.directory}/</file> <type>xml</type> <classifier>optional</classifier> </artifact> 
-						... </artifacts> </configuration> </execution> -->
 				</executions>
 			</plugin>
 			<plugin>

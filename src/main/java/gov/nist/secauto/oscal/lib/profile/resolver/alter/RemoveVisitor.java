@@ -165,7 +165,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     return APPLICABLE_TARGETS.getOrDefault(type, CollectionUtil.emptySet());
   }
 
-  private static <T> boolean handle( // NOPMD - acceptable complexity
+  private static <T> boolean handle( 
       @NonNull TargetType itemType,
       @NonNull Supplier<? extends Collection<T>> supplier,
       @Nullable Function<T, Boolean> handler,
@@ -220,7 +220,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
    * @throws ProfileResolutionEvaluationException
    *           if a processing error occurred during profile resolution
    */
-  public static boolean remove( // NOPMD - intentional
+  public static boolean remove( 
       @NonNull Control control,
       @Nullable String objectName,
       @Nullable String objectClass,
@@ -387,7 +387,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     return retval;
   }
 
-  static class Context { // NOPMD - this is a data class
+  static class Context { 
     /**
      * Types with an "name" flag.
      */
@@ -508,7 +508,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
       return expected == null || expected.equals(actual);
     }
 
-    public boolean isApplicableTo(@NonNull Object obj) { // NOPMD acceptable complexity
+    public boolean isApplicableTo(@NonNull Object obj) { 
       TargetType objectType = TargetType.forClass(obj.getClass());
 
       boolean retval = objectType != null && getTargetItemTypes().contains(objectType);

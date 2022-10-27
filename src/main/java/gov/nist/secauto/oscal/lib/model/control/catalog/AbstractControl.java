@@ -58,7 +58,7 @@ public abstract class AbstractControl
   }
 
   @Override
-  public void beforeDeserialize(Object parent) { // NOPMD intentional
+  public void beforeDeserialize(Object parent) { 
     // do nothing
   }
 
@@ -101,8 +101,8 @@ public abstract class AbstractControl
     @NonNull
     private final String id;
 
-    private String clazz; // NOPMD - intentional
-    private MarkupLine title; // NOPMD - intentional
+    private String clazz; 
+    private MarkupLine title; 
     private final List<Parameter> params = new LinkedList<>();
     private final List<Property> props = new LinkedList<>();
     private final List<Link> links = new LinkedList<>();
