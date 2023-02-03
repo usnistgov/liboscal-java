@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.model.metadata;
 
-import gov.nist.secauto.oscal.lib.model.Party;
+import gov.nist.secauto.oscal.lib.model.Metadata.Party;
 
 import java.util.List;
 import java.util.UUID;
