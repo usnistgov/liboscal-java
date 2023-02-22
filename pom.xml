@@ -126,7 +126,7 @@
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
 		<dependency.junit5.version>5.8.2</dependency.junit5.version>
 		<dependency.junit5-platform-launcher.version>1.8.2</dependency.junit5-platform-launcher.version>
-		<dependency.log4j2.version>2.19.0</dependency.log4j2.version>
+		<dependency.log4j2.version>2.20.0</dependency.log4j2.version>
 		<dependency.saxon.version>12.0</dependency.saxon.version>
 		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
 		<dependency.xmlresolver.version>4.5.2</dependency.xmlresolver.version>
