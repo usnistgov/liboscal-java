@@ -105,6 +105,7 @@
 		href="../../../oscal/src/metaschema/oscal_component_metaschema.xml">
 		<define-assembly-binding name="component">
 			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractOscalInstance</extend-base-class>
 				<use-class-name>ComponentData</use-class-name>
 			</java>
 		</define-assembly-binding>
@@ -126,4 +127,37 @@
 			</java>
 		</define-assembly-binding>
 	</metaschema-binding>
+	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_ssp_metaschema.xml">
+		<define-assembly-binding name="system-security-plan">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractOscalInstance</extend-base-class>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
+	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_poam_metaschema.xml">
+		<define-assembly-binding name="plan-of-action-and-milestones">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractOscalInstance</extend-base-class>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
+	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_assessment-plan_metaschema.xml">
+		<define-assembly-binding name="assessment-plan">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractOscalInstance</extend-base-class>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
+	<metaschema-binding
+		href="../../../oscal/src/metaschema/oscal_assessment-restults_metaschema.xml">
+		<define-assembly-binding name="assessment-results">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.AbstractOscalInstance</extend-base-class>
+			</java>
+		</define-assembly-binding>
+	</metaschema-binding>
+
 </metaschema-bindings>
