@@ -198,7 +198,7 @@ public class OscalBindingContext
     return newBoundLoader().load(PlanOfActionAndMilestones.class, file);
   }
 
-  private static class Matcher implements IBindingMatcher {
+  private static final class Matcher implements IBindingMatcher {
     @Override
     public Class<?> getBoundClassForXmlQName(QName startElementQName) {
       Class<?> clazz = null;

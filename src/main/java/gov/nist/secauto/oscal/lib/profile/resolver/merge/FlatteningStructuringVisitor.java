@@ -204,7 +204,7 @@ public class FlatteningStructuringVisitor
         });
   }
 
-  private static class FlatteningFilterNonSelectedVisitor
+  private static final class FlatteningFilterNonSelectedVisitor
       extends FilterNonSelectedVisitor {
     private static final FlatteningFilterNonSelectedVisitor SINGLETON = new FlatteningFilterNonSelectedVisitor();
 

@@ -68,7 +68,7 @@ class ModifyPhaseUtilsTest {
     return new TestItem(identifier, value);
   }
 
-  private static class TestItem {
+  private static final class TestItem {
     @Nullable
     private final String identifier;
     @NonNull

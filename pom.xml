@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>21</version>
+		<version>22-SNAPSHOT</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
 	<artifactId>liboscal-java</artifactId>
-	<version>1.0.4.5-SNAPSHOT</version>
+	<version>1.0.5.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>OSCAL Java Library</name>
@@ -27,7 +27,6 @@
 		<url>https://github.com/usnistgov/liboscal-java</url>
 		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git</connection>
 		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git</developerConnection>
-		<tag>v1.0.4</tag>
 	</scm>
 
 	<distributionManagement>
@@ -117,7 +116,7 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.10.0</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>0.11.0-SNAPSHOT</dependency.metaschema-framework.version>
 
 		<dependency.auto-service.version>1.0.1</dependency.auto-service.version>
 		<dependency.commons-lang3.version>3.12.0</dependency.commons-lang3.version>
@@ -129,14 +128,14 @@
 		<dependency.log4j2.version>2.20.0</dependency.log4j2.version>
 		<dependency.saxon.version>12.2</dependency.saxon.version>
 		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
-		<dependency.xmlresolver.version>4.5.2</dependency.xmlresolver.version>
+		<dependency.xmlresolver.version>4.6.0</dependency.xmlresolver.version>
 
 		<plugin.license.version>4.0.rc1</plugin.license.version>
 		<cyclonedx.schema.version>1.3</cyclonedx.schema.version>
 		<plugin.cyclonedx.version>2.7.3</plugin.cyclonedx.version>
-		<spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
+		<plugin.spotbugs.version>4.7.3.4</plugin.spotbugs.version>
 
-		<oscal-content.commit>master</oscal-content.commit>
+		<oscal-content.commit>main</oscal-content.commit>
 	</properties>
 
 	<repositories>
@@ -401,6 +400,7 @@
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
 					<artifactId>spotbugs-maven-plugin</artifactId>
+					<version>${plugin.spotbugs.version}</version>
 					<configuration>
 						<excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
 					</configuration>
@@ -426,7 +426,7 @@
 						<goals>
 							<goal>revision</goal>
 						</goals>
-						<phase>generate-resources</phase>
+						<phase>initialize</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -550,7 +550,7 @@
 				<version>${dependency.metaschema-framework.version}</version>
 				<executions>
 					<execution>
-						<id>generate-model-sources</id>
+						<id>default-cli</id>
 						<goals>
 							<goal>generate-sources</goal>
 						</goals>
@@ -561,6 +561,19 @@
 							</configs>
 							<includes>
 								<include>oscal_complete_metaschema.xml</include>
+							</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-schemas</id>
+						<goals>
+							<goal>generate-schemas</goal>
+						</goals>
+						<configuration>
+							<metaschemaDir>${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<outputDirectory>${project.build.directory}/generated-resources/metaschema-schema</outputDirectory>
+							<includes>
+								<include>oscal_*_metaschema.xml</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -628,7 +641,6 @@
 					<plugin>
 						<groupId>com.github.spotbugs</groupId>
 						<artifactId>spotbugs-maven-plugin</artifactId>
-						<version>${spotbugs-maven-plugin.version}</version>
 						<configuration>
 							<effort>Max</effort>
 							<threshold>Normal</threshold>
@@ -675,7 +687,7 @@
 					<plugin>
 						<groupId>com.github.spotbugs</groupId>
 						<artifactId>spotbugs-maven-plugin</artifactId>
-						<version>${spotbugs-maven-plugin.version}</version>
+						<version>${plugin.spotbugs.version}</version>
 					</plugin>
 				</plugins>
 			</reporting>
