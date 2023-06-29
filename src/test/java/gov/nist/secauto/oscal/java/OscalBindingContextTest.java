@@ -44,6 +44,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -72,8 +73,6 @@ class OscalBindingContextTest {
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
-
-    // out.delete();
   }
 
   @Test
@@ -90,8 +89,6 @@ class OscalBindingContextTest {
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
-
-    // out.delete();
   }
 
   @Test
@@ -100,8 +97,8 @@ class OscalBindingContextTest {
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile());
     assertNotNull(catalog);
 
-    // File out = new File(tempDir.toFile(), "out.xml");
-    File out = new File("target/out.xml");
+     File out = new File(tempDir.toFile(), "out.xml");
+ //    File out = new File("target/out.xml");
     IBindingContext context = IBindingContext.instance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
@@ -132,13 +129,10 @@ class OscalBindingContextTest {
 
     serializer = context.newSerializer(Format.YAML, Profile.class);
     serializer.serialize(profile, out);
-
-    // out.delete();
   }
 
   static Path newPath(@NonNull Path dir, @NonNull String filename) {
     return dir.resolve(filename);
-    // return Path.of("target",filename);
   }
 
   @Test
@@ -164,6 +158,23 @@ class OscalBindingContextTest {
     if (parent != null) {
       Files.createDirectories(parent);
     }
+    IBindingContext context = IBindingContext.instance();
+
+    ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
+    serializer.serialize(catalog, out);
+
+    assertNotNull(bindingContext.loadCatalog(out));
+    // out.delete();
+  }
+  
+  @Test
+  void testLoadCatalogIssue13(@TempDir Path tempDir) throws IOException, URISyntaxException {
+    Catalog catalog
+        = loader.load(OscalBindingContext.class.getResource("/content/issue13-catalog.xml"));
+    assertNotNull(catalog);
+
+     File out = new File(tempDir.toFile(), "issue13-out.xml");
+ //    File out = new File("target/out.xml");
     IBindingContext context = IBindingContext.instance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
