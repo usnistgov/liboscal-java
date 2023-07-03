@@ -26,6 +26,7 @@
 
 package gov.nist.secauto.oscal.java;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
@@ -44,10 +45,13 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
@@ -56,7 +60,7 @@ class OscalBindingContextTest {
   private static IBoundLoader loader;
 
   @BeforeAll
-  private static void initialize() { // NOPMD actually used
+  static void initialize() { // NOPMD actually used
     bindingContext = OscalBindingContext.instance();
     loader = bindingContext.newBoundLoader();
   }
@@ -168,9 +172,11 @@ class OscalBindingContextTest {
   }
   
   @Test
-  void testLoadCatalogIssue13(@TempDir Path tempDir) throws IOException, URISyntaxException {
+  void testLoadCatalogTightLists(@TempDir Path tempDir) throws IOException, URISyntaxException {
+    // test for usnistgov/liboscal-java#18
     Catalog catalog
         = loader.load(OscalBindingContext.class.getResource("/content/issue13-catalog.xml"));
+    
     assertNotNull(catalog);
 
      File out = new File(tempDir.toFile(), "issue13-out.xml");
@@ -178,10 +184,20 @@ class OscalBindingContextTest {
     IBindingContext context = IBindingContext.instance();
 
     ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
-    serializer.serialize(catalog, out);
+    
+    StringWriter writer = new StringWriter();
+    serializer.serialize(catalog, writer);
+    serializer.serialize(catalog, System.out);
 
-    assertNotNull(bindingContext.loadCatalog(out));
-    // out.delete();
+    Pattern listItemPattern = Pattern.compile("<li>Item");
+    
+    Matcher matcher = listItemPattern.matcher(writer.toString());
+    int count = 0;
+    while (matcher.find()) {
+      count++;
+    }
+    
+    assertEquals(3,count);
   }
   
   
