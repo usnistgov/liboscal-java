@@ -1,10 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>22-SNAPSHOT</version>
+		<version>24-SNAPSHOT</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
@@ -96,9 +98,11 @@
 		<site.url>https://pages.nist.gov/liboscal-java/</site.url>
 		<scm.url>https://github.com/usnistgov/liboscal-java</scm.url>
 		<issueManagement.url>https://github.com/usnistgov/liboscal-java/issues</issueManagement.url>
-		<!-- ================================================================================ -->
+		<!--
+		================================================================================ -->
 		<!-- Web dependencies version -->
-		<!-- ================================================================================ -->
+		<!--
+		================================================================================ -->
 		<anchorJsVesrion>3.2.2</anchorJsVesrion>
 		<bootstrapVersion>4.4.1</bootstrapVersion>
 		<bootswatchVersion>4.4.1</bootswatchVersion>
@@ -107,6 +111,9 @@
 		<jqueryVersion>3.4.1</jqueryVersion>
 		<fontawesomeVersion>5.12.1</fontawesomeVersion>
 		<popperVersion>1.16.0</popperVersion>
+
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -123,8 +130,6 @@
 		<dependency.infinispan.version>13.0.10.Final</dependency.infinispan.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
-		<dependency.junit5.version>5.8.2</dependency.junit5.version>
-		<dependency.junit5-platform-launcher.version>1.8.2</dependency.junit5-platform-launcher.version>
 		<dependency.log4j2.version>2.20.0</dependency.log4j2.version>
 		<dependency.saxon.version>12.2</dependency.saxon.version>
 		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
@@ -170,32 +175,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>gov.nist.secauto.metaschema</groupId>
-				<artifactId>metaschema-java-binding</artifactId>
-				<version>${dependency.metaschema-framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.auto.service</groupId>
-				<artifactId>auto-service</artifactId>
-				<version>${dependency.auto-service.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${dependency.commons-lang3.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-api</artifactId>
-				<version>${dependency.log4j2.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-core</artifactId>
-				<version>${dependency.log4j2.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.xmlresolver</groupId>
 				<artifactId>xmlresolver</artifactId>
 				<version>${dependency.xmlresolver.version}</version>
@@ -220,13 +199,6 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<dependency>
-				<groupId>com.github.spotbugs</groupId>
-				<artifactId>spotbugs-annotations</artifactId>
-				<version>${dependency.spotbugs-annotations.version}</version>
-				<scope>provided</scope>
-				<optional>true</optional>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -234,32 +206,39 @@
 		<dependency>
 			<groupId>gov.nist.secauto.metaschema</groupId>
 			<artifactId>metaschema-java-binding</artifactId>
+			<version>${dependency.metaschema-framework.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.auto.service</groupId>
 			<artifactId>auto-service</artifactId>
 			<optional>true</optional>
+			<version>${dependency.auto-service.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+			<version>${dependency.commons-lang3.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.github.spotbugs</groupId>
 			<artifactId>spotbugs-annotations</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
+			<version>${dependency.log4j2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<scope>test</scope>
+			<version>${dependency.log4j2.version}</version>
 		</dependency>
 
 		<dependency>
@@ -351,7 +330,8 @@
 					<configuration>
 						<sourceDirectories>
 							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-							<sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+							<sourceDirectory>
+								${project.build.testSourceDirectory}</sourceDirectory>
 						</sourceDirectories>
 					</configuration>
 				</plugin>
@@ -386,7 +366,8 @@
 						<includeTestScope>false</includeTestScope>
 						<includeLicenseText>false</includeLicenseText>
 						<outputFormat>all</outputFormat>
-						<outputName>${project.artifactId}-${project.version}-cyclonedx</outputName>
+						<outputName>
+							${project.artifactId}-${project.version}-cyclonedx</outputName>
 					</configuration>
 					<executions>
 						<execution>
@@ -413,20 +394,30 @@
 				<artifactId>git-commit-id-maven-plugin</artifactId>
 				<version>6.0.0</version>
 				<configuration>
-					<dotGitDirectory>${project.basedir}/oscal/.git</dotGitDirectory>
-					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>${project.build.directory}/oscal-git.properties</generateGitPropertiesFilename>
-					<verbose>true</verbose>
 					<useNativeGit>false</useNativeGit>
-					<prefix>oscal-git</prefix>
 				</configuration>
 				<executions>
 					<execution>
-						<id>get-the-git-infos</id>
+						<id>oscal-git-info</id>
 						<goals>
 							<goal>revision</goal>
 						</goals>
 						<phase>initialize</phase>
+						<configuration>
+							<dotGitDirectory>${project.basedir}/oscal/.git</dotGitDirectory>
+							<prefix>oscal-git</prefix>
+						</configuration>
+					</execution>
+					<execution>
+						<id>git-info</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>initialize</phase>
+						<configuration>
+							<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+							<prefix>git</prefix>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -440,10 +431,12 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.basedir}/oscal/xml/schema</directory>
+									<directory>
+										${project.basedir}/oscal/xml/schema</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -455,10 +448,12 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.basedir}/oscal/json/schema</directory>
+									<directory>
+										${project.basedir}/oscal/json/schema</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -494,8 +489,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -505,8 +502,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -516,8 +515,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -527,8 +528,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_LOW-baseline_profile.xml</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_LOW-baseline_profile.xml</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -538,8 +541,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -555,9 +560,11 @@
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
-							<metaschemaDir>${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<metaschemaDir>
+								${project.basedir}/oscal/src/metaschema</metaschemaDir>
 							<configs>
-								<config>${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
+								<config>
+									${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
 							</configs>
 							<includes>
 								<include>oscal_complete_metaschema.xml</include>
@@ -570,8 +577,10 @@
 							<goal>generate-schemas</goal>
 						</goals>
 						<configuration>
-							<metaschemaDir>${project.basedir}/oscal/src/metaschema</metaschemaDir>
-							<outputDirectory>${project.build.directory}/generated-resources/metaschema-schema</outputDirectory>
+							<metaschemaDir>
+								${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/metaschema-schema</outputDirectory>
 							<includes>
 								<include>oscal_*_metaschema.xml</include>
 							</includes>
@@ -591,7 +600,8 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/metaschema</source>
+								<source>
+									${project.build.directory}/generated-sources/metaschema</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -604,7 +614,8 @@
 						<configuration>
 							<resources>
 								<resource>
-									<directory>${project.build.directory}/generated-resources/oscal</directory>
+									<directory>
+										${project.build.directory}/generated-resources/oscal</directory>
 									<includes>
 										<include>**/*.xsd</include>
 										<include>**/*.json</include>

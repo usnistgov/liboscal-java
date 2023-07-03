@@ -183,4 +183,23 @@ class OscalBindingContextTest {
     assertNotNull(bindingContext.loadCatalog(out));
     // out.delete();
   }
+  
+  
+  @Test
+  void testLoadCatalogIssue5(@TempDir Path tempDir) throws IOException, URISyntaxException {
+    Catalog catalog
+        = loader.load(OscalBindingContext.class.getResource("/content/issue5-catalog.xml"));
+    assertNotNull(catalog);
+
+     File out = new File(tempDir.toFile(), "issue13-out.xml");
+ //    File out = new File("target/out.xml");
+    IBindingContext context = IBindingContext.instance();
+
+    ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
+    serializer.serialize(catalog, out);
+    serializer.serialize(catalog, System.out);
+
+    assertNotNull(bindingContext.loadCatalog(out));
+    // out.delete();
+  }
 }

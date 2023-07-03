@@ -27,13 +27,14 @@ package gov.nist.secauto.oscal.lib;
 
 import gov.nist.secauto.metaschema.model.common.util.IVersionInfo;
 
-public final class OscalVersion implements IVersionInfo {
-  public static final String NAME = "oscal";
+public final class LibOscalVersion implements IVersionInfo {
+  public static final String NAME = "liboscal-java";
+  public static final String BUILD_VERSION = "${project.version}";
   public static final String BUILD_TIMESTAMP = "${timestamp}";
-  public static final String COMMIT = "@oscal-git.commit.id.abbrev@";
-  public static final String BRANCH = "@oscal-git.branch@";
-  public static final String CLOSEST_TAG = "@oscal-git.closest.tag.name@";
-  public static final String ORIGIN = "@oscal-git.remote.origin.url@";
+  public static final String COMMIT = "@git.commit.id.abbrev@";
+  public static final String BRANCH = "@git.branch@";
+  public static final String CLOSEST_TAG = "@git.closest.tag.name@";
+  public static final String ORIGIN = "@git.remote.origin.url@";
 
   @Override
   public String getName() {
