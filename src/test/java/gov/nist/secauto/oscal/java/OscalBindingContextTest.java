@@ -29,7 +29,6 @@ package gov.nist.secauto.oscal.java;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
@@ -42,7 +41,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -87,9 +85,8 @@ class OscalBindingContextTest {
 
     File out = new File(tempDir.toFile(), "out.json");
     // File out = new File("target/out.json");
-    IBindingContext context = IBindingContext.instance();
 
-    ISerializer<Catalog> serializer = context.newSerializer(Format.JSON, Catalog.class);
+    ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.JSON, Catalog.class);
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
@@ -101,11 +98,10 @@ class OscalBindingContextTest {
         = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile());
     assertNotNull(catalog);
 
-     File out = new File(tempDir.toFile(), "out.xml");
- //    File out = new File("target/out.xml");
-    IBindingContext context = IBindingContext.instance();
+    File out = new File(tempDir.toFile(), "out.xml");
+    // File out = new File("target/out.xml");
 
-    ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
+    ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.XML, Catalog.class);
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
@@ -121,9 +117,8 @@ class OscalBindingContextTest {
 
     File out = new File(tempDir.toFile(), "out.json");
     // File out = new File("target/out-profile.json");
-    IBindingContext context = IBindingContext.instance();
 
-    ISerializer<Profile> serializer = context.newSerializer(Format.JSON, Profile.class);
+    ISerializer<Profile> serializer = bindingContext.newSerializer(Format.JSON, Profile.class);
     serializer.serialize(profile, out);
 
     assertNotNull(loader.load(out));
@@ -131,7 +126,7 @@ class OscalBindingContextTest {
     out = new File(tempDir.toFile(), "out.yaml");
     // out = new File("target/out-profile.yaml");
 
-    serializer = context.newSerializer(Format.YAML, Profile.class);
+    serializer = bindingContext.newSerializer(Format.YAML, Profile.class);
     serializer.serialize(profile, out);
   }
 
@@ -143,14 +138,14 @@ class OscalBindingContextTest {
   void testSerializeSspToOutputStream() throws IOException {
     SystemSecurityPlan ssp = new SystemSecurityPlan();
 
-    IBindingContext context = IBindingContext.instance();
-    ISerializer<SystemSecurityPlan> serializer = context.newSerializer(Format.JSON, SystemSecurityPlan.class);
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    serializer.serialize(ssp, out);
+    ISerializer<SystemSecurityPlan> serializer = bindingContext.newSerializer(Format.JSON, SystemSecurityPlan.class);
+    try (StringWriter writer = new StringWriter()) {
+      serializer.serialize(ssp, writer);
+    }
   }
 
   @Test
-  void testCatalogXmlListItems(@TempDir Path tempDir) throws IOException {
+  void testCatalogXmlListItems() throws IOException {
     Catalog catalog
         = loader.load(new File("src/test/resources/content/catalog-with-lists.xml").getCanonicalFile());
     assertNotNull(catalog);
@@ -162,58 +157,51 @@ class OscalBindingContextTest {
     if (parent != null) {
       Files.createDirectories(parent);
     }
-    IBindingContext context = IBindingContext.instance();
 
-    ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
+    ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.XML, Catalog.class);
     serializer.serialize(catalog, out);
 
     assertNotNull(bindingContext.loadCatalog(out));
     // out.delete();
   }
-  
+
   @Test
-  void testLoadCatalogTightLists(@TempDir Path tempDir) throws IOException, URISyntaxException {
+  void testLoadCatalogTightLists() throws IOException, URISyntaxException {
     // test for usnistgov/liboscal-java#18
     Catalog catalog
         = loader.load(OscalBindingContext.class.getResource("/content/issue13-catalog.xml"));
-    
+
     assertNotNull(catalog);
 
-     File out = new File(tempDir.toFile(), "issue13-out.xml");
- //    File out = new File("target/out.xml");
-    IBindingContext context = IBindingContext.instance();
+    ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.XML, Catalog.class);
 
-    ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
-    
-    StringWriter writer = new StringWriter();
-    serializer.serialize(catalog, writer);
-    serializer.serialize(catalog, System.out);
+    String output;
+    try (StringWriter writer = new StringWriter()) {
+      serializer.serialize(catalog, writer);
+      output = writer.toString();
+    }
 
     Pattern listItemPattern = Pattern.compile("<li>Item");
-    
-    Matcher matcher = listItemPattern.matcher(writer.toString());
+    Matcher matcher = listItemPattern.matcher(output);
     int count = 0;
     while (matcher.find()) {
       count++;
     }
-    
-    assertEquals(3,count);
+
+    assertEquals(3, count);
   }
-  
-  
+
   @Test
   void testLoadCatalogIssue5(@TempDir Path tempDir) throws IOException, URISyntaxException {
     Catalog catalog
         = loader.load(OscalBindingContext.class.getResource("/content/issue5-catalog.xml"));
     assertNotNull(catalog);
 
-     File out = new File(tempDir.toFile(), "issue13-out.xml");
- //    File out = new File("target/out.xml");
-    IBindingContext context = IBindingContext.instance();
+    File out = new File(tempDir.toFile(), "issue13-out.xml");
+    // File out = new File("target/out.xml");
 
-    ISerializer<Catalog> serializer = context.newSerializer(Format.XML, Catalog.class);
+    ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.XML, Catalog.class);
     serializer.serialize(catalog, out);
-    serializer.serialize(catalog, System.out);
 
     assertNotNull(bindingContext.loadCatalog(out));
     // out.delete();
