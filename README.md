@@ -70,7 +70,7 @@ Files.createDirectories(outDir);
 serializer.serialize(catalog, outDir.resolve("test-catalog.yaml"));
 ```
 
-The [full code](src/test/java/gov/nist/secauto/oscal/java/ExamplesTest.javasrc/test/java/gov/nist/secauto/oscal/java/ExamplesTest.java) for this example is also available.
+The [full code](src/test/java/gov/nist/secauto/oscal/java/ExamplesTest.java) for this example is also available.
 
 ## Contact us
 
