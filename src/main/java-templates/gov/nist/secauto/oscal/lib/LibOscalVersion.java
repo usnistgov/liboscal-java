@@ -23,24 +23,51 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+package gov.nist.secauto.oscal.lib;
 
-package gov.nist.secauto.oscal.lib.model.control;
+import gov.nist.secauto.metaschema.model.common.util.IVersionInfo;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorExtension.InsertAnchorNode;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
+public final class LibOscalVersion implements IVersionInfo {
+  public static final String NAME = "liboscal-java";
+  public static final String BUILD_VERSION = "${project.version}";
+  public static final String BUILD_TIMESTAMP = "${timestamp}";
+  public static final String COMMIT = "@git.commit.id.abbrev@";
+  public static final String BRANCH = "@git.branch@";
+  public static final String CLOSEST_TAG = "@git.closest.tag.name@";
+  public static final String ORIGIN = "@git.remote.origin.url@";
 
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+  @Override
+  public String getName() {
+    return NAME;
+  }
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+  @Override
+  public String getVersion() {
+    return CLOSEST_TAG;
+  }
 
-public interface IPart {
-  MarkupMultiline getProse();
+  @Override
+  public String getBuildTimestamp() {
+    return BUILD_TIMESTAMP;
+  }
 
-  List<ControlPart> getParts();
+  @Override
+  public String getGitOriginUrl() {
+    return ORIGIN;
+  }
 
-  @NonNull
-  Stream<InsertAnchorNode> getInserts(@NonNull Predicate<InsertAnchorNode> filter);
+  @Override
+  public String getGitCommit() {
+    return COMMIT;
+  }
+
+  @Override
+  public String getGitBranch() {
+    return BRANCH;
+  }
+
+  @Override
+  public String getGitClosestTag() {
+    return CLOSEST_TAG;
+  }
 }

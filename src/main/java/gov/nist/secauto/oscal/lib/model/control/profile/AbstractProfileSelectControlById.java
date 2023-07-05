@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.model.control.profile;
 
+import gov.nist.secauto.oscal.lib.model.Matching;
 import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
-import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById.Matching;
 
 import java.util.Collection;
 import java.util.LinkedList;

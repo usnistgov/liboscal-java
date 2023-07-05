@@ -387,7 +387,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     return retval;
   }
 
-  static class Context {
+  static final class Context {
     /**
      * Types with an "name" flag.
      */

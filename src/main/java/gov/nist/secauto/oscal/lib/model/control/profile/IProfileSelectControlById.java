@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.model.control.profile;
 
-import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
+import gov.nist.secauto.oscal.lib.model.Matching;
 
 import java.util.List;
 
@@ -36,6 +36,6 @@ public interface IProfileSelectControlById {
 
   List<String> getWithIds();
 
-  List<ProfileSelectControlById.Matching> getMatching();
+  List<Matching> getMatching();
 
 }

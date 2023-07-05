@@ -274,7 +274,7 @@ public class FilterNonSelectedVisitor
     return retval;
   }
 
-  protected static class Context {
+  protected static final class Context {
 
     @NonNull
     private final IIndexer indexer;

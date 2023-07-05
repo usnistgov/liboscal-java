@@ -29,6 +29,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.nist.secauto.metaschema.binding.io.DefaultBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Format;
@@ -121,6 +122,15 @@ class ProfileResolutionTests {
     return (Catalog) getProfileResolver().resolveProfile(profileUrl).getValue();
   }
 
+  /**
+   * Transform the source to normalize content for test comparison.
+   * 
+   * @param source
+   *          the source to normalize
+   * @return the transformed content
+   * @throws SaxonApiException
+   *           if an error occurs while performing the transformation
+   */
   private static String transformXml(Source source) throws SaxonApiException {
     net.sf.saxon.s9api.Serializer out = getProcessor().newSerializer();
     out.setOutputProperty(net.sf.saxon.s9api.Serializer.Property.METHOD, "xml");
@@ -146,12 +156,18 @@ class ProfileResolutionTests {
     performTest("modify-adds");
   }
 
-  void performTest(String profileName) throws IOException, SaxonApiException, ProfileResolutionException {
+  void performTest(String profileName) throws IOException, SaxonApiException {
     String profileLocation = String.format("%s/%s_profile.xml", PROFILE_UNIT_TEST_PATH, profileName);
 
     File profileFile = new File(profileLocation);
 
-    Catalog catalog = resolveProfile(profileFile);
+    Catalog catalog = null;
+    try {
+      catalog = resolveProfile(profileFile);
+    } catch (ProfileResolutionException ex) {
+      fail(String.format("Resolution of profile '%s' failed. %s", profileFile.getAbsolutePath(), ex.getLocalizedMessage()));
+    }
+    assert catalog != null;
 
     Assertions.assertThat(catalog.getUuid()).isNotNull();
     Assertions.assertThat(catalog.getMetadata()).isNotNull();
@@ -165,7 +181,7 @@ class ProfileResolutionTests {
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
 
-    OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog, System.out);
+//    OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog, System.out);
 
     // System.out.println("Pre scrub: " + writer.getBuffer().toString());
 

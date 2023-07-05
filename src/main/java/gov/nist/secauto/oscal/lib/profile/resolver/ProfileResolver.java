@@ -530,10 +530,8 @@ public class ProfileResolver {
     if (entity == null) {
       throw new ProfileResolutionEvaluationException(
           String.format(
-              "Unable to apply the set-parameter targeting parameter '%s' at '%s'."
-                  + " The parameter does not exist in the resolved catalog.",
-              paramId,
-              item.toPath(IPathFormatter.METAPATH_PATH_FORMATER)));
+              "The parameter '%s' does not exist in the resolved catalog.",
+              paramId));
     }
 
     Parameter param = entity.getInstanceValue();

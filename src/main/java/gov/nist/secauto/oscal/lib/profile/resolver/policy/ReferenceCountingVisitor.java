@@ -29,8 +29,8 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import com.vladsch.flexmark.ast.InlineLinkNode;
 import com.vladsch.flexmark.util.ast.Node;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.IMarkupText;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.IMarkupString;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorExtension.InsertAnchorNode;
 import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
 import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
 import gov.nist.secauto.metaschema.model.common.metapath.function.library.FnData;
@@ -393,13 +393,13 @@ public class ReferenceCountingVisitor
       @NonNull IRequiredValueModelNodeItem item,
       @NonNull Context context) {
     IMarkupItem markupItem = (IMarkupItem) FnData.fnDataItem(item);
-    IMarkupText markup = markupItem.getValue();
+    IMarkupString<?> markup = markupItem.getValue();
     handleMarkup(item, markup, context);
   }
 
   private static void handleMarkup(
       @NonNull IRequiredValueModelNodeItem contextItem,
-      @NonNull IMarkupText text,
+      @NonNull IMarkupString<?> text,
       @NonNull Context context) {
     for (Node node : CollectionUtil.toIterable(text.getNodesAsStream().iterator())) {
       if (node instanceof InsertAnchorNode) {
@@ -490,7 +490,6 @@ public class ReferenceCountingVisitor
     }
   }
 
-  @SuppressWarnings("null")
   public void resolveEntity(
       @NonNull IEntityItem entity,
       @NonNull Context context) {
@@ -539,7 +538,7 @@ public class ReferenceCountingVisitor
   // return null;
   // }
 
-  public static class Context {
+  public static final class Context {
     @NonNull
     private final IIndexer indexer;
     @NonNull
@@ -616,7 +615,7 @@ public class ReferenceCountingVisitor
       }
     }
 
-    public void resolveEntity(@NonNull IEntityItem item, @NonNull Context context) {
+    public static void resolveEntity(@NonNull IEntityItem item, @NonNull Context context) {
       instance().resolveEntity(item, context);
     }
   }
