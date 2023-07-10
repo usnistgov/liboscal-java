@@ -46,7 +46,7 @@ jobs:
     # -------------------------
     - name: Deploy Maven Artifacts
       run: |
-        mvn -s $GITHUB_WORKSPACE/settings.xml -Pgpg -Prelease -Preporting deploy
+        mvn -B -s $GITHUB_WORKSPACE/settings.xml -Pgpg -Prelease -Preporting deploy
         # mvn -Pgpg -Prelease nexus-staging:close -DstagingDescription="closing to release"
       env:
         MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}

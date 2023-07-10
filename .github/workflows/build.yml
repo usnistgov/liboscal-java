@@ -43,11 +43,11 @@ jobs:
       id: maven-build-develop
       if: ((github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name == 'develop') || (github.event_name == 'pull_request' && github.base_ref == 'develop')
       run: |
-        mvn -Preporting verify
+        mvn -B -Preporting verify
     - name: Build and run tests (main)
       if: steps.maven-build-develop.conclusion == 'skipped'
       run: |
-        mvn -Prelease -Preporting verify
+        mvn -B -Prelease -Preporting verify
     - name: Perform CodeQL Analysis
       if: github.event_name == 'push'
       uses: github/codeql-action/analyze@46ed16ded91731b2df79a2893d3aea8e9f03b5c4 # v2.1.12
@@ -77,11 +77,18 @@ jobs:
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
         gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     # -------------------------
+    # Maven Site
+    # -------------------------
+    - name: Build Website
+      run: |
+        # No need to run most verify plugins, since these were run in the previous workflow
+        mvn -B -Preporting -Prelease package site site:stage -Dpmd.skip=true -Dcpd.skip=true -Dspotbugs.skip=true
+# -------------------------
     # Maven Deploy
     # -------------------------
     - name: Deploy Maven Artifact SNAPSHOTs
       run: |
-        mvn -Pgpg -Preporting deploy
+        mvn -B -Pgpg -Preporting deploy -Dmaven.deploy.skip=releases -Dmaven.test.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotbugs.skip=true
       env:
         MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
