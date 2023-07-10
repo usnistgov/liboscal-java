@@ -93,7 +93,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
     if (visitorContext.getIndexer().isSelected(item)) {
       if (!visitorContext.isResolved(item)) {
         // this referenced item will need to be resolved
-        visitorContext.resolveEntity(item, visitorContext);
+        ReferenceCountingVisitor.instance().resolveEntity(item, visitorContext);
       }
       item.incrementReferenceCount();
 

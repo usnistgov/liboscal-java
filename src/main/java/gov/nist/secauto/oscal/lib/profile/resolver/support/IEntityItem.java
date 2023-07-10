@@ -34,7 +34,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IEntityItem {
 
-  public enum ItemType {
+  enum ItemType {
     ROLE(false),
     LOCATION(true),
     PARTY(true),
@@ -46,7 +46,7 @@ public interface IEntityItem {
 
     private final boolean uuid;
 
-    private ItemType(boolean isUuid) {
+    ItemType(boolean isUuid) {
       this.uuid = isUuid;
     }
 

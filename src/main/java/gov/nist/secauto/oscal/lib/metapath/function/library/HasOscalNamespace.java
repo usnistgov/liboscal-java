@@ -38,6 +38,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IDefinitionNodeIte
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IStringItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.AssessmentPart;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Property;
@@ -92,7 +93,9 @@ public final class HasOscalNamespace {
     // disable construction
   }
 
-  @SuppressWarnings("unused")
+  @SuppressWarnings({"unused",
+    "PMD.OnlyOneReturn" // readability
+  })
   @NonNull
   public static ISequence<?> executeOneArg(
       @NonNull IFunction function,
@@ -104,7 +107,9 @@ public final class HasOscalNamespace {
       return ISequence.empty();
     }
 
-    ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(arguments.get(0));
+    assert arguments.size() == 1;
+    ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(
+        ObjectUtils.notNull(arguments.get(0)));
     if (namespaceArgs.isEmpty()) {
       return ISequence.empty();
     }
@@ -112,21 +117,27 @@ public final class HasOscalNamespace {
     return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));
   }
 
-  @SuppressWarnings("unused")
+  
+  @SuppressWarnings({"unused",
+    "PMD.OnlyOneReturn" // readability
+  })
   @NonNull
   public static ISequence<?> executeTwoArg(
       @NonNull IFunction function,
       @NonNull List<ISequence<?>> arguments,
       @NonNull DynamicContext dynamicContext,
       INodeItem focus) {
-    ISequence<? extends IDefinitionNodeItem> nodeSequence = FunctionUtils.asType(arguments.get(0));
+    ISequence<? extends IDefinitionNodeItem> nodeSequence = FunctionUtils.asType(
+        ObjectUtils.notNull(arguments.get(0)));
 
     IItem node = FunctionUtils.getFirstItem(nodeSequence, true);
     if (node == null) {
       return ISequence.empty();
     }
 
-    ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(arguments.get(1));
+    assert arguments.size() == 2;
+    ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(
+        ObjectUtils.notNull(arguments.get(1)));
     if (namespaceArgs.isEmpty()) {
       return ISequence.empty();
     }
@@ -134,6 +145,7 @@ public final class HasOscalNamespace {
     return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));
   }
 
+  @SuppressWarnings("PMD.LinguisticNaming") // false positive
   @NonNull
   public static IBooleanItem hasNamespace(
       @NonNull IDefinitionNodeItem propOrPart,

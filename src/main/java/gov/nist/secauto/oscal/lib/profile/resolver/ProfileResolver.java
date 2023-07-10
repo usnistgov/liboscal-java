@@ -295,12 +295,17 @@ public class ProfileResolver {
     // now process each import
     IIndexer retval = new BasicIndexer();
     for (IRequiredValueModelNodeItem profileImportItem : profileImports) {
-      IIndexer result = resolveImport(profileImportItem, profileDocument, importHistory, resolvedCatalog);
+      IIndexer result = resolveImport(
+          ObjectUtils.notNull(profileImportItem),
+          profileDocument,
+          importHistory,
+          resolvedCatalog);
       retval.append(result);
     }
     return retval;
   }
 
+  @NonNull
   protected IIndexer resolveImport(
       @NonNull IRequiredValueModelNodeItem profileImportItem,
       @NonNull IDocumentNodeItem profileDocument,
@@ -343,10 +348,8 @@ public class ProfileResolver {
             OscalBindingContext.instance().copyBoundObject(importedCatalog.getValue(), null),
             importedCatalog.getDocumentUri());
 
-        IIndexer retval = new Import(profileDocument, profileImportItem)
+        return new Import(profileDocument, profileImportItem)
             .resolve(importedCatalog, resolvedCatalog);
-
-        return retval;
       } catch (BindingException ex) {
         throw new IOException(ex);
       }
@@ -411,7 +414,8 @@ public class ProfileResolver {
     if (index == -1) {
       retval = CollectionUtil.emptyList();
     } else {
-      retval = CollectionUtil.unmodifiableList(importHistory.subList(0, index + 1));
+      retval = CollectionUtil.unmodifiableList(
+          ObjectUtils.notNull(importHistory.subList(0, index + 1)));
     }
     return retval;
   }
@@ -485,6 +489,7 @@ public class ProfileResolver {
     FlatteningStructuringVisitor.instance().visitCatalog(resolvedCatalogItem, importIndex);
   }
 
+  @SuppressWarnings("PMD.ExceptionAsFlowControl") // ok
   protected void handleModify(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument)
       throws ProfileResolutionException {
     IDocumentNodeItem resolvedCatalogDocument = DefaultNodeItemFactory.instance().newDocumentNodeItem(

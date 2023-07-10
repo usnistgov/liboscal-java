@@ -68,8 +68,8 @@ public abstract class AbstractParameter implements IParameter {
     } else {
       selectInsertIds = CollectionUtil.listOrEmpty(selection.getChoice()).stream()
           .filter(Objects::nonNull)
-          .flatMap(choice -> choice.getInserts(insert -> "param".equals(insert.getType().toStringOrNull())).stream()
-              .map(insert -> insert.getIdReference().toStringOrNull()));
+          .flatMap(choice -> choice.getInserts(insert -> "param".equals(insert.getType().toString())).stream()
+              .map(insert -> insert.getIdReference().toString()));
     }
     Stream<String> retval = Stream.concat(aggregatesIds, selectInsertIds)
         .filter(Objects::nonNull)

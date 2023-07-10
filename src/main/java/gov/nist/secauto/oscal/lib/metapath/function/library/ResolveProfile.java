@@ -35,6 +35,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
 import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
@@ -77,7 +78,9 @@ public final class ResolveProfile {
     // disable construction
   }
 
-  @SuppressWarnings("unused")
+  @SuppressWarnings({"unused",
+    "PMD.OnlyOneReturn" // readability
+  })
   @NonNull
   public static ISequence<?> executeNoArg(
       @NonNull IFunction function,
@@ -92,14 +95,17 @@ public final class ResolveProfile {
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
 
-  @SuppressWarnings("unused")
+  @SuppressWarnings({"unused",
+    "PMD.OnlyOneReturn" // readability
+  })
   @NonNull
   public static ISequence<?> executeOneArg(
       @NonNull IFunction function,
       @NonNull List<ISequence<?>> arguments,
       @NonNull DynamicContext dynamicContext,
       INodeItem focus) {
-    ISequence<? extends IDocumentNodeItem> arg = FunctionUtils.asType(arguments.get(0));
+    ISequence<? extends IDocumentNodeItem> arg = FunctionUtils.asType(
+        ObjectUtils.notNull(arguments.get(0)));
 
     IItem item = FunctionUtils.getFirstItem(arg, true);
     if (item == null) {

@@ -147,12 +147,12 @@ class ProfileResolutionTests {
 
   @ParameterizedTest
   @CsvFileSource(resources = "/profile-tests.csv", numLinesToSkip = 1)
-  void test(String profileName) throws IOException, SaxonApiException, ProfileResolutionException {
+  void test(String profileName) throws IOException, SaxonApiException {
     performTest(profileName);
   }
 
   @Test
-  void testSingle() throws IOException, SaxonApiException, ProfileResolutionException {
+  void testSingle() throws IOException, SaxonApiException {
     performTest("modify-adds");
   }
 
@@ -221,6 +221,7 @@ class ProfileResolutionTests {
   @Test
   void testOscalVersion() throws IOException, ProfileResolutionException {
     Path profileFile = Paths.get(JUNIT_TEST_PATH, "content/test-oscal-version-profile.xml");
+    assert profileFile != null;
     Catalog catalog = resolveProfile(profileFile);
     assertNotNull(catalog);
     assertEquals("1.0.4", catalog.getMetadata().getOscalVersion());
@@ -229,6 +230,7 @@ class ProfileResolutionTests {
   @Test
   void testImportResourceRelativeLink() throws IOException, ProfileResolutionException {
     Path profilePath = Paths.get(JUNIT_TEST_PATH, "content/profile-relative-links-resource.xml");
+    assert profilePath != null;
     Catalog resolvedCatalog = resolveProfile(profilePath);
     assertNotNull(resolvedCatalog);
   }

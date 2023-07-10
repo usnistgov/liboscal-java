@@ -504,7 +504,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
       return objectNamespace;
     }
 
-    protected boolean checkValue(@Nullable String actual, @Nullable String expected) {
+    private static boolean checkValue(@Nullable String actual, @Nullable String expected) {
       return expected == null || expected.equals(actual);
     }
 

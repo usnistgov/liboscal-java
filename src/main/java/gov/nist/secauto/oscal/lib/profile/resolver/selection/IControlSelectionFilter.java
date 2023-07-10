@@ -68,7 +68,7 @@ public interface IControlSelectionFilter extends Function<IControl, Pair<Boolean
 
       @Override
       public @NonNull Pair<Boolean, Boolean> apply(IControl control) {
-        return Pair.of(keys.contains(control.getId()), false);
+        return ObjectUtils.notNull(Pair.of(keys.contains(control.getId()), false));
       }
 
     };

@@ -104,10 +104,10 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   @Override
   protected R visitGroupContainer(IRequiredValueModelNodeItem catalogOrGroup, R initialResult, T state) {
     R retval;
-    if (!Collections.disjoint(getItemTypesToVisit(), GROUP_CONTAINER_TYPES)) {
-      retval = super.visitGroupContainer(catalogOrGroup, initialResult, state);
-    } else {
+    if (Collections.disjoint(getItemTypesToVisit(), GROUP_CONTAINER_TYPES)) {
       retval = initialResult;
+    } else {
+      retval = super.visitGroupContainer(catalogOrGroup, initialResult, state);
     }
     return retval;
   }
@@ -115,7 +115,9 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   @Override
   protected R visitControlContainer(IRequiredValueModelNodeItem catalogOrGroupOrControl, R initialResult, T state) {
     R retval;
-    if (!Collections.disjoint(getItemTypesToVisit(), CONTROL_CONTAINER_TYPES)) {
+    if (Collections.disjoint(getItemTypesToVisit(), CONTROL_CONTAINER_TYPES)) {
+      retval = initialResult;
+    } else {
       // first descend to all control container children
       retval = super.visitControlContainer(catalogOrGroupOrControl, initialResult, state);
 
@@ -127,8 +129,6 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
             })
             .reduce(retval, (first, second) -> aggregateResults(first, second, state));
       } // TODO Auto-generated method stub
-    } else {
-      retval = initialResult;
     }
     return retval;
   }

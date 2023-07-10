@@ -108,8 +108,9 @@ public class DefaultResult implements IResult {
   @Override
   public void applyTo(@NonNull Catalog parent) {
     applyRemovesTo(parent);
-    getPromotedParameters().forEach(param -> parent.addParam(param));
+    getPromotedParameters().forEach(param -> parent.addParam(ObjectUtils.notNull(param)));
     getPromotedControls().forEach(control -> {
+      assert control != null;
       parent.addControl(control);
       control.setParentControl(null);
     });
@@ -119,20 +120,22 @@ public class DefaultResult implements IResult {
   public void applyTo(@NonNull CatalogGroup parent) {
     applyRemovesTo(parent);
     getPromotedControls().forEach(control -> {
+      assert control != null;
       parent.addControl(control);
       control.setParentControl(null);
     });
-    getPromotedParameters().forEach(param -> parent.addParam(param));
+    getPromotedParameters().forEach(param -> parent.addParam(ObjectUtils.notNull(param)));
   }
 
   @Override
   public void applyTo(@NonNull Control parent) {
     applyRemovesTo(parent);
     getPromotedControls().forEach(control -> {
-      parent.addControl(ObjectUtils.notNull(control));
+      assert control != null;
+      parent.addControl(control);
       control.setParentControl(null);
     });
-    getPromotedParameters().forEach(param -> parent.addParam(param));
+    getPromotedParameters().forEach(param -> parent.addParam(ObjectUtils.notNull(param)));
   }
 
   public void applyRemovesTo(Catalog parent) {

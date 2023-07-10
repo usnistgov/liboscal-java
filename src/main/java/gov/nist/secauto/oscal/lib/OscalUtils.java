@@ -56,6 +56,7 @@ public final class OscalUtils {
     // disable construction
   }
 
+  @SuppressWarnings("PMD.OnlyOneReturn") // readability
   public static boolean isInternalReference(@NonNull URI uri) {
     if (uri.isAbsolute()) {
       return false;
@@ -77,7 +78,7 @@ public final class OscalUtils {
    */
   @NonNull
   public static String internalReferenceFragmentToId(@NonNull URI fragment) {
-    return internalReferenceFragmentToId(fragment.toString());
+    return internalReferenceFragmentToId(ObjectUtils.notNull(fragment.toString()));
   }
 
   /**
@@ -156,7 +157,7 @@ public final class OscalUtils {
   @Nullable
   public static InputSource newInputSource(@NonNull Resource resource, @NonNull EntityResolver resolver,
       @Nullable String preferredMediaType) throws IOException {
-    URI uri = getResourceURI(resource, null);
+    URI uri = getResourceURI(resource, preferredMediaType);
     if (uri == null) {
       throw new IOException(String.format("unable to determine URI for resource '%s'", resource.getUuid()));
     }

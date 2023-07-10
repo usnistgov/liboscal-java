@@ -55,9 +55,9 @@ public abstract class AbstractCatalogGroup
         // Get the full part hierarchy
         .flatMap(part -> Stream.concat(Stream.of(part), part.getPartsRecursively()))
         // Get the inserts for each part
-        .flatMap(part -> part.getInserts(insert -> "param".equals(insert.getType().toStringOrNull())))
+        .flatMap(part -> part.getInserts(insert -> "param".equals(insert.getType().toString())))
         // Get the param ids for each insert
-        .map(insert -> insert.getIdReference().toStringOrNull())
+        .map(insert -> insert.getIdReference().toString())
         .flatMap(ObjectUtils::filterNull);
 
     // get parameters referenced by the control's parameters

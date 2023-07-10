@@ -29,6 +29,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
@@ -48,7 +49,7 @@ public class PropertyReferencePolicy
   @NonNull
   public static PropertyReferencePolicy create(@NonNull IIdentifierParser identifierParser,
       @NonNull IEntityItem.ItemType itemType) {
-    return create(identifierParser, List.of(itemType));
+    return create(identifierParser, ObjectUtils.notNull(List.of(itemType)));
   }
 
   @NonNull

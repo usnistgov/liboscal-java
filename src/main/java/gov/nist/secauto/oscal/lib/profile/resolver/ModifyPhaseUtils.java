@@ -62,6 +62,7 @@ public final class ModifyPhaseUtils {
     };
   }
 
+  @SuppressWarnings("PMD.OnlyOneReturn") // readability
   public static <T> T mergeItem(@Nullable T original, @Nullable T additional) {
     if (additional == null) {
       return original;
@@ -70,6 +71,7 @@ public final class ModifyPhaseUtils {
     return additional;
   }
 
+  @SuppressWarnings("PMD.OnlyOneReturn") // readability
   public static <T> List<T> merge(@Nullable List<T> original, @Nullable List<T> additional,
       Function<? super T, String> keyFunction) {
     if (additional == null || additional.isEmpty()) {

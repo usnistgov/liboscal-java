@@ -42,9 +42,10 @@ public abstract class AbstractCatalog
   @Override
   public Stream<String> getReferencedParameterIds() {
     // get parameters referenced by the control's parameters
-    return CollectionUtil.listOrEmpty(getParams()).stream()
-        .flatMap(ObjectUtils::filterNull)
-        .flatMap(param -> param.getParameterReferences())
-        .distinct();
+    return ObjectUtils.notNull(
+        CollectionUtil.listOrEmpty(getParams()).stream()
+            .flatMap(ObjectUtils::filterNull)
+            .flatMap(param -> param.getParameterReferences())
+            .distinct());
   }
 }

@@ -38,9 +38,9 @@ import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Metadata.Location;
-import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Metadata.Party;
 import gov.nist.secauto.oscal.lib.model.Metadata.Role;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
@@ -48,6 +48,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -71,7 +72,9 @@ public class BasicIndexer implements IIndexer {
   @Override
   public void append(@NonNull IIndexer other) {
     for (ItemType itemType : ItemType.values()) {
+      assert itemType != null;
       for (IEntityItem entity : other.getEntitiesByItemType(itemType)) {
+        assert entity != null;
         addItem(entity);
       }
     }
@@ -84,26 +87,18 @@ public class BasicIndexer implements IIndexer {
     this.nodeItemToSelectionStatusMap = new ConcurrentHashMap<>();
   }
 
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // needed
   public BasicIndexer(IIndexer other) {
-    Map<IEntityItem.ItemType, Map<String, IEntityItem>> entities = other.getEntities();
-
     // copy entity map
-    this.entityTypeToIdentifierToEntityMap = new ConcurrentHashMap<>();
-    for (ItemType itemType : ItemType.values()) {
-      Map<String, IEntityItem> entityGroup = entities.get(itemType);
-      if (entityGroup != null) {
-        entityTypeToIdentifierToEntityMap.put(itemType, new LinkedHashMap<>(entityGroup));
-      }
-    }
+    this.entityTypeToIdentifierToEntityMap = other.getEntities();
 
     // copy selection map
     this.nodeItemToSelectionStatusMap = new ConcurrentHashMap<>(other.getSelectionStatusMap());
   }
 
   @Override
-  public SelectionStatus setSelectionStatus(@NonNull INodeItem item, @NonNull SelectionStatus selectionStatus) {
-    SelectionStatus retval = nodeItemToSelectionStatusMap.put(item, selectionStatus);
-    return retval == null ? SelectionStatus.UNKNOWN : retval;
+  public void setSelectionStatus(@NonNull INodeItem item, @NonNull SelectionStatus selectionStatus) {
+    nodeItemToSelectionStatusMap.put(item, selectionStatus);
   }
 
   @Override
@@ -136,6 +131,7 @@ public class BasicIndexer implements IIndexer {
       if (IIndexer.SelectionStatus.UNKNOWN.equals(status)) {
         // lookup the status if not known
         IRequiredValueModelNodeItem containerItem = CONTAINER_METAPATH.evaluateAs(instance, ResultType.NODE);
+        assert containerItem != null;
         status = getSelectionStatus(containerItem);
 
         // cache the status
@@ -160,9 +156,30 @@ public class BasicIndexer implements IIndexer {
 
   @Override
   public Map<ItemType, Map<String, IEntityItem>> getEntities() {
-    return entityTypeToIdentifierToEntityMap.entrySet().stream()
-        .map(entry -> Map.entry(entry.getKey(), CollectionUtil.unmodifiableMap(entry.getValue())))
-        .collect(Collectors.toUnmodifiableMap(entry -> entry.getKey(), entry -> entry.getValue()));
+    // make a copy
+    Map<ItemType, Map<String, IEntityItem>> copy = entityTypeToIdentifierToEntityMap.entrySet().stream()
+        .map(entry -> {
+          ItemType key = entry.getKey();
+          Map<String, IEntityItem> oldMap = entry.getValue();
+
+          Map<String, IEntityItem> newMap = oldMap.entrySet().stream()
+              .collect(Collectors.toMap(
+                  Map.Entry::getKey,
+                  Map.Entry::getValue,
+                  (key1, key2) -> key1,
+                  LinkedHashMap::new)); // need ordering
+          assert newMap != null;
+          // use a synchronized map to ensure thread safety
+          return Map.entry(key, Collections.synchronizedMap(newMap));
+        })
+        .collect(Collectors.toMap(
+            Map.Entry::getKey,
+            Map.Entry::getValue,
+            (key1, key2) -> key1,
+            ConcurrentHashMap::new));
+
+    assert copy != null;
+    return copy;
   }
 
   @Override
@@ -191,18 +208,16 @@ public class BasicIndexer implements IIndexer {
   protected IEntityItem addItem(@NonNull IEntityItem item) {
     IEntityItem.ItemType type = item.getItemType();
 
-    Map<String, IEntityItem> entityGroup = entityTypeToIdentifierToEntityMap.get(type);
-    if (entityGroup == null) {
-      entityGroup = new LinkedHashMap<>();
-      entityTypeToIdentifierToEntityMap.put(type, entityGroup);
-    }
+    @SuppressWarnings("PMD.UseConcurrentHashMap") // need ordering
+    Map<String, IEntityItem> entityGroup = entityTypeToIdentifierToEntityMap.computeIfAbsent(
+        type,
+        (key) -> Collections.synchronizedMap(new LinkedHashMap<>()));
     IEntityItem oldEntity = entityGroup.put(item.getIdentifier(), item);
-    if (oldEntity != null) {
-      if (LOGGER.isWarnEnabled()) {
-        LOGGER.atWarn().log("Duplicate {} found with identifier {} in index.",
-            oldEntity.getItemType().name().toLowerCase(Locale.ROOT),
-            oldEntity.getIdentifier());
-      }
+
+    if (oldEntity != null && LOGGER.isWarnEnabled()) {
+      LOGGER.atWarn().log("Duplicate {} found with identifier {} in index.",
+          oldEntity.getItemType().name().toLowerCase(Locale.ROOT),
+          oldEntity.getIdentifier());
     }
     return oldEntity;
   }
@@ -215,7 +230,7 @@ public class BasicIndexer implements IIndexer {
   }
 
   @Override
-  public boolean remove(@NonNull IEntityItem entity) {
+  public boolean removeItem(@NonNull IEntityItem entity) {
     IEntityItem.ItemType type = entity.getItemType();
     Map<String, IEntityItem> entityGroup = entityTypeToIdentifierToEntityMap.get(type);
 
@@ -345,7 +360,8 @@ public class BasicIndexer implements IIndexer {
    */
   @NonNull
   public String normalizeIdentifier(@NonNull String identifier) {
-    return UuidAdapter.UUID_PATTERN.matches(identifier) ? ObjectUtils.notNull(identifier.toLowerCase(Locale.ROOT))
+    return UuidAdapter.UUID_PATTERN.matcher(identifier).matches()
+        ? ObjectUtils.notNull(identifier.toLowerCase(Locale.ROOT))
         : identifier;
   }
   //

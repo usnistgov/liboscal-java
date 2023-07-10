@@ -108,6 +108,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
         .orElse(NON_MATCH);
   }
 
+  @SuppressWarnings("PMD.ImplicitSwitchFallThrough")
   private static Pattern toPattern(@NonNull Matching matching) {
     String pattern = ObjectUtils.requireNonNull(matching.getPattern());
     String regex = pattern.chars().boxed().map(ch -> (char) ch.intValue()).map(ch -> {
