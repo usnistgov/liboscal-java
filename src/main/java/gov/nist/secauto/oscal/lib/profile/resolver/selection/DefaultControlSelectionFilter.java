@@ -53,7 +53,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
 
   /**
    * Construct a new selection filter based on the provided list of select criteria.
-   * 
+   *
    * @param selections
    *          a list of select criteria
    */
@@ -79,7 +79,7 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
 
   /**
    * Checks if the provided control identifier matches the criteria defined by this object.
-   * 
+   *
    * @param id
    *          the control identifier to match
    * @return a {@link Pair} whose first member is {@code true} for a match or {@code false} otherwise,

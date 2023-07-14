@@ -46,7 +46,7 @@ public interface IReferencePolicy<T> {
 
   /**
    * Get a reference policy that will ignore processing the reference.
-   * 
+   *
    * @param <T>
    *          the type of the reference object
    * @return the policy
@@ -59,7 +59,7 @@ public interface IReferencePolicy<T> {
 
   /**
    * Handle the provided {@code reference}.
-   * 
+   *
    * @param contextItem
    *          the nodes containing the reference
    * @param reference

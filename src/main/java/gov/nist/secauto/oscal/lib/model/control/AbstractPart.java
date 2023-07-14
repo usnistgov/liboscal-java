@@ -51,8 +51,7 @@ public abstract class AbstractPart implements IPart {
   public Stream<InsertAnchorNode> getInserts(@NonNull Predicate<InsertAnchorNode> filter) {
     MarkupMultiline prose = getProse();
 
-    @NonNull
-    Stream<InsertAnchorNode> retval;
+    @NonNull Stream<InsertAnchorNode> retval;
     if (prose == null) {
       retval = ObjectUtils.notNull(Stream.empty());
     } else {

@@ -32,7 +32,7 @@ public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
 
   /**
    * Get the parser to use to parse an entity identifier from the reference text.
-   * 
+   *
    * @return the parser
    */
   @NonNull
@@ -40,7 +40,7 @@ public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
 
   /**
    * Retrieve the reference text from the {@code reference} object.
-   * 
+   *
    * @param reference
    *          the reference object
    * @return the reference text or {@code null} if there is no text
@@ -49,7 +49,7 @@ public interface ICustomReferencePolicy<TYPE> extends IReferencePolicy<TYPE> {
 
   /**
    * Update the reference text used in the {@code reference} object.
-   * 
+   *
    * @param reference
    *          the reference object
    * @param newReferenceText

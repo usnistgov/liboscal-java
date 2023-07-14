@@ -116,7 +116,7 @@ public class ProfileResolver {
 
   /**
    * Gets the configured loader or creates a new default loader if no loader was configured.
-   * 
+   *
    * @return the bound loader
    */
   @NonNull
@@ -181,7 +181,7 @@ public class ProfileResolver {
 
   /**
    * Resolve the profile to a catalog.
-   * 
+   *
    * @param profileDocument
    *          a {@link IDocumentNodeItem} containing the profile to resolve
    * @param importHistory

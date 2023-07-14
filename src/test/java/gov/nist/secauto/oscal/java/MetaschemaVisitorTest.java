@@ -57,8 +57,7 @@ class MetaschemaVisitorTest {
 
     StaticContext staticContext = new StaticContext();
     @SuppressWarnings("null")
-    @NonNull
-    URI baseUri = new File("").getAbsoluteFile().toURI();
+    @NonNull URI baseUri = new File("").getAbsoluteFile().toURI();
     staticContext.setBaseUri(baseUri);
     DynamicContext dynamicContext = staticContext.newDynamicContext();
     dynamicContext.setDocumentLoader(loader);

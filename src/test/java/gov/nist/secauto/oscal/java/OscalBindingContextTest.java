@@ -196,8 +196,8 @@ class OscalBindingContextTest {
   @Test
   void testLoadCatalogIssue5(@TempDir Path tempDir) throws IOException, URISyntaxException {
     Catalog catalog = loader.load(
-            ObjectUtils.requireNonNull(
-                OscalBindingContext.class.getResource("/content/issue5-catalog.xml")));
+        ObjectUtils.requireNonNull(
+            OscalBindingContext.class.getResource("/content/issue5-catalog.xml")));
     assertNotNull(catalog);
 
     File out = new File(tempDir.toFile(), "issue13-out.xml");

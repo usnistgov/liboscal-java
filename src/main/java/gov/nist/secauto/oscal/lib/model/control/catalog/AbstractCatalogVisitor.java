@@ -41,14 +41,14 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
 
   /**
    * Get a new initial/default result for the visitor.
-   * 
+   *
    * @return the result
    */
   protected abstract RESULT defaultResult();
 
   /**
    * Aggregate two results into one.
-   * 
+   *
    * @param previous
    *          the first result
    * @param current

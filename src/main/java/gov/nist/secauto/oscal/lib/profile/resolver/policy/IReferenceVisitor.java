@@ -45,7 +45,7 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   /**
    * Visit the provided {@code item} representing an OSCAL {@link CatalogGroup} and handle any
    * enclosed references.
-   * 
+   *
    * @param item
    *          the Metapath node item containing reference nodes
    * @throws ProfileResolutionEvaluationException
@@ -57,7 +57,7 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   /**
    * Visit the provided {@code item} representing an OSCAL {@link Control} and handle any enclosed
    * references.
-   * 
+   *
    * @param item
    *          the Metapath node item containing reference nodes
    * @throws ProfileResolutionEvaluationException

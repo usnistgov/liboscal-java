@@ -93,8 +93,8 @@ public final class HasOscalNamespace {
     // disable construction
   }
 
-  @SuppressWarnings({"unused",
-    "PMD.OnlyOneReturn" // readability
+  @SuppressWarnings({ "unused",
+      "PMD.OnlyOneReturn" // readability
   })
   @NonNull
   public static ISequence<?> executeOneArg(
@@ -117,9 +117,8 @@ public final class HasOscalNamespace {
     return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));
   }
 
-  
-  @SuppressWarnings({"unused",
-    "PMD.OnlyOneReturn" // readability
+  @SuppressWarnings({ "unused",
+      "PMD.OnlyOneReturn" // readability
   })
   @NonNull
   public static ISequence<?> executeTwoArg(

@@ -63,7 +63,9 @@ class ExamplesTest {
     IBoundLoader loader = bindingContext.newBoundLoader(); // supports loading OSCAL documents
 
     // load an OSCAL catalog
-    Catalog catalog = loader.load(ObjectUtils.notNull(Paths.get("src/test/resources/content/test-catalog.xml"))); // load the catalog
+    Catalog catalog = loader.load(ObjectUtils.notNull(Paths.get("src/test/resources/content/test-catalog.xml"))); // load
+                                                                                                                  // the
+                                                                                                                  // catalog
 
     // Create a serializer which can be used to write multiple catalogs
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);

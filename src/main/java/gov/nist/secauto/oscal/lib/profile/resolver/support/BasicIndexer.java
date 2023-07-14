@@ -331,7 +331,7 @@ public class BasicIndexer implements IIndexer {
    * <p>
    * When working with identifiers that are case insensitve, it is important to ensure that the
    * identifiers are normalized to lower case.
-   * 
+   *
    * @param item
    *          the Metapath node to associate with the entity
    * @param itemType
@@ -353,7 +353,7 @@ public class BasicIndexer implements IIndexer {
 
   /**
    * Lower case UUID-based identifiers and leave others unmodified.
-   * 
+   *
    * @param identifier
    *          the identifier
    * @return the resulting normalized identifier

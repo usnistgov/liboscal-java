@@ -78,7 +78,7 @@ public interface IIndexer {
   /**
    * Keep entities that have a reference count greater than zero or are required to be kept based on
    * the "keep"="always property.
-   * 
+   *
    * @param entities
    *          the entity items to filter
    * @return the entities that pass the filter
@@ -90,7 +90,7 @@ public interface IIndexer {
   /**
    * Keep entities that have a reference count of zero or are not required to be kept based on the
    * "keep"="always property.
-   * 
+   *
    * @param entities
    *          the entity items to filter
    * @return the entities that pass the filter
@@ -104,7 +104,7 @@ public interface IIndexer {
    * required to be kept based on the "keep"="always property.
    * <p>
    * Distinct items are determined based on the item's key using the provided {@code keyMapper}.
-   * 
+   *
    * @param <T>
    *          the item type
    * @param <K>
@@ -122,8 +122,7 @@ public interface IIndexer {
       @NonNull Stream<T> resolvedItems,
       @NonNull Collection<IEntityItem> importedEntityItems,
       @NonNull Function<? super T, ? extends K> keyMapper) {
-    @SuppressWarnings("unchecked")
-    Stream<T> importedStream = getReferencedEntitiesAsStream(importedEntityItems)
+    @SuppressWarnings("unchecked") Stream<T> importedStream = getReferencedEntitiesAsStream(importedEntityItems)
         .map(entity -> (T) entity.getInstanceValue());
 
     return CustomCollectors.distinctByKey(
@@ -197,7 +196,7 @@ public interface IIndexer {
    * Lookup an item of the given {@code itemType} having the given {@code identifier}.
    * <p>
    * Will normalize the case of a UUID-based identifier.
-   * 
+   *
    * @param itemType
    *          the type of item to search for
    * @param identifier
@@ -213,7 +212,7 @@ public interface IIndexer {
    * Lookup an item of the given {@code itemType} having the given {@code identifier}.
    * <p>
    * Will normalize the case of a UUID-based the identifier when requested.
-   * 
+   *
    * @param itemType
    *          the type of item to search for
    * @param identifier
@@ -242,7 +241,7 @@ public interface IIndexer {
 
   /**
    * Get a copy of the entity map.
-   * 
+   *
    * @return the copy
    */
   @NonNull

@@ -61,7 +61,7 @@ public class OscalBindingContext
 
   /**
    * Construct a new OSCAL-flavored binding context with custom constraints.
-   * 
+   *
    * @param constraintSets
    *          a set of additional constraints to apply
    */

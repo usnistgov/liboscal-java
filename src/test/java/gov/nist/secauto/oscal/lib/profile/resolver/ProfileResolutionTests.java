@@ -124,7 +124,7 @@ class ProfileResolutionTests {
 
   /**
    * Transform the source to normalize content for test comparison.
-   * 
+   *
    * @param source
    *          the source to normalize
    * @return the transformed content
@@ -165,7 +165,8 @@ class ProfileResolutionTests {
     try {
       catalog = resolveProfile(profileFile);
     } catch (ProfileResolutionException ex) {
-      fail(String.format("Resolution of profile '%s' failed. %s", profileFile.getAbsolutePath(), ex.getLocalizedMessage()));
+      fail(String.format("Resolution of profile '%s' failed. %s", profileFile.getAbsolutePath(),
+          ex.getLocalizedMessage()));
     }
     assert catalog != null;
 
@@ -181,7 +182,8 @@ class ProfileResolutionTests {
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
 
-//    OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog, System.out);
+    // OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog,
+    // System.out);
 
     // System.out.println("Pre scrub: " + writer.getBuffer().toString());
 

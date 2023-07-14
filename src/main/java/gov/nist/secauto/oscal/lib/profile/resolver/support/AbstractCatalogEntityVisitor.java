@@ -75,7 +75,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
 
   /**
    * Create a new visitor that will visit the item types identified by {@code itemTypesToVisit}.
-   * 
+   *
    * @param itemTypesToVisit
    *          the item type the visitor will visit
    */
@@ -175,7 +175,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * <p>
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
-   * 
+   *
    * @param item
    *          the Metapath item for the parameter
    * @param catalogOrGroupOrControl
@@ -197,7 +197,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * <p>
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
-   * 
+   *
    * @param item
    *          the Metapath item for the part
    * @param groupOrControl
@@ -216,7 +216,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * Called when visiting the "metadata" section of an OSCAL document.
    * <p>
    * Visits each contained role, location, and party.
-   * 
+   *
    * @param rootItem
    *          the root Metaschema node item containing the "metadata" node
    * @param state
@@ -249,7 +249,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * <p>
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
-   * 
+   *
    * @param item
    *          the role Metaschema node item which is a child of the "metadata" node
    * @param metadataItem
@@ -269,7 +269,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * <p>
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
-   * 
+   *
    * @param item
    *          the location Metaschema node item which is a child of the "metadata" node
    * @param metadataItem
@@ -289,7 +289,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * <p>
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
-   * 
+   *
    * @param item
    *          the party Metaschema node item which is a child of the "metadata" node
    * @param metadataItem
@@ -308,7 +308,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * Called when visiting the "back-matter" section of an OSCAL document.
    * <p>
    * Visits each contained resource.
-   * 
+   *
    * @param rootItem
    *          the root Metaschema node item containing the "back-matter" node
    * @param state
@@ -329,7 +329,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * <p>
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
-   * 
+   *
    * @param item
    *          the resource Metaschema node item which is a child of the "metadata" node
    * @param backMatterItem

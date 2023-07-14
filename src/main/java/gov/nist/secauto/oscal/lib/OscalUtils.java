@@ -69,7 +69,7 @@ public final class OscalUtils {
 
   /**
    * Get the id based on a URI's fragment.
-   * 
+   *
    * @param fragment
    *          the URI to extract the identifier from
    * @return the identifier
@@ -83,7 +83,7 @@ public final class OscalUtils {
 
   /**
    * Get the id based on a URI's fragment.
-   * 
+   *
    * @param fragment
    *          the URI to extract the identifier from
    * @return the identifier

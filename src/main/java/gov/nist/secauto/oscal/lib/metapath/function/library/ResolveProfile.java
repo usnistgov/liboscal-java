@@ -78,8 +78,8 @@ public final class ResolveProfile {
     // disable construction
   }
 
-  @SuppressWarnings({"unused",
-    "PMD.OnlyOneReturn" // readability
+  @SuppressWarnings({ "unused",
+      "PMD.OnlyOneReturn" // readability
   })
   @NonNull
   public static ISequence<?> executeNoArg(
@@ -95,8 +95,8 @@ public final class ResolveProfile {
     return ISequence.of(resolveProfile(FunctionUtils.asType(item), dynamicContext));
   }
 
-  @SuppressWarnings({"unused",
-    "PMD.OnlyOneReturn" // readability
+  @SuppressWarnings({ "unused",
+      "PMD.OnlyOneReturn" // readability
   })
   @NonNull
   public static ISequence<?> executeOneArg(
