@@ -93,7 +93,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
     /**
      * Get the target type associated with the provided {@code clazz}.
-     * 
+     *
      * @param clazz
      *          the class to identify the target type for
      * @return the associated target type or {@code null} if the class is not associated with a target
@@ -112,7 +112,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
     /**
      * Get the target type associated with the provided field {@code name}.
-     * 
+     *
      * @param name
      *          the field name to identify the target type for
      * @return the associated target type or {@code null} if the name is not associated with a target
@@ -130,7 +130,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
     /**
      * Get the field name associated with the target type.
-     * 
+     *
      * @return the name
      */
     public String fieldName() {
@@ -139,7 +139,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
     /**
      * Get the bound class associated with the target type.
-     * 
+     *
      * @return the class
      */
     public Class<?> getClazz() {
@@ -203,7 +203,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
   /**
    * Apply the remove directive.
-   * 
+   *
    * @param control
    *          the control target
    * @param objectName
@@ -306,7 +306,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
   /**
    * Visit the control part.
-   * 
+   *
    * @param part
    *          the bound part object
    * @param context
@@ -341,7 +341,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
   /**
    * Visit the control mapping.
-   * 
+   *
    * @param mapping
    *          the bound mapping object
    * @param context
@@ -361,7 +361,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
   /**
    * Visit the mapping entry.
-   * 
+   *
    * @param map
    *          the bound mapping entry object
    * @param context
@@ -453,8 +453,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
       // determine the set of effective item types to search for
       // this helps with short-circuit searching for parts of the graph that cannot match
-      @NonNull
-      Set<TargetType> targetItemTypes = ObjectUtils.notNull(EnumSet.allOf(TargetType.class));
+      @NonNull Set<TargetType> targetItemTypes = ObjectUtils.notNull(EnumSet.allOf(TargetType.class));
       filterTypes(targetItemTypes, "by-name", NAME_TYPES, objectName, itemType);
       filterTypes(targetItemTypes, "by-class", CLASS_TYPES, objectClass, itemType);
       filterTypes(targetItemTypes, "by-id", ID_TYPES, objectId, itemType);
@@ -504,7 +503,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
       return objectNamespace;
     }
 
-    protected boolean checkValue(@Nullable String actual, @Nullable String expected) {
+    private static boolean checkValue(@Nullable String actual, @Nullable String expected) {
       return expected == null || expected.equals(actual);
     }
 

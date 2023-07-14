@@ -5,6 +5,7 @@
 .factorypath
 .pmd
 .pmdruleset.xml
-/target/
+target/
 pom.xml.releaseBackup
-/release.properties
+release.properties
+.fbExcludeFilterFile

@@ -40,7 +40,7 @@ public interface IControlContainer {
 
   /**
    * Add a new {@link Control} item to the end of the underlying collection.
-   * 
+   *
    * @param item
    *          the item to add
    * @return {@code true}
@@ -49,7 +49,7 @@ public interface IControlContainer {
 
   /**
    * Remove the first matching {@link Control} item from the underlying collection.
-   * 
+   *
    * @param item
    *          the item to remove
    * @return {@code true} if the item was removed or {@code false} otherwise
@@ -60,7 +60,7 @@ public interface IControlContainer {
 
   /**
    * Add a new {@link Parameter} item to the underlying collection.
-   * 
+   *
    * @param item
    *          the item to add
    * @return {@code true}
@@ -69,7 +69,7 @@ public interface IControlContainer {
 
   /**
    * Remove the first matching {@link Parameter} item from the underlying collection.
-   * 
+   *
    * @param item
    *          the item to remove
    * @return {@code true} if the item was removed or {@code false} otherwise
@@ -78,7 +78,7 @@ public interface IControlContainer {
 
   /**
    * Get the parameter identifiers referenced in the object's context, but not by their child objects.
-   * 
+   *
    * @return a stream of identifiers
    */
   Stream<String> getReferencedParameterIds();

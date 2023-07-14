@@ -36,11 +36,11 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
-import gov.nist.secauto.oscal.lib.model.Metadata.Location;
 import gov.nist.secauto.oscal.lib.model.Metadata;
-import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.model.Metadata.Location;
 import gov.nist.secauto.oscal.lib.model.Metadata.Party;
 import gov.nist.secauto.oscal.lib.model.Metadata.Role;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.AbstractCatalogEntityVisitor;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
@@ -114,7 +114,7 @@ public class FilterNonSelectedVisitor
         LOGGER.atDebug().log("Removing role '{}'", role.getId());
       }
       metadata.removeRole(role);
-      index.remove(entity);
+      index.removeItem(entity);
     }
 
     for (IEntityItem entity : IIndexer.getUnreferencedEntitiesAsStream(index.getEntitiesByItemType(ItemType.PARTY))
@@ -124,7 +124,7 @@ public class FilterNonSelectedVisitor
         LOGGER.atDebug().log("Removing party '{}'", party.getUuid());
       }
       metadata.removeParty(party);
-      index.remove(entity);
+      index.removeItem(entity);
     }
 
     for (IEntityItem entity : IIndexer.getUnreferencedEntitiesAsStream(index.getEntitiesByItemType(ItemType.LOCATION))
@@ -134,7 +134,7 @@ public class FilterNonSelectedVisitor
         LOGGER.atDebug().log("Removing location '{}'", location.getUuid());
       }
       metadata.removeLocation(location);
-      index.remove(entity);
+      index.removeItem(entity);
     }
   }
 
@@ -150,7 +150,7 @@ public class FilterNonSelectedVisitor
         LOGGER.atDebug().log("Removing resource '{}'", resource.getUuid());
       }
       backMatter.removeResource(resource);
-      index.remove(entity);
+      index.removeItem(entity);
     }
   }
 
@@ -179,7 +179,7 @@ public class FilterNonSelectedVisitor
       if (groupId != null) {
         // this group should always be found in the index
         IEntityItem entity = ObjectUtils.requireNonNull(index.getEntity(ItemType.GROUP, groupId, false));
-        index.remove(entity);
+        index.removeItem(entity);
       }
 
       // remove any associated parts from the index
@@ -218,7 +218,7 @@ public class FilterNonSelectedVisitor
         retval.removeControl(control);
       }
       retval.appendPromoted(ObjectUtils.notNull(childResult));
-      index.remove(entity);
+      index.removeItem(entity);
 
       // remove any associated parts from the index
       removePartsFromIndex(item, index);
@@ -236,7 +236,7 @@ public class FilterNonSelectedVisitor
           if (id != null) {
             IEntityItem entity = index.getEntity(IEntityItem.ItemType.PART, id);
             if (entity != null) {
-              index.remove(entity);
+              index.removeItem(entity);
             }
           }
         });
@@ -269,7 +269,7 @@ public class FilterNonSelectedVisitor
       if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {
         retval.removeParameter(param);
       }
-      index.remove(entity);
+      index.removeItem(entity);
     }
     return retval;
   }

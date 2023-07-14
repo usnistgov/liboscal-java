@@ -35,9 +35,9 @@ import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Metadata.Location;
-import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Metadata.Party;
 import gov.nist.secauto.oscal.lib.model.Metadata.Role;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.profile.resolver.policy.ReferenceCountingVisitor;
 import gov.nist.secauto.oscal.lib.profile.resolver.selection.DefaultResult;
 import gov.nist.secauto.oscal.lib.profile.resolver.selection.FilterNonSelectedVisitor;
@@ -244,7 +244,7 @@ public class FlatteningStructuringVisitor
           retval.removeControl(control);
         }
         retval.appendPromoted(ObjectUtils.notNull(childResult));
-        index.remove(entity);
+        index.removeItem(entity);
 
         // remove any associated parts from the index
         removePartsFromIndex(item, index);

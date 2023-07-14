@@ -57,8 +57,7 @@ class MetaschemaVisitorTest {
 
     StaticContext staticContext = new StaticContext();
     @SuppressWarnings("null")
-    @NonNull
-    URI baseUri = new File("").getAbsoluteFile().toURI();
+    @NonNull URI baseUri = new File("").getAbsoluteFile().toURI();
     staticContext.setBaseUri(baseUri);
     DynamicContext dynamicContext = staticContext.newDynamicContext();
     dynamicContext.setDocumentLoader(loader);
@@ -118,8 +117,6 @@ class MetaschemaVisitorTest {
     // System.out.println("Result: ");
     AtomicInteger count = new AtomicInteger();
     result.asStream().forEachOrdered(x -> {
-      Object value = x.getValue();
-      // System.out.println(String.format(" %s", value));
       count.incrementAndGet();
     });
     // System.out.println(String.format(" %d items", count.get()));

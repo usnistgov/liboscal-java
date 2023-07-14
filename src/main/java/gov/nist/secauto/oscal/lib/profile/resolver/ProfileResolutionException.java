@@ -38,7 +38,7 @@ public class ProfileResolutionException
 
   /**
    * Create a new profile resolution exception with the provided {@code message}.
-   * 
+   *
    * @param message
    *          a description of the error that occurred
    */
@@ -49,7 +49,7 @@ public class ProfileResolutionException
   /**
    * Create a new profile resolution exception with the provided {@code message} based on the provided
    * {@code cause}.
-   * 
+   *
    * @param message
    *          a description of the error that occurred
    * @param cause

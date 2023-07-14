@@ -36,7 +36,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public interface ICatalogVisitor<RESULT, CONTEXT> {
   /**
    * Visit the provided {@code catalog}.
-   * 
+   *
    * @param catalog
    *          the bound catalog object
    * @param context
@@ -47,7 +47,7 @@ public interface ICatalogVisitor<RESULT, CONTEXT> {
 
   /**
    * Visit the provided {@code group}.
-   * 
+   *
    * @param group
    *          the bound group object
    * @param context
@@ -58,7 +58,7 @@ public interface ICatalogVisitor<RESULT, CONTEXT> {
 
   /**
    * Visit the provided {@code control}.
-   * 
+   *
    * @param control
    *          the bound control object
    * @param context
@@ -69,7 +69,7 @@ public interface ICatalogVisitor<RESULT, CONTEXT> {
 
   /**
    * Visit the provided {@code parameter}.
-   * 
+   *
    * @param parameter
    *          the bound parameter object
    * @param context

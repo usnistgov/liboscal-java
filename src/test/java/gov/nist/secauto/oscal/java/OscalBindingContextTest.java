@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
@@ -67,9 +68,10 @@ class OscalBindingContextTest {
   void testLoadCatalogYaml(@TempDir Path tempDir) throws IOException {
     // the YAML catalog is currently malformed, this will create a proper one for this test
     Catalog catalog
-        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile());
+        = loader.load(ObjectUtils.notNull(
+            new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile()));
 
-    Path out = newPath(tempDir, "out-catalog.yaml");
+    Path out = newPath(ObjectUtils.notNull(tempDir), "out-catalog.yaml");
 
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
     serializer.serialize(catalog, out);
@@ -80,11 +82,11 @@ class OscalBindingContextTest {
   @Test
   void testLoadCatalogJson(@TempDir Path tempDir) throws IOException {
     Catalog catalog
-        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.json").getCanonicalFile());
+        = loader.load(ObjectUtils.notNull(
+            new File("target/download/content/NIST_SP-800-53_rev5_catalog.json").getCanonicalFile()));
     assertNotNull(catalog);
 
-    File out = new File(tempDir.toFile(), "out.json");
-    // File out = new File("target/out.json");
+    Path out = newPath(ObjectUtils.notNull(tempDir), "out.json");
 
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.JSON, Catalog.class);
     serializer.serialize(catalog, out);
@@ -95,11 +97,11 @@ class OscalBindingContextTest {
   @Test
   void testLoadCatalogXml(@TempDir Path tempDir) throws IOException {
     Catalog catalog
-        = loader.load(new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile());
+        = loader.load(ObjectUtils.notNull(
+            new File("target/download/content/NIST_SP-800-53_rev5_catalog.xml").getCanonicalFile()));
     assertNotNull(catalog);
 
-    File out = new File(tempDir.toFile(), "out.xml");
-    // File out = new File("target/out.xml");
+    Path out = newPath(ObjectUtils.notNull(tempDir), "out.xml");
 
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.XML, Catalog.class);
     serializer.serialize(catalog, out);
@@ -111,25 +113,25 @@ class OscalBindingContextTest {
   @Test
   void testLoadProfileJson(@TempDir Path tempDir) throws IOException {
     Profile profile
-        = loader.load(
-            new File("target/download/content/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json").getCanonicalFile());
+        = loader.load(ObjectUtils.notNull(
+            new File("target/download/content/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json").getCanonicalFile()));
     assertNotNull(profile);
 
-    File out = new File(tempDir.toFile(), "out.json");
-    // File out = new File("target/out-profile.json");
+    Path out = newPath(ObjectUtils.notNull(tempDir), "out.json");
 
     ISerializer<Profile> serializer = bindingContext.newSerializer(Format.JSON, Profile.class);
     serializer.serialize(profile, out);
 
     assertNotNull(loader.load(out));
 
-    out = new File(tempDir.toFile(), "out.yaml");
-    // out = new File("target/out-profile.yaml");
+    out = newPath(ObjectUtils.notNull(tempDir), "out.yaml");
 
     serializer = bindingContext.newSerializer(Format.YAML, Profile.class);
     serializer.serialize(profile, out);
   }
 
+  @SuppressWarnings("null")
+  @NonNull
   static Path newPath(@NonNull Path dir, @NonNull String filename) {
     return dir.resolve(filename);
   }
@@ -147,10 +149,10 @@ class OscalBindingContextTest {
   @Test
   void testCatalogXmlListItems() throws IOException {
     Catalog catalog
-        = loader.load(new File("src/test/resources/content/catalog-with-lists.xml").getCanonicalFile());
+        = loader.load(ObjectUtils.notNull(
+            new File("src/test/resources/content/catalog-with-lists.xml").getCanonicalFile()));
     assertNotNull(catalog);
 
-    // File out = new File(tempDir.toFile(), "out.xml");
     Path out = Paths.get("target/generated-test-resources/catalog-with-lists.xml");
 
     Path parent = out.getParent();
@@ -168,8 +170,8 @@ class OscalBindingContextTest {
   @Test
   void testLoadCatalogTightLists() throws IOException, URISyntaxException {
     // test for usnistgov/liboscal-java#18
-    Catalog catalog
-        = loader.load(OscalBindingContext.class.getResource("/content/issue13-catalog.xml"));
+    Catalog catalog = loader.load(ObjectUtils.requireNonNull(
+        OscalBindingContext.class.getResource("/content/issue13-catalog.xml")));
 
     assertNotNull(catalog);
 
@@ -193,8 +195,9 @@ class OscalBindingContextTest {
 
   @Test
   void testLoadCatalogIssue5(@TempDir Path tempDir) throws IOException, URISyntaxException {
-    Catalog catalog
-        = loader.load(OscalBindingContext.class.getResource("/content/issue5-catalog.xml"));
+    Catalog catalog = loader.load(
+        ObjectUtils.requireNonNull(
+            OscalBindingContext.class.getResource("/content/issue5-catalog.xml")));
     assertNotNull(catalog);
 
     File out = new File(tempDir.toFile(), "issue13-out.xml");

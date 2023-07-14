@@ -34,7 +34,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Used to visit a catalog containing groups and controls.
- * 
+ *
  * @param <T>
  *          the type of the state object used to pass calling context information
  * @param <R>
@@ -52,7 +52,7 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
 
   /**
    * Visit the child groups and controls (in that order) of a given catalog or group container.
-   * 
+   *
    * @param catalogOrGroup
    *          the catalog or group Metapath item currently being visited
    * @param initialResult
@@ -77,7 +77,7 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
    * Called when visiting a group.
    * <p>
    * This method will first visit the group's children, then the group itself.
-   * 
+   *
    * @param item
    *          the group Metapath item to visit
    * @param state
@@ -91,7 +91,7 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
 
   /**
    * Called when visiting a group after visiting it's children.
-   * 
+   *
    * @param item
    *          the group Metapath item currently being visited
    * @param childResult
@@ -109,7 +109,7 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
 
   /**
    * Visit the child controls (in that order) of a given catalog, group, or control container.
-   * 
+   *
    * @param catalogOrGroupOrControl
    *          the catalog, group, or control Metapath item currently being visited
    * @param initialResult
@@ -133,7 +133,7 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
    * Called when visiting a control.
    * <p>
    * This method will first visit the control's children, then the control itself.
-   * 
+   *
    * @param item
    *          the group Metapath item to visit
    * @param state
@@ -147,7 +147,7 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
 
   /**
    * Called when visiting a control after visiting it's children.
-   * 
+   *
    * @param controlItem
    *          the Metapath item for the control currently being visited
    * @param childResult

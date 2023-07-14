@@ -78,7 +78,7 @@ public interface IControlFilter {
 
   /**
    * Construct a new filter instance based on the provided profile import statement.
-   * 
+   *
    * @param profileImport
    *          an OSCAL profile import statement
    * @return a new control filter
@@ -98,7 +98,7 @@ public interface IControlFilter {
    * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
    * first member of the pair indicates if the control matches, and the second indicates if the match
    * applies to child controls as well.
-   * 
+   *
    * @param control
    *          the control to check for a match
    * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
@@ -113,7 +113,7 @@ public interface IControlFilter {
    * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
    * first member of the pair indicates if the control matches, and the second indicates if the match
    * applies to child controls as well.
-   * 
+   *
    * @param control
    *          the control to check for a match
    * @param defaultMatch
@@ -178,8 +178,7 @@ public interface IControlFilter {
 
     @Override
     public Pair<Boolean, Boolean> match(@NonNull IControl control, boolean defaultMatch) {
-      @NonNull
-      Pair<Boolean, Boolean> result = getInclusionFilter().apply(control);
+      @NonNull Pair<Boolean, Boolean> result = getInclusionFilter().apply(control);
       boolean left = ObjectUtils.notNull(result.getLeft());
       if (left) {
         // this is a positive include match. Is it excluded?

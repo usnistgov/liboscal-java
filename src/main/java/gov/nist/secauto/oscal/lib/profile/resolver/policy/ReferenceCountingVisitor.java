@@ -493,7 +493,9 @@ public class ReferenceCountingVisitor
   public void resolveEntity(
       @NonNull IEntityItem entity,
       @NonNull Context context) {
-    resolveEntity(entity, context, (theEntity, theContext) -> entityDispatch(theEntity, theContext));
+    resolveEntity(entity, context, (theEntity, theContext) -> entityDispatch(
+        ObjectUtils.notNull(theEntity),
+        ObjectUtils.notNull(theContext)));
   }
 
   protected void entityDispatch(@NonNull IEntityItem entity, @NonNull Context context) {
@@ -553,7 +555,7 @@ public class ReferenceCountingVisitor
 
     @NonNull
     @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intending to expose this field")
-    protected IIndexer getIndexer() {
+    public IIndexer getIndexer() {
       return indexer;
     }
 
@@ -562,8 +564,9 @@ public class ReferenceCountingVisitor
       return getIndexer().getEntity(itemType, identifier);
     }
 
+    @SuppressWarnings("unused")
     @NonNull
-    protected URI getSource() {
+    private URI getSource() {
       return source;
     }
 
@@ -597,7 +600,7 @@ public class ReferenceCountingVisitor
           type.isUuid());
     }
 
-    protected void incrementReferenceCountInternal(
+    private void incrementReferenceCountInternal(
         @NonNull IRequiredValueModelNodeItem contextItem,
         @NonNull IEntityItem.ItemType type,
         @NonNull String identifier,
@@ -613,10 +616,6 @@ public class ReferenceCountingVisitor
       } else {
         item.incrementReferenceCount();
       }
-    }
-
-    public static void resolveEntity(@NonNull IEntityItem item, @NonNull Context context) {
-      instance().resolveEntity(item, context);
     }
   }
 }
