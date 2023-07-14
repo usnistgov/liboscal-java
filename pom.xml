@@ -671,59 +671,8 @@
 						<groupId>org.cyclonedx</groupId>
 						<artifactId>cyclonedx-maven-plugin</artifactId>
 					</plugin>
-					<plugin>
-						<groupId>com.github.spotbugs</groupId>
-						<artifactId>spotbugs-maven-plugin</artifactId>
-						<configuration>
-							<effort>Max</effort>
-							<threshold>Normal</threshold>
-							<xmlOutput>true</xmlOutput>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>check</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
-		</profile>
-
-		<profile>
-			<id>reporting</id>
-			<reporting>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-project-info-reports-plugin</artifactId>
-						<reportSets>
-							<reportSet>
-								<reports>
-									<report>summary</report>
-									<report>licenses</report>
-									<report>modules</report>
-									<report>team</report>
-									<report>mailing-lists</report>
-									<report>scm</report>
-									<report>issue-management</report>
-									<report>dependencies</report>
-									<report>dependency-info</report>
-									<report>dependency-convergence</report>
-									<report>dependency-management</report>
-									<report>plugins</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<groupId>com.github.spotbugs</groupId>
-						<artifactId>spotbugs-maven-plugin</artifactId>
-						<version>${plugin.spotbugs.version}</version>
-					</plugin>
-				</plugins>
-			</reporting>
 		</profile>
 	</profiles>
 </project>
