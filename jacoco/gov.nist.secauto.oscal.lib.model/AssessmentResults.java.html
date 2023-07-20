@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssessmentResults.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">AssessmentResults.java</span></div><h1>AssessmentResults.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Security assessment results, such as those provided by a FedRAMP assessor in the FedRAMP Security Assessment Report.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Security Assessment Results (SAR)&quot;,
+    description = &quot;Security assessment results, such as those provided by a FedRAMP assessor in the FedRAMP Security Assessment Report.&quot;,
+    name = &quot;assessment-results&quot;,
+    metaschema = OscalArMetaschema.class,
+    rootName = &quot;assessment-results&quot;
+)
+public class AssessmentResults {
+  @BoundFlag(
+      formalName = &quot;Assessment Results Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this assessment results instance in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ar-identifiers). The locally defined *UUID* of the `assessment result` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundAssembly(
+      formalName = &quot;Document Metadata&quot;,
+      description = &quot;Provides information about the containing document, and defines concepts that are shared across the document.&quot;,
+      useName = &quot;metadata&quot;,
+      minOccurs = 1
+  )
+  private Metadata _metadata;
+
+  @BoundAssembly(
+      formalName = &quot;Import Assessment Plan&quot;,
+      description = &quot;Used by assessment-results to import information about the original plan for assessing the system.&quot;,
+      useName = &quot;import-ap&quot;,
+      minOccurs = 1,
+      remarks = &quot;Used by the SAR to import information about the original plan for assessing the system.&quot;
+  )
+  private ImportAp _importAp;
+
+  /**
+   * &quot;Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Local Definitions&quot;,
+      description = &quot;Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.&quot;,
+      useName = &quot;local-definitions&quot;
+  )
+  private LocalDefinitions _localDefinitions;
+
+  @BoundAssembly(
+      formalName = &quot;Assessment Result&quot;,
+      description = &quot;Used by the assessment results and POA\\&amp;M. In the assessment results, this identifies all of the assessment observations and findings, initial and residual risks, deviations, and disposition. In the POA\\&amp;M, this identifies initial and residual risks, deviations, and disposition.&quot;,
+      useName = &quot;result&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;results&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Result&gt; _results;
+
+  @BoundAssembly(
+      formalName = &quot;Back matter&quot;,
+      description = &quot;A collection of resources that may be referenced from within the OSCAL document instance.&quot;,
+      useName = &quot;back-matter&quot;
+  )
+  private BackMatter _backMatter;
+
+<span class="nc" id="L89">  public AssessmentResults() {</span>
+<span class="nc" id="L90">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L93">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L97">    _uuid = value;</span>
+<span class="nc" id="L98">  }</span>
+
+  public Metadata getMetadata() {
+<span class="nc" id="L101">    return _metadata;</span>
+  }
+
+  public void setMetadata(Metadata value) {
+<span class="nc" id="L105">    _metadata = value;</span>
+<span class="nc" id="L106">  }</span>
+
+  public ImportAp getImportAp() {
+<span class="nc" id="L109">    return _importAp;</span>
+  }
+
+  public void setImportAp(ImportAp value) {
+<span class="nc" id="L113">    _importAp = value;</span>
+<span class="nc" id="L114">  }</span>
+
+  public LocalDefinitions getLocalDefinitions() {
+<span class="nc" id="L117">    return _localDefinitions;</span>
+  }
+
+  public void setLocalDefinitions(LocalDefinitions value) {
+<span class="nc" id="L121">    _localDefinitions = value;</span>
+<span class="nc" id="L122">  }</span>
+
+  public List&lt;Result&gt; getResults() {
+<span class="nc" id="L125">    return _results;</span>
+  }
+
+  public void setResults(List&lt;Result&gt; value) {
+<span class="nc" id="L129">    _results = value;</span>
+<span class="nc" id="L130">  }</span>
+
+  /**
+   * Add a new {@link Result} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addResult(Result item) {
+<span class="nc" id="L138">    Result value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">    if (_results == null) {</span>
+<span class="nc" id="L140">      _results = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L142">    return _results.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Result} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeResult(Result item) {
+<span class="nc" id="L151">    Result value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">    return _results == null ? false : _results.remove(value);</span>
+  }
+
+  public BackMatter getBackMatter() {
+<span class="nc" id="L156">    return _backMatter;</span>
+  }
+
+  public void setBackMatter(BackMatter value) {
+<span class="nc" id="L160">    _backMatter = value;</span>
+<span class="nc" id="L161">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L165">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Local Definitions&quot;,
+      description = &quot;Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.&quot;,
+      name = &quot;local-definitions&quot;,
+      metaschema = OscalArMetaschema.class
+  )
+  public static class LocalDefinitions {
+    @BoundAssembly(
+        formalName = &quot;Assessment-Specific Control Objective&quot;,
+        description = &quot;A local definition of a control objective for this assessment. Uses catalog syntax for control objective and assessment actions.&quot;,
+        useName = &quot;objectives-and-methods&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;objectives-and-methods&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;LocalObjective&gt; _objectivesAndMethods;
+
+    @BoundAssembly(
+        formalName = &quot;Activity&quot;,
+        description = &quot;Identifies an assessment or related process that can be performed. In the assessment plan, this is an intended activity which may be associated with an assessment task. In the assessment results, this an activity that was actually performed as part of an assessment.&quot;,
+        useName = &quot;activity&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;activities&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Activity&gt; _activities;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L212">    public LocalDefinitions() {</span>
+<span class="nc" id="L213">    }</span>
+
+    public List&lt;LocalObjective&gt; getObjectivesAndMethods() {
+<span class="nc" id="L216">      return _objectivesAndMethods;</span>
+    }
+
+    public void setObjectivesAndMethods(List&lt;LocalObjective&gt; value) {
+<span class="nc" id="L220">      _objectivesAndMethods = value;</span>
+<span class="nc" id="L221">    }</span>
+
+    /**
+     * Add a new {@link LocalObjective} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addObjectivesAndMethods(LocalObjective item) {
+<span class="nc" id="L229">      LocalObjective value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">      if (_objectivesAndMethods == null) {</span>
+<span class="nc" id="L231">        _objectivesAndMethods = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L233">      return _objectivesAndMethods.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link LocalObjective} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeObjectivesAndMethods(LocalObjective item) {
+<span class="nc" id="L242">      LocalObjective value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">      return _objectivesAndMethods == null ? false : _objectivesAndMethods.remove(value);</span>
+    }
+
+    public List&lt;Activity&gt; getActivities() {
+<span class="nc" id="L247">      return _activities;</span>
+    }
+
+    public void setActivities(List&lt;Activity&gt; value) {
+<span class="nc" id="L251">      _activities = value;</span>
+<span class="nc" id="L252">    }</span>
+
+    /**
+     * Add a new {@link Activity} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addActivity(Activity item) {
+<span class="nc" id="L260">      Activity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">      if (_activities == null) {</span>
+<span class="nc" id="L262">        _activities = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L264">      return _activities.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Activity} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeActivity(Activity item) {
+<span class="nc" id="L273">      Activity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">      return _activities == null ? false : _activities.remove(value);</span>
+    }
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L278">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L282">      _remarks = value;</span>
+<span class="nc" id="L283">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L287">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

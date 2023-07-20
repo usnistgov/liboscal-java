@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TelephoneNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">TelephoneNumber.java</span></div><h1>TelephoneNumber.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.Matches;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import java.lang.Override;
+import java.lang.String;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A telephone service number as defined by &lt;a href=&quot;https://www.itu.int/rec/T-REC-E.164-201011-I/en&quot;&gt;ITU-T E.164&lt;/a&gt;.
+ */
+@MetaschemaField(
+    formalName = &quot;Telephone Number&quot;,
+    description = &quot;A telephone service number as defined by [ITU-T E.164](https://www.itu.int/rec/T-REC-E.164-201011-I/en).&quot;,
+    name = &quot;telephone-number&quot;,
+    metaschema = OscalMetadataMetaschema.class,
+    isCollapsible = false
+)
+@ValueConstraints(
+    matches = @Matches(level = IConstraint.Level.WARNING, pattern = &quot;^[0-9]{3}[0-9]{1,12}$&quot;, remarks = &quot;Providing a country code provides an international means to interpret the phone number.&quot;)
+)
+public class TelephoneNumber {
+  @MetaschemaFieldValue(
+      valueKeyName = &quot;number&quot;
+  )
+  private String _value;
+
+  @BoundFlag(
+      formalName = &quot;type flag&quot;,
+      description = &quot;Indicates the type of phone number.&quot;,
+      useName = &quot;type&quot;,
+      typeAdapter = StringAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;home&quot;, description = &quot;A home phone number.&quot;), @AllowedValue(value = &quot;office&quot;, description = &quot;An office phone number.&quot;), @AllowedValue(value = &quot;mobile&quot;, description = &quot;A mobile phone number.&quot;)})
+  )
+  private String _type;
+
+<span class="nc" id="L47">  public TelephoneNumber() {</span>
+<span class="nc" id="L48">  }</span>
+
+  public String getValue() {
+<span class="nc" id="L51">    return _value;</span>
+  }
+
+  public void setValue(String value) {
+<span class="nc" id="L55">    _value = value;</span>
+<span class="nc" id="L56">  }</span>
+
+  public String getType() {
+<span class="nc" id="L59">    return _type;</span>
+  }
+
+  public void setType(String value) {
+<span class="nc" id="L63">    _type = value;</span>
+<span class="nc" id="L64">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L68">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoggedBy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">LoggedBy.java</span></div><h1>LoggedBy.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import java.lang.Override;
+import java.lang.String;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Used to indicate who created a log entry in what role.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Logged By&quot;,
+    description = &quot;Used to indicate who created a log entry in what role.&quot;,
+    name = &quot;logged-by&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class
+)
+public class LoggedBy {
+  @BoundFlag(
+      formalName = &quot;Party UUID Reference&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to the party who is making the log entry.&quot;,
+      useName = &quot;party-uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _partyUuid;
+
+  @BoundFlag(
+      formalName = &quot;Actor Role&quot;,
+      description = &quot;A point to the role-id of the role in which the party is making the log entry.&quot;,
+      useName = &quot;role-id&quot;,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _roleId;
+
+<span class="nc" id="L40">  public LoggedBy() {</span>
+<span class="nc" id="L41">  }</span>
+
+  public UUID getPartyUuid() {
+<span class="nc" id="L44">    return _partyUuid;</span>
+  }
+
+  public void setPartyUuid(UUID value) {
+<span class="nc" id="L48">    _partyUuid = value;</span>
+<span class="nc" id="L49">  }</span>
+
+  public String getRoleId() {
+<span class="nc" id="L52">    return _roleId;</span>
+  }
+
+  public void setRoleId(String value) {
+<span class="nc" id="L56">    _roleId = value;</span>
+<span class="nc" id="L57">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L61">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

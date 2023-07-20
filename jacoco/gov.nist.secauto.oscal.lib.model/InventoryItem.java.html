@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InventoryItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">InventoryItem.java</span></div><h1>InventoryItem.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.HasCardinality;
+import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A single managed inventory item within the system.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Inventory Item&quot;,
+    description = &quot;A single managed inventory item within the system.&quot;,
+    name = &quot;inventory-item&quot;,
+    metaschema = OscalImplementationCommonMetaschema.class
+)
+@ValueConstraints(
+    allowedValues = {
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;ipv4-address&quot;, description = &quot;The Internet Protocol v4 Address of the asset.&quot;), @AllowedValue(value = &quot;ipv6-address&quot;, description = &quot;The Internet Protocol v6 Address of the asset.&quot;), @AllowedValue(value = &quot;fqdn&quot;, description = &quot;The full-qualified domain name (FQDN) of the asset.&quot;), @AllowedValue(value = &quot;uri&quot;, description = &quot;A Uniform Resource Identifier (URI) for the asset.&quot;), @AllowedValue(value = &quot;serial-number&quot;, description = &quot;A serial number for the asset.&quot;), @AllowedValue(value = &quot;netbios-name&quot;, description = &quot;The NetBIOS name for the asset.&quot;), @AllowedValue(value = &quot;mac-address&quot;, description = &quot;The media access control (MAC) address for the asset.&quot;), @AllowedValue(value = &quot;physical-location&quot;, description = &quot;The physical location of the asset's hardware (e.g., Data Center ID, Cage#, Rack#, or other meaningful location identifiers).&quot;), @AllowedValue(value = &quot;is-scanned&quot;, description = &quot;is the asset subjected to network scans? (yes/no)&quot;), @AllowedValue(value = &quot;hardware-model&quot;, description = &quot;The model number of the hardware used by the asset.&quot;), @AllowedValue(value = &quot;os-name&quot;, description = &quot;The name of the operating system used by the asset.&quot;), @AllowedValue(value = &quot;os-version&quot;, description = &quot;The version of the operating system used by the asset.&quot;), @AllowedValue(value = &quot;software-name&quot;, description = &quot;The software product name used by the asset.&quot;), @AllowedValue(value = &quot;software-version&quot;, description = &quot;The software product version used by the asset.&quot;), @AllowedValue(value = &quot;software-patch-level&quot;, description = &quot;The software product patch level used by the asset.&quot;), @AllowedValue(value = &quot;asset-type&quot;, description = &quot;Simple indication of the asset's function, such as Router, Storage Array, DNS Server.&quot;), @AllowedValue(value = &quot;asset-id&quot;, description = &quot;An organizationally specific identifier that is used to uniquely identify a logical or tangible item by the organization that owns the item.&quot;), @AllowedValue(value = &quot;asset-tag&quot;, description = &quot;An asset tag assigned by the organization responsible for maintaining the logical or tangible item.&quot;), @AllowedValue(value = &quot;public&quot;, description = &quot;Identifies whether the asset is publicly accessible (yes/no)&quot;), @AllowedValue(value = &quot;virtual&quot;, description = &quot;Identifies whether the asset is virtualized (yes/no)&quot;), @AllowedValue(value = &quot;vlan-id&quot;, description = &quot;Virtual LAN identifier of the asset.&quot;), @AllowedValue(value = &quot;network-id&quot;, description = &quot;The network identifier of the asset.&quot;), @AllowedValue(value = &quot;label&quot;, description = &quot;A human-readable label for the parent context.&quot;), @AllowedValue(value = &quot;sort-id&quot;, description = &quot;An alternative identifier, whose value is easily sortable among other such values in the document.&quot;), @AllowedValue(value = &quot;baseline-configuration-name&quot;, description = &quot;The name of the baseline configuration for the asset.&quot;), @AllowedValue(value = &quot;allows-authenticated-scan&quot;, description = &quot;Can the asset be check with an authenticated scan? (yes/no)&quot;), @AllowedValue(value = &quot;function&quot;, description = &quot;The function provided by the asset for the system.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='asset-type']/@value&quot;, values = {@AllowedValue(value = &quot;operating-system&quot;, description = &quot;System software that manages computer hardware, software resources, and provides common services for computer programs.&quot;), @AllowedValue(value = &quot;database&quot;, description = &quot;An electronic collection of data, or information, that is specially organized for rapid search and retrieval.&quot;), @AllowedValue(value = &quot;web-server&quot;, description = &quot;A system that delivers content or services to end users over the Internet or an intranet.&quot;), @AllowedValue(value = &quot;dns-server&quot;, description = &quot;A system that resolves domain names to internet protocol (IP) addresses.&quot;), @AllowedValue(value = &quot;email-server&quot;, description = &quot;A computer system that sends and receives electronic mail messages.&quot;), @AllowedValue(value = &quot;directory-server&quot;, description = &quot;A system that stores, organizes and provides access to directory information in order to unify network resources.&quot;), @AllowedValue(value = &quot;pbx&quot;, description = &quot;A private branch exchange (PBX) provides a a private telephone switchboard.&quot;), @AllowedValue(value = &quot;firewall&quot;, description = &quot;A network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules.&quot;), @AllowedValue(value = &quot;router&quot;, description = &quot;A physical or virtual networking device that forwards data packets between computer networks.&quot;), @AllowedValue(value = &quot;switch&quot;, description = &quot;A physical or virtual networking device that connects devices within a computer network by using packet switching to receive and forward data to the destination device.&quot;), @AllowedValue(value = &quot;storage-array&quot;, description = &quot;A consolidated, block-level data storage capability.&quot;), @AllowedValue(value = &quot;appliance&quot;, description = &quot;A physical or virtual machine that centralizes hardware, software, or services for a specific purpose.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@type=('software', 'hardware', 'service')]/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;vendor-name&quot;, description = &quot;The name of the company or organization&quot;)),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='is-scanned']/@value&quot;, values = {@AllowedValue(value = &quot;yes&quot;, description = &quot;The asset is included in periodic vulnerability scanning.&quot;), @AllowedValue(value = &quot;no&quot;, description = &quot;The asset is not included in periodic vulnerability scanning.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;link/@rel&quot;, allowOthers = true, values = @AllowedValue(value = &quot;baseline-template&quot;, description = &quot;A reference to the baseline template used to configure the asset.&quot;)),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;responsible-party/@role-id&quot;, allowOthers = true, values = {@AllowedValue(value = &quot;asset-owner&quot;, description = &quot;Accountable for ensuring the asset is managed in accordance with organizational policies and procedures.&quot;), @AllowedValue(value = &quot;asset-administrator&quot;, description = &quot;Responsible for administering a set of assets.&quot;), @AllowedValue(value = &quot;security-operations&quot;, description = &quot;Members of the security operations center (SOC).&quot;), @AllowedValue(value = &quot;network-operations&quot;, description = &quot;Members of the network operations center (NOC).&quot;), @AllowedValue(value = &quot;incident-response&quot;, description = &quot;Responsible for responding to an event that could lead to loss of, or disruption to, an organization's operations, services or functions.&quot;), @AllowedValue(value = &quot;help-desk&quot;, description = &quot;Responsible for providing information and support to users.&quot;), @AllowedValue(value = &quot;configuration-management&quot;, description = &quot;Responsible for the configuration management processes governing changes to the asset.&quot;), @AllowedValue(value = &quot;maintainer&quot;, description = &quot;Responsible for the creation and maintenance of a component.&quot;), @AllowedValue(value = &quot;provider&quot;, description = &quot;Organization responsible for providing the component, if this is different from the \&quot;maintainer\&quot; (e.g., a reseller).&quot;)})
+    },
+    indexHasKey = {
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;responsible-party&quot;, indexName = &quot;index-metadata-role-id&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;)),
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;responsible-party&quot;, indexName = &quot;index-metadata-party-uuid&quot;, keyFields = @KeyField(target = &quot;party-uuid&quot;))
+    }
+)
+@AssemblyConstraints(
+    isUnique = @IsUnique(id = &quot;unique-inventory-item-responsible-party&quot;, level = IConstraint.Level.ERROR, target = &quot;responsible-party&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;), remarks = &quot;Since `responsible-party` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.&quot;)
+)
+public class InventoryItem {
+  @BoundFlag(
+      formalName = &quot;Inventory Item Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this inventory item elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `inventory item` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  /**
+   * &quot;A summary of the inventory item stating its purpose within the system.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Inventory Item Description&quot;,
+      description = &quot;A summary of the inventory item stating its purpose within the system.&quot;,
+      useName = &quot;description&quot;,
+      minOccurs = 1
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundAssembly(
+      formalName = &quot;Responsible Party&quot;,
+      description = &quot;A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.&quot;,
+      useName = &quot;responsible-party&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;responsible-parties&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ResponsibleParty&gt; _responsibleParties;
+
+  /**
+   * &quot;The set of components that are implemented in a given system inventory item.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Implemented Component&quot;,
+      description = &quot;The set of components that are implemented in a given system inventory item.&quot;,
+      useName = &quot;implemented-component&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;implemented-components&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ImplementedComponent&gt; _implementedComponents;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L142">  public InventoryItem() {</span>
+<span class="nc" id="L143">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L146">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L150">    _uuid = value;</span>
+<span class="nc" id="L151">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L154">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L158">    _description = value;</span>
+<span class="nc" id="L159">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L162">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L166">    _props = value;</span>
+<span class="nc" id="L167">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L175">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L177">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L179">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L188">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L193">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L197">    _links = value;</span>
+<span class="nc" id="L198">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L206">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L208">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L210">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L219">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public List&lt;ResponsibleParty&gt; getResponsibleParties() {
+<span class="nc" id="L224">    return _responsibleParties;</span>
+  }
+
+  public void setResponsibleParties(List&lt;ResponsibleParty&gt; value) {
+<span class="nc" id="L228">    _responsibleParties = value;</span>
+<span class="nc" id="L229">  }</span>
+
+  /**
+   * Add a new {@link ResponsibleParty} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addResponsibleParty(ResponsibleParty item) {
+<span class="nc" id="L237">    ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">    if (_responsibleParties == null) {</span>
+<span class="nc" id="L239">      _responsibleParties = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L241">    return _responsibleParties.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ResponsibleParty} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeResponsibleParty(ResponsibleParty item) {
+<span class="nc" id="L250">    ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">    return _responsibleParties == null ? false : _responsibleParties.remove(value);</span>
+  }
+
+  public List&lt;ImplementedComponent&gt; getImplementedComponents() {
+<span class="nc" id="L255">    return _implementedComponents;</span>
+  }
+
+  public void setImplementedComponents(List&lt;ImplementedComponent&gt; value) {
+<span class="nc" id="L259">    _implementedComponents = value;</span>
+<span class="nc" id="L260">  }</span>
+
+  /**
+   * Add a new {@link ImplementedComponent} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addImplementedComponent(ImplementedComponent item) {
+<span class="nc" id="L268">    ImplementedComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">    if (_implementedComponents == null) {</span>
+<span class="nc" id="L270">      _implementedComponents = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L272">    return _implementedComponents.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ImplementedComponent} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeImplementedComponent(ImplementedComponent item) {
+<span class="nc" id="L281">    ImplementedComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">    return _implementedComponents == null ? false : _implementedComponents.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L286">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L290">    _remarks = value;</span>
+<span class="nc" id="L291">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L295">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * The set of components that are implemented in a given system inventory item.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Implemented Component&quot;,
+      description = &quot;The set of components that are implemented in a given system inventory item.&quot;,
+      name = &quot;implemented-component&quot;,
+      metaschema = OscalImplementationCommonMetaschema.class
+  )
+  @ValueConstraints(
+      allowedValues = {
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;version&quot;, description = &quot;The version of the component.&quot;), @AllowedValue(value = &quot;patch-level&quot;, description = &quot;The specific patch level of the component.&quot;), @AllowedValue(value = &quot;model&quot;, description = &quot;The model of the component.&quot;), @AllowedValue(value = &quot;release-date&quot;, description = &quot;The date the component was released, such as a software release date or policy publication date.&quot;), @AllowedValue(value = &quot;validation-type&quot;, description = &quot;Used with component-type='validation' to provide a well-known name for a kind of validation.&quot;), @AllowedValue(value = &quot;validation-reference&quot;, description = &quot;Used with component-type='validation' to indicate the validating body's assigned identifier for their validation of this component.&quot;), @AllowedValue(value = &quot;asset-type&quot;, description = &quot;Simple indication of the asset's function, such as Router, Storage Array, DNS Server.&quot;), @AllowedValue(value = &quot;asset-id&quot;, description = &quot;An organizationally specific identifier that is used to uniquely identify a logical or tangible item by the organization that owns the item.&quot;), @AllowedValue(value = &quot;asset-tag&quot;, description = &quot;An asset tag assigned by the organization responsible for maintaining the logical or tangible item.&quot;), @AllowedValue(value = &quot;public&quot;, description = &quot;Identifies whether the asset is publicly accessible (yes/no)&quot;), @AllowedValue(value = &quot;virtual&quot;, description = &quot;Identifies whether the asset is virtualized (yes/no)&quot;), @AllowedValue(value = &quot;vlan-id&quot;, description = &quot;Virtual LAN identifier of the asset.&quot;), @AllowedValue(value = &quot;network-id&quot;, description = &quot;The network identifier of the asset.&quot;), @AllowedValue(value = &quot;label&quot;, description = &quot;A human-readable label for the parent context.&quot;), @AllowedValue(value = &quot;sort-id&quot;, description = &quot;An alternative identifier, whose value is easily sortable among other such values in the document.&quot;), @AllowedValue(value = &quot;baseline-configuration-name&quot;, description = &quot;The name of the baseline configuration for the asset.&quot;), @AllowedValue(value = &quot;allows-authenticated-scan&quot;, description = &quot;Can the asset be check with an authenticated scan? (yes/no)&quot;), @AllowedValue(value = &quot;function&quot;, description = &quot;The function provided by the asset for the system.&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;responsible-party/@role-id&quot;, allowOthers = true, values = {@AllowedValue(value = &quot;asset-owner&quot;, description = &quot;Accountable for ensuring the asset is managed in accordance with organizational policies and procedures.&quot;), @AllowedValue(value = &quot;asset-administrator&quot;, description = &quot;Responsible for administering a set of assets.&quot;), @AllowedValue(value = &quot;security-operations&quot;, description = &quot;Members of the security operations center (SOC).&quot;), @AllowedValue(value = &quot;network-operations&quot;, description = &quot;Members of the network operations center (NOC).&quot;), @AllowedValue(value = &quot;incident-response&quot;, description = &quot;Responsible for responding to an event that could lead to loss of, or disruption to, an organization's operations, services or functions.&quot;), @AllowedValue(value = &quot;help-desk&quot;, description = &quot;Responsible for providing information and support to users.&quot;), @AllowedValue(value = &quot;configuration-management&quot;, description = &quot;Responsible for the configuration management processes governing changes to the asset.&quot;)})
+      }
+  )
+  @AssemblyConstraints(
+      isUnique = @IsUnique(id = &quot;unique-implemented-component-responsible-party&quot;, level = IConstraint.Level.ERROR, target = &quot;responsible-party&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;), remarks = &quot;Since `responsible-party` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.&quot;),
+      hasCardinality = @HasCardinality(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='asset-id']&quot;, minOccurs = 1)
+  )
+  public static class ImplementedComponent {
+    @BoundFlag(
+        formalName = &quot;Component Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a `component` that is implemented as part of an inventory item.&quot;,
+        useName = &quot;component-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _componentUuid;
+
+    @BoundAssembly(
+        formalName = &quot;Property&quot;,
+        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+        useName = &quot;prop&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;props&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Property&gt; _props;
+
+    @BoundAssembly(
+        formalName = &quot;Link&quot;,
+        description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+        useName = &quot;link&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;links&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Link&gt; _links;
+
+    @BoundAssembly(
+        formalName = &quot;Responsible Party&quot;,
+        description = &quot;A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.&quot;,
+        useName = &quot;responsible-party&quot;,
+        maxOccurs = -1,
+        remarks = &quot;This construct is used to either: 1) associate a party or parties to a role defined on the component using the `responsible-role` construct, or 2) to define a party or parties that are responsible for a role defined within the context of the containing `inventory-item`.&quot;
+    )
+    @GroupAs(
+        name = &quot;responsible-parties&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;ResponsibleParty&gt; _responsibleParties;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L374">    public ImplementedComponent() {</span>
+<span class="nc" id="L375">    }</span>
+
+    public UUID getComponentUuid() {
+<span class="nc" id="L378">      return _componentUuid;</span>
+    }
+
+    public void setComponentUuid(UUID value) {
+<span class="nc" id="L382">      _componentUuid = value;</span>
+<span class="nc" id="L383">    }</span>
+
+    public List&lt;Property&gt; getProps() {
+<span class="nc" id="L386">      return _props;</span>
+    }
+
+    public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L390">      _props = value;</span>
+<span class="nc" id="L391">    }</span>
+
+    /**
+     * Add a new {@link Property} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addProp(Property item) {
+<span class="nc" id="L399">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L400" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L401">        _props = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L403">      return _props.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Property} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeProp(Property item) {
+<span class="nc" id="L412">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L413" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+    }
+
+    public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L417">      return _links;</span>
+    }
+
+    public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L421">      _links = value;</span>
+<span class="nc" id="L422">    }</span>
+
+    /**
+     * Add a new {@link Link} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addLink(Link item) {
+<span class="nc" id="L430">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L431" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L432">        _links = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L434">      return _links.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Link} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeLink(Link item) {
+<span class="nc" id="L443">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L444" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+    }
+
+    public List&lt;ResponsibleParty&gt; getResponsibleParties() {
+<span class="nc" id="L448">      return _responsibleParties;</span>
+    }
+
+    public void setResponsibleParties(List&lt;ResponsibleParty&gt; value) {
+<span class="nc" id="L452">      _responsibleParties = value;</span>
+<span class="nc" id="L453">    }</span>
+
+    /**
+     * Add a new {@link ResponsibleParty} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addResponsibleParty(ResponsibleParty item) {
+<span class="nc" id="L461">      ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L462" title="All 2 branches missed.">      if (_responsibleParties == null) {</span>
+<span class="nc" id="L463">        _responsibleParties = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L465">      return _responsibleParties.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link ResponsibleParty} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeResponsibleParty(ResponsibleParty item) {
+<span class="nc" id="L474">      ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L475" title="All 2 branches missed.">      return _responsibleParties == null ? false : _responsibleParties.remove(value);</span>
+    }
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L479">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L483">      _remarks = value;</span>
+<span class="nc" id="L484">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L488">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

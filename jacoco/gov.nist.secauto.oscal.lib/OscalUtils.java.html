@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OscalUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib</a> &gt; <span class="el_source">OscalUtils.java</span></div><h1>OscalUtils.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib;
+
+import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream;
+
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;
+
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+
+public final class OscalUtils {
+  public static final String OSCAL_VERSION = &quot;1.0.4&quot;;
+<span class="fc" id="L53">  private static final Pattern INTERNAL_REFERENCE_FRAGMENT_PATTERN = Pattern.compile(&quot;^#(.+)$&quot;);</span>
+
+  private OscalUtils() {
+    // disable construction
+  }
+
+  @SuppressWarnings(&quot;PMD.OnlyOneReturn&quot;) // readability
+  public static boolean isInternalReference(@NonNull URI uri) {
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">    if (uri.isAbsolute()) {</span>
+<span class="nc" id="L62">      return false;</span>
+    }
+
+<span class="fc" id="L65">    String schemeSpecificPart = uri.getSchemeSpecificPart();</span>
+<span class="pc bpc" id="L66" title="2 of 6 branches missed.">    return uri.getScheme() == null &amp;&amp; (schemeSpecificPart == null || schemeSpecificPart.isEmpty())</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        &amp;&amp; uri.getFragment() != null;</span>
+  }
+
+  /**
+   * Get the id based on a URI's fragment.
+   *
+   * @param fragment
+   *          the URI to extract the identifier from
+   * @return the identifier
+   * @throws IllegalArgumentException
+   *           if the fragment does not contain an identifier
+   */
+  @NonNull
+  public static String internalReferenceFragmentToId(@NonNull URI fragment) {
+<span class="fc" id="L81">    return internalReferenceFragmentToId(ObjectUtils.notNull(fragment.toString()));</span>
+  }
+
+  /**
+   * Get the id based on a URI's fragment.
+   *
+   * @param fragment
+   *          the URI to extract the identifier from
+   * @return the identifier
+   * @throws IllegalArgumentException
+   *           if the fragment does not contain an identifier
+   */
+  @NonNull
+  public static String internalReferenceFragmentToId(@NonNull String fragment) {
+<span class="fc" id="L95">    Matcher matcher = INTERNAL_REFERENCE_FRAGMENT_PATTERN.matcher(fragment);</span>
+    String retval;
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">    if (matcher.matches()) {</span>
+<span class="fc" id="L98">      retval = ObjectUtils.notNull(matcher.group(1));</span>
+    } else {
+<span class="nc" id="L100">      throw new IllegalArgumentException(String.format(&quot;The fragment '%s' does not match the pattern '%s'&quot;, fragment,</span>
+<span class="nc" id="L101">          INTERNAL_REFERENCE_FRAGMENT_PATTERN.pattern()));</span>
+    }
+<span class="fc" id="L103">    return retval;</span>
+  }
+
+  public static boolean hasBase64Data(@NonNull Resource resource) {
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">    return resource.getBase64() != null;</span>
+  }
+
+  @Nullable
+  public static ByteBuffer getBase64Data(@NonNull Resource resource) {
+<span class="nc" id="L112">    Base64 base64 = resource.getBase64();</span>
+
+<span class="nc" id="L114">    ByteBuffer retval = null;</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">    if (base64 != null) {</span>
+<span class="nc" id="L116">      retval = base64.getValue();</span>
+    }
+<span class="nc" id="L118">    return retval;</span>
+  }
+
+  @Nullable
+  public static URI getResourceURI(@NonNull Resource resource, @Nullable String preferredMediaType) {
+    URI retval;
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    if (hasBase64Data(resource)) {</span>
+<span class="nc" id="L125">      UUID uuid = resource.getUuid();</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">      if (uuid == null) {</span>
+<span class="nc" id="L127">        throw new IllegalArgumentException(&quot;resource has a null UUID&quot;);</span>
+      }
+<span class="nc" id="L129">      retval = ObjectUtils.notNull(URI.create(&quot;#&quot; + uuid));</span>
+<span class="nc" id="L130">    } else {</span>
+<span class="fc" id="L131">      Rlink rlink = findMatchingRLink(resource, preferredMediaType);</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">      retval = rlink == null ? null : rlink.getHref();</span>
+    }
+<span class="fc" id="L134">    return retval;</span>
+  }
+
+  @Nullable
+  public static Rlink findMatchingRLink(@NonNull Resource resource, @Nullable String preferredMediaType) {
+    // find a suitable rlink reference
+<span class="fc" id="L140">    List&lt;Rlink&gt; rlinks = resource.getRlinks();</span>
+
+<span class="fc" id="L142">    Rlink retval = null;</span>
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">    if (rlinks != null) {</span>
+      // check if there is a matching rlink for the mime type
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">      if (preferredMediaType != null) {</span>
+        // find preferred mime type first
+<span class="nc" id="L147">        retval = rlinks.stream().filter(rlink -&gt; preferredMediaType.equals(rlink.getMediaType())).findFirst()</span>
+<span class="nc" id="L148">            .orElse(null);</span>
+      } else {
+        // use the first one instead
+<span class="fc" id="L151">        retval = rlinks.stream().findFirst().orElse(null);</span>
+      }
+    }
+<span class="fc" id="L154">    return retval;</span>
+  }
+
+  @Nullable
+  public static InputSource newInputSource(@NonNull Resource resource, @NonNull EntityResolver resolver,
+      @Nullable String preferredMediaType) throws IOException {
+<span class="fc" id="L160">    URI uri = getResourceURI(resource, preferredMediaType);</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">    if (uri == null) {</span>
+<span class="nc" id="L162">      throw new IOException(String.format(&quot;unable to determine URI for resource '%s'&quot;, resource.getUuid()));</span>
+    }
+
+    InputSource retval;
+    try {
+<span class="fc" id="L167">      retval = resolver.resolveEntity(null, uri.toASCIIString());</span>
+<span class="nc" id="L168">    } catch (SAXException ex) {</span>
+<span class="nc" id="L169">      throw new IOException(ex);</span>
+<span class="fc" id="L170">    }</span>
+
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">    if (hasBase64Data(resource)) {</span>
+      // handle base64 encoded data
+<span class="nc" id="L174">      ByteBuffer buffer = getBase64Data(resource);</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">      if (buffer == null) {</span>
+<span class="nc" id="L176">        throw new IOException(String.format(&quot;null base64 value for resource '%s'&quot;, resource.getUuid()));</span>
+      }
+<span class="nc" id="L178">      retval.setByteStream(new ByteBufferBackedInputStream(buffer));</span>
+    }
+<span class="fc" id="L180">    return retval;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

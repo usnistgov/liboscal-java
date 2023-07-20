@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FlatteningStructuringVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.merge</a> &gt; <span class="el_source">FlatteningStructuringVisitor.java</span></div><h1>FlatteningStructuringVisitor.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.merge;
+
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.oscal.lib.model.Metadata.Location;
+import gov.nist.secauto.oscal.lib.model.Metadata.Party;
+import gov.nist.secauto.oscal.lib.model.Metadata.Role;
+import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.profile.resolver.policy.ReferenceCountingVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.DefaultResult;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.FilterNonSelectedVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.AbstractCatalogEntityVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer.SelectionStatus;
+
+import java.util.EnumSet;
+import java.util.UUID;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public class FlatteningStructuringVisitor
+    extends AbstractCatalogEntityVisitor&lt;IIndexer, Void&gt; {
+<span class="fc" id="L57">  private static final FlatteningStructuringVisitor SINGLETON = new FlatteningStructuringVisitor();</span>
+
+  public static FlatteningStructuringVisitor instance() {
+<span class="fc" id="L60">    return SINGLETON;</span>
+  }
+
+  public FlatteningStructuringVisitor() {
+<span class="fc" id="L64">    super(ObjectUtils.notNull(EnumSet.of(ItemType.GROUP, ItemType.CONTROL)));</span>
+<span class="fc" id="L65">  }</span>
+
+  @Override
+  protected Void newDefaultResult(IIndexer state) {
+    // do nothing
+<span class="fc" id="L70">    return null;</span>
+  }
+
+  @Override
+  protected Void aggregateResults(Void first, Void second, IIndexer state) {
+    // do nothing
+<span class="fc" id="L76">    return null;</span>
+  }
+
+  @Override
+  public Void visitCatalog(@NonNull IDocumentNodeItem catalogItem, IIndexer index) {
+<span class="fc" id="L81">    index.resetSelectionStatus();</span>
+
+<span class="fc" id="L83">    index.setSelectionStatus(catalogItem, SelectionStatus.SELECTED);</span>
+<span class="fc" id="L84">    super.visitCatalog(catalogItem, index);</span>
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    for (ItemType itemType : ItemType.values()) {</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">      assert itemType != null;</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">      for (IEntityItem item : index.getEntitiesByItemType(itemType)) {</span>
+<span class="fc" id="L89">        item.resetReferenceCount();</span>
+<span class="fc" id="L90">      }</span>
+    }
+
+    // process references, looking for orphaned links to groups
+<span class="fc" id="L94">    ReferenceCountingVisitor.instance().visitCatalog(catalogItem, index, catalogItem.getDocumentUri());</span>
+
+<span class="fc" id="L96">    FlatteningFilterNonSelectedVisitor.instance().visitCatalog(catalogItem, index);</span>
+<span class="fc" id="L97">    return null;</span>
+  }
+
+  @Override
+  public Void visitGroup(IRequiredValueModelNodeItem item, Void childResult, IIndexer index) {
+<span class="fc" id="L102">    CatalogGroup group = (CatalogGroup) item.getValue();</span>
+<span class="fc" id="L103">    String id = group.getId();</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (id != null) {</span>
+<span class="fc" id="L105">      IEntityItem entity = index.getEntity(ItemType.GROUP, id);</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">      assert entity != null;</span>
+      // refresh the instance
+<span class="fc" id="L108">      entity.setInstance(item);</span>
+    }
+
+<span class="fc" id="L111">    index.setSelectionStatus(item, SelectionStatus.UNSELECTED);</span>
+<span class="fc" id="L112">    handlePartSelection(item, index, SelectionStatus.UNSELECTED);</span>
+<span class="fc" id="L113">    return super.visitGroup(item, childResult, index);</span>
+  }
+
+  @Override
+  public Void visitControl(IRequiredValueModelNodeItem item, Void childResult, IIndexer index) {
+<span class="fc" id="L118">    Control control = (Control) item.getValue();</span>
+<span class="fc" id="L119">    String id = ObjectUtils.requireNonNull(control.getId());</span>
+<span class="fc" id="L120">    IEntityItem entity = index.getEntity(ItemType.CONTROL, id);</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">    assert entity != null;</span>
+    // refresh the instance
+<span class="fc" id="L123">    entity.setInstance(item);</span>
+
+<span class="fc" id="L125">    index.setSelectionStatus(item, SelectionStatus.SELECTED);</span>
+<span class="fc" id="L126">    handlePartSelection(item, index, SelectionStatus.SELECTED);</span>
+<span class="fc" id="L127">    return null;</span>
+  }
+
+  @Override
+  protected Void visitParameter(IRequiredValueModelNodeItem item,
+      IRequiredValueModelNodeItem catalogOrGroupOrControl, IIndexer index) {
+<span class="nc" id="L133">    Parameter parameter = (Parameter) item.getValue();</span>
+<span class="nc" id="L134">    String id = ObjectUtils.requireNonNull(parameter.getId());</span>
+<span class="nc" id="L135">    IEntityItem entity = index.getEntity(ItemType.PARAMETER, id);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">    assert entity != null;</span>
+    // refresh the instance
+<span class="nc" id="L138">    entity.setInstance(item);</span>
+
+<span class="nc" id="L140">    return null;</span>
+  }
+
+  @Override
+  protected void visitRole(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
+      IIndexer index) {
+<span class="nc" id="L146">    Role role = (Role) item.getValue();</span>
+<span class="nc" id="L147">    String id = ObjectUtils.requireNonNull(role.getId());</span>
+<span class="nc" id="L148">    IEntityItem entity = index.getEntity(ItemType.ROLE, id);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">    assert entity != null;</span>
+    // refresh the instance
+<span class="nc" id="L151">    entity.setInstance(item);</span>
+<span class="nc" id="L152">  }</span>
+
+  @Override
+  protected void visitLocation(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
+      IIndexer index) {
+<span class="nc" id="L157">    Location location = (Location) item.getValue();</span>
+<span class="nc" id="L158">    UUID uuid = ObjectUtils.requireNonNull(location.getUuid());</span>
+<span class="nc" id="L159">    IEntityItem entity = index.getEntity(ItemType.LOCATION, uuid);</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">    assert entity != null;</span>
+    // refresh the instance
+<span class="nc" id="L162">    entity.setInstance(item);</span>
+<span class="nc" id="L163">  }</span>
+
+  @Override
+  protected void visitParty(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
+      IIndexer index) {
+<span class="nc" id="L168">    Party location = (Party) item.getValue();</span>
+<span class="nc" id="L169">    UUID uuid = ObjectUtils.requireNonNull(location.getUuid());</span>
+<span class="nc" id="L170">    IEntityItem entity = index.getEntity(ItemType.PARTY, uuid);</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">    assert entity != null;</span>
+    // refresh the instance
+<span class="nc" id="L173">    entity.setInstance(item);</span>
+<span class="nc" id="L174">  }</span>
+
+  @Override
+  protected void visitResource(IRequiredValueModelNodeItem item, IRootAssemblyNodeItem rootItem,
+      IIndexer index) {
+<span class="nc" id="L179">    Resource location = (Resource) item.getValue();</span>
+<span class="nc" id="L180">    UUID uuid = ObjectUtils.requireNonNull(location.getUuid());</span>
+<span class="nc" id="L181">    IEntityItem entity = index.getEntity(ItemType.RESOURCE, uuid);</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">    assert entity != null;</span>
+    // refresh the instance
+<span class="nc" id="L184">    entity.setInstance(item);</span>
+<span class="nc" id="L185">  }</span>
+
+  private static void handlePartSelection(
+      @NonNull IRequiredValueModelNodeItem groupOrControlItem,
+      @NonNull IIndexer index,
+      @NonNull SelectionStatus selectionStatus) {
+<span class="fc" id="L191">    CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()</span>
+<span class="fc" id="L192">        .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
+<span class="fc" id="L193">        .forEachOrdered(partItem -&gt; {</span>
+<span class="fc" id="L194">          index.setSelectionStatus(ObjectUtils.requireNonNull(partItem), selectionStatus);</span>
+
+<span class="fc" id="L196">          ControlPart part = (ControlPart) partItem.getValue();</span>
+<span class="fc" id="L197">          String id = part.getId();</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">          if (id != null) {</span>
+<span class="fc" id="L199">            IEntityItem entity = index.getEntity(ItemType.PART, id);</span>
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">            assert entity != null;</span>
+            // refresh the instance
+<span class="fc" id="L202">            entity.setInstance(partItem);</span>
+          }
+<span class="fc" id="L204">        });</span>
+<span class="fc" id="L205">  }</span>
+
+  private static final class FlatteningFilterNonSelectedVisitor
+      extends FilterNonSelectedVisitor {
+<span class="fc" id="L209">    private static final FlatteningFilterNonSelectedVisitor SINGLETON = new FlatteningFilterNonSelectedVisitor();</span>
+
+    public static FlatteningFilterNonSelectedVisitor instance() {
+<span class="fc" id="L212">      return SINGLETON;</span>
+    }
+
+    @Override
+    public DefaultResult visitControl(IRequiredValueModelNodeItem item, DefaultResult childResult,
+        Context context) {
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">      assert childResult != null;</span>
+
+<span class="fc" id="L220">      Control control = (Control) item.getValue();</span>
+<span class="fc" id="L221">      IIndexer index = context.getIndexer();</span>
+      // this control should always be found in the index
+<span class="fc" id="L223">      IEntityItem entity = ObjectUtils.requireNonNull(</span>
+<span class="fc" id="L224">          index.getEntity(ItemType.CONTROL, ObjectUtils.requireNonNull(control.getId()), false));</span>
+
+<span class="fc" id="L226">      IRequiredValueModelNodeItem parent = ObjectUtils.notNull(item.getParentContentNodeItem());</span>
+<span class="fc" id="L227">      DefaultResult retval = new DefaultResult();</span>
+<span class="pc bpc" id="L228" title="1 of 2 branches missed.">      if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {</span>
+        // keep this control
+
+        // always promote the control and any children
+<span class="fc" id="L232">        retval.promoteControl(control);</span>
+
+<span class="fc" id="L234">        retval.appendPromoted(childResult);</span>
+<span class="fc" id="L235">        childResult.applyRemovesTo(control);</span>
+
+<span class="pc bpc" id="L237" title="1 of 4 branches missed.">        if (parent.getValue() instanceof Control &amp;&amp; SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {</span>
+<span class="fc" id="L238">          retval.removeControl(control);</span>
+        }
+      } else {
+        // remove this control and promote any needed children
+
+<span class="nc bnc" id="L243" title="All 2 branches missed.">        if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {</span>
+<span class="nc" id="L244">          retval.removeControl(control);</span>
+        }
+<span class="nc" id="L246">        retval.appendPromoted(ObjectUtils.notNull(childResult));</span>
+<span class="nc" id="L247">        index.removeItem(entity);</span>
+
+        // remove any associated parts from the index
+<span class="nc" id="L250">        removePartsFromIndex(item, index);</span>
+      }
+<span class="fc" id="L252">      return retval;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

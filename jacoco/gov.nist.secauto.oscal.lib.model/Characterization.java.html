@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Characterization.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Characterization.java</span></div><h1>Characterization.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A collection of descriptive data about the containing object from a specific origin.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Characterization&quot;,
+    description = &quot;A collection of descriptive data about the containing object from a specific origin.&quot;,
+    name = &quot;characterization&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class
+)
+public class Characterization {
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundAssembly(
+      formalName = &quot;Origin&quot;,
+      description = &quot;Identifies the source of the finding, such as a tool, interviewed person, or activity.&quot;,
+      useName = &quot;origin&quot;,
+      minOccurs = 1,
+      remarks = &quot;metadata about the specific actor that generated this descriptive data.&quot;
+  )
+  private Origin _origin;
+
+  /**
+   * &quot;An individual characteristic that is part of a larger set produced by the same actor.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Facet&quot;,
+      description = &quot;An individual characteristic that is part of a larger set produced by the same actor.&quot;,
+      useName = &quot;facet&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;facets&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Facet&gt; _facets;
+
+<span class="nc" id="L87">  public Characterization() {</span>
+<span class="nc" id="L88">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L91">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L95">    _props = value;</span>
+<span class="nc" id="L96">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L104">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L106">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L108">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L117">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L122">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L126">    _links = value;</span>
+<span class="nc" id="L127">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L135">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L137">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L139">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L148">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public Origin getOrigin() {
+<span class="nc" id="L153">    return _origin;</span>
+  }
+
+  public void setOrigin(Origin value) {
+<span class="nc" id="L157">    _origin = value;</span>
+<span class="nc" id="L158">  }</span>
+
+  public List&lt;Facet&gt; getFacets() {
+<span class="nc" id="L161">    return _facets;</span>
+  }
+
+  public void setFacets(List&lt;Facet&gt; value) {
+<span class="nc" id="L165">    _facets = value;</span>
+<span class="nc" id="L166">  }</span>
+
+  /**
+   * Add a new {@link Facet} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addFacet(Facet item) {
+<span class="nc" id="L174">    Facet value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">    if (_facets == null) {</span>
+<span class="nc" id="L176">      _facets = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L178">    return _facets.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Facet} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeFacet(Facet item) {
+<span class="nc" id="L187">    Facet value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    return _facets == null ? false : _facets.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L193">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * An individual characteristic that is part of a larger set produced by the same actor.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Facet&quot;,
+      description = &quot;An individual characteristic that is part of a larger set produced by the same actor.&quot;,
+      name = &quot;facet&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  @ValueConstraints(
+      allowedValues = {
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;state&quot;, description = &quot;Indicates if the facet is 'initial' as first identified, or 'adjusted' indicating that the value has be changed after some adjustments have been made (e.g., to identify residual risk).&quot;)),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='state']/@value&quot;, values = {@AllowedValue(value = &quot;initial&quot;, description = &quot;As first identified.&quot;), @AllowedValue(value = &quot;adjusted&quot;, description = &quot;Indicates that residual risk remains after some adjustments have been made.&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://csrc.nist.gov/ns/oscal']/@name&quot;, values = {@AllowedValue(value = &quot;likelihood&quot;, description = &quot;General likelihood rating.&quot;), @AllowedValue(value = &quot;impact&quot;, description = &quot;General impact rating.&quot;), @AllowedValue(value = &quot;risk&quot;, description = &quot;General risk rating.&quot;), @AllowedValue(value = &quot;severity&quot;, description = &quot;General severity rating.&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://fedramp.gov','http://fedramp.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;likelihood&quot;, description = &quot;Likelihood as defined by FedRAMP. The `class` can be used to specify 'initial' and 'adjusted' risk states.&quot;), @AllowedValue(value = &quot;impact&quot;, description = &quot;Impact as defined by FedRAMP. The `class` can be used to specify 'initial' and 'adjusted' risk states.&quot;), @AllowedValue(value = &quot;risk&quot;, description = &quot;Risk as calculated according to FedRAMP. The `class` can be used to specify 'initial' and 'adjusted' risk states.&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://cve.mitre.org']/@name&quot;, values = @AllowedValue(value = &quot;cve-id&quot;, description = &quot;An identifier managed by the CVE program (see https://cve.mitre.org/).&quot;)),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0']/@name&quot;, values = {@AllowedValue(value = &quot;access-vector&quot;, description = &quot;Base: Access Vector&quot;), @AllowedValue(value = &quot;access-complexity&quot;, description = &quot;Base: Access Complexity&quot;), @AllowedValue(value = &quot;authentication&quot;, description = &quot;Base: Authentication&quot;), @AllowedValue(value = &quot;confidentiality-impact&quot;, description = &quot;Base: Confidentiality Impact&quot;), @AllowedValue(value = &quot;integrity-impact&quot;, description = &quot;Base: Integrity Impact&quot;), @AllowedValue(value = &quot;availability-impact&quot;, description = &quot;Base: Availability Impact&quot;), @AllowedValue(value = &quot;exploitability&quot;, description = &quot;Temporal: Exploitability&quot;), @AllowedValue(value = &quot;remediation-level&quot;, description = &quot;Temporal: Remediation Level&quot;), @AllowedValue(value = &quot;report-confidence&quot;, description = &quot;Temporal: Report Confidence&quot;), @AllowedValue(value = &quot;collateral-damage-potential&quot;, description = &quot;Environmental: Collateral Damage Potential&quot;), @AllowedValue(value = &quot;target-distribution&quot;, description = &quot;Environmental: Target Distribution&quot;), @AllowedValue(value = &quot;confidentiality-requirement&quot;, description = &quot;Environmental: Confidentiality Requirement&quot;), @AllowedValue(value = &quot;integrity-requirement&quot;, description = &quot;Environmental: Integrity Requirement&quot;), @AllowedValue(value = &quot;availability-requirement&quot;, description = &quot;Environmental: Availability Requirement&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name='access-vector']/@value&quot;, values = {@AllowedValue(value = &quot;local&quot;, description = &quot;Local&quot;), @AllowedValue(value = &quot;adjacent-network&quot;, description = &quot;Network Adjacent&quot;), @AllowedValue(value = &quot;network&quot;, description = &quot;Network&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name='access-complexity']/@value&quot;, values = {@AllowedValue(value = &quot;high&quot;, description = &quot;High&quot;), @AllowedValue(value = &quot;medium&quot;, description = &quot;Medium&quot;), @AllowedValue(value = &quot;low&quot;, description = &quot;Low&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name='authentication']/@value&quot;, values = {@AllowedValue(value = &quot;multiple&quot;, description = &quot;Multiple&quot;), @AllowedValue(value = &quot;single&quot;, description = &quot;Single&quot;), @AllowedValue(value = &quot;none&quot;, description = &quot;None&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name=('confidentiality-impact', 'integrity-impact', 'availability-impact')]/@value&quot;, values = {@AllowedValue(value = &quot;none&quot;, description = &quot;None&quot;), @AllowedValue(value = &quot;partial&quot;, description = &quot;Partial&quot;), @AllowedValue(value = &quot;complete&quot;, description = &quot;Complete&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name='exploitability']/@value&quot;, values = {@AllowedValue(value = &quot;unproven&quot;, description = &quot;Unproven&quot;), @AllowedValue(value = &quot;proof-of-concept&quot;, description = &quot;Proof-of-Concept&quot;), @AllowedValue(value = &quot;functional&quot;, description = &quot;Functional&quot;), @AllowedValue(value = &quot;high&quot;, description = &quot;High&quot;), @AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name='remediation-level']/@value&quot;, values = {@AllowedValue(value = &quot;official-fix&quot;, description = &quot;Official Fix&quot;), @AllowedValue(value = &quot;temporary-fix&quot;, description = &quot;Temporary Fix&quot;), @AllowedValue(value = &quot;workaround&quot;, description = &quot;Workaround&quot;), @AllowedValue(value = &quot;unavailable&quot;, description = &quot;Unavailable&quot;), @AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name='report-confidence']/@value&quot;, values = {@AllowedValue(value = &quot;unconfirmed&quot;, description = &quot;Unconfirmed&quot;), @AllowedValue(value = &quot;uncorroborated&quot;, description = &quot;Uncorroborated&quot;), @AllowedValue(value = &quot;confirmed&quot;, description = &quot;Confirmed&quot;), @AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name='collateral-damage-potential']/@value&quot;, values = {@AllowedValue(value = &quot;none&quot;, description = &quot;None&quot;), @AllowedValue(value = &quot;low&quot;, description = &quot;Low (light loss)&quot;), @AllowedValue(value = &quot;low-medium&quot;, description = &quot;Low Medium&quot;), @AllowedValue(value = &quot;medium-high&quot;, description = &quot;Medium High&quot;), @AllowedValue(value = &quot;high&quot;, description = &quot;High (catastrophic loss)&quot;), @AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system='http://www.first.org/cvss/v2.0' and @name=('target-distribution', 'confidentiality-requirement', 'integrity-requirement', 'availability-requirement')]/@value&quot;, values = {@AllowedValue(value = &quot;none&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;low&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;medium&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;high&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;not-defined&quot;, description = &quot;&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1')]/@name&quot;, values = {@AllowedValue(value = &quot;attack-vector&quot;, description = &quot;Base: Attack Vector&quot;), @AllowedValue(value = &quot;access-complexity&quot;, description = &quot;Base: Attack Complexity&quot;), @AllowedValue(value = &quot;privileges-required&quot;, description = &quot;Base: Privileges Required&quot;), @AllowedValue(value = &quot;user-interaction&quot;, description = &quot;Base: User Interaction&quot;), @AllowedValue(value = &quot;scope&quot;, description = &quot;Base: Scope&quot;), @AllowedValue(value = &quot;confidentiality-impact&quot;, description = &quot;Base: Confidentiality Impact&quot;), @AllowedValue(value = &quot;integrity-impact&quot;, description = &quot;Base: Integrity Impact&quot;), @AllowedValue(value = &quot;availability-impact&quot;, description = &quot;Base: Availability Impact&quot;), @AllowedValue(value = &quot;exploit-code-maturity&quot;, description = &quot;Temporal: Exploit Code Maturity&quot;), @AllowedValue(value = &quot;remediation-level&quot;, description = &quot;Temporal: Remediation Level&quot;), @AllowedValue(value = &quot;report-confidence&quot;, description = &quot;Temporal: Report Confidence&quot;), @AllowedValue(value = &quot;modified-attack-vector&quot;, description = &quot;Environmental: Modified Attack Vector&quot;), @AllowedValue(value = &quot;modified-attack-complexity&quot;, description = &quot;Environmental: Modified Attack Complexity&quot;), @AllowedValue(value = &quot;modified-privileges-required&quot;, description = &quot;Environmental: Modified Privileges Required&quot;), @AllowedValue(value = &quot;modified-user-interaction&quot;, description = &quot;Environmental: Modified User Interaction&quot;), @AllowedValue(value = &quot;modified-scope&quot;, description = &quot;Environmental: Modified Scope&quot;), @AllowedValue(value = &quot;modified-confidentiality&quot;, description = &quot;Environmental: Modified Confidentiality&quot;), @AllowedValue(value = &quot;modified-integrity&quot;, description = &quot;Environmental: Modified Integrity&quot;), @AllowedValue(value = &quot;modified-availability&quot;, description = &quot;Environmental: Modified Availability&quot;), @AllowedValue(value = &quot;confidentiality-requirement&quot;, description = &quot;Environmental: Confidentiality Requirement Modifier&quot;), @AllowedValue(value = &quot;integrity-requirement&quot;, description = &quot;Environmental: Integrity Requirement Modifier&quot;), @AllowedValue(value = &quot;availability-requirement&quot;, description = &quot;Environmental: Availability Requirement Modifier&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='access-vector']/@value&quot;, values = {@AllowedValue(value = &quot;network&quot;, description = &quot;Network&quot;), @AllowedValue(value = &quot;adjacent&quot;, description = &quot;Adjacent&quot;), @AllowedValue(value = &quot;local&quot;, description = &quot;Local&quot;), @AllowedValue(value = &quot;physical&quot;, description = &quot;Physical&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='access-complexity']/@value&quot;, values = {@AllowedValue(value = &quot;high&quot;, description = &quot;High&quot;), @AllowedValue(value = &quot;low&quot;, description = &quot;Low&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name=('privileges-required', 'confidentiality-impact', 'integrity-impact', 'availability-impact')]/@value&quot;, values = {@AllowedValue(value = &quot;none&quot;, description = &quot;None&quot;), @AllowedValue(value = &quot;low&quot;, description = &quot;Low&quot;), @AllowedValue(value = &quot;high&quot;, description = &quot;High&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='user-interaction']/@value&quot;, values = {@AllowedValue(value = &quot;none&quot;, description = &quot;None&quot;), @AllowedValue(value = &quot;required&quot;, description = &quot;Required&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='scope']/@value&quot;, values = {@AllowedValue(value = &quot;unchanged&quot;, description = &quot;Unchanged&quot;), @AllowedValue(value = &quot;changed&quot;, description = &quot;Changed&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='exploit-code-maturity']/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;unproven&quot;, description = &quot;Unproven&quot;), @AllowedValue(value = &quot;proof-of-concept&quot;, description = &quot;Proof-of-Concept&quot;), @AllowedValue(value = &quot;functional&quot;, description = &quot;Functional&quot;), @AllowedValue(value = &quot;high&quot;, description = &quot;High&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='remediation-level']/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;official-fix&quot;, description = &quot;Official Fix&quot;), @AllowedValue(value = &quot;temporary-fix&quot;, description = &quot;Temporary Fix&quot;), @AllowedValue(value = &quot;workaround&quot;, description = &quot;Workaround&quot;), @AllowedValue(value = &quot;unavailable&quot;, description = &quot;Unavailable&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='report-confidence']/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;unknown&quot;, description = &quot;Unknown&quot;), @AllowedValue(value = &quot;reasonable&quot;, description = &quot;Reasonable&quot;), @AllowedValue(value = &quot;confirmed&quot;, description = &quot;Confirmed&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name=('confidentiality-requirement', 'integrity-requirement', 'availability-requirement')]/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;low&quot;, description = &quot;Low&quot;), @AllowedValue(value = &quot;medium&quot;, description = &quot;Medium&quot;), @AllowedValue(value = &quot;high&quot;, description = &quot;High&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='modified-attack-vector']/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;network&quot;, description = &quot;Network&quot;), @AllowedValue(value = &quot;adjacent&quot;, description = &quot;Adjacent&quot;), @AllowedValue(value = &quot;local&quot;, description = &quot;Local&quot;), @AllowedValue(value = &quot;physical&quot;, description = &quot;Physical&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='modified-attack-complexity']/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;high&quot;, description = &quot;High&quot;), @AllowedValue(value = &quot;low&quot;, description = &quot;Low&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name=('modified-privileges-required', 'modified-confidentiality', 'modified-integrity', 'modified-availability')]/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;none&quot;, description = &quot;None&quot;), @AllowedValue(value = &quot;low&quot;, description = &quot;Low&quot;), @AllowedValue(value = &quot;high&quot;, description = &quot;High&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='modified-user-interaction']/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;none&quot;, description = &quot;None&quot;), @AllowedValue(value = &quot;required&quot;, description = &quot;Required&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='modified-scope']/@value&quot;, values = {@AllowedValue(value = &quot;not-defined&quot;, description = &quot;Not Defined&quot;), @AllowedValue(value = &quot;unchanged&quot;, description = &quot;Unchanged&quot;), @AllowedValue(value = &quot;changed&quot;, description = &quot;Changed&quot;)})
+      }
+  )
+  public static class Facet {
+    @BoundFlag(
+        formalName = &quot;Facet Name&quot;,
+        description = &quot;The name of the risk metric within the specified system.&quot;,
+        useName = &quot;name&quot;,
+        required = true,
+        typeAdapter = TokenAdapter.class
+    )
+    private String _name;
+
+    @BoundFlag(
+        formalName = &quot;Naming System&quot;,
+        description = &quot;Specifies the naming system under which this risk metric is organized, which allows for the same names to be used in different systems controlled by different parties. This avoids the potential of a name clash.&quot;,
+        useName = &quot;system&quot;,
+        required = true,
+        typeAdapter = UriAdapter.class,
+        remarks = &quot;This value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier).&quot;
+    )
+    @ValueConstraints(
+        allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;http://fedramp.gov&quot;, description = &quot;\\*\\*deprecated\\*\\* The FedRAMP naming system. This has been deprecated; use `http://fedramp.gov/ns/oscal` instead.&quot;), @AllowedValue(value = &quot;http://fedramp.gov/ns/oscal&quot;, description = &quot;The FedRAMP naming system.&quot;), @AllowedValue(value = &quot;http://csrc.nist.gov/ns/oscal&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;http://csrc.nist.gov/ns/oscal/unknown&quot;, description = &quot;The facet is from an unknown taxonomy. The meaning of the name is tool or organization specific.&quot;), @AllowedValue(value = &quot;http://cve.mitre.org&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;http://www.first.org/cvss/v2.0&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;http://www.first.org/cvss/v3.0&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;http://www.first.org/cvss/v3.1&quot;, description = &quot;&quot;)})
+    )
+    private URI _system;
+
+    @BoundFlag(
+        formalName = &quot;Facet Value&quot;,
+        description = &quot;Indicates the value of the facet.&quot;,
+        useName = &quot;value&quot;,
+        required = true,
+        typeAdapter = StringAdapter.class
+    )
+    private String _value;
+
+    @BoundAssembly(
+        formalName = &quot;Property&quot;,
+        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+        useName = &quot;prop&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;props&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Property&gt; _props;
+
+    @BoundAssembly(
+        formalName = &quot;Link&quot;,
+        description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+        useName = &quot;link&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;links&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Link&gt; _links;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L305">    public Facet() {</span>
+<span class="nc" id="L306">    }</span>
+
+    public String getName() {
+<span class="nc" id="L309">      return _name;</span>
+    }
+
+    public void setName(String value) {
+<span class="nc" id="L313">      _name = value;</span>
+<span class="nc" id="L314">    }</span>
+
+    public URI getSystem() {
+<span class="nc" id="L317">      return _system;</span>
+    }
+
+    public void setSystem(URI value) {
+<span class="nc" id="L321">      _system = value;</span>
+<span class="nc" id="L322">    }</span>
+
+    public String getValue() {
+<span class="nc" id="L325">      return _value;</span>
+    }
+
+    public void setValue(String value) {
+<span class="nc" id="L329">      _value = value;</span>
+<span class="nc" id="L330">    }</span>
+
+    public List&lt;Property&gt; getProps() {
+<span class="nc" id="L333">      return _props;</span>
+    }
+
+    public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L337">      _props = value;</span>
+<span class="nc" id="L338">    }</span>
+
+    /**
+     * Add a new {@link Property} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addProp(Property item) {
+<span class="nc" id="L346">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L347" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L348">        _props = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L350">      return _props.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Property} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeProp(Property item) {
+<span class="nc" id="L359">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+    }
+
+    public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L364">      return _links;</span>
+    }
+
+    public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L368">      _links = value;</span>
+<span class="nc" id="L369">    }</span>
+
+    /**
+     * Add a new {@link Link} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addLink(Link item) {
+<span class="nc" id="L377">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L378" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L379">        _links = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L381">      return _links.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Link} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeLink(Link item) {
+<span class="nc" id="L390">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L391" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+    }
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L395">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L399">      _remarks = value;</span>
+<span class="nc" id="L400">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L404">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

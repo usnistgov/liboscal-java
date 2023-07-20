@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FindingTarget.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">FindingTarget.java</span></div><h1>FindingTarget.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Captures an assessor's conclusions regarding the degree to which an objective is satisfied.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Objective Status&quot;,
+    description = &quot;Captures an assessor's conclusions regarding the degree to which an objective is satisfied.&quot;,
+    name = &quot;finding-target&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class
+)
+public class FindingTarget {
+  @BoundFlag(
+      formalName = &quot;Finding Target Type&quot;,
+      description = &quot;Identifies the type of the target.&quot;,
+      useName = &quot;type&quot;,
+      required = true,
+      typeAdapter = StringAdapter.class,
+      remarks = &quot;The target will always be a reference to: 1) a control statement, or 2) a control objective. In the former case, there is always a single top-level statement within a control. Thus, if the entire control is targeted, this statement identifier can be used.&quot;
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;statement-id&quot;, description = &quot;A reference to a control statement identifier within a control.&quot;), @AllowedValue(value = &quot;objective-id&quot;, description = &quot;A reference to a control objective identifier within a control.&quot;)})
+  )
+  private String _type;
+
+  @BoundFlag(
+      formalName = &quot;Finding Target Identifier Reference&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference for a specific target qualified by the `type`.&quot;,
+      useName = &quot;target-id&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _targetId;
+
+  /**
+   * &quot;The title for this objective status.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Objective Status Title&quot;,
+      description = &quot;The title for this objective status.&quot;,
+      useName = &quot;title&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _title;
+
+  /**
+   * &quot;A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Objective Status Description&quot;,
+      description = &quot;A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.&quot;,
+      useName = &quot;description&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  /**
+   * &quot;A determination of if the objective is satisfied or not within a given system.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Objective Status&quot;,
+      description = &quot;A determination of if the objective is satisfied or not within a given system.&quot;,
+      useName = &quot;status&quot;,
+      minOccurs = 1
+  )
+  private Status _status;
+
+  @BoundAssembly(
+      formalName = &quot;Implementation Status&quot;,
+      description = &quot;Indicates the degree to which the a given control is implemented.&quot;,
+      useName = &quot;implementation-status&quot;,
+      remarks = &quot;The `implementation-status` is used to qualify the `status` value to indicate the degree to which the control was found to be implemented.&quot;
+  )
+  private ImplementationStatus _implementationStatus;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L139">  public FindingTarget() {</span>
+<span class="nc" id="L140">  }</span>
+
+  public String getType() {
+<span class="nc" id="L143">    return _type;</span>
+  }
+
+  public void setType(String value) {
+<span class="nc" id="L147">    _type = value;</span>
+<span class="nc" id="L148">  }</span>
+
+  public String getTargetId() {
+<span class="nc" id="L151">    return _targetId;</span>
+  }
+
+  public void setTargetId(String value) {
+<span class="nc" id="L155">    _targetId = value;</span>
+<span class="nc" id="L156">  }</span>
+
+  public MarkupLine getTitle() {
+<span class="nc" id="L159">    return _title;</span>
+  }
+
+  public void setTitle(MarkupLine value) {
+<span class="nc" id="L163">    _title = value;</span>
+<span class="nc" id="L164">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L167">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L171">    _description = value;</span>
+<span class="nc" id="L172">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L175">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L179">    _props = value;</span>
+<span class="nc" id="L180">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L188">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L190">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L192">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L201">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L206">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L210">    _links = value;</span>
+<span class="nc" id="L211">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L219">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L221">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L223">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L232">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public Status getStatus() {
+<span class="nc" id="L237">    return _status;</span>
+  }
+
+  public void setStatus(Status value) {
+<span class="nc" id="L241">    _status = value;</span>
+<span class="nc" id="L242">  }</span>
+
+  public ImplementationStatus getImplementationStatus() {
+<span class="nc" id="L245">    return _implementationStatus;</span>
+  }
+
+  public void setImplementationStatus(ImplementationStatus value) {
+<span class="nc" id="L249">    _implementationStatus = value;</span>
+<span class="nc" id="L250">  }</span>
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L253">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L257">    _remarks = value;</span>
+<span class="nc" id="L258">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L262">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * A determination of if the objective is satisfied or not within a given system.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Objective Status&quot;,
+      description = &quot;A determination of if the objective is satisfied or not within a given system.&quot;,
+      name = &quot;status&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class Status {
+    @BoundFlag(
+        formalName = &quot;Objective Status State&quot;,
+        description = &quot;An indication as to whether the objective is satisfied or not.&quot;,
+        useName = &quot;state&quot;,
+        required = true,
+        typeAdapter = TokenAdapter.class
+    )
+    @ValueConstraints(
+        allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;satisfied&quot;, description = &quot;The objective has been completely satisfied.&quot;), @AllowedValue(value = &quot;not-satisfied&quot;, description = &quot;The objective has not been completely satisfied, but may be partially satisfied.&quot;)})
+    )
+    private String _state;
+
+    @BoundFlag(
+        formalName = &quot;Objective Status Reason&quot;,
+        description = &quot;The reason the objective was given it's status.&quot;,
+        useName = &quot;reason&quot;,
+        typeAdapter = TokenAdapter.class,
+        remarks = &quot;Reason may contain any value, and should be used to communicate additional information regarding the status.&quot;
+    )
+    @ValueConstraints(
+        allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;pass&quot;, description = &quot;The target system or system component satisfied all the conditions.&quot;), @AllowedValue(value = &quot;fail&quot;, description = &quot;The target system or system component did not satisfy all the conditions.&quot;), @AllowedValue(value = &quot;other&quot;, description = &quot;Some other event took place that is not a pass or a fail.&quot;)})
+    )
+    private String _reason;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L309">    public Status() {</span>
+<span class="nc" id="L310">    }</span>
+
+    public String getState() {
+<span class="nc" id="L313">      return _state;</span>
+    }
+
+    public void setState(String value) {
+<span class="nc" id="L317">      _state = value;</span>
+<span class="nc" id="L318">    }</span>
+
+    public String getReason() {
+<span class="nc" id="L321">      return _reason;</span>
+    }
+
+    public void setReason(String value) {
+<span class="nc" id="L325">      _reason = value;</span>
+<span class="nc" id="L326">    }</span>
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L329">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L333">      _remarks = value;</span>
+<span class="nc" id="L334">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L338">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Profile.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Profile.java</span></div><h1>Profile.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Each OSCAL profile is defined by a &lt;code&gt;profile&lt;/code&gt; element.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Profile&quot;,
+    description = &quot;Each OSCAL profile is defined by a `profile` element.&quot;,
+    name = &quot;profile&quot;,
+    metaschema = OscalProfileMetaschema.class,
+    rootName = &quot;profile&quot;,
+    remarks = &quot;An OSCAL document that describes a tailoring of controls from one or more catalogs, with possible modification of multiple controls. It provides mechanisms by which controls may be selected (`import`), merged or (re)structured (`merge`), and amended (`modify`). OSCAL profiles may select subsets of controls, set parameter values for them in application, and even adjust the representation of controls as given in and by a catalog. They may also serve as sources for further modification in and by other profiles, that import them.&quot;
+)
+public class Profile extends AbstractOscalInstance {
+  @BoundFlag(
+      formalName = &quot;Profile Universally Unique Identifier&quot;,
+      description = &quot;Provides a globally unique means to identify a given profile instance.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundAssembly(
+      formalName = &quot;Document Metadata&quot;,
+      description = &quot;Provides information about the containing document, and defines concepts that are shared across the document.&quot;,
+      useName = &quot;metadata&quot;,
+      minOccurs = 1
+  )
+  private Metadata _metadata;
+
+  @BoundAssembly(
+      formalName = &quot;Import Resource&quot;,
+      description = &quot;Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.&quot;,
+      useName = &quot;import&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;imports&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ProfileImport&gt; _imports;
+
+  @BoundAssembly(
+      formalName = &quot;Merge Controls&quot;,
+      description = &quot;Provides structuring directives that instruct how controls are organized after profile resolution.&quot;,
+      useName = &quot;merge&quot;
+  )
+  private Merge _merge;
+
+  @BoundAssembly(
+      formalName = &quot;Modify Controls&quot;,
+      description = &quot;Set parameters or amend controls in resolution.&quot;,
+      useName = &quot;modify&quot;
+  )
+  private Modify _modify;
+
+  @BoundAssembly(
+      formalName = &quot;Back matter&quot;,
+      description = &quot;A collection of resources that may be referenced from within the OSCAL document instance.&quot;,
+      useName = &quot;back-matter&quot;
+  )
+  private BackMatter _backMatter;
+
+<span class="fc" id="L81">  public Profile() {</span>
+<span class="fc" id="L82">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L85">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L89">    _uuid = value;</span>
+<span class="nc" id="L90">  }</span>
+
+  public Metadata getMetadata() {
+<span class="fc" id="L93">    return _metadata;</span>
+  }
+
+  public void setMetadata(Metadata value) {
+<span class="nc" id="L97">    _metadata = value;</span>
+<span class="nc" id="L98">  }</span>
+
+  public List&lt;ProfileImport&gt; getImports() {
+<span class="nc" id="L101">    return _imports;</span>
+  }
+
+  public void setImports(List&lt;ProfileImport&gt; value) {
+<span class="nc" id="L105">    _imports = value;</span>
+<span class="nc" id="L106">  }</span>
+
+  /**
+   * Add a new {@link ProfileImport} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addImport(ProfileImport item) {
+<span class="fc" id="L114">    ProfileImport value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">    if (_imports == null) {</span>
+<span class="fc" id="L116">      _imports = new LinkedList&lt;&gt;();</span>
+    }
+<span class="fc" id="L118">    return _imports.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ProfileImport} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeImport(ProfileImport item) {
+<span class="nc" id="L127">    ProfileImport value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">    return _imports == null ? false : _imports.remove(value);</span>
+  }
+
+  public Merge getMerge() {
+<span class="fc" id="L132">    return _merge;</span>
+  }
+
+  public void setMerge(Merge value) {
+<span class="nc" id="L136">    _merge = value;</span>
+<span class="nc" id="L137">  }</span>
+
+  public Modify getModify() {
+<span class="nc" id="L140">    return _modify;</span>
+  }
+
+  public void setModify(Modify value) {
+<span class="nc" id="L144">    _modify = value;</span>
+<span class="nc" id="L145">  }</span>
+
+  public BackMatter getBackMatter() {
+<span class="fc" id="L148">    return _backMatter;</span>
+  }
+
+  public void setBackMatter(BackMatter value) {
+<span class="nc" id="L152">    _backMatter = value;</span>
+<span class="nc" id="L153">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L157">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

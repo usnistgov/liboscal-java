@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Characterization xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/gov/nist/secauto/oscal/lib/model/Characterization.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> gov.nist.secauto.oscal.lib.model;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.lang.Override;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.lang.String;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.net.URI;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.LinkedList;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * A collection of descriptive data about the containing object from a specific origin.</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  @MetaschemaAssembly(
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      formalName = <span class="jxr_string">"Characterization"</span>,
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      description = <span class="jxr_string">"A collection of descriptive data about the containing object from a specific origin."</span>,
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      name = <span class="jxr_string">"characterization"</span>,
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      metaschema = OscalAssessmentCommonMetaschema.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  )
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="Characterization" href="../../../../../../gov/nist/secauto/oscal/lib/model/Characterization.html#Characterization">Characterization</a> {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>    @BoundAssembly(
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>        formalName = <span class="jxr_string">"Property"</span>,
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>        description = <span class="jxr_string">"An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."</span>,
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>        useName = <span class="jxr_string">"prop"</span>,
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>        maxOccurs = -1
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    )
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    @GroupAs(
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>        name = <span class="jxr_string">"props"</span>,
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>        inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    )
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">private</strong> List&lt;Property&gt; _props;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    @BoundAssembly(
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>        formalName = <span class="jxr_string">"Link"</span>,
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>        description = <span class="jxr_string">"A reference to a local or remote resource, that has a specific relation to the containing object."</span>,
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>        useName = <span class="jxr_string">"link"</span>,
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>        maxOccurs = -1
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    )
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    @GroupAs(
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        name = <span class="jxr_string">"links"</span>,
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>        inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    )
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    <strong class="jxr_keyword">private</strong> List&lt;Link&gt; _links;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>    @BoundAssembly(
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>        formalName = <span class="jxr_string">"Origin"</span>,
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>        description = <span class="jxr_string">"Identifies the source of the finding, such as a tool, interviewed person, or activity."</span>,
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>        useName = <span class="jxr_string">"origin"</span>,
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>        minOccurs = 1,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>        remarks = <span class="jxr_string">"metadata about the specific actor that generated this descriptive data."</span>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>    )
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>    <strong class="jxr_keyword">private</strong> <a name="Origin" href="../../../../../../gov/nist/secauto/oscal/lib/model/Origin.html#Origin">Origin</a> _origin;
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">   * "An individual characteristic that is part of a larger set produced by the same actor."</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>    @BoundAssembly(
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>        formalName = <span class="jxr_string">"Facet"</span>,
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>        description = <span class="jxr_string">"An individual characteristic that is part of a larger set produced by the same actor."</span>,
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>        useName = <span class="jxr_string">"facet"</span>,
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>        minOccurs = 1,
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>        maxOccurs = -1
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>    )
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>    @GroupAs(
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>        name = <span class="jxr_string">"facets"</span>,
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>        inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>    )
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>    <strong class="jxr_keyword">private</strong> List&lt;Facet&gt; _facets;
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>    <strong class="jxr_keyword">public</strong> <a name="Characterization" href="../../../../../../gov/nist/secauto/oscal/lib/model/Characterization.html#Characterization">Characterization</a>() {
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>    }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>    <strong class="jxr_keyword">public</strong> List&lt;Property&gt; getProps() {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">return</strong> _props;
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>    }
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setProps(List&lt;Property&gt; value) {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      _props = value;
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    }
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">   * Add a new {@link Property} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">   * @param item the item to add</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">   * @return {@code true}</em>
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addProp(<a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> item) {
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">if</strong> (_props == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>       _props = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>     }
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>     <strong class="jxr_keyword">return</strong> _props.add(value);
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   }
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> 
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">   * Remove the first matching {@link Property} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">   * @param item the item to remove</em>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">   * @return {@code true} if the item was removed or {@code false} otherwise</em>
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeProp(<a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> item) {
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     <strong class="jxr_keyword">return</strong> _props == <strong class="jxr_keyword">null</strong> ? false : _props.remove(value);
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>   }
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> 
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>   <strong class="jxr_keyword">public</strong> List&lt;Link&gt; getLinks() {
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     <strong class="jxr_keyword">return</strong> _links;
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>   }
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setLinks(List&lt;Link&gt; value) {
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     _links = value;
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>   }
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> 
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L130" href="#L130">130</a> <em class="jxr_javadoccomment">   * Add a new {@link Link} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">   * @param item the item to add</em>
+<a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">   * @return {@code true}</em>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addLink(Link item) {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>     Link value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">if</strong> (_links == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>       _links = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>     }
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">return</strong> _links.add(value);
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   }
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> 
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> <em class="jxr_javadoccomment">   * Remove the first matching {@link Link} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L144" href="#L144">144</a> <em class="jxr_javadoccomment">   * @param item the item to remove</em>
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> <em class="jxr_javadoccomment">   * @return {@code true} if the item was removed or {@code false} otherwise</em>
+<a class="jxr_linenumber" name="L146" href="#L146">146</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeLink(Link item) {
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     Link value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     <strong class="jxr_keyword">return</strong> _links == <strong class="jxr_keyword">null</strong> ? false : _links.remove(value);
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>   }
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> 
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>   <strong class="jxr_keyword">public</strong> <a name="Origin" href="../../../../../../gov/nist/secauto/oscal/lib/model/Origin.html#Origin">Origin</a> getOrigin() {
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">return</strong> _origin;
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>   }
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> 
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setOrigin(<a name="Origin" href="../../../../../../gov/nist/secauto/oscal/lib/model/Origin.html#Origin">Origin</a> value) {
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>     _origin = value;
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>   }
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> 
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>   <strong class="jxr_keyword">public</strong> List&lt;Facet&gt; getFacets() {
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>     <strong class="jxr_keyword">return</strong> _facets;
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>   }
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> 
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setFacets(List&lt;Facet&gt; value) {
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>     _facets = value;
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>   }
+<a class="jxr_linenumber" name="L167" href="#L167">167</a> 
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">   * Add a new {@link Facet} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L170" href="#L170">170</a> <em class="jxr_javadoccomment">   * @param item the item to add</em>
+<a class="jxr_linenumber" name="L171" href="#L171">171</a> <em class="jxr_javadoccomment">   * @return {@code true}</em>
+<a class="jxr_linenumber" name="L172" href="#L172">172</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addFacet(Facet item) {
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>     Facet value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>     <strong class="jxr_keyword">if</strong> (_facets == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>       _facets = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>     }
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">return</strong> _facets.add(value);
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>   }
+<a class="jxr_linenumber" name="L180" href="#L180">180</a> 
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L182" href="#L182">182</a> <em class="jxr_javadoccomment">   * Remove the first matching {@link Facet} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L183" href="#L183">183</a> <em class="jxr_javadoccomment">   * @param item the item to remove</em>
+<a class="jxr_linenumber" name="L184" href="#L184">184</a> <em class="jxr_javadoccomment">   * @return {@code true} if the item was removed or {@code false} otherwise</em>
+<a class="jxr_linenumber" name="L185" href="#L185">185</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeFacet(Facet item) {
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>     Facet value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>     <strong class="jxr_keyword">return</strong> _facets == <strong class="jxr_keyword">null</strong> ? false : _facets.remove(value);
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>   }
+<a class="jxr_linenumber" name="L190" href="#L190">190</a> 
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>   @Override
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>   <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ReflectionToStringBuilder(<strong class="jxr_keyword">this</strong>, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>   }
+<a class="jxr_linenumber" name="L195" href="#L195">195</a> 
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">   * An individual characteristic that is part of a larger set produced by the same actor.</em>
+<a class="jxr_linenumber" name="L198" href="#L198">198</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>   @MetaschemaAssembly(
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>       formalName = <span class="jxr_string">"Facet"</span>,
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>       description = <span class="jxr_string">"An individual characteristic that is part of a larger set produced by the same actor."</span>,
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>       name = <span class="jxr_string">"facet"</span>,
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>       metaschema = OscalAssessmentCommonMetaschema.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>   )
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>   @ValueConstraints(
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>       allowedValues = {
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name"</span>, values = @AllowedValue(value = <span class="jxr_string">"state"</span>, description = <span class="jxr_string">"Indicates if the facet is 'initial' as first identified, or 'adjusted' indicating that the value has be changed after some adjustments have been made (e.g., to identify residual risk)."</span>)),
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='state']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"initial"</span>, description = <span class="jxr_string">"As first identified."</span>), @AllowedValue(value = <span class="jxr_string">"adjusted"</span>, description = <span class="jxr_string">"Indicates that residual risk remains after some adjustments have been made."</span>)}),
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://csrc.nist.gov/ns/oscal']/@name"</span>, values = {@AllowedValue(value = <span class="jxr_string">"likelihood"</span>, description = <span class="jxr_string">"General likelihood rating."</span>), @AllowedValue(value = <span class="jxr_string">"impact"</span>, description = <span class="jxr_string">"General impact rating."</span>), @AllowedValue(value = <span class="jxr_string">"risk"</span>, description = <span class="jxr_string">"General risk rating."</span>), @AllowedValue(value = <span class="jxr_string">"severity"</span>, description = <span class="jxr_string">"General severity rating."</span>)}),
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://fedramp.gov','http://fedramp.gov/ns/oscal')]/@name"</span>, values = {@AllowedValue(value = <span class="jxr_string">"likelihood"</span>, description = <span class="jxr_string">"Likelihood as defined by FedRAMP. The `class` can be used to specify 'initial' and 'adjusted' risk states."</span>), @AllowedValue(value = <span class="jxr_string">"impact"</span>, description = <span class="jxr_string">"Impact as defined by FedRAMP. The `class` can be used to specify 'initial' and 'adjusted' risk states."</span>), @AllowedValue(value = <span class="jxr_string">"risk"</span>, description = <span class="jxr_string">"Risk as calculated according to FedRAMP. The `class` can be used to specify 'initial' and 'adjusted' risk states."</span>)}),
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://cve.mitre.org']/@name"</span>, values = @AllowedValue(value = <span class="jxr_string">"cve-id"</span>, description = <span class="jxr_string">"An identifier managed by the CVE program (see https://cve.mitre.org/)."</span>)),
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0']/@name"</span>, values = {@AllowedValue(value = <span class="jxr_string">"access-vector"</span>, description = <span class="jxr_string">"Base: Access Vector"</span>), @AllowedValue(value = <span class="jxr_string">"access-complexity"</span>, description = <span class="jxr_string">"Base: Access Complexity"</span>), @AllowedValue(value = <span class="jxr_string">"authentication"</span>, description = <span class="jxr_string">"Base: Authentication"</span>), @AllowedValue(value = <span class="jxr_string">"confidentiality-impact"</span>, description = <span class="jxr_string">"Base: Confidentiality Impact"</span>), @AllowedValue(value = <span class="jxr_string">"integrity-impact"</span>, description = <span class="jxr_string">"Base: Integrity Impact"</span>), @AllowedValue(value = <span class="jxr_string">"availability-impact"</span>, description = <span class="jxr_string">"Base: Availability Impact"</span>), @AllowedValue(value = <span class="jxr_string">"exploitability"</span>, description = <span class="jxr_string">"Temporal: Exploitability"</span>), @AllowedValue(value = <span class="jxr_string">"remediation-level"</span>, description = <span class="jxr_string">"Temporal: Remediation Level"</span>), @AllowedValue(value = <span class="jxr_string">"report-confidence"</span>, description = <span class="jxr_string">"Temporal: Report Confidence"</span>), @AllowedValue(value = <span class="jxr_string">"collateral-damage-potential"</span>, description = <span class="jxr_string">"Environmental: Collateral Damage Potential"</span>), @AllowedValue(value = <span class="jxr_string">"target-distribution"</span>, description = <span class="jxr_string">"Environmental: Target Distribution"</span>), @AllowedValue(value = <span class="jxr_string">"confidentiality-requirement"</span>, description = <span class="jxr_string">"Environmental: Confidentiality Requirement"</span>), @AllowedValue(value = <span class="jxr_string">"integrity-requirement"</span>, description = <span class="jxr_string">"Environmental: Integrity Requirement"</span>), @AllowedValue(value = <span class="jxr_string">"availability-requirement"</span>, description = <span class="jxr_string">"Environmental: Availability Requirement"</span>)}),
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name='access-vector']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"local"</span>, description = <span class="jxr_string">"Local"</span>), @AllowedValue(value = <span class="jxr_string">"adjacent-network"</span>, description = <span class="jxr_string">"Network Adjacent"</span>), @AllowedValue(value = <span class="jxr_string">"network"</span>, description = <span class="jxr_string">"Network"</span>)}),
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name='access-complexity']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High"</span>), @AllowedValue(value = <span class="jxr_string">"medium"</span>, description = <span class="jxr_string">"Medium"</span>), @AllowedValue(value = <span class="jxr_string">"low"</span>, description = <span class="jxr_string">"Low"</span>)}),
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name='authentication']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"multiple"</span>, description = <span class="jxr_string">"Multiple"</span>), @AllowedValue(value = <span class="jxr_string">"single"</span>, description = <span class="jxr_string">"Single"</span>), @AllowedValue(value = <span class="jxr_string">"none"</span>, description = <span class="jxr_string">"None"</span>)}),
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name=('confidentiality-impact', 'integrity-impact', 'availability-impact')]/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"none"</span>, description = <span class="jxr_string">"None"</span>), @AllowedValue(value = <span class="jxr_string">"partial"</span>, description = <span class="jxr_string">"Partial"</span>), @AllowedValue(value = <span class="jxr_string">"complete"</span>, description = <span class="jxr_string">"Complete"</span>)}),
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name='exploitability']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"unproven"</span>, description = <span class="jxr_string">"Unproven"</span>), @AllowedValue(value = <span class="jxr_string">"proof-of-concept"</span>, description = <span class="jxr_string">"Proof-of-Concept"</span>), @AllowedValue(value = <span class="jxr_string">"functional"</span>, description = <span class="jxr_string">"Functional"</span>), @AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High"</span>), @AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>)}),
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name='remediation-level']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"official-fix"</span>, description = <span class="jxr_string">"Official Fix"</span>), @AllowedValue(value = <span class="jxr_string">"temporary-fix"</span>, description = <span class="jxr_string">"Temporary Fix"</span>), @AllowedValue(value = <span class="jxr_string">"workaround"</span>, description = <span class="jxr_string">"Workaround"</span>), @AllowedValue(value = <span class="jxr_string">"unavailable"</span>, description = <span class="jxr_string">"Unavailable"</span>), @AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>)}),
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name='report-confidence']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"unconfirmed"</span>, description = <span class="jxr_string">"Unconfirmed"</span>), @AllowedValue(value = <span class="jxr_string">"uncorroborated"</span>, description = <span class="jxr_string">"Uncorroborated"</span>), @AllowedValue(value = <span class="jxr_string">"confirmed"</span>, description = <span class="jxr_string">"Confirmed"</span>), @AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>)}),
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name='collateral-damage-potential']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"none"</span>, description = <span class="jxr_string">"None"</span>), @AllowedValue(value = <span class="jxr_string">"low"</span>, description = <span class="jxr_string">"Low (light loss)"</span>), @AllowedValue(value = <span class="jxr_string">"low-medium"</span>, description = <span class="jxr_string">"Low Medium"</span>), @AllowedValue(value = <span class="jxr_string">"medium-high"</span>, description = <span class="jxr_string">"Medium High"</span>), @AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High (catastrophic loss)"</span>), @AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>)}),
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system='http://www.first.org/cvss/v2.0' and @name=('target-distribution', 'confidentiality-requirement', 'integrity-requirement', 'availability-requirement')]/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"none"</span>, description = <span class="jxr_string">""</span>), @AllowedValue(value = <span class="jxr_string">"low"</span>, description = <span class="jxr_string">""</span>), @AllowedValue(value = <span class="jxr_string">"medium"</span>, description = <span class="jxr_string">""</span>), @AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">""</span>), @AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">""</span>)}),
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1')]/@name"</span>, values = {@AllowedValue(value = <span class="jxr_string">"attack-vector"</span>, description = <span class="jxr_string">"Base: Attack Vector"</span>), @AllowedValue(value = <span class="jxr_string">"access-complexity"</span>, description = <span class="jxr_string">"Base: Attack Complexity"</span>), @AllowedValue(value = <span class="jxr_string">"privileges-required"</span>, description = <span class="jxr_string">"Base: Privileges Required"</span>), @AllowedValue(value = <span class="jxr_string">"user-interaction"</span>, description = <span class="jxr_string">"Base: User Interaction"</span>), @AllowedValue(value = <span class="jxr_string">"scope"</span>, description = <span class="jxr_string">"Base: Scope"</span>), @AllowedValue(value = <span class="jxr_string">"confidentiality-impact"</span>, description = <span class="jxr_string">"Base: Confidentiality Impact"</span>), @AllowedValue(value = <span class="jxr_string">"integrity-impact"</span>, description = <span class="jxr_string">"Base: Integrity Impact"</span>), @AllowedValue(value = <span class="jxr_string">"availability-impact"</span>, description = <span class="jxr_string">"Base: Availability Impact"</span>), @AllowedValue(value = <span class="jxr_string">"exploit-code-maturity"</span>, description = <span class="jxr_string">"Temporal: Exploit Code Maturity"</span>), @AllowedValue(value = <span class="jxr_string">"remediation-level"</span>, description = <span class="jxr_string">"Temporal: Remediation Level"</span>), @AllowedValue(value = <span class="jxr_string">"report-confidence"</span>, description = <span class="jxr_string">"Temporal: Report Confidence"</span>), @AllowedValue(value = <span class="jxr_string">"modified-attack-vector"</span>, description = <span class="jxr_string">"Environmental: Modified Attack Vector"</span>), @AllowedValue(value = <span class="jxr_string">"modified-attack-complexity"</span>, description = <span class="jxr_string">"Environmental: Modified Attack Complexity"</span>), @AllowedValue(value = <span class="jxr_string">"modified-privileges-required"</span>, description = <span class="jxr_string">"Environmental: Modified Privileges Required"</span>), @AllowedValue(value = <span class="jxr_string">"modified-user-interaction"</span>, description = <span class="jxr_string">"Environmental: Modified User Interaction"</span>), @AllowedValue(value = <span class="jxr_string">"modified-scope"</span>, description = <span class="jxr_string">"Environmental: Modified Scope"</span>), @AllowedValue(value = <span class="jxr_string">"modified-confidentiality"</span>, description = <span class="jxr_string">"Environmental: Modified Confidentiality"</span>), @AllowedValue(value = <span class="jxr_string">"modified-integrity"</span>, description = <span class="jxr_string">"Environmental: Modified Integrity"</span>), @AllowedValue(value = <span class="jxr_string">"modified-availability"</span>, description = <span class="jxr_string">"Environmental: Modified Availability"</span>), @AllowedValue(value = <span class="jxr_string">"confidentiality-requirement"</span>, description = <span class="jxr_string">"Environmental: Confidentiality Requirement Modifier"</span>), @AllowedValue(value = <span class="jxr_string">"integrity-requirement"</span>, description = <span class="jxr_string">"Environmental: Integrity Requirement Modifier"</span>), @AllowedValue(value = <span class="jxr_string">"availability-requirement"</span>, description = <span class="jxr_string">"Environmental: Availability Requirement Modifier"</span>)}),
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='access-vector']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"network"</span>, description = <span class="jxr_string">"Network"</span>), @AllowedValue(value = <span class="jxr_string">"adjacent"</span>, description = <span class="jxr_string">"Adjacent"</span>), @AllowedValue(value = <span class="jxr_string">"local"</span>, description = <span class="jxr_string">"Local"</span>), @AllowedValue(value = <span class="jxr_string">"physical"</span>, description = <span class="jxr_string">"Physical"</span>)}),
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='access-complexity']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High"</span>), @AllowedValue(value = <span class="jxr_string">"low"</span>, description = <span class="jxr_string">"Low"</span>)}),
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name=('privileges-required', 'confidentiality-impact', 'integrity-impact', 'availability-impact')]/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"none"</span>, description = <span class="jxr_string">"None"</span>), @AllowedValue(value = <span class="jxr_string">"low"</span>, description = <span class="jxr_string">"Low"</span>), @AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High"</span>)}),
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='user-interaction']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"none"</span>, description = <span class="jxr_string">"None"</span>), @AllowedValue(value = <span class="jxr_string">"required"</span>, description = <span class="jxr_string">"Required"</span>)}),
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='scope']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"unchanged"</span>, description = <span class="jxr_string">"Unchanged"</span>), @AllowedValue(value = <span class="jxr_string">"changed"</span>, description = <span class="jxr_string">"Changed"</span>)}),
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='exploit-code-maturity']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"unproven"</span>, description = <span class="jxr_string">"Unproven"</span>), @AllowedValue(value = <span class="jxr_string">"proof-of-concept"</span>, description = <span class="jxr_string">"Proof-of-Concept"</span>), @AllowedValue(value = <span class="jxr_string">"functional"</span>, description = <span class="jxr_string">"Functional"</span>), @AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High"</span>)}),
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='remediation-level']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"official-fix"</span>, description = <span class="jxr_string">"Official Fix"</span>), @AllowedValue(value = <span class="jxr_string">"temporary-fix"</span>, description = <span class="jxr_string">"Temporary Fix"</span>), @AllowedValue(value = <span class="jxr_string">"workaround"</span>, description = <span class="jxr_string">"Workaround"</span>), @AllowedValue(value = <span class="jxr_string">"unavailable"</span>, description = <span class="jxr_string">"Unavailable"</span>)}),
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='report-confidence']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"unknown"</span>, description = <span class="jxr_string">"Unknown"</span>), @AllowedValue(value = <span class="jxr_string">"reasonable"</span>, description = <span class="jxr_string">"Reasonable"</span>), @AllowedValue(value = <span class="jxr_string">"confirmed"</span>, description = <span class="jxr_string">"Confirmed"</span>)}),
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name=('confidentiality-requirement', 'integrity-requirement', 'availability-requirement')]/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"low"</span>, description = <span class="jxr_string">"Low"</span>), @AllowedValue(value = <span class="jxr_string">"medium"</span>, description = <span class="jxr_string">"Medium"</span>), @AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High"</span>)}),
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='modified-attack-vector']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"network"</span>, description = <span class="jxr_string">"Network"</span>), @AllowedValue(value = <span class="jxr_string">"adjacent"</span>, description = <span class="jxr_string">"Adjacent"</span>), @AllowedValue(value = <span class="jxr_string">"local"</span>, description = <span class="jxr_string">"Local"</span>), @AllowedValue(value = <span class="jxr_string">"physical"</span>, description = <span class="jxr_string">"Physical"</span>)}),
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='modified-attack-complexity']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High"</span>), @AllowedValue(value = <span class="jxr_string">"low"</span>, description = <span class="jxr_string">"Low"</span>)}),
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name=('modified-privileges-required', 'modified-confidentiality', 'modified-integrity', 'modified-availability')]/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"none"</span>, description = <span class="jxr_string">"None"</span>), @AllowedValue(value = <span class="jxr_string">"low"</span>, description = <span class="jxr_string">"Low"</span>), @AllowedValue(value = <span class="jxr_string">"high"</span>, description = <span class="jxr_string">"High"</span>)}),
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='modified-user-interaction']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"none"</span>, description = <span class="jxr_string">"None"</span>), @AllowedValue(value = <span class="jxr_string">"required"</span>, description = <span class="jxr_string">"Required"</span>)}),
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>           @AllowedValues(level = IConstraint.Level.ERROR, target = <span class="jxr_string">"(.)[@system=('http://www.first.org/cvss/v3.0', 'http://www.first.org/cvss/v3.1') and @name='modified-scope']/@value"</span>, values = {@AllowedValue(value = <span class="jxr_string">"not-defined"</span>, description = <span class="jxr_string">"Not Defined"</span>), @AllowedValue(value = <span class="jxr_string">"unchanged"</span>, description = <span class="jxr_string">"Unchanged"</span>), @AllowedValue(value = <span class="jxr_string">"changed"</span>, description = <span class="jxr_string">"Changed"</span>)})
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>       }
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>   )
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Facet {
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>     @BoundFlag(
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>         formalName = <span class="jxr_string">"Facet Name"</span>,
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>         description = <span class="jxr_string">"The name of the risk metric within the specified system."</span>,
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>         useName = <span class="jxr_string">"name"</span>,
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>         required = <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>         typeAdapter = TokenAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>     )
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>     <strong class="jxr_keyword">private</strong> String _name;
+<a class="jxr_linenumber" name="L248" href="#L248">248</a> 
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>     @BoundFlag(
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>         formalName = <span class="jxr_string">"Naming System"</span>,
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>         description = <span class="jxr_string">"Specifies the naming system under which this risk metric is organized, which allows for the same names to be used in different systems controlled by different parties. This avoids the potential of a name clash."</span>,
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>         useName = <span class="jxr_string">"system"</span>,
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>         required = <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>         typeAdapter = UriAdapter.<strong class="jxr_keyword">class</strong>,
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>         remarks = <span class="jxr_string">"This value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier)."</span>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>     )
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>     @ValueConstraints(
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = <strong class="jxr_keyword">true</strong>, values = {@AllowedValue(value = <span class="jxr_string">"http://fedramp.gov"</span>, description = <span class="jxr_string">"&#92;&#92;*&#92;&#92;*deprecated&#92;&#92;*&#92;&#92;* The FedRAMP naming system. This has been deprecated; use `http://fedramp.gov/ns/oscal` instead."</span>), @AllowedValue(value = <span class="jxr_string">"http://fedramp.gov/ns/oscal"</span>, description = <span class="jxr_string">"The FedRAMP naming system."</span>), @AllowedValue(value = <span class="jxr_string">"http://csrc.nist.gov/ns/oscal"</span>, description = <span class="jxr_string">""</span>), @AllowedValue(value = <span class="jxr_string">"http://csrc.nist.gov/ns/oscal/unknown"</span>, description = <span class="jxr_string">"The facet is from an unknown taxonomy. The meaning of the name is tool or organization specific."</span>), @AllowedValue(value = <span class="jxr_string">"http://cve.mitre.org"</span>, description = <span class="jxr_string">""</span>), @AllowedValue(value = <span class="jxr_string">"http://www.first.org/cvss/v2.0"</span>, description = <span class="jxr_string">""</span>), @AllowedValue(value = <span class="jxr_string">"http://www.first.org/cvss/v3.0"</span>, description = <span class="jxr_string">""</span>), @AllowedValue(value = <span class="jxr_string">"http://www.first.org/cvss/v3.1"</span>, description = <span class="jxr_string">""</span>)})
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>     )
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>     <strong class="jxr_keyword">private</strong> URI _system;
+<a class="jxr_linenumber" name="L261" href="#L261">261</a> 
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>     @BoundFlag(
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>         formalName = <span class="jxr_string">"Facet Value"</span>,
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>         description = <span class="jxr_string">"Indicates the value of the facet."</span>,
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>         useName = <span class="jxr_string">"value"</span>,
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         required = <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>         typeAdapter = StringAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>     )
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>     <strong class="jxr_keyword">private</strong> String _value;
+<a class="jxr_linenumber" name="L270" href="#L270">270</a> 
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>     @BoundAssembly(
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>         formalName = <span class="jxr_string">"Property"</span>,
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>         description = <span class="jxr_string">"An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."</span>,
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>         useName = <span class="jxr_string">"prop"</span>,
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>         maxOccurs = -1
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>     )
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>     @GroupAs(
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>         name = <span class="jxr_string">"props"</span>,
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>         inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>     )
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>     <strong class="jxr_keyword">private</strong> List&lt;Property&gt; _props;
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> 
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>     @BoundAssembly(
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         formalName = <span class="jxr_string">"Link"</span>,
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>         description = <span class="jxr_string">"A reference to a local or remote resource, that has a specific relation to the containing object."</span>,
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>         useName = <span class="jxr_string">"link"</span>,
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>         maxOccurs = -1
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>     )
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>     @GroupAs(
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>         name = <span class="jxr_string">"links"</span>,
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>     )
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>     <strong class="jxr_keyword">private</strong> List&lt;Link&gt; _links;
+<a class="jxr_linenumber" name="L294" href="#L294">294</a> 
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>     @BoundField(
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         formalName = <span class="jxr_string">"Remarks"</span>,
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         description = <span class="jxr_string">"Additional commentary about the containing object."</span>,
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>         useName = <span class="jxr_string">"remarks"</span>
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>     )
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>     @BoundFieldValue(
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>     )
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>     <strong class="jxr_keyword">private</strong> MarkupMultiline _remarks;
+<a class="jxr_linenumber" name="L304" href="#L304">304</a> 
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>     <strong class="jxr_keyword">public</strong> Facet() {
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>     }
+<a class="jxr_linenumber" name="L307" href="#L307">307</a> 
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>     <strong class="jxr_keyword">public</strong> String getName() {
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>       <strong class="jxr_keyword">return</strong> _name;
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>     }
+<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setName(String value) {
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>       _name = value;
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     }
+<a class="jxr_linenumber" name="L315" href="#L315">315</a> 
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">public</strong> URI getSystem() {
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>       <strong class="jxr_keyword">return</strong> _system;
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>     }
+<a class="jxr_linenumber" name="L319" href="#L319">319</a> 
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setSystem(URI value) {
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>       _system = value;
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>     }
+<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>     <strong class="jxr_keyword">public</strong> String getValue() {
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>       <strong class="jxr_keyword">return</strong> _value;
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>     }
+<a class="jxr_linenumber" name="L327" href="#L327">327</a> 
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setValue(String value) {
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>       _value = value;
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>     }
+<a class="jxr_linenumber" name="L331" href="#L331">331</a> 
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>     <strong class="jxr_keyword">public</strong> List&lt;Property&gt; getProps() {
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>       <strong class="jxr_keyword">return</strong> _props;
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>     }
+<a class="jxr_linenumber" name="L335" href="#L335">335</a> 
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setProps(List&lt;Property&gt; value) {
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>       _props = value;
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>     }
+<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L341" href="#L341">341</a> <em class="jxr_javadoccomment">     * Add a new {@link Property} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L342" href="#L342">342</a> <em class="jxr_javadoccomment">     * @param item the item to add</em>
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * @return {@code true}</em>
+<a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addProp(<a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> item) {
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>       <a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>       <strong class="jxr_keyword">if</strong> (_props == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>         _props = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>       }
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>       <strong class="jxr_keyword">return</strong> _props.add(value);
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>     }
+<a class="jxr_linenumber" name="L352" href="#L352">352</a> 
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L354" href="#L354">354</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link Property} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L355" href="#L355">355</a> <em class="jxr_javadoccomment">     * @param item the item to remove</em>
+<a class="jxr_linenumber" name="L356" href="#L356">356</a> <em class="jxr_javadoccomment">     * @return {@code true} if the item was removed or {@code false} otherwise</em>
+<a class="jxr_linenumber" name="L357" href="#L357">357</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeProp(<a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> item) {
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>       <a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>       <strong class="jxr_keyword">return</strong> _props == <strong class="jxr_keyword">null</strong> ? false : _props.remove(value);
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>     }
+<a class="jxr_linenumber" name="L362" href="#L362">362</a> 
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>     <strong class="jxr_keyword">public</strong> List&lt;Link&gt; getLinks() {
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>       <strong class="jxr_keyword">return</strong> _links;
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>     }
+<a class="jxr_linenumber" name="L366" href="#L366">366</a> 
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setLinks(List&lt;Link&gt; value) {
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>       _links = value;
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>     }
+<a class="jxr_linenumber" name="L370" href="#L370">370</a> 
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_javadoccomment">     * Add a new {@link Link} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_javadoccomment">     * @param item the item to add</em>
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> <em class="jxr_javadoccomment">     * @return {@code true}</em>
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addLink(Link item) {
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>       Link value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>       <strong class="jxr_keyword">if</strong> (_links == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>         _links = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>       }
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>       <strong class="jxr_keyword">return</strong> _links.add(value);
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>     }
+<a class="jxr_linenumber" name="L383" href="#L383">383</a> 
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L385" href="#L385">385</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link Link} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L386" href="#L386">386</a> <em class="jxr_javadoccomment">     * @param item the item to remove</em>
+<a class="jxr_linenumber" name="L387" href="#L387">387</a> <em class="jxr_javadoccomment">     * @return {@code true} if the item was removed or {@code false} otherwise</em>
+<a class="jxr_linenumber" name="L388" href="#L388">388</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeLink(Link item) {
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>       Link value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>       <strong class="jxr_keyword">return</strong> _links == <strong class="jxr_keyword">null</strong> ? false : _links.remove(value);
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>     }
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> 
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>     <strong class="jxr_keyword">public</strong> MarkupMultiline getRemarks() {
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>       <strong class="jxr_keyword">return</strong> _remarks;
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>     }
+<a class="jxr_linenumber" name="L397" href="#L397">397</a> 
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setRemarks(MarkupMultiline value) {
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>       _remarks = value;
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>     }
+<a class="jxr_linenumber" name="L401" href="#L401">401</a> 
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>     @Override
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ReflectionToStringBuilder(<strong class="jxr_keyword">this</strong>, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>     }
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>   }
+<a class="jxr_linenumber" name="L407" href="#L407">407</a> }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2023 <a href="https://www.nist.gov">National Institute of Standards and Technology</a>. All rights reserved.</div>
+</body>
+</html>

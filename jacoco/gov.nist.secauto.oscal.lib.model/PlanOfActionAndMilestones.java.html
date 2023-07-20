@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlanOfActionAndMilestones.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">PlanOfActionAndMilestones.java</span></div><h1>PlanOfActionAndMilestones.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A plan of action and milestones which identifies initial and residual risks, deviations, and disposition, such as those required by FedRAMP.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Plan of Action and Milestones (POA&amp;M)&quot;,
+    description = &quot;A plan of action and milestones which identifies initial and residual risks, deviations, and disposition, such as those required by FedRAMP.&quot;,
+    name = &quot;plan-of-action-and-milestones&quot;,
+    metaschema = OscalPoamMetaschema.class,
+    rootName = &quot;plan-of-action-and-milestones&quot;,
+    remarks = &quot;Either an OSCAL-based SSP must be imported, or a unique system-id must be specified. Both may be present.&quot;
+)
+public class PlanOfActionAndMilestones extends AbstractOscalInstance {
+  @BoundFlag(
+      formalName = &quot;POA&amp;M Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#instance)scope that can be used to reference this POA\\&amp;M instance in [this OSCAL instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#poam-identifiers). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundAssembly(
+      formalName = &quot;Document Metadata&quot;,
+      description = &quot;Provides information about the containing document, and defines concepts that are shared across the document.&quot;,
+      useName = &quot;metadata&quot;,
+      minOccurs = 1
+  )
+  private Metadata _metadata;
+
+  @BoundAssembly(
+      formalName = &quot;Import System Security Plan&quot;,
+      description = &quot;Used by the assessment plan and POA\\&amp;M to import information about the system.&quot;,
+      useName = &quot;import-ssp&quot;,
+      remarks = &quot;Used by the POA\\&amp;M to import information about the system.&quot;
+  )
+  private ImportSsp _importSsp;
+
+  @BoundField(
+      formalName = &quot;System Identification&quot;,
+      description = &quot;A [human-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#human-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this system identification property elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). When referencing an externally defined `system identification`, the `system identification` must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same system across revisions of the document.&quot;,
+      useName = &quot;system-id&quot;
+  )
+  private SystemId _systemId;
+
+  @BoundAssembly(
+      formalName = &quot;Local Definitions&quot;,
+      description = &quot;Allows components, and inventory-items to be defined within the POA\\&amp;M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA\\&amp;M.&quot;,
+      useName = &quot;local-definitions&quot;
+  )
+  private LocalDefinitions _localDefinitions;
+
+  @BoundAssembly(
+      formalName = &quot;Observation&quot;,
+      description = &quot;Describes an individual observation.&quot;,
+      useName = &quot;observation&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;observations&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Observation&gt; _observations;
+
+  @BoundAssembly(
+      formalName = &quot;Identified Risk&quot;,
+      description = &quot;An identified risk.&quot;,
+      useName = &quot;risk&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;risks&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Risk&gt; _risks;
+
+  @BoundAssembly(
+      formalName = &quot;Finding&quot;,
+      description = &quot;Describes an individual finding.&quot;,
+      useName = &quot;finding&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;findings&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Finding&gt; _findings;
+
+  @BoundAssembly(
+      formalName = &quot;POA&amp;M Item&quot;,
+      description = &quot;Describes an individual POA\\&amp;M item.&quot;,
+      useName = &quot;poam-item&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;poam-items&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;PoamItem&gt; _poamItems;
+
+  @BoundAssembly(
+      formalName = &quot;Back matter&quot;,
+      description = &quot;A collection of resources that may be referenced from within the OSCAL document instance.&quot;,
+      useName = &quot;back-matter&quot;
+  )
+  private BackMatter _backMatter;
+
+<span class="nc" id="L126">  public PlanOfActionAndMilestones() {</span>
+<span class="nc" id="L127">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L130">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L134">    _uuid = value;</span>
+<span class="nc" id="L135">  }</span>
+
+  public Metadata getMetadata() {
+<span class="nc" id="L138">    return _metadata;</span>
+  }
+
+  public void setMetadata(Metadata value) {
+<span class="nc" id="L142">    _metadata = value;</span>
+<span class="nc" id="L143">  }</span>
+
+  public ImportSsp getImportSsp() {
+<span class="nc" id="L146">    return _importSsp;</span>
+  }
+
+  public void setImportSsp(ImportSsp value) {
+<span class="nc" id="L150">    _importSsp = value;</span>
+<span class="nc" id="L151">  }</span>
+
+  public SystemId getSystemId() {
+<span class="nc" id="L154">    return _systemId;</span>
+  }
+
+  public void setSystemId(SystemId value) {
+<span class="nc" id="L158">    _systemId = value;</span>
+<span class="nc" id="L159">  }</span>
+
+  public LocalDefinitions getLocalDefinitions() {
+<span class="nc" id="L162">    return _localDefinitions;</span>
+  }
+
+  public void setLocalDefinitions(LocalDefinitions value) {
+<span class="nc" id="L166">    _localDefinitions = value;</span>
+<span class="nc" id="L167">  }</span>
+
+  public List&lt;Observation&gt; getObservations() {
+<span class="nc" id="L170">    return _observations;</span>
+  }
+
+  public void setObservations(List&lt;Observation&gt; value) {
+<span class="nc" id="L174">    _observations = value;</span>
+<span class="nc" id="L175">  }</span>
+
+  /**
+   * Add a new {@link Observation} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addObservation(Observation item) {
+<span class="nc" id="L183">    Observation value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (_observations == null) {</span>
+<span class="nc" id="L185">      _observations = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L187">    return _observations.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Observation} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeObservation(Observation item) {
+<span class="nc" id="L196">    Observation value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">    return _observations == null ? false : _observations.remove(value);</span>
+  }
+
+  public List&lt;Risk&gt; getRisks() {
+<span class="nc" id="L201">    return _risks;</span>
+  }
+
+  public void setRisks(List&lt;Risk&gt; value) {
+<span class="nc" id="L205">    _risks = value;</span>
+<span class="nc" id="L206">  }</span>
+
+  /**
+   * Add a new {@link Risk} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addRisk(Risk item) {
+<span class="nc" id="L214">    Risk value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">    if (_risks == null) {</span>
+<span class="nc" id="L216">      _risks = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L218">    return _risks.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Risk} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeRisk(Risk item) {
+<span class="nc" id="L227">    Risk value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">    return _risks == null ? false : _risks.remove(value);</span>
+  }
+
+  public List&lt;Finding&gt; getFindings() {
+<span class="nc" id="L232">    return _findings;</span>
+  }
+
+  public void setFindings(List&lt;Finding&gt; value) {
+<span class="nc" id="L236">    _findings = value;</span>
+<span class="nc" id="L237">  }</span>
+
+  /**
+   * Add a new {@link Finding} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addFinding(Finding item) {
+<span class="nc" id="L245">    Finding value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">    if (_findings == null) {</span>
+<span class="nc" id="L247">      _findings = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L249">    return _findings.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Finding} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeFinding(Finding item) {
+<span class="nc" id="L258">    Finding value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">    return _findings == null ? false : _findings.remove(value);</span>
+  }
+
+  public List&lt;PoamItem&gt; getPoamItems() {
+<span class="nc" id="L263">    return _poamItems;</span>
+  }
+
+  public void setPoamItems(List&lt;PoamItem&gt; value) {
+<span class="nc" id="L267">    _poamItems = value;</span>
+<span class="nc" id="L268">  }</span>
+
+  /**
+   * Add a new {@link PoamItem} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addPoamItem(PoamItem item) {
+<span class="nc" id="L276">    PoamItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">    if (_poamItems == null) {</span>
+<span class="nc" id="L278">      _poamItems = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L280">    return _poamItems.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link PoamItem} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removePoamItem(PoamItem item) {
+<span class="nc" id="L289">    PoamItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    return _poamItems == null ? false : _poamItems.remove(value);</span>
+  }
+
+  public BackMatter getBackMatter() {
+<span class="nc" id="L294">    return _backMatter;</span>
+  }
+
+  public void setBackMatter(BackMatter value) {
+<span class="nc" id="L298">    _backMatter = value;</span>
+<span class="nc" id="L299">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L303">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

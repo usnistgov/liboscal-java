@@ -1,0 +1,825 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Portions of this software was developed by employees of the National Institute</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * of Standards and Technology (NIST), an agency of the Federal Government and is</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * being made available as a public service. Pursuant to title 17 United States</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * Code Section 105, works of NIST employees are not subject to copyright</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * protection in the United States. This software may be subject to foreign</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * copyright. Permission in the United States and in foreign countries, to the</a>
+<span class="sourceLineNo">008</span><a id="line.8"> * extent that NIST may hold copyright, to use, copy, modify, create derivative</a>
+<span class="sourceLineNo">009</span><a id="line.9"> * works, and distribute this software and its documentation without fee is hereby</a>
+<span class="sourceLineNo">010</span><a id="line.10"> * granted on a non-exclusive basis, provided that this notice and disclaimer</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * of warranty appears in all copies.</a>
+<span class="sourceLineNo">012</span><a id="line.12"> *</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF</a>
+<span class="sourceLineNo">016</span><a id="line.16"> * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM</a>
+<span class="sourceLineNo">017</span><a id="line.17"> * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE</a>
+<span class="sourceLineNo">018</span><a id="line.18"> * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT</a>
+<span class="sourceLineNo">019</span><a id="line.19"> * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,</a>
+<span class="sourceLineNo">020</span><a id="line.20"> * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,</a>
+<span class="sourceLineNo">021</span><a id="line.21"> * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,</a>
+<span class="sourceLineNo">022</span><a id="line.22"> * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR</a>
+<span class="sourceLineNo">023</span><a id="line.23"> * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT</a>
+<span class="sourceLineNo">024</span><a id="line.24"> * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.</a>
+<span class="sourceLineNo">025</span><a id="line.25"> */</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27">package gov.nist.secauto.oscal.lib.profile.resolver.alter;</a>
+<span class="sourceLineNo">028</span><a id="line.28"></a>
+<span class="sourceLineNo">029</span><a id="line.29">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import gov.nist.secauto.oscal.lib.model.Catalog;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import gov.nist.secauto.oscal.lib.model.CatalogGroup;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import gov.nist.secauto.oscal.lib.model.Control;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import gov.nist.secauto.oscal.lib.model.ControlPart;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import gov.nist.secauto.oscal.lib.model.Link;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import gov.nist.secauto.oscal.lib.model.Parameter;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import gov.nist.secauto.oscal.lib.model.Property;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import gov.nist.secauto.oscal.lib.model.control.catalog.ICatalogVisitor;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;</a>
+<span class="sourceLineNo">042</span><a id="line.42"></a>
+<span class="sourceLineNo">043</span><a id="line.43">import java.util.Collections;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import java.util.EnumMap;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import java.util.EnumSet;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import java.util.LinkedList;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import java.util.List;</a>
+<span class="sourceLineNo">048</span><a id="line.48">import java.util.ListIterator;</a>
+<span class="sourceLineNo">049</span><a id="line.49">import java.util.Locale;</a>
+<span class="sourceLineNo">050</span><a id="line.50">import java.util.Map;</a>
+<span class="sourceLineNo">051</span><a id="line.51">import java.util.Set;</a>
+<span class="sourceLineNo">052</span><a id="line.52">import java.util.concurrent.ConcurrentHashMap;</a>
+<span class="sourceLineNo">053</span><a id="line.53">import java.util.function.Consumer;</a>
+<span class="sourceLineNo">054</span><a id="line.54">import java.util.function.Function;</a>
+<span class="sourceLineNo">055</span><a id="line.55">import java.util.function.Supplier;</a>
+<span class="sourceLineNo">056</span><a id="line.56"></a>
+<span class="sourceLineNo">057</span><a id="line.57">import edu.umd.cs.findbugs.annotations.NonNull;</a>
+<span class="sourceLineNo">058</span><a id="line.58">import edu.umd.cs.findbugs.annotations.Nullable;</a>
+<span class="sourceLineNo">059</span><a id="line.59"></a>
+<span class="sourceLineNo">060</span><a id="line.60">public class AddVisitor implements ICatalogVisitor&lt;Boolean, AddVisitor.Context&gt; {</a>
+<span class="sourceLineNo">061</span><a id="line.61">  public enum TargetType {</a>
+<span class="sourceLineNo">062</span><a id="line.62">    CONTROL("control", Control.class),</a>
+<span class="sourceLineNo">063</span><a id="line.63">    PARAM("param", Parameter.class),</a>
+<span class="sourceLineNo">064</span><a id="line.64">    PART("part", ControlPart.class);</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">    @NonNull</a>
+<span class="sourceLineNo">067</span><a id="line.67">    private static final Map&lt;Class&lt;?&gt;, TargetType&gt; CLASS_TO_TYPE;</a>
+<span class="sourceLineNo">068</span><a id="line.68">    @NonNull</a>
+<span class="sourceLineNo">069</span><a id="line.69">    private static final Map&lt;String, TargetType&gt; NAME_TO_TYPE;</a>
+<span class="sourceLineNo">070</span><a id="line.70">    @NonNull</a>
+<span class="sourceLineNo">071</span><a id="line.71">    private final String fieldName;</a>
+<span class="sourceLineNo">072</span><a id="line.72">    @NonNull</a>
+<span class="sourceLineNo">073</span><a id="line.73">    private final Class&lt;?&gt; clazz;</a>
+<span class="sourceLineNo">074</span><a id="line.74"></a>
+<span class="sourceLineNo">075</span><a id="line.75">    static {</a>
+<span class="sourceLineNo">076</span><a id="line.76">      {</a>
+<span class="sourceLineNo">077</span><a id="line.77">        Map&lt;Class&lt;?&gt;, TargetType&gt; map = new ConcurrentHashMap&lt;&gt;();</a>
+<span class="sourceLineNo">078</span><a id="line.78">        for (TargetType type : TargetType.values()) {</a>
+<span class="sourceLineNo">079</span><a id="line.79">          map.put(type.getClazz(), type);</a>
+<span class="sourceLineNo">080</span><a id="line.80">        }</a>
+<span class="sourceLineNo">081</span><a id="line.81">        CLASS_TO_TYPE = CollectionUtil.unmodifiableMap(map);</a>
+<span class="sourceLineNo">082</span><a id="line.82">      }</a>
+<span class="sourceLineNo">083</span><a id="line.83"></a>
+<span class="sourceLineNo">084</span><a id="line.84">      {</a>
+<span class="sourceLineNo">085</span><a id="line.85">        Map&lt;String, TargetType&gt; map = new ConcurrentHashMap&lt;&gt;();</a>
+<span class="sourceLineNo">086</span><a id="line.86">        for (TargetType type : TargetType.values()) {</a>
+<span class="sourceLineNo">087</span><a id="line.87">          map.put(type.fieldName(), type);</a>
+<span class="sourceLineNo">088</span><a id="line.88">        }</a>
+<span class="sourceLineNo">089</span><a id="line.89">        NAME_TO_TYPE = CollectionUtil.unmodifiableMap(map);</a>
+<span class="sourceLineNo">090</span><a id="line.90">      }</a>
+<span class="sourceLineNo">091</span><a id="line.91">    }</a>
+<span class="sourceLineNo">092</span><a id="line.92"></a>
+<span class="sourceLineNo">093</span><a id="line.93">    /**</a>
+<span class="sourceLineNo">094</span><a id="line.94">     * Get the target type associated with the provided {@code clazz}.</a>
+<span class="sourceLineNo">095</span><a id="line.95">     *</a>
+<span class="sourceLineNo">096</span><a id="line.96">     * @param clazz</a>
+<span class="sourceLineNo">097</span><a id="line.97">     *          the class to identify the target type for</a>
+<span class="sourceLineNo">098</span><a id="line.98">     * @return the associated target type or {@code null} if the class is not associated with a target</a>
+<span class="sourceLineNo">099</span><a id="line.99">     *         type</a>
+<span class="sourceLineNo">100</span><a id="line.100">     */</a>
+<span class="sourceLineNo">101</span><a id="line.101">    @Nullable</a>
+<span class="sourceLineNo">102</span><a id="line.102">    public static TargetType forClass(@NonNull Class&lt;?&gt; clazz) {</a>
+<span class="sourceLineNo">103</span><a id="line.103">      Class&lt;?&gt; target = clazz;</a>
+<span class="sourceLineNo">104</span><a id="line.104">      TargetType retval;</a>
+<span class="sourceLineNo">105</span><a id="line.105">      // recurse over parent classes to find a match</a>
+<span class="sourceLineNo">106</span><a id="line.106">      do {</a>
+<span class="sourceLineNo">107</span><a id="line.107">        retval = CLASS_TO_TYPE.get(target);</a>
+<span class="sourceLineNo">108</span><a id="line.108">      } while (retval == null &amp;&amp; (target = target.getSuperclass()) != null);</a>
+<span class="sourceLineNo">109</span><a id="line.109">      return retval;</a>
+<span class="sourceLineNo">110</span><a id="line.110">    }</a>
+<span class="sourceLineNo">111</span><a id="line.111"></a>
+<span class="sourceLineNo">112</span><a id="line.112">    /**</a>
+<span class="sourceLineNo">113</span><a id="line.113">     * Get the target type associated with the provided field {@code name}.</a>
+<span class="sourceLineNo">114</span><a id="line.114">     *</a>
+<span class="sourceLineNo">115</span><a id="line.115">     * @param name</a>
+<span class="sourceLineNo">116</span><a id="line.116">     *          the field name to identify the target type for</a>
+<span class="sourceLineNo">117</span><a id="line.117">     * @return the associated target type or {@code null} if the name is not associated with a target</a>
+<span class="sourceLineNo">118</span><a id="line.118">     *         type</a>
+<span class="sourceLineNo">119</span><a id="line.119">     */</a>
+<span class="sourceLineNo">120</span><a id="line.120">    @Nullable</a>
+<span class="sourceLineNo">121</span><a id="line.121">    public static TargetType forFieldName(@Nullable String name) {</a>
+<span class="sourceLineNo">122</span><a id="line.122">      return name == null ? null : NAME_TO_TYPE.get(name);</a>
+<span class="sourceLineNo">123</span><a id="line.123">    }</a>
+<span class="sourceLineNo">124</span><a id="line.124"></a>
+<span class="sourceLineNo">125</span><a id="line.125">    TargetType(@NonNull String fieldName, @NonNull Class&lt;?&gt; clazz) {</a>
+<span class="sourceLineNo">126</span><a id="line.126">      this.fieldName = fieldName;</a>
+<span class="sourceLineNo">127</span><a id="line.127">      this.clazz = clazz;</a>
+<span class="sourceLineNo">128</span><a id="line.128">    }</a>
+<span class="sourceLineNo">129</span><a id="line.129"></a>
+<span class="sourceLineNo">130</span><a id="line.130">    /**</a>
+<span class="sourceLineNo">131</span><a id="line.131">     * Get the field name associated with the target type.</a>
+<span class="sourceLineNo">132</span><a id="line.132">     *</a>
+<span class="sourceLineNo">133</span><a id="line.133">     * @return the name</a>
+<span class="sourceLineNo">134</span><a id="line.134">     */</a>
+<span class="sourceLineNo">135</span><a id="line.135">    public String fieldName() {</a>
+<span class="sourceLineNo">136</span><a id="line.136">      return fieldName;</a>
+<span class="sourceLineNo">137</span><a id="line.137">    }</a>
+<span class="sourceLineNo">138</span><a id="line.138"></a>
+<span class="sourceLineNo">139</span><a id="line.139">    /**</a>
+<span class="sourceLineNo">140</span><a id="line.140">     * Get the bound class associated with the target type.</a>
+<span class="sourceLineNo">141</span><a id="line.141">     *</a>
+<span class="sourceLineNo">142</span><a id="line.142">     * @return the class</a>
+<span class="sourceLineNo">143</span><a id="line.143">     */</a>
+<span class="sourceLineNo">144</span><a id="line.144">    public Class&lt;?&gt; getClazz() {</a>
+<span class="sourceLineNo">145</span><a id="line.145">      return clazz;</a>
+<span class="sourceLineNo">146</span><a id="line.146">    }</a>
+<span class="sourceLineNo">147</span><a id="line.147">  }</a>
+<span class="sourceLineNo">148</span><a id="line.148"></a>
+<span class="sourceLineNo">149</span><a id="line.149">  public enum Position {</a>
+<span class="sourceLineNo">150</span><a id="line.150">    BEFORE,</a>
+<span class="sourceLineNo">151</span><a id="line.151">    AFTER,</a>
+<span class="sourceLineNo">152</span><a id="line.152">    STARTING,</a>
+<span class="sourceLineNo">153</span><a id="line.153">    ENDING;</a>
+<span class="sourceLineNo">154</span><a id="line.154"></a>
+<span class="sourceLineNo">155</span><a id="line.155">    @NonNull</a>
+<span class="sourceLineNo">156</span><a id="line.156">    private static final Map&lt;String, Position&gt; NAME_TO_POSITION;</a>
+<span class="sourceLineNo">157</span><a id="line.157"></a>
+<span class="sourceLineNo">158</span><a id="line.158">    static {</a>
+<span class="sourceLineNo">159</span><a id="line.159">      Map&lt;String, Position&gt; map = new ConcurrentHashMap&lt;&gt;();</a>
+<span class="sourceLineNo">160</span><a id="line.160">      for (Position position : Position.values()) {</a>
+<span class="sourceLineNo">161</span><a id="line.161">        map.put(position.name().toLowerCase(Locale.ROOT), position);</a>
+<span class="sourceLineNo">162</span><a id="line.162">      }</a>
+<span class="sourceLineNo">163</span><a id="line.163">      NAME_TO_POSITION = CollectionUtil.unmodifiableMap(map);</a>
+<span class="sourceLineNo">164</span><a id="line.164">    }</a>
+<span class="sourceLineNo">165</span><a id="line.165"></a>
+<span class="sourceLineNo">166</span><a id="line.166">    /**</a>
+<span class="sourceLineNo">167</span><a id="line.167">     * Get the position associated with the provided {@code name}.</a>
+<span class="sourceLineNo">168</span><a id="line.168">     *</a>
+<span class="sourceLineNo">169</span><a id="line.169">     * @param name</a>
+<span class="sourceLineNo">170</span><a id="line.170">     *          the name to identify the position for</a>
+<span class="sourceLineNo">171</span><a id="line.171">     * @return the associated position or {@code null} if the name is not associated with a position</a>
+<span class="sourceLineNo">172</span><a id="line.172">     */</a>
+<span class="sourceLineNo">173</span><a id="line.173">    @Nullable</a>
+<span class="sourceLineNo">174</span><a id="line.174">    public static Position forName(@Nullable String name) {</a>
+<span class="sourceLineNo">175</span><a id="line.175">      return name == null ? null : NAME_TO_POSITION.get(name);</a>
+<span class="sourceLineNo">176</span><a id="line.176">    }</a>
+<span class="sourceLineNo">177</span><a id="line.177">  }</a>
+<span class="sourceLineNo">178</span><a id="line.178"></a>
+<span class="sourceLineNo">179</span><a id="line.179">  @NonNull</a>
+<span class="sourceLineNo">180</span><a id="line.180">  private static final AddVisitor INSTANCE = new AddVisitor();</a>
+<span class="sourceLineNo">181</span><a id="line.181">  private static final Map&lt;TargetType, Set&lt;TargetType&gt;&gt; APPLICABLE_TARGETS;</a>
+<span class="sourceLineNo">182</span><a id="line.182"></a>
+<span class="sourceLineNo">183</span><a id="line.183">  static {</a>
+<span class="sourceLineNo">184</span><a id="line.184">    APPLICABLE_TARGETS = new EnumMap&lt;&gt;(TargetType.class);</a>
+<span class="sourceLineNo">185</span><a id="line.185">    APPLICABLE_TARGETS.put(TargetType.CONTROL, Set.of(TargetType.CONTROL, TargetType.PARAM, TargetType.PART));</a>
+<span class="sourceLineNo">186</span><a id="line.186">    APPLICABLE_TARGETS.put(TargetType.PARAM, Set.of(TargetType.PARAM));</a>
+<span class="sourceLineNo">187</span><a id="line.187">    APPLICABLE_TARGETS.put(TargetType.PART, Set.of(TargetType.PART));</a>
+<span class="sourceLineNo">188</span><a id="line.188">  }</a>
+<span class="sourceLineNo">189</span><a id="line.189"></a>
+<span class="sourceLineNo">190</span><a id="line.190">  private static Set&lt;TargetType&gt; getApplicableTypes(@NonNull TargetType type) {</a>
+<span class="sourceLineNo">191</span><a id="line.191">    return APPLICABLE_TARGETS.getOrDefault(type, CollectionUtil.emptySet());</a>
+<span class="sourceLineNo">192</span><a id="line.192">  }</a>
+<span class="sourceLineNo">193</span><a id="line.193"></a>
+<span class="sourceLineNo">194</span><a id="line.194">  /**</a>
+<span class="sourceLineNo">195</span><a id="line.195">   * Apply the add directive.</a>
+<span class="sourceLineNo">196</span><a id="line.196">   *</a>
+<span class="sourceLineNo">197</span><a id="line.197">   * @param control</a>
+<span class="sourceLineNo">198</span><a id="line.198">   *          the control target</a>
+<span class="sourceLineNo">199</span><a id="line.199">   * @param position</a>
+<span class="sourceLineNo">200</span><a id="line.200">   *          the position to apply the content or {@code null}</a>
+<span class="sourceLineNo">201</span><a id="line.201">   * @param byId</a>
+<span class="sourceLineNo">202</span><a id="line.202">   *          the identifier of the target or {@code null}</a>
+<span class="sourceLineNo">203</span><a id="line.203">   * @param title</a>
+<span class="sourceLineNo">204</span><a id="line.204">   *          a title to set</a>
+<span class="sourceLineNo">205</span><a id="line.205">   * @param params</a>
+<span class="sourceLineNo">206</span><a id="line.206">   *          parameters to add</a>
+<span class="sourceLineNo">207</span><a id="line.207">   * @param props</a>
+<span class="sourceLineNo">208</span><a id="line.208">   *          properties to add</a>
+<span class="sourceLineNo">209</span><a id="line.209">   * @param links</a>
+<span class="sourceLineNo">210</span><a id="line.210">   *          links to add</a>
+<span class="sourceLineNo">211</span><a id="line.211">   * @param parts</a>
+<span class="sourceLineNo">212</span><a id="line.212">   *          parts to add</a>
+<span class="sourceLineNo">213</span><a id="line.213">   * @return {@code true} if the modification was made or {@code false} otherwise</a>
+<span class="sourceLineNo">214</span><a id="line.214">   * @throws ProfileResolutionEvaluationException</a>
+<span class="sourceLineNo">215</span><a id="line.215">   *           if a processing error occurred during profile resolution</a>
+<span class="sourceLineNo">216</span><a id="line.216">   */</a>
+<span class="sourceLineNo">217</span><a id="line.217">  public static boolean add(</a>
+<span class="sourceLineNo">218</span><a id="line.218">      @NonNull Control control,</a>
+<span class="sourceLineNo">219</span><a id="line.219">      @Nullable Position position,</a>
+<span class="sourceLineNo">220</span><a id="line.220">      @Nullable String byId,</a>
+<span class="sourceLineNo">221</span><a id="line.221">      @Nullable MarkupLine title,</a>
+<span class="sourceLineNo">222</span><a id="line.222">      @NonNull List&lt;Parameter&gt; params,</a>
+<span class="sourceLineNo">223</span><a id="line.223">      @NonNull List&lt;Property&gt; props,</a>
+<span class="sourceLineNo">224</span><a id="line.224">      @NonNull List&lt;Link&gt; links,</a>
+<span class="sourceLineNo">225</span><a id="line.225">      @NonNull List&lt;ControlPart&gt; parts) {</a>
+<span class="sourceLineNo">226</span><a id="line.226">    return INSTANCE.visitControl(</a>
+<span class="sourceLineNo">227</span><a id="line.227">        control,</a>
+<span class="sourceLineNo">228</span><a id="line.228">        new Context(</a>
+<span class="sourceLineNo">229</span><a id="line.229">            control,</a>
+<span class="sourceLineNo">230</span><a id="line.230">            position == null ? Position.ENDING : position,</a>
+<span class="sourceLineNo">231</span><a id="line.231">            byId,</a>
+<span class="sourceLineNo">232</span><a id="line.232">            title,</a>
+<span class="sourceLineNo">233</span><a id="line.233">            params,</a>
+<span class="sourceLineNo">234</span><a id="line.234">            props,</a>
+<span class="sourceLineNo">235</span><a id="line.235">            links,</a>
+<span class="sourceLineNo">236</span><a id="line.236">            parts));</a>
+<span class="sourceLineNo">237</span><a id="line.237">  }</a>
+<span class="sourceLineNo">238</span><a id="line.238"></a>
+<span class="sourceLineNo">239</span><a id="line.239">  @Override</a>
+<span class="sourceLineNo">240</span><a id="line.240">  public Boolean visitCatalog(Catalog catalog, Context context) {</a>
+<span class="sourceLineNo">241</span><a id="line.241">    // not required</a>
+<span class="sourceLineNo">242</span><a id="line.242">    throw new UnsupportedOperationException("not needed");</a>
+<span class="sourceLineNo">243</span><a id="line.243">  }</a>
+<span class="sourceLineNo">244</span><a id="line.244"></a>
+<span class="sourceLineNo">245</span><a id="line.245">  @Override</a>
+<span class="sourceLineNo">246</span><a id="line.246">  public Boolean visitGroup(CatalogGroup group, Context context) {</a>
+<span class="sourceLineNo">247</span><a id="line.247">    // not required</a>
+<span class="sourceLineNo">248</span><a id="line.248">    throw new UnsupportedOperationException("not needed");</a>
+<span class="sourceLineNo">249</span><a id="line.249">  }</a>
+<span class="sourceLineNo">250</span><a id="line.250"></a>
+<span class="sourceLineNo">251</span><a id="line.251">  /**</a>
+<span class="sourceLineNo">252</span><a id="line.252">   * If the add applies to the current object, then apply the child objects.</a>
+<span class="sourceLineNo">253</span><a id="line.253">   * &lt;p&gt;</a>
+<span class="sourceLineNo">254</span><a id="line.254">   * An add applies if:</a>
+<span class="sourceLineNo">255</span><a id="line.255">   * &lt;ol&gt;</a>
+<span class="sourceLineNo">256</span><a id="line.256">   * &lt;li&gt;the {@code targetItem} supports all of the children&lt;/li&gt;</a>
+<span class="sourceLineNo">257</span><a id="line.257">   * &lt;li&gt;the context matches if:</a>
+<span class="sourceLineNo">258</span><a id="line.258">   * &lt;ul&gt;</a>
+<span class="sourceLineNo">259</span><a id="line.259">   * &lt;li&gt;the target item's id matches the "by-id"; or&lt;/li&gt;</a>
+<span class="sourceLineNo">260</span><a id="line.260">   * &lt;li&gt;the "by-id" is not defined and the target item is the control matching the target</a>
+<span class="sourceLineNo">261</span><a id="line.261">   * context&lt;/li&gt;</a>
+<span class="sourceLineNo">262</span><a id="line.262">   * &lt;/ul&gt;</a>
+<span class="sourceLineNo">263</span><a id="line.263">   * &lt;/li&gt;</a>
+<span class="sourceLineNo">264</span><a id="line.264">   * &lt;/ol&gt;</a>
+<span class="sourceLineNo">265</span><a id="line.265">   *</a>
+<span class="sourceLineNo">266</span><a id="line.266">   * @param &lt;T&gt;</a>
+<span class="sourceLineNo">267</span><a id="line.267">   *          the type of the {@code targetItem}</a>
+<span class="sourceLineNo">268</span><a id="line.268">   * @param targetItem</a>
+<span class="sourceLineNo">269</span><a id="line.269">   *          the current target to process</a>
+<span class="sourceLineNo">270</span><a id="line.270">   * @param titleConsumer</a>
+<span class="sourceLineNo">271</span><a id="line.271">   *          a consumer to apply a title to or {@code null} if the object has no title field</a>
+<span class="sourceLineNo">272</span><a id="line.272">   * @param paramsSupplier</a>
+<span class="sourceLineNo">273</span><a id="line.273">   *          a supplier for the child {@link Parameter} collection</a>
+<span class="sourceLineNo">274</span><a id="line.274">   * @param propsSupplier</a>
+<span class="sourceLineNo">275</span><a id="line.275">   *          a supplier for the child {@link Property} collection</a>
+<span class="sourceLineNo">276</span><a id="line.276">   * @param linksSupplier</a>
+<span class="sourceLineNo">277</span><a id="line.277">   *          a supplier for the child {@link Link} collection</a>
+<span class="sourceLineNo">278</span><a id="line.278">   * @param partsSupplier</a>
+<span class="sourceLineNo">279</span><a id="line.279">   *          a supplier for the child {@link ControlPart} collection</a>
+<span class="sourceLineNo">280</span><a id="line.280">   * @param context</a>
+<span class="sourceLineNo">281</span><a id="line.281">   *          the add context</a>
+<span class="sourceLineNo">282</span><a id="line.282">   * @return {@code true} if a modification was made or {@code false} otherwise</a>
+<span class="sourceLineNo">283</span><a id="line.283">   */</a>
+<span class="sourceLineNo">284</span><a id="line.284">  private static &lt;T&gt; boolean handleCurrent(</a>
+<span class="sourceLineNo">285</span><a id="line.285">      @NonNull T targetItem,</a>
+<span class="sourceLineNo">286</span><a id="line.286">      @Nullable Consumer&lt;MarkupLine&gt; titleConsumer,</a>
+<span class="sourceLineNo">287</span><a id="line.287">      @Nullable Supplier&lt;? extends List&lt;Parameter&gt;&gt; paramsSupplier,</a>
+<span class="sourceLineNo">288</span><a id="line.288">      @Nullable Supplier&lt;? extends List&lt;Property&gt;&gt; propsSupplier,</a>
+<span class="sourceLineNo">289</span><a id="line.289">      @Nullable Supplier&lt;? extends List&lt;Link&gt;&gt; linksSupplier,</a>
+<span class="sourceLineNo">290</span><a id="line.290">      @Nullable Supplier&lt;? extends List&lt;ControlPart&gt;&gt; partsSupplier,</a>
+<span class="sourceLineNo">291</span><a id="line.291">      @NonNull Context context) {</a>
+<span class="sourceLineNo">292</span><a id="line.292">    boolean retval = false;</a>
+<span class="sourceLineNo">293</span><a id="line.293">    Position position = context.getPosition();</a>
+<span class="sourceLineNo">294</span><a id="line.294">    if (context.appliesTo(targetItem) &amp;&amp; !context.isSequenceTargeted(targetItem)) {</a>
+<span class="sourceLineNo">295</span><a id="line.295">      // the target item is the target of the add</a>
+<span class="sourceLineNo">296</span><a id="line.296">      MarkupLine newTitle = context.getTitle();</a>
+<span class="sourceLineNo">297</span><a id="line.297">      if (newTitle != null) {</a>
+<span class="sourceLineNo">298</span><a id="line.298">        assert titleConsumer != null;</a>
+<span class="sourceLineNo">299</span><a id="line.299">        titleConsumer.accept(newTitle);</a>
+<span class="sourceLineNo">300</span><a id="line.300">      }</a>
+<span class="sourceLineNo">301</span><a id="line.301"></a>
+<span class="sourceLineNo">302</span><a id="line.302">      handleCollection(position, context.getParams(), paramsSupplier);</a>
+<span class="sourceLineNo">303</span><a id="line.303">      handleCollection(position, context.getProps(), propsSupplier);</a>
+<span class="sourceLineNo">304</span><a id="line.304">      handleCollection(position, context.getLinks(), linksSupplier);</a>
+<span class="sourceLineNo">305</span><a id="line.305">      handleCollection(position, context.getParts(), partsSupplier);</a>
+<span class="sourceLineNo">306</span><a id="line.306">      retval = true;</a>
+<span class="sourceLineNo">307</span><a id="line.307">    }</a>
+<span class="sourceLineNo">308</span><a id="line.308">    return retval;</a>
+<span class="sourceLineNo">309</span><a id="line.309">  }</a>
+<span class="sourceLineNo">310</span><a id="line.310"></a>
+<span class="sourceLineNo">311</span><a id="line.311">  private static &lt;T&gt; void handleCollection(</a>
+<span class="sourceLineNo">312</span><a id="line.312">      @NonNull Position position,</a>
+<span class="sourceLineNo">313</span><a id="line.313">      @NonNull List&lt;T&gt; newItems,</a>
+<span class="sourceLineNo">314</span><a id="line.314">      @Nullable Supplier&lt;? extends List&lt;T&gt;&gt; originalCollectionSupplier) {</a>
+<span class="sourceLineNo">315</span><a id="line.315">    if (originalCollectionSupplier != null) {</a>
+<span class="sourceLineNo">316</span><a id="line.316">      List&lt;T&gt; oldItems = originalCollectionSupplier.get();</a>
+<span class="sourceLineNo">317</span><a id="line.317">      if (!newItems.isEmpty()) {</a>
+<span class="sourceLineNo">318</span><a id="line.318">        if (Position.STARTING.equals(position)) {</a>
+<span class="sourceLineNo">319</span><a id="line.319">          oldItems.addAll(0, newItems);</a>
+<span class="sourceLineNo">320</span><a id="line.320">        } else { // ENDING</a>
+<span class="sourceLineNo">321</span><a id="line.321">          oldItems.addAll(newItems);</a>
+<span class="sourceLineNo">322</span><a id="line.322">        }</a>
+<span class="sourceLineNo">323</span><a id="line.323">      }</a>
+<span class="sourceLineNo">324</span><a id="line.324">    }</a>
+<span class="sourceLineNo">325</span><a id="line.325">  }</a>
+<span class="sourceLineNo">326</span><a id="line.326"></a>
+<span class="sourceLineNo">327</span><a id="line.327">  // private static &lt;T&gt; void handleChild(</a>
+<span class="sourceLineNo">328</span><a id="line.328">  // @NonNull TargetType itemType,</a>
+<span class="sourceLineNo">329</span><a id="line.329">  // @NonNull Supplier&lt;? extends List&lt;T&gt;&gt; collectionSupplier,</a>
+<span class="sourceLineNo">330</span><a id="line.330">  // @Nullable Consumer&lt;T&gt; handler,</a>
+<span class="sourceLineNo">331</span><a id="line.331">  // @NonNull Context context) {</a>
+<span class="sourceLineNo">332</span><a id="line.332">  // boolean handleChildren = !Collections.disjoint(context.getTargetItemTypes(),</a>
+<span class="sourceLineNo">333</span><a id="line.333">  // getApplicableTypes(itemType));</a>
+<span class="sourceLineNo">334</span><a id="line.334">  // if (handleChildren &amp;&amp; handler != null) {</a>
+<span class="sourceLineNo">335</span><a id="line.335">  // // if the child item type is applicable and there is a handler, iterate over children</a>
+<span class="sourceLineNo">336</span><a id="line.336">  // Iterator&lt;T&gt; iter = collectionSupplier.get().iterator();</a>
+<span class="sourceLineNo">337</span><a id="line.337">  // while (iter.hasNext()) {</a>
+<span class="sourceLineNo">338</span><a id="line.338">  // T item = iter.next();</a>
+<span class="sourceLineNo">339</span><a id="line.339">  // if (item != null) {</a>
+<span class="sourceLineNo">340</span><a id="line.340">  // handler.accept(item);</a>
+<span class="sourceLineNo">341</span><a id="line.341">  // }</a>
+<span class="sourceLineNo">342</span><a id="line.342">  // }</a>
+<span class="sourceLineNo">343</span><a id="line.343">  // }</a>
+<span class="sourceLineNo">344</span><a id="line.344">  // }</a>
+<span class="sourceLineNo">345</span><a id="line.345"></a>
+<span class="sourceLineNo">346</span><a id="line.346">  private static &lt;T&gt; boolean handleChild(</a>
+<span class="sourceLineNo">347</span><a id="line.347">      @NonNull TargetType itemType,</a>
+<span class="sourceLineNo">348</span><a id="line.348">      @NonNull Supplier&lt;? extends List&lt;T&gt;&gt; originalCollectionSupplier,</a>
+<span class="sourceLineNo">349</span><a id="line.349">      @NonNull Supplier&lt;? extends List&lt;T&gt;&gt; newItemsSupplier,</a>
+<span class="sourceLineNo">350</span><a id="line.350">      @Nullable Function&lt;T, Boolean&gt; handler,</a>
+<span class="sourceLineNo">351</span><a id="line.351">      @NonNull Context context) {</a>
+<span class="sourceLineNo">352</span><a id="line.352"></a>
+<span class="sourceLineNo">353</span><a id="line.353">    // determine if this child type can match</a>
+<span class="sourceLineNo">354</span><a id="line.354">    boolean isItemTypeMatch = context.isMatchingType(itemType);</a>
+<span class="sourceLineNo">355</span><a id="line.355"></a>
+<span class="sourceLineNo">356</span><a id="line.356">    Set&lt;TargetType&gt; applicableTypes = getApplicableTypes(itemType);</a>
+<span class="sourceLineNo">357</span><a id="line.357">    boolean descendChild = handler != null &amp;&amp; !Collections.disjoint(context.getTargetItemTypes(), applicableTypes);</a>
+<span class="sourceLineNo">358</span><a id="line.358"></a>
+<span class="sourceLineNo">359</span><a id="line.359">    boolean retval = false;</a>
+<span class="sourceLineNo">360</span><a id="line.360">    if (isItemTypeMatch || descendChild) {</a>
+<span class="sourceLineNo">361</span><a id="line.361">      // if the item type is applicable, attempt to match by id</a>
+<span class="sourceLineNo">362</span><a id="line.362">      List&lt;T&gt; collection = originalCollectionSupplier.get();</a>
+<span class="sourceLineNo">363</span><a id="line.363">      ListIterator&lt;T&gt; iter = collection.listIterator();</a>
+<span class="sourceLineNo">364</span><a id="line.364">      boolean deferred = false;</a>
+<span class="sourceLineNo">365</span><a id="line.365">      while (iter.hasNext()) {</a>
+<span class="sourceLineNo">366</span><a id="line.366">        T item = ObjectUtils.requireNonNull(iter.next());</a>
+<span class="sourceLineNo">367</span><a id="line.367"></a>
+<span class="sourceLineNo">368</span><a id="line.368">        if (isItemTypeMatch &amp;&amp; context.appliesTo(item) &amp;&amp; context.isSequenceTargeted(item)) {</a>
+<span class="sourceLineNo">369</span><a id="line.369">          // if id match, inject the new items into the collection</a>
+<span class="sourceLineNo">370</span><a id="line.370">          switch (context.getPosition()) {</a>
+<span class="sourceLineNo">371</span><a id="line.371">          case AFTER: {</a>
+<span class="sourceLineNo">372</span><a id="line.372">            newItemsSupplier.get().forEach(add -&gt; iter.add(add));</a>
+<span class="sourceLineNo">373</span><a id="line.373">            retval = true;</a>
+<span class="sourceLineNo">374</span><a id="line.374">            break;</a>
+<span class="sourceLineNo">375</span><a id="line.375">          }</a>
+<span class="sourceLineNo">376</span><a id="line.376">          case BEFORE: {</a>
+<span class="sourceLineNo">377</span><a id="line.377">            iter.previous();</a>
+<span class="sourceLineNo">378</span><a id="line.378">            List&lt;T&gt; adds = newItemsSupplier.get();</a>
+<span class="sourceLineNo">379</span><a id="line.379">            adds.forEach(add -&gt; iter.add(add));</a>
+<span class="sourceLineNo">380</span><a id="line.380">            item = iter.next();</a>
+<span class="sourceLineNo">381</span><a id="line.381">            retval = true;</a>
+<span class="sourceLineNo">382</span><a id="line.382">            break;</a>
+<span class="sourceLineNo">383</span><a id="line.383">          }</a>
+<span class="sourceLineNo">384</span><a id="line.384">          case STARTING:</a>
+<span class="sourceLineNo">385</span><a id="line.385">          case ENDING:</a>
+<span class="sourceLineNo">386</span><a id="line.386">            deferred = true;</a>
+<span class="sourceLineNo">387</span><a id="line.387">            break;</a>
+<span class="sourceLineNo">388</span><a id="line.388">          default:</a>
+<span class="sourceLineNo">389</span><a id="line.389">            throw new UnsupportedOperationException(context.getPosition().name().toLowerCase(Locale.ROOT));</a>
+<span class="sourceLineNo">390</span><a id="line.390">          }</a>
+<span class="sourceLineNo">391</span><a id="line.391">        }</a>
+<span class="sourceLineNo">392</span><a id="line.392"></a>
+<span class="sourceLineNo">393</span><a id="line.393">        if (descendChild) {</a>
+<span class="sourceLineNo">394</span><a id="line.394">          assert handler != null;</a>
+<span class="sourceLineNo">395</span><a id="line.395"></a>
+<span class="sourceLineNo">396</span><a id="line.396">          // handle child items since they are applicable to the search criteria</a>
+<span class="sourceLineNo">397</span><a id="line.397">          retval = retval || handler.apply(item);</a>
+<span class="sourceLineNo">398</span><a id="line.398">        }</a>
+<span class="sourceLineNo">399</span><a id="line.399">      }</a>
+<span class="sourceLineNo">400</span><a id="line.400"></a>
+<span class="sourceLineNo">401</span><a id="line.401">      if (deferred) {</a>
+<span class="sourceLineNo">402</span><a id="line.402">        List&lt;T&gt; newItems = newItemsSupplier.get();</a>
+<span class="sourceLineNo">403</span><a id="line.403">        if (Position.ENDING.equals(context.getPosition())) {</a>
+<span class="sourceLineNo">404</span><a id="line.404">          collection.addAll(newItems);</a>
+<span class="sourceLineNo">405</span><a id="line.405">          retval = true;</a>
+<span class="sourceLineNo">406</span><a id="line.406">        } else if (Position.STARTING.equals(context.getPosition())) {</a>
+<span class="sourceLineNo">407</span><a id="line.407">          collection.addAll(0, newItems);</a>
+<span class="sourceLineNo">408</span><a id="line.408">          retval = true;</a>
+<span class="sourceLineNo">409</span><a id="line.409">        }</a>
+<span class="sourceLineNo">410</span><a id="line.410">      }</a>
+<span class="sourceLineNo">411</span><a id="line.411">    }</a>
+<span class="sourceLineNo">412</span><a id="line.412">    return retval;</a>
+<span class="sourceLineNo">413</span><a id="line.413">  }</a>
+<span class="sourceLineNo">414</span><a id="line.414"></a>
+<span class="sourceLineNo">415</span><a id="line.415">  @Override</a>
+<span class="sourceLineNo">416</span><a id="line.416">  public Boolean visitControl(Control control, Context context) {</a>
+<span class="sourceLineNo">417</span><a id="line.417">    assert context != null;</a>
+<span class="sourceLineNo">418</span><a id="line.418"></a>
+<span class="sourceLineNo">419</span><a id="line.419">    if (control.getParams() == null) {</a>
+<span class="sourceLineNo">420</span><a id="line.420">      control.setParams(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">421</span><a id="line.421">    }</a>
+<span class="sourceLineNo">422</span><a id="line.422"></a>
+<span class="sourceLineNo">423</span><a id="line.423">    if (control.getProps() == null) {</a>
+<span class="sourceLineNo">424</span><a id="line.424">      control.setProps(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">425</span><a id="line.425">    }</a>
+<span class="sourceLineNo">426</span><a id="line.426"></a>
+<span class="sourceLineNo">427</span><a id="line.427">    if (control.getLinks() == null) {</a>
+<span class="sourceLineNo">428</span><a id="line.428">      control.setLinks(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">429</span><a id="line.429">    }</a>
+<span class="sourceLineNo">430</span><a id="line.430"></a>
+<span class="sourceLineNo">431</span><a id="line.431">    if (control.getParts() == null) {</a>
+<span class="sourceLineNo">432</span><a id="line.432">      control.setParts(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">433</span><a id="line.433">    }</a>
+<span class="sourceLineNo">434</span><a id="line.434"></a>
+<span class="sourceLineNo">435</span><a id="line.435">    boolean retval = handleCurrent(</a>
+<span class="sourceLineNo">436</span><a id="line.436">        control,</a>
+<span class="sourceLineNo">437</span><a id="line.437">        title -&gt; control.setTitle(title),</a>
+<span class="sourceLineNo">438</span><a id="line.438">        () -&gt; control.getParams(),</a>
+<span class="sourceLineNo">439</span><a id="line.439">        () -&gt; control.getProps(),</a>
+<span class="sourceLineNo">440</span><a id="line.440">        () -&gt; control.getLinks(),</a>
+<span class="sourceLineNo">441</span><a id="line.441">        () -&gt; control.getParts(),</a>
+<span class="sourceLineNo">442</span><a id="line.442">        context);</a>
+<span class="sourceLineNo">443</span><a id="line.443"></a>
+<span class="sourceLineNo">444</span><a id="line.444">    // visit params</a>
+<span class="sourceLineNo">445</span><a id="line.445">    retval = retval || handleChild(</a>
+<span class="sourceLineNo">446</span><a id="line.446">        TargetType.PARAM,</a>
+<span class="sourceLineNo">447</span><a id="line.447">        () -&gt; control.getParams(),</a>
+<span class="sourceLineNo">448</span><a id="line.448">        () -&gt; context.getParams(),</a>
+<span class="sourceLineNo">449</span><a id="line.449">        child -&gt; visitParameter(ObjectUtils.notNull(child), context),</a>
+<span class="sourceLineNo">450</span><a id="line.450">        context);</a>
+<span class="sourceLineNo">451</span><a id="line.451"></a>
+<span class="sourceLineNo">452</span><a id="line.452">    // visit parts</a>
+<span class="sourceLineNo">453</span><a id="line.453">    retval = retval || handleChild(</a>
+<span class="sourceLineNo">454</span><a id="line.454">        TargetType.PART,</a>
+<span class="sourceLineNo">455</span><a id="line.455">        () -&gt; control.getParts(),</a>
+<span class="sourceLineNo">456</span><a id="line.456">        () -&gt; context.getParts(),</a>
+<span class="sourceLineNo">457</span><a id="line.457">        child -&gt; visitPart(child, context),</a>
+<span class="sourceLineNo">458</span><a id="line.458">        context);</a>
+<span class="sourceLineNo">459</span><a id="line.459"></a>
+<span class="sourceLineNo">460</span><a id="line.460">    // visit control children</a>
+<span class="sourceLineNo">461</span><a id="line.461">    for (Control childControl : CollectionUtil.listOrEmpty(control.getControls())) {</a>
+<span class="sourceLineNo">462</span><a id="line.462">      Set&lt;TargetType&gt; applicableTypes = getApplicableTypes(TargetType.CONTROL);</a>
+<span class="sourceLineNo">463</span><a id="line.463">      if (!Collections.disjoint(context.getTargetItemTypes(), applicableTypes)) {</a>
+<span class="sourceLineNo">464</span><a id="line.464">        retval = retval || visitControl(ObjectUtils.requireNonNull(childControl), context);</a>
+<span class="sourceLineNo">465</span><a id="line.465">      }</a>
+<span class="sourceLineNo">466</span><a id="line.466">    }</a>
+<span class="sourceLineNo">467</span><a id="line.467">    return retval;</a>
+<span class="sourceLineNo">468</span><a id="line.468">  }</a>
+<span class="sourceLineNo">469</span><a id="line.469"></a>
+<span class="sourceLineNo">470</span><a id="line.470">  @Override</a>
+<span class="sourceLineNo">471</span><a id="line.471">  public Boolean visitParameter(Parameter parameter, Context context) {</a>
+<span class="sourceLineNo">472</span><a id="line.472">    assert context != null;</a>
+<span class="sourceLineNo">473</span><a id="line.473">    if (parameter.getProps() == null) {</a>
+<span class="sourceLineNo">474</span><a id="line.474">      parameter.setProps(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">475</span><a id="line.475">    }</a>
+<span class="sourceLineNo">476</span><a id="line.476"></a>
+<span class="sourceLineNo">477</span><a id="line.477">    if (parameter.getLinks() == null) {</a>
+<span class="sourceLineNo">478</span><a id="line.478">      parameter.setLinks(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">479</span><a id="line.479">    }</a>
+<span class="sourceLineNo">480</span><a id="line.480"></a>
+<span class="sourceLineNo">481</span><a id="line.481">    return handleCurrent(</a>
+<span class="sourceLineNo">482</span><a id="line.482">        parameter,</a>
+<span class="sourceLineNo">483</span><a id="line.483">        null,</a>
+<span class="sourceLineNo">484</span><a id="line.484">        null,</a>
+<span class="sourceLineNo">485</span><a id="line.485">        () -&gt; parameter.getProps(),</a>
+<span class="sourceLineNo">486</span><a id="line.486">        () -&gt; parameter.getLinks(),</a>
+<span class="sourceLineNo">487</span><a id="line.487">        null,</a>
+<span class="sourceLineNo">488</span><a id="line.488">        context);</a>
+<span class="sourceLineNo">489</span><a id="line.489">  }</a>
+<span class="sourceLineNo">490</span><a id="line.490"></a>
+<span class="sourceLineNo">491</span><a id="line.491">  /**</a>
+<span class="sourceLineNo">492</span><a id="line.492">   * Visit the control part.</a>
+<span class="sourceLineNo">493</span><a id="line.493">   *</a>
+<span class="sourceLineNo">494</span><a id="line.494">   * @param part</a>
+<span class="sourceLineNo">495</span><a id="line.495">   *          the bound part object</a>
+<span class="sourceLineNo">496</span><a id="line.496">   * @param context</a>
+<span class="sourceLineNo">497</span><a id="line.497">   *          the visitor context</a>
+<span class="sourceLineNo">498</span><a id="line.498">   * @return {@code true} if the removal was applied or {@code false} otherwise</a>
+<span class="sourceLineNo">499</span><a id="line.499">   */</a>
+<span class="sourceLineNo">500</span><a id="line.500">  public boolean visitPart(ControlPart part, Context context) {</a>
+<span class="sourceLineNo">501</span><a id="line.501">    assert context != null;</a>
+<span class="sourceLineNo">502</span><a id="line.502">    if (part.getProps() == null) {</a>
+<span class="sourceLineNo">503</span><a id="line.503">      part.setProps(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">504</span><a id="line.504">    }</a>
+<span class="sourceLineNo">505</span><a id="line.505"></a>
+<span class="sourceLineNo">506</span><a id="line.506">    if (part.getLinks() == null) {</a>
+<span class="sourceLineNo">507</span><a id="line.507">      part.setLinks(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">508</span><a id="line.508">    }</a>
+<span class="sourceLineNo">509</span><a id="line.509"></a>
+<span class="sourceLineNo">510</span><a id="line.510">    if (part.getParts() == null) {</a>
+<span class="sourceLineNo">511</span><a id="line.511">      part.setParts(new LinkedList&lt;&gt;());</a>
+<span class="sourceLineNo">512</span><a id="line.512">    }</a>
+<span class="sourceLineNo">513</span><a id="line.513"></a>
+<span class="sourceLineNo">514</span><a id="line.514">    boolean retval = handleCurrent(</a>
+<span class="sourceLineNo">515</span><a id="line.515">        part,</a>
+<span class="sourceLineNo">516</span><a id="line.516">        null,</a>
+<span class="sourceLineNo">517</span><a id="line.517">        null,</a>
+<span class="sourceLineNo">518</span><a id="line.518">        () -&gt; part.getProps(),</a>
+<span class="sourceLineNo">519</span><a id="line.519">        () -&gt; part.getLinks(),</a>
+<span class="sourceLineNo">520</span><a id="line.520">        () -&gt; part.getParts(),</a>
+<span class="sourceLineNo">521</span><a id="line.521">        context);</a>
+<span class="sourceLineNo">522</span><a id="line.522"></a>
+<span class="sourceLineNo">523</span><a id="line.523">    // visit parts</a>
+<span class="sourceLineNo">524</span><a id="line.524">    retval = retval || handleChild(</a>
+<span class="sourceLineNo">525</span><a id="line.525">        TargetType.PART,</a>
+<span class="sourceLineNo">526</span><a id="line.526">        () -&gt; part.getParts(),</a>
+<span class="sourceLineNo">527</span><a id="line.527">        () -&gt; context.getParts(),</a>
+<span class="sourceLineNo">528</span><a id="line.528">        child -&gt; visitPart(child, context),</a>
+<span class="sourceLineNo">529</span><a id="line.529">        context);</a>
+<span class="sourceLineNo">530</span><a id="line.530">    return retval;</a>
+<span class="sourceLineNo">531</span><a id="line.531">  }</a>
+<span class="sourceLineNo">532</span><a id="line.532"></a>
+<span class="sourceLineNo">533</span><a id="line.533">  static class Context {</a>
+<span class="sourceLineNo">534</span><a id="line.534">    @NonNull</a>
+<span class="sourceLineNo">535</span><a id="line.535">    private static final Set&lt;TargetType&gt; TITLE_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">536</span><a id="line.536">        Set.of(TargetType.CONTROL, TargetType.PART));</a>
+<span class="sourceLineNo">537</span><a id="line.537">    @NonNull</a>
+<span class="sourceLineNo">538</span><a id="line.538">    private static final Set&lt;TargetType&gt; PARAM_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">539</span><a id="line.539">        Set.of(TargetType.CONTROL, TargetType.PARAM));</a>
+<span class="sourceLineNo">540</span><a id="line.540">    @NonNull</a>
+<span class="sourceLineNo">541</span><a id="line.541">    private static final Set&lt;TargetType&gt; PROP_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">542</span><a id="line.542">        Set.of(TargetType.CONTROL, TargetType.PARAM, TargetType.PART));</a>
+<span class="sourceLineNo">543</span><a id="line.543">    @NonNull</a>
+<span class="sourceLineNo">544</span><a id="line.544">    private static final Set&lt;TargetType&gt; LINK_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">545</span><a id="line.545">        Set.of(TargetType.CONTROL, TargetType.PARAM, TargetType.PART));</a>
+<span class="sourceLineNo">546</span><a id="line.546">    @NonNull</a>
+<span class="sourceLineNo">547</span><a id="line.547">    private static final Set&lt;TargetType&gt; PART_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">548</span><a id="line.548">        Set.of(TargetType.CONTROL, TargetType.PART));</a>
+<span class="sourceLineNo">549</span><a id="line.549"></a>
+<span class="sourceLineNo">550</span><a id="line.550">    @NonNull</a>
+<span class="sourceLineNo">551</span><a id="line.551">    private final Control control;</a>
+<span class="sourceLineNo">552</span><a id="line.552">    @NonNull</a>
+<span class="sourceLineNo">553</span><a id="line.553">    private final Position position;</a>
+<span class="sourceLineNo">554</span><a id="line.554">    @Nullable</a>
+<span class="sourceLineNo">555</span><a id="line.555">    private final String byId;</a>
+<span class="sourceLineNo">556</span><a id="line.556">    @Nullable</a>
+<span class="sourceLineNo">557</span><a id="line.557">    private final MarkupLine title;</a>
+<span class="sourceLineNo">558</span><a id="line.558">    @NonNull</a>
+<span class="sourceLineNo">559</span><a id="line.559">    private final List&lt;Parameter&gt; params;</a>
+<span class="sourceLineNo">560</span><a id="line.560">    @NonNull</a>
+<span class="sourceLineNo">561</span><a id="line.561">    private final List&lt;Property&gt; props;</a>
+<span class="sourceLineNo">562</span><a id="line.562">    @NonNull</a>
+<span class="sourceLineNo">563</span><a id="line.563">    private final List&lt;Link&gt; links;</a>
+<span class="sourceLineNo">564</span><a id="line.564">    @NonNull</a>
+<span class="sourceLineNo">565</span><a id="line.565">    private final List&lt;ControlPart&gt; parts;</a>
+<span class="sourceLineNo">566</span><a id="line.566">    @NonNull</a>
+<span class="sourceLineNo">567</span><a id="line.567">    private final Set&lt;TargetType&gt; targetItemTypes;</a>
+<span class="sourceLineNo">568</span><a id="line.568"></a>
+<span class="sourceLineNo">569</span><a id="line.569">    public Context(</a>
+<span class="sourceLineNo">570</span><a id="line.570">        @NonNull Control control,</a>
+<span class="sourceLineNo">571</span><a id="line.571">        @NonNull Position position,</a>
+<span class="sourceLineNo">572</span><a id="line.572">        @Nullable String byId,</a>
+<span class="sourceLineNo">573</span><a id="line.573">        @Nullable MarkupLine title,</a>
+<span class="sourceLineNo">574</span><a id="line.574">        @NonNull List&lt;Parameter&gt; params,</a>
+<span class="sourceLineNo">575</span><a id="line.575">        @NonNull List&lt;Property&gt; props,</a>
+<span class="sourceLineNo">576</span><a id="line.576">        @NonNull List&lt;Link&gt; links,</a>
+<span class="sourceLineNo">577</span><a id="line.577">        @NonNull List&lt;ControlPart&gt; parts) {</a>
+<span class="sourceLineNo">578</span><a id="line.578"></a>
+<span class="sourceLineNo">579</span><a id="line.579">      Set&lt;TargetType&gt; targetItemTypes = ObjectUtils.notNull(EnumSet.allOf(TargetType.class));</a>
+<span class="sourceLineNo">580</span><a id="line.580"></a>
+<span class="sourceLineNo">581</span><a id="line.581">      List&lt;String&gt; additionObjects = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">582</span><a id="line.582"></a>
+<span class="sourceLineNo">583</span><a id="line.583">      boolean sequenceTarget = true;</a>
+<span class="sourceLineNo">584</span><a id="line.584">      if (title != null) {</a>
+<span class="sourceLineNo">585</span><a id="line.585">        targetItemTypes.retainAll(TITLE_TYPES);</a>
+<span class="sourceLineNo">586</span><a id="line.586">        additionObjects.add("title");</a>
+<span class="sourceLineNo">587</span><a id="line.587">        sequenceTarget = false;</a>
+<span class="sourceLineNo">588</span><a id="line.588">      }</a>
+<span class="sourceLineNo">589</span><a id="line.589"></a>
+<span class="sourceLineNo">590</span><a id="line.590">      if (!params.isEmpty()) {</a>
+<span class="sourceLineNo">591</span><a id="line.591">        targetItemTypes.retainAll(PARAM_TYPES);</a>
+<span class="sourceLineNo">592</span><a id="line.592">        additionObjects.add("param");</a>
+<span class="sourceLineNo">593</span><a id="line.593">      }</a>
+<span class="sourceLineNo">594</span><a id="line.594"></a>
+<span class="sourceLineNo">595</span><a id="line.595">      if (!props.isEmpty()) {</a>
+<span class="sourceLineNo">596</span><a id="line.596">        targetItemTypes.retainAll(PROP_TYPES);</a>
+<span class="sourceLineNo">597</span><a id="line.597">        additionObjects.add("prop");</a>
+<span class="sourceLineNo">598</span><a id="line.598">        sequenceTarget = false;</a>
+<span class="sourceLineNo">599</span><a id="line.599">      }</a>
+<span class="sourceLineNo">600</span><a id="line.600"></a>
+<span class="sourceLineNo">601</span><a id="line.601">      if (!links.isEmpty()) {</a>
+<span class="sourceLineNo">602</span><a id="line.602">        targetItemTypes.retainAll(LINK_TYPES);</a>
+<span class="sourceLineNo">603</span><a id="line.603">        additionObjects.add("link");</a>
+<span class="sourceLineNo">604</span><a id="line.604">        sequenceTarget = false;</a>
+<span class="sourceLineNo">605</span><a id="line.605">      }</a>
+<span class="sourceLineNo">606</span><a id="line.606"></a>
+<span class="sourceLineNo">607</span><a id="line.607">      if (!parts.isEmpty()) {</a>
+<span class="sourceLineNo">608</span><a id="line.608">        targetItemTypes.retainAll(PART_TYPES);</a>
+<span class="sourceLineNo">609</span><a id="line.609">        additionObjects.add("part");</a>
+<span class="sourceLineNo">610</span><a id="line.610">      }</a>
+<span class="sourceLineNo">611</span><a id="line.611"></a>
+<span class="sourceLineNo">612</span><a id="line.612">      if (Position.BEFORE.equals(position) || Position.AFTER.equals(position)) {</a>
+<span class="sourceLineNo">613</span><a id="line.613">        if (sequenceTarget) {</a>
+<span class="sourceLineNo">614</span><a id="line.614">          if (sequenceTarget &amp;&amp; !params.isEmpty() &amp;&amp; parts.isEmpty()) {</a>
+<span class="sourceLineNo">615</span><a id="line.615">            targetItemTypes.retainAll(Set.of(TargetType.PARAM));</a>
+<span class="sourceLineNo">616</span><a id="line.616">          } else if (sequenceTarget &amp;&amp; !parts.isEmpty() &amp;&amp; params.isEmpty()) {</a>
+<span class="sourceLineNo">617</span><a id="line.617">            targetItemTypes.retainAll(Set.of(TargetType.PART));</a>
+<span class="sourceLineNo">618</span><a id="line.618">          } else {</a>
+<span class="sourceLineNo">619</span><a id="line.619">            throw new ProfileResolutionEvaluationException(</a>
+<span class="sourceLineNo">620</span><a id="line.620">                "When using position before or after, only one collection of parameters or parts can be specified.");</a>
+<span class="sourceLineNo">621</span><a id="line.621">          }</a>
+<span class="sourceLineNo">622</span><a id="line.622">        } else {</a>
+<span class="sourceLineNo">623</span><a id="line.623">          throw new ProfileResolutionEvaluationException(</a>
+<span class="sourceLineNo">624</span><a id="line.624">              "When using position before or after, one collection of parameters or parts can be specified."</a>
+<span class="sourceLineNo">625</span><a id="line.625">                  + " Other additions must not be used.");</a>
+<span class="sourceLineNo">626</span><a id="line.626">        }</a>
+<span class="sourceLineNo">627</span><a id="line.627">      }</a>
+<span class="sourceLineNo">628</span><a id="line.628"></a>
+<span class="sourceLineNo">629</span><a id="line.629">      if (targetItemTypes.isEmpty()) {</a>
+<span class="sourceLineNo">630</span><a id="line.630">        throw new ProfileResolutionEvaluationException("No parent object supports the requested objects to add: " +</a>
+<span class="sourceLineNo">631</span><a id="line.631">            additionObjects.stream().collect(CustomCollectors.joiningWithOxfordComma("or")));</a>
+<span class="sourceLineNo">632</span><a id="line.632">      }</a>
+<span class="sourceLineNo">633</span><a id="line.633"></a>
+<span class="sourceLineNo">634</span><a id="line.634">      this.control = control;</a>
+<span class="sourceLineNo">635</span><a id="line.635">      this.position = position;</a>
+<span class="sourceLineNo">636</span><a id="line.636">      this.byId = byId;</a>
+<span class="sourceLineNo">637</span><a id="line.637">      this.title = title;</a>
+<span class="sourceLineNo">638</span><a id="line.638">      this.params = params;</a>
+<span class="sourceLineNo">639</span><a id="line.639">      this.props = props;</a>
+<span class="sourceLineNo">640</span><a id="line.640">      this.links = links;</a>
+<span class="sourceLineNo">641</span><a id="line.641">      this.parts = parts;</a>
+<span class="sourceLineNo">642</span><a id="line.642">      this.targetItemTypes = CollectionUtil.unmodifiableSet(targetItemTypes);</a>
+<span class="sourceLineNo">643</span><a id="line.643">    }</a>
+<span class="sourceLineNo">644</span><a id="line.644"></a>
+<span class="sourceLineNo">645</span><a id="line.645">    public Control getControl() {</a>
+<span class="sourceLineNo">646</span><a id="line.646">      return control;</a>
+<span class="sourceLineNo">647</span><a id="line.647">    }</a>
+<span class="sourceLineNo">648</span><a id="line.648"></a>
+<span class="sourceLineNo">649</span><a id="line.649">    @NonNull</a>
+<span class="sourceLineNo">650</span><a id="line.650">    public Position getPosition() {</a>
+<span class="sourceLineNo">651</span><a id="line.651">      return position;</a>
+<span class="sourceLineNo">652</span><a id="line.652">    }</a>
+<span class="sourceLineNo">653</span><a id="line.653"></a>
+<span class="sourceLineNo">654</span><a id="line.654">    @Nullable</a>
+<span class="sourceLineNo">655</span><a id="line.655">    public String getById() {</a>
+<span class="sourceLineNo">656</span><a id="line.656">      return byId;</a>
+<span class="sourceLineNo">657</span><a id="line.657">    }</a>
+<span class="sourceLineNo">658</span><a id="line.658"></a>
+<span class="sourceLineNo">659</span><a id="line.659">    @Nullable</a>
+<span class="sourceLineNo">660</span><a id="line.660">    public MarkupLine getTitle() {</a>
+<span class="sourceLineNo">661</span><a id="line.661">      return title;</a>
+<span class="sourceLineNo">662</span><a id="line.662">    }</a>
+<span class="sourceLineNo">663</span><a id="line.663"></a>
+<span class="sourceLineNo">664</span><a id="line.664">    @NonNull</a>
+<span class="sourceLineNo">665</span><a id="line.665">    public List&lt;Parameter&gt; getParams() {</a>
+<span class="sourceLineNo">666</span><a id="line.666">      return params;</a>
+<span class="sourceLineNo">667</span><a id="line.667">    }</a>
+<span class="sourceLineNo">668</span><a id="line.668"></a>
+<span class="sourceLineNo">669</span><a id="line.669">    @NonNull</a>
+<span class="sourceLineNo">670</span><a id="line.670">    public List&lt;Property&gt; getProps() {</a>
+<span class="sourceLineNo">671</span><a id="line.671">      return props;</a>
+<span class="sourceLineNo">672</span><a id="line.672">    }</a>
+<span class="sourceLineNo">673</span><a id="line.673"></a>
+<span class="sourceLineNo">674</span><a id="line.674">    @NonNull</a>
+<span class="sourceLineNo">675</span><a id="line.675">    public List&lt;Link&gt; getLinks() {</a>
+<span class="sourceLineNo">676</span><a id="line.676">      return links;</a>
+<span class="sourceLineNo">677</span><a id="line.677">    }</a>
+<span class="sourceLineNo">678</span><a id="line.678"></a>
+<span class="sourceLineNo">679</span><a id="line.679">    @NonNull</a>
+<span class="sourceLineNo">680</span><a id="line.680">    public List&lt;ControlPart&gt; getParts() {</a>
+<span class="sourceLineNo">681</span><a id="line.681">      return parts;</a>
+<span class="sourceLineNo">682</span><a id="line.682">    }</a>
+<span class="sourceLineNo">683</span><a id="line.683"></a>
+<span class="sourceLineNo">684</span><a id="line.684">    @NonNull</a>
+<span class="sourceLineNo">685</span><a id="line.685">    public Set&lt;TargetType&gt; getTargetItemTypes() {</a>
+<span class="sourceLineNo">686</span><a id="line.686">      return targetItemTypes;</a>
+<span class="sourceLineNo">687</span><a id="line.687">    }</a>
+<span class="sourceLineNo">688</span><a id="line.688"></a>
+<span class="sourceLineNo">689</span><a id="line.689">    public boolean isMatchingType(@NonNull TargetType type) {</a>
+<span class="sourceLineNo">690</span><a id="line.690">      return getTargetItemTypes().contains(type);</a>
+<span class="sourceLineNo">691</span><a id="line.691">    }</a>
+<span class="sourceLineNo">692</span><a id="line.692"></a>
+<span class="sourceLineNo">693</span><a id="line.693">    public &lt;T&gt; boolean isSequenceTargeted(T targetItem) {</a>
+<span class="sourceLineNo">694</span><a id="line.694">      TargetType objectType = TargetType.forClass(targetItem.getClass());</a>
+<span class="sourceLineNo">695</span><a id="line.695">      return (Position.BEFORE.equals(position) || Position.AFTER.equals(position))</a>
+<span class="sourceLineNo">696</span><a id="line.696">          &amp;&amp; (TargetType.PARAM.equals(objectType) &amp;&amp; isMatchingType(TargetType.PARAM)</a>
+<span class="sourceLineNo">697</span><a id="line.697">              || TargetType.PART.equals(objectType) &amp;&amp; isMatchingType(TargetType.PART));</a>
+<span class="sourceLineNo">698</span><a id="line.698">    }</a>
+<span class="sourceLineNo">699</span><a id="line.699"></a>
+<span class="sourceLineNo">700</span><a id="line.700">    protected boolean checkValue(@Nullable String actual, @Nullable String expected) {</a>
+<span class="sourceLineNo">701</span><a id="line.701">      return expected == null || expected.equals(actual);</a>
+<span class="sourceLineNo">702</span><a id="line.702">    }</a>
+<span class="sourceLineNo">703</span><a id="line.703"></a>
+<span class="sourceLineNo">704</span><a id="line.704">    /**</a>
+<span class="sourceLineNo">705</span><a id="line.705">     * Determine if the provided {@code obj} is the target of the add.</a>
+<span class="sourceLineNo">706</span><a id="line.706">     *</a>
+<span class="sourceLineNo">707</span><a id="line.707">     * @param obj</a>
+<span class="sourceLineNo">708</span><a id="line.708">     *          the current object</a>
+<span class="sourceLineNo">709</span><a id="line.709">     * @return {@code true} if the current object applies or {@code false} otherwise</a>
+<span class="sourceLineNo">710</span><a id="line.710">     */</a>
+<span class="sourceLineNo">711</span><a id="line.711">    public boolean appliesTo(@NonNull Object obj) {</a>
+<span class="sourceLineNo">712</span><a id="line.712">      TargetType objectType = TargetType.forClass(obj.getClass());</a>
+<span class="sourceLineNo">713</span><a id="line.713"></a>
+<span class="sourceLineNo">714</span><a id="line.714">      boolean retval = objectType != null &amp;&amp; isMatchingType(objectType);</a>
+<span class="sourceLineNo">715</span><a id="line.715">      if (retval) {</a>
+<span class="sourceLineNo">716</span><a id="line.716">        assert objectType != null;</a>
+<span class="sourceLineNo">717</span><a id="line.717"></a>
+<span class="sourceLineNo">718</span><a id="line.718">        // check other criteria</a>
+<span class="sourceLineNo">719</span><a id="line.719">        String actualId = null;</a>
+<span class="sourceLineNo">720</span><a id="line.720"></a>
+<span class="sourceLineNo">721</span><a id="line.721">        switch (objectType) {</a>
+<span class="sourceLineNo">722</span><a id="line.722">        case CONTROL: {</a>
+<span class="sourceLineNo">723</span><a id="line.723">          Control control = (Control) obj;</a>
+<span class="sourceLineNo">724</span><a id="line.724">          actualId = control.getId();</a>
+<span class="sourceLineNo">725</span><a id="line.725">          break;</a>
+<span class="sourceLineNo">726</span><a id="line.726">        }</a>
+<span class="sourceLineNo">727</span><a id="line.727">        case PARAM: {</a>
+<span class="sourceLineNo">728</span><a id="line.728">          Parameter param = (Parameter) obj;</a>
+<span class="sourceLineNo">729</span><a id="line.729">          actualId = param.getId();</a>
+<span class="sourceLineNo">730</span><a id="line.730">          break;</a>
+<span class="sourceLineNo">731</span><a id="line.731">        }</a>
+<span class="sourceLineNo">732</span><a id="line.732">        case PART: {</a>
+<span class="sourceLineNo">733</span><a id="line.733">          ControlPart part = (ControlPart) obj;</a>
+<span class="sourceLineNo">734</span><a id="line.734">          actualId = part.getId() == null ? null : part.getId().toString();</a>
+<span class="sourceLineNo">735</span><a id="line.735">          break;</a>
+<span class="sourceLineNo">736</span><a id="line.736">        }</a>
+<span class="sourceLineNo">737</span><a id="line.737">        default:</a>
+<span class="sourceLineNo">738</span><a id="line.738">          throw new UnsupportedOperationException(objectType.fieldName());</a>
+<span class="sourceLineNo">739</span><a id="line.739">        }</a>
+<span class="sourceLineNo">740</span><a id="line.740"></a>
+<span class="sourceLineNo">741</span><a id="line.741">        String byId = getById();</a>
+<span class="sourceLineNo">742</span><a id="line.742">        if (getById() == null &amp;&amp; TargetType.CONTROL.equals(objectType)) {</a>
+<span class="sourceLineNo">743</span><a id="line.743">          retval = getControl().equals(obj);</a>
+<span class="sourceLineNo">744</span><a id="line.744">        } else {</a>
+<span class="sourceLineNo">745</span><a id="line.745">          retval = byId != null &amp;&amp; byId.equals(actualId);</a>
+<span class="sourceLineNo">746</span><a id="line.746">        }</a>
+<span class="sourceLineNo">747</span><a id="line.747">      }</a>
+<span class="sourceLineNo">748</span><a id="line.748">      return retval;</a>
+<span class="sourceLineNo">749</span><a id="line.749">    }</a>
+<span class="sourceLineNo">750</span><a id="line.750">  }</a>
+<span class="sourceLineNo">751</span><a id="line.751">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

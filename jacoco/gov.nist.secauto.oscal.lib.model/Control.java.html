@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Control.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Control.java</span></div><h1>Control.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.Expect;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.control.catalog.AbstractControl;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A &lt;a href=&quot;https://pages.nist.gov/OSCAL/concepts/terminology/#control&quot;&gt;structured object&lt;/a&gt; representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Control&quot;,
+    description = &quot;A [structured object](https://pages.nist.gov/OSCAL/concepts/terminology/#control) representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.&quot;,
+    name = &quot;control&quot;,
+    metaschema = OscalCatalogMetaschema.class,
+    remarks = &quot;Each security or privacy control within the catalog is defined by a distinct control instance. Controls may be as complex or as simple as a catalog defines them. They may be decomposed or further specified into child `control` objects, for example to represent control enhancements or specific breakouts of control functionality, to be maintained as discrete requirements. Controls may also contain structured parts (using `part`) and they may be grouped together in families or classes with `group`.\n&quot;
+            + &quot;\n&quot;
+            + &quot;Control structures in OSCAL will also exhibit regularities and rules that are not codified in OSCAL but in its applications or domains of application. For example, for catalogs describing controls as defined by NIST SP 800-53, a control must have a part with the name \&quot;statement\&quot;, which represents the textual narrative of the control. This \&quot;statement\&quot; part must occur only once, but may have nested parts to allow for multiple paragraphs or sections of text. This organization supports addressability of this data content as long as, and only insofar as, it is consistently implemented across the control set. As given with these model definitions, constraints defined and assigned here can aid in ensuring this regularity; but other such constraints and other useful patterns of use remain to be discovered and described.&quot;
+)
+@ValueConstraints(
+    allowedValues = {
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;label&quot;, description = &quot;A human-readable label for the parent context, which may be rendered in place of the actual identifier for some use cases.&quot;), @AllowedValue(value = &quot;sort-id&quot;, description = &quot;An alternative identifier, whose value is easily sortable among other such values in the document.&quot;), @AllowedValue(value = &quot;alt-identifier&quot;, description = &quot;An alternate or aliased identifier for the parent context.&quot;), @AllowedValue(value = &quot;status&quot;, description = &quot;The status of a `control`. For example, a value of 'withdrawn' can indicate that the `control` has been withdrawn and should no longer be used.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='status']/@value&quot;, values = {@AllowedValue(value = &quot;withdrawn&quot;, description = &quot;The control is no longer used.&quot;), @AllowedValue(value = &quot;Withdrawn&quot;, description = &quot;\\*\\*(deprecated)\\*\\*\\* Use 'withdrawn' instead.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;link/@rel&quot;, allowOthers = true, values = {@AllowedValue(value = &quot;reference&quot;, description = &quot;The link cites an external resource related to this control.&quot;), @AllowedValue(value = &quot;related&quot;, description = &quot;The link identifies another control with bearing to this control.&quot;), @AllowedValue(value = &quot;required&quot;, description = &quot;The link identifies another control that must be present if this control is present.&quot;), @AllowedValue(value = &quot;incorporated-into&quot;, description = &quot;The link identifies other control content where this control content is now addressed.&quot;), @AllowedValue(value = &quot;moved-to&quot;, description = &quot;The containing control definition was moved to the referenced control.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;overview&quot;, description = &quot;An introduction to a control or a group of controls.&quot;), @AllowedValue(value = &quot;statement&quot;, description = &quot;A set of control implementation requirements.&quot;), @AllowedValue(value = &quot;guidance&quot;, description = &quot;Additional information to consider when selecting, implementing, assessing, and monitoring a control.&quot;), @AllowedValue(value = &quot;assessment&quot;, description = &quot;\\*\\*(deprecated)\\*\\* Use 'assessment-method' instead.&quot;), @AllowedValue(value = &quot;assessment-method&quot;, description = &quot;The part describes a method-based assessment over a set of assessment objects.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='statement']//part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;item&quot;, description = &quot;An individual item within a control statement.&quot;), remarks = &quot;Nested statement parts are \&quot;item\&quot; parts.&quot;),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;.//part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;objective&quot;, description = &quot;\\*\\*(deprecated)\\*\\* Use 'assessment-objective' instead.&quot;), @AllowedValue(value = &quot;assessment-objective&quot;, description = &quot;The part describes a set of assessment objectives.&quot;)}, remarks = &quot;Objectives can be nested.&quot;),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;objects&quot;, description = &quot;\\*\\*(deprecated)\\*\\* Use 'assessment-objects' instead.&quot;), @AllowedValue(value = &quot;assessment-objects&quot;, description = &quot;Provides a listing of assessment objects.&quot;)}, remarks = &quot;Assessment objects appear on assessment methods.&quot;),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;method&quot;, description = &quot;\\*\\*(deprecated)\\*\\* Use 'method' in the 'http://csrc.nist.gov/ns/rmf' namespace. The assessment method to use. This typically appears on parts with the name \&quot;assessment-method\&quot;.&quot;)),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/prop[has-oscal-namespace('http://csrc.nist.gov/ns/rmf')]/@name&quot;, values = @AllowedValue(value = &quot;method&quot;, description = &quot;The assessment method to use. This typically appears on parts with the name \&quot;assessment-method\&quot;.&quot;)),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/prop[has-oscal-namespace(('http://csrc.nist.gov/ns/oscal','http://csrc.nist.gov/ns/rmf')) and @name='method']/@value&quot;, values = {@AllowedValue(value = &quot;INTERVIEW&quot;, description = &quot;The process of holding discussions with individuals or groups of individuals within an organization to once again, facilitate assessor understanding, achieve clarification, or obtain evidence.&quot;), @AllowedValue(value = &quot;EXAMINE&quot;, description = &quot;The process of reviewing, inspecting, observing, studying, or analyzing one or more assessment objects (i.e., specifications, mechanisms, or activities).&quot;), @AllowedValue(value = &quot;TEST&quot;, description = &quot;The process of exercising one or more assessment objects (i.e., activities or mechanisms) under specified conditions to compare actual with expected behavior.&quot;)})
+    },
+    indexHasKey = @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;link[@rel=('related','required','incorporated-into','moved-to') and starts-with(@href,'#')]&quot;, indexName = &quot;catalog-groups-controls-parts&quot;, keyFields = @KeyField(target = &quot;@href&quot;, pattern = &quot;#(.*)&quot;)),
+    expect = {
+        @Expect(id = &quot;catalog-control-require-statement-when-not-withdrawn&quot;, level = IConstraint.Level.ERROR, test = &quot;prop[@name='status']/@value=('withdrawn','Withdrawn') or part[@name='statement']&quot;),
+        @Expect(level = IConstraint.Level.WARNING, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]&quot;, test = &quot;prop[has-oscal-namespace(('http://csrc.nist.gov/ns/oscal','http://csrc.nist.gov/ns/rmf')) and @name='method']&quot;)
+    }
+)
+public class Control extends AbstractControl {
+  @BoundFlag(
+      formalName = &quot;Control Identifier&quot;,
+      description = &quot;Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).&quot;,
+      useName = &quot;id&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _id;
+
+  @BoundFlag(
+      formalName = &quot;Control Class&quot;,
+      description = &quot;A textual label that provides a sub-type or characterization of the control.&quot;,
+      useName = &quot;class&quot;,
+      typeAdapter = TokenAdapter.class,
+      remarks = &quot;A `class` can be used in validation rules to express extra constraints over named items of a specific `class` value.\n&quot;
+              + &quot;\n&quot;
+              + &quot;A `class` can also be used in an OSCAL profile as a means to target an alteration to control content.&quot;
+  )
+  private String _clazz;
+
+  /**
+   * &quot;A name given to the control, which may be used by a tool for display and navigation.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Control Title&quot;,
+      description = &quot;A name given to the control, which may be used by a tool for display and navigation.&quot;,
+      useName = &quot;title&quot;,
+      minOccurs = 1
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _title;
+
+  @BoundAssembly(
+      formalName = &quot;Parameter&quot;,
+      description = &quot;Parameters provide a mechanism for the dynamic assignment of value(s) in a control.&quot;,
+      useName = &quot;param&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;params&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Parameter&gt; _params;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundAssembly(
+      formalName = &quot;Part&quot;,
+      description = &quot;An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.&quot;,
+      useName = &quot;part&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;parts&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ControlPart&gt; _parts;
+
+  /**
+   * &quot;A mapping between the containing control and another resource.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Mapping&quot;,
+      description = &quot;A mapping between the containing control and another resource.&quot;,
+      useName = &quot;mapping&quot;
+  )
+  private Mapping _mapping;
+
+  @BoundAssembly(
+      formalName = &quot;Control&quot;,
+      description = &quot;A [structured object](https://pages.nist.gov/OSCAL/concepts/terminology/#control) representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.&quot;,
+      useName = &quot;control&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;controls&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Control&gt; _controls;
+
+<span class="fc" id="L167">  public Control() {</span>
+<span class="fc" id="L168">  }</span>
+
+  public String getId() {
+<span class="fc" id="L171">    return _id;</span>
+  }
+
+  public void setId(String value) {
+<span class="fc" id="L175">    _id = value;</span>
+<span class="fc" id="L176">  }</span>
+
+  public String getClazz() {
+<span class="nc" id="L179">    return _clazz;</span>
+  }
+
+  public void setClazz(String value) {
+<span class="nc" id="L183">    _clazz = value;</span>
+<span class="nc" id="L184">  }</span>
+
+  public MarkupLine getTitle() {
+<span class="nc" id="L187">    return _title;</span>
+  }
+
+  public void setTitle(MarkupLine value) {
+<span class="fc" id="L191">    _title = value;</span>
+<span class="fc" id="L192">  }</span>
+
+  public List&lt;Parameter&gt; getParams() {
+<span class="fc" id="L195">    return _params;</span>
+  }
+
+  public void setParams(List&lt;Parameter&gt; value) {
+<span class="fc" id="L199">    _params = value;</span>
+<span class="fc" id="L200">  }</span>
+
+  /**
+   * Add a new {@link Parameter} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addParam(Parameter item) {
+<span class="nc" id="L208">    Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">    if (_params == null) {</span>
+<span class="nc" id="L210">      _params = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L212">    return _params.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Parameter} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeParam(Parameter item) {
+<span class="nc" id="L221">    Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">    return _params == null ? false : _params.remove(value);</span>
+  }
+
+  public List&lt;Property&gt; getProps() {
+<span class="fc" id="L226">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L230">    _props = value;</span>
+<span class="nc" id="L231">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L239">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L241">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L243">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L252">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="fc" id="L257">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L261">    _links = value;</span>
+<span class="nc" id="L262">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L270">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L272">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L274">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L283">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public List&lt;ControlPart&gt; getParts() {
+<span class="fc" id="L288">    return _parts;</span>
+  }
+
+  public void setParts(List&lt;ControlPart&gt; value) {
+<span class="fc" id="L292">    _parts = value;</span>
+<span class="fc" id="L293">  }</span>
+
+  /**
+   * Add a new {@link ControlPart} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addPart(ControlPart item) {
+<span class="nc" id="L301">    ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">    if (_parts == null) {</span>
+<span class="nc" id="L303">      _parts = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L305">    return _parts.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ControlPart} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removePart(ControlPart item) {
+<span class="nc" id="L314">    ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">    return _parts == null ? false : _parts.remove(value);</span>
+  }
+
+  public Mapping getMapping() {
+<span class="nc" id="L319">    return _mapping;</span>
+  }
+
+  public void setMapping(Mapping value) {
+<span class="nc" id="L323">    _mapping = value;</span>
+<span class="nc" id="L324">  }</span>
+
+  public List&lt;Control&gt; getControls() {
+<span class="fc" id="L327">    return _controls;</span>
+  }
+
+  public void setControls(List&lt;Control&gt; value) {
+<span class="fc" id="L331">    _controls = value;</span>
+<span class="fc" id="L332">  }</span>
+
+  /**
+   * Add a new {@link Control} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addControl(Control item) {
+<span class="nc" id="L340">    Control value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">    if (_controls == null) {</span>
+<span class="nc" id="L342">      _controls = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L344">    return _controls.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Control} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeControl(Control item) {
+<span class="nc" id="L353">    Control value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L354" title="All 2 branches missed.">    return _controls == null ? false : _controls.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L359">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * A mapping between the containing control and another resource.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Mapping&quot;,
+      description = &quot;A mapping between the containing control and another resource.&quot;,
+      name = &quot;mapping&quot;,
+      metaschema = OscalCatalogMetaschema.class
+  )
+  public static class Mapping {
+    @BoundFlag(
+        formalName = &quot;Mapping Identifier&quot;,
+        description = &quot;The unique identifier for the mapping.&quot;,
+        useName = &quot;uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _uuid;
+
+    @BoundAssembly(
+        formalName = &quot;Mapped Resource Reference&quot;,
+        description = &quot;A reference to a resource that is either the source or target of a mapping.&quot;,
+        useName = &quot;target-resource&quot;,
+        minOccurs = 1
+    )
+    private MappingResourceReference _targetResource;
+
+    @BoundAssembly(
+        formalName = &quot;Mapping Entry&quot;,
+        description = &quot;A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.&quot;,
+        useName = &quot;map&quot;,
+        minOccurs = 1,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;maps&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;MappingEntry&gt; _maps;
+
+<span class="nc" id="L402">    public Mapping() {</span>
+<span class="nc" id="L403">    }</span>
+
+    public UUID getUuid() {
+<span class="nc" id="L406">      return _uuid;</span>
+    }
+
+    public void setUuid(UUID value) {
+<span class="nc" id="L410">      _uuid = value;</span>
+<span class="nc" id="L411">    }</span>
+
+    public MappingResourceReference getTargetResource() {
+<span class="nc" id="L414">      return _targetResource;</span>
+    }
+
+    public void setTargetResource(MappingResourceReference value) {
+<span class="nc" id="L418">      _targetResource = value;</span>
+<span class="nc" id="L419">    }</span>
+
+    public List&lt;MappingEntry&gt; getMaps() {
+<span class="nc" id="L422">      return _maps;</span>
+    }
+
+    public void setMaps(List&lt;MappingEntry&gt; value) {
+<span class="nc" id="L426">      _maps = value;</span>
+<span class="nc" id="L427">    }</span>
+
+    /**
+     * Add a new {@link MappingEntry} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addMap(MappingEntry item) {
+<span class="nc" id="L435">      MappingEntry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L436" title="All 2 branches missed.">      if (_maps == null) {</span>
+<span class="nc" id="L437">        _maps = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L439">      return _maps.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link MappingEntry} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeMap(MappingEntry item) {
+<span class="nc" id="L448">      MappingEntry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L449" title="All 2 branches missed.">      return _maps == null ? false : _maps.remove(value);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L454">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

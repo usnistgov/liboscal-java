@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Hash xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/gov/nist/secauto/oscal/lib/model/Hash.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> gov.nist.secauto.oscal.lib.model;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.Matches;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaField;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaFieldValue;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.lang.Override;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.lang.String;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * A representation of a cryptographic digest generated over a resource using a specified hash algorithm.</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  @MetaschemaField(
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>      formalName = <span class="jxr_string">"Hash"</span>,
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      description = <span class="jxr_string">"A representation of a cryptographic digest generated over a resource using a specified hash algorithm."</span>,
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>      name = <span class="jxr_string">"hash"</span>,
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      metaschema = OscalMetadataMetaschema.<strong class="jxr_keyword">class</strong>,
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      isCollapsible = false
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  )
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  @ValueConstraints(
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      matches = {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>          @Matches(level = IConstraint.Level.ERROR, target = <span class="jxr_string">".[@algorithm=('SHA-224','SHA3-224')]"</span>, pattern = <span class="jxr_string">"^[0-9a-fA-F]{28}$"</span>),
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          @Matches(level = IConstraint.Level.ERROR, target = <span class="jxr_string">".[@algorithm=('SHA-256','SHA3-256')]"</span>, pattern = <span class="jxr_string">"^[0-9a-fA-F]{32}$"</span>),
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          @Matches(level = IConstraint.Level.ERROR, target = <span class="jxr_string">".[@algorithm=('SHA-384','SHA3-384')]"</span>, pattern = <span class="jxr_string">"^[0-9a-fA-F]{48}$"</span>),
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          @Matches(level = IConstraint.Level.ERROR, target = <span class="jxr_string">".[@algorithm=('SHA-512','SHA3-512')]"</span>, pattern = <span class="jxr_string">"^[0-9a-fA-F]{64}$"</span>)
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      }
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  )
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> Hash {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    @MetaschemaFieldValue(
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>        valueKeyName = <span class="jxr_string">"value"</span>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>    )
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">private</strong> String _value;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    @BoundFlag(
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>        formalName = <span class="jxr_string">"Hash algorithm"</span>,
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>        description = <span class="jxr_string">"The digest method by which a hash is derived."</span>,
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>        useName = <span class="jxr_string">"algorithm"</span>,
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>        required = <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>        typeAdapter = StringAdapter.<strong class="jxr_keyword">class</strong>,
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>        remarks = <span class="jxr_string">"Any other value used MUST be a value defined in the W3C [XML Security Algorithm Cross-Reference](https://www.w3.org/TR/xmlsec-algorithms/#digest-method-uris) Digest Methods (W3C, April 2013) or [RFC 6931 Section 2.1.5](https://tools.ietf.org/html/rfc6931#section-2.1.5) New SHA Functions."</span>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    )
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    @ValueConstraints(
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>        allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = <strong class="jxr_keyword">true</strong>, values = {@AllowedValue(value = <span class="jxr_string">"SHA-224"</span>, description = <span class="jxr_string">"The SHA-224 algorithm as defined by [NIST FIPS 180-4](https://doi.org/10.6028/NIST.FIPS.180-4)."</span>), @AllowedValue(value = <span class="jxr_string">"SHA-256"</span>, description = <span class="jxr_string">"The SHA-256 algorithm as defined by [NIST FIPS 180-4](https://doi.org/10.6028/NIST.FIPS.180-4)."</span>), @AllowedValue(value = <span class="jxr_string">"SHA-384"</span>, description = <span class="jxr_string">"The SHA-384 algorithm as defined by [NIST FIPS 180-4](https://doi.org/10.6028/NIST.FIPS.180-4)."</span>), @AllowedValue(value = <span class="jxr_string">"SHA-512"</span>, description = <span class="jxr_string">"The SHA-512 algorithm as defined by [NIST FIPS 180-4](https://doi.org/10.6028/NIST.FIPS.180-4)."</span>), @AllowedValue(value = <span class="jxr_string">"SHA3-224"</span>, description = <span class="jxr_string">"The SHA3-224 algorithm as defined by [NIST FIPS 202](https://doi.org/10.6028/NIST.FIPS.202)."</span>), @AllowedValue(value = <span class="jxr_string">"SHA3-256"</span>, description = <span class="jxr_string">"The SHA3-256 algorithm as defined by [NIST FIPS 202](https://doi.org/10.6028/NIST.FIPS.202)."</span>), @AllowedValue(value = <span class="jxr_string">"SHA3-384"</span>, description = <span class="jxr_string">"The SHA3-384 algorithm as defined by [NIST FIPS 202](https://doi.org/10.6028/NIST.FIPS.202)."</span>), @AllowedValue(value = <span class="jxr_string">"SHA3-512"</span>, description = <span class="jxr_string">"The SHA3-512 algorithm as defined by [NIST FIPS 202](https://doi.org/10.6028/NIST.FIPS.202)."</span>)})
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    )
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">private</strong> String _algorithm;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">public</strong> Hash() {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    }
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">public</strong> String getValue() {
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <strong class="jxr_keyword">return</strong> _value;
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    }
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setValue(String value) {
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      _value = value;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    }
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">public</strong> String getAlgorithm() {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">return</strong> _algorithm;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>    }
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setAlgorithm(String value) {
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      _algorithm = value;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    }
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    @Override
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>    <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ReflectionToStringBuilder(<strong class="jxr_keyword">this</strong>, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    }
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2023 <a href="https://www.nist.gov">National Institute of Standards and Technology</a>. All rights reserved.</div>
+</body>
+</html>

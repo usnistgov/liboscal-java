@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertReferencePolicy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.policy</a> &gt; <span class="el_source">InsertReferencePolicy.java</span></div><h1>InsertReferencePolicy.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+
+import com.vladsch.flexmark.util.sequence.BasedSequence;
+
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorExtension.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+import java.util.Locale;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public class InsertReferencePolicy
+    extends AbstractCustomReferencePolicy&lt;InsertAnchorNode&gt; {
+<span class="fc" id="L49">  private static final Logger LOGGER = LogManager.getLogger(InsertReferencePolicy.class);</span>
+
+  public InsertReferencePolicy() {
+<span class="fc" id="L52">    super(IIdentifierParser.IDENTITY_PARSER);</span>
+<span class="fc" id="L53">  }</span>
+
+  @Override
+  protected List&lt;IEntityItem.ItemType&gt; getEntityItemTypes(@NonNull InsertAnchorNode insert) {
+<span class="fc" id="L57">    String type = insert.getType().toString();</span>
+
+    List&lt;IEntityItem.ItemType&gt; itemTypes;
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">    if (&quot;param&quot;.equals(type)) {</span>
+<span class="fc" id="L61">      itemTypes = CollectionUtil.singletonList(IEntityItem.ItemType.PARAMETER);</span>
+    } else {
+<span class="nc" id="L63">      throw new UnsupportedOperationException(&quot;unrecognized insert type: &quot; + type);</span>
+    }
+<span class="fc" id="L65">    return itemTypes;</span>
+  }
+
+  @Override
+  public String getReferenceText(@NonNull InsertAnchorNode insert) {
+<span class="fc" id="L70">    return insert.getIdReference().toString();</span>
+  }
+
+  @Override
+  public void setReferenceText(@NonNull InsertAnchorNode insert, @NonNull String newReference) {
+<span class="fc" id="L75">    insert.setIdReference(ObjectUtils.notNull(BasedSequence.of(newReference)));</span>
+<span class="fc" id="L76">  }</span>
+
+  @Override
+  protected boolean handleIndexMiss(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull InsertAnchorNode insert,
+      @NonNull List&lt;IEntityItem.ItemType&gt; itemTypes,
+      @NonNull String identifier,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (LOGGER.isErrorEnabled()) {</span>
+<span class="nc" id="L86">      LOGGER.atError().log(</span>
+          &quot;The '{}' insert at '{}' should reference a '{}' identified by '{}'.&quot;
+              + &quot; The index did not contain the identifier.&quot;,
+<span class="nc" id="L89">          insert.getType().toString(),</span>
+<span class="nc" id="L90">          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),</span>
+<span class="nc" id="L91">          itemTypes.stream()</span>
+<span class="nc" id="L92">              .map(type -&gt; type.name().toLowerCase(Locale.ROOT))</span>
+<span class="nc" id="L93">              .collect(CustomCollectors.joiningWithOxfordComma(&quot;or&quot;)),</span>
+          identifier);
+    }
+<span class="nc" id="L96">    return true;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

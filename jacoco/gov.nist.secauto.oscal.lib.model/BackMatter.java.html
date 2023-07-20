@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BackMatter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">BackMatter.java</span></div><h1>BackMatter.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.Expect;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.HasCardinality;
+import gov.nist.secauto.metaschema.binding.model.annotations.Index;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.Matches;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.Base64Adapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.DateTimeWithTZAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriReferenceAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractBackMatter;
+import java.lang.Override;
+import java.lang.String;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A collection of resources that may be referenced from within the OSCAL document instance.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Back matter&quot;,
+    description = &quot;A collection of resources that may be referenced from within the OSCAL document instance.&quot;,
+    name = &quot;back-matter&quot;,
+    metaschema = OscalMetadataMetaschema.class,
+    remarks = &quot;Provides a collection of identified `resource` objects that can be referenced by a `link` with a `rel` value of \&quot;reference\&quot; and an `href` value that is a fragment \&quot;#\&quot; followed by a reference to a reference's `uuid`. Other specialized link \&quot;rel\&quot; values also use this pattern when indicated in that context of use.&quot;
+)
+@AssemblyConstraints(
+    index = @Index(level = IConstraint.Level.ERROR, target = &quot;resource&quot;, name = &quot;index-back-matter-resource&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;))
+)
+public class BackMatter extends AbstractBackMatter {
+  /**
+   * &quot;A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Resource&quot;,
+      description = &quot;A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.&quot;,
+      useName = &quot;resource&quot;,
+      maxOccurs = -1,
+      remarks = &quot;A resource can be used in two ways. 1) it may point to an specific retrievable network resource using a `rlink`, or 2) it may be included as an attachment using a `base64`. A resource may contain multiple `rlink` and `base64` entries that represent alternative download locations (rlink) and attachments (base64) for the same resource.\n&quot;
+              + &quot;\n&quot;
+              + &quot;Both rlink and base64 allow for a `media-type` to be specified, which is used to distinguish between different representations of the same resource (e.g., Microsoft Word, PDF). When multiple `rlink` and `base64` items are included for a given resource, all items must contain equivalent information. This allows the document consumer to choose a preferred item to process based on a the selected item's `media-type`. This is extremely important when the items represent OSCAL content that is represented in alternate formats (i.e., XML, JSON, YAML), allowing the same OSCAL data to be processed from any of the available formats indicated by the items.\n&quot;
+              + &quot;\n&quot;
+              + &quot;When a resource includes a citation, then the `title` and `citation` properties must both be included.&quot;
+  )
+  @GroupAs(
+      name = &quot;resources&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Resource&gt; _resources;
+
+<span class="fc" id="L79">  public BackMatter() {</span>
+<span class="fc" id="L80">  }</span>
+
+  public List&lt;Resource&gt; getResources() {
+<span class="fc" id="L83">    return _resources;</span>
+  }
+
+  public void setResources(List&lt;Resource&gt; value) {
+<span class="fc" id="L87">    _resources = value;</span>
+<span class="fc" id="L88">  }</span>
+
+  /**
+   * Add a new {@link Resource} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addResource(Resource item) {
+<span class="nc" id="L96">    Resource value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">    if (_resources == null) {</span>
+<span class="nc" id="L98">      _resources = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L100">    return _resources.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Resource} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeResource(Resource item) {
+<span class="fc" id="L109">    Resource value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">    return _resources == null ? false : _resources.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L115">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Resource&quot;,
+      description = &quot;A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.&quot;,
+      name = &quot;resource&quot;,
+      metaschema = OscalMetadataMetaschema.class,
+      remarks = &quot;A resource can be used in two ways. 1) it may point to an specific retrievable network resource using a `rlink`, or 2) it may be included as an attachment using a `base64`. A resource may contain multiple `rlink` and `base64` entries that represent alternative download locations (rlink) and attachments (base64) for the same resource.\n&quot;
+              + &quot;\n&quot;
+              + &quot;Both rlink and base64 allow for a `media-type` to be specified, which is used to distinguish between different representations of the same resource (e.g., Microsoft Word, PDF). When multiple `rlink` and `base64` items are included for a given resource, all items must contain equivalent information. This allows the document consumer to choose a preferred item to process based on a the selected item's `media-type`. This is extremely important when the items represent OSCAL content that is represented in alternate formats (i.e., XML, JSON, YAML), allowing the same OSCAL data to be processed from any of the available formats indicated by the items.\n&quot;
+              + &quot;\n&quot;
+              + &quot;When a resource includes a citation, then the `title` and `citation` properties must both be included.&quot;
+  )
+  @ValueConstraints(
+      allowedValues = {
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;type&quot;, description = &quot;Identifies the type of resource represented. The most specific appropriate type value SHOULD be used.&quot;), @AllowedValue(value = &quot;version&quot;, description = &quot;For resources representing a published document, this represents the version number of that document.&quot;), @AllowedValue(value = &quot;published&quot;, description = &quot;For resources representing a published document, this represents the publication date of that document.&quot;)}),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='type']/@value&quot;, values = {@AllowedValue(value = &quot;logo&quot;, description = &quot;Indicates the resource is an organization's logo.&quot;), @AllowedValue(value = &quot;image&quot;, description = &quot;Indicates the resource represents an image.&quot;), @AllowedValue(value = &quot;screen-shot&quot;, description = &quot;Indicates the resource represents an image of screen content.&quot;), @AllowedValue(value = &quot;law&quot;, description = &quot;Indicates the resource represents an applicable law.&quot;), @AllowedValue(value = &quot;regulation&quot;, description = &quot;Indicates the resource represents an applicable regulation.&quot;), @AllowedValue(value = &quot;standard&quot;, description = &quot;Indicates the resource represents an applicable standard.&quot;), @AllowedValue(value = &quot;external-guidance&quot;, description = &quot;Indicates the resource represents applicable guidance.&quot;), @AllowedValue(value = &quot;acronyms&quot;, description = &quot;Indicates the resource provides a list of relevant acronyms.&quot;), @AllowedValue(value = &quot;citation&quot;, description = &quot;Indicates the resource cites relevant information.&quot;), @AllowedValue(value = &quot;policy&quot;, description = &quot;Indicates the resource is a policy.&quot;), @AllowedValue(value = &quot;procedure&quot;, description = &quot;Indicates the resource is a procedure.&quot;), @AllowedValue(value = &quot;system-guide&quot;, description = &quot;Indicates the resource is guidance document related to the subject system of an SSP.&quot;), @AllowedValue(value = &quot;users-guide&quot;, description = &quot;Indicates the resource is guidance document a user's guide or administrator's guide.&quot;), @AllowedValue(value = &quot;administrators-guide&quot;, description = &quot;Indicates the resource is guidance document a administrator's guide.&quot;), @AllowedValue(value = &quot;rules-of-behavior&quot;, description = &quot;Indicates the resource represents rules of behavior content.&quot;), @AllowedValue(value = &quot;plan&quot;, description = &quot;Indicates the resource represents a plan.&quot;), @AllowedValue(value = &quot;artifact&quot;, description = &quot;Indicates the resource represents an artifact, such as may be reviewed by an assessor.&quot;), @AllowedValue(value = &quot;evidence&quot;, description = &quot;Indicates the resource represents evidence, such as to support an assessment finding.&quot;), @AllowedValue(value = &quot;tool-output&quot;, description = &quot;Indicates the resource represents output from a tool.&quot;), @AllowedValue(value = &quot;raw-data&quot;, description = &quot;Indicates the resource represents machine data, which may require a tool or analysis for interpretation or presentation.&quot;), @AllowedValue(value = &quot;interview-notes&quot;, description = &quot;Indicates the resource represents notes from an interview, such as may be collected during an assessment.&quot;), @AllowedValue(value = &quot;questionnaire&quot;, description = &quot;Indicates the resource is a set of questions, possibly with responses.&quot;), @AllowedValue(value = &quot;report&quot;, description = &quot;Indicates the resource is a report.&quot;), @AllowedValue(value = &quot;agreement&quot;, description = &quot;Indicates the resource is a formal agreement between two or more parties.&quot;)})
+      },
+      matches = @Matches(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='published']/@value&quot;, typeAdapter = DateTimeWithTZAdapter.class),
+      expect = @Expect(level = IConstraint.Level.ERROR, target = &quot;.[citation]&quot;, test = &quot;title&quot;)
+  )
+  @AssemblyConstraints(
+      isUnique = {
+          @IsUnique(id = &quot;unique-resource-rlink-href&quot;, level = IConstraint.Level.ERROR, target = &quot;rlink&quot;, keyFields = {@KeyField(target = &quot;@href&quot;), @KeyField(target = &quot;@media-type&quot;)}),
+          @IsUnique(id = &quot;unique-resource-base64-filename&quot;, level = IConstraint.Level.ERROR, target = &quot;base64&quot;, keyFields = @KeyField(target = &quot;@filename&quot;))
+      },
+      hasCardinality = @HasCardinality(level = IConstraint.Level.WARNING, target = &quot;rlink|base64&quot;, minOccurs = 1)
+  )
+  public static class Resource {
+    @BoundFlag(
+        formalName = &quot;Resource Universally Unique Identifier&quot;,
+        description = &quot;A unique identifier for a resource.&quot;,
+        useName = &quot;uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _uuid;
+
+    /**
+     * &quot;An optional name given to the resource, which may be used by a tool for display and navigation.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Resource Title&quot;,
+        description = &quot;An optional name given to the resource, which may be used by a tool for display and navigation.&quot;,
+        useName = &quot;title&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupLineAdapter.class
+    )
+    private MarkupLine _title;
+
+    /**
+     * &quot;An optional short summary of the resource used to indicate the purpose of the resource.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Resource Description&quot;,
+        description = &quot;An optional short summary of the resource used to indicate the purpose of the resource.&quot;,
+        useName = &quot;description&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _description;
+
+    @BoundAssembly(
+        formalName = &quot;Property&quot;,
+        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+        useName = &quot;prop&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;props&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Property&gt; _props;
+
+    @BoundField(
+        formalName = &quot;Document Identifier&quot;,
+        description = &quot;A document identifier qualified by an identifier `scheme`.&quot;,
+        useName = &quot;document-id&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;document-ids&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;DocumentId&gt; _documentIds;
+
+    /**
+     * &quot;An optional citation consisting of end note text using structured markup.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;Citation&quot;,
+        description = &quot;An optional citation consisting of end note text using structured markup.&quot;,
+        useName = &quot;citation&quot;
+    )
+    private Citation _citation;
+
+    /**
+     * &quot;A URL-based pointer to an external resource with an optional hash for verification and change detection.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;Resource link&quot;,
+        description = &quot;A URL-based pointer to an external resource with an optional hash for verification and change detection.&quot;,
+        useName = &quot;rlink&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Multiple `rlink` objects can be included for a resource. In such a case, all provided `rlink` items are intended to be equivalent in content, but may differ in structure or format.\n&quot;
+                + &quot;\n&quot;
+                + &quot;A `media-type` is used to identify the format of a given rlink, and can be used to differentiate items in a collection of rlinks. The `media-type` provides a hint to the OSCAL document consumer about the structure of the resource referenced by the `rlink`.&quot;
+    )
+    @GroupAs(
+        name = &quot;rlinks&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Rlink&gt; _rlinks;
+
+    /**
+     * &quot;A resource encoded using the Base64 alphabet defined by &lt;a href=\&quot;https://www.rfc-editor.org/rfc/rfc2045.html\&quot;&gt;RFC 2045&lt;/a&gt;.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Base64&quot;,
+        description = &quot;A resource encoded using the Base64 alphabet defined by [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045.html).&quot;,
+        useName = &quot;base64&quot;
+    )
+    private Base64 _base64;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="fc" id="L255">    public Resource() {</span>
+<span class="fc" id="L256">    }</span>
+
+    public UUID getUuid() {
+<span class="fc" id="L259">      return _uuid;</span>
+    }
+
+    public void setUuid(UUID value) {
+<span class="nc" id="L263">      _uuid = value;</span>
+<span class="nc" id="L264">    }</span>
+
+    public MarkupLine getTitle() {
+<span class="nc" id="L267">      return _title;</span>
+    }
+
+    public void setTitle(MarkupLine value) {
+<span class="nc" id="L271">      _title = value;</span>
+<span class="nc" id="L272">    }</span>
+
+    public MarkupMultiline getDescription() {
+<span class="nc" id="L275">      return _description;</span>
+    }
+
+    public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L279">      _description = value;</span>
+<span class="nc" id="L280">    }</span>
+
+    public List&lt;Property&gt; getProps() {
+<span class="nc" id="L283">      return _props;</span>
+    }
+
+    public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L287">      _props = value;</span>
+<span class="nc" id="L288">    }</span>
+
+    /**
+     * Add a new {@link Property} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addProp(Property item) {
+<span class="nc" id="L296">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L298">        _props = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L300">      return _props.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Property} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeProp(Property item) {
+<span class="nc" id="L309">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L310" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+    }
+
+    public List&lt;DocumentId&gt; getDocumentIds() {
+<span class="nc" id="L314">      return _documentIds;</span>
+    }
+
+    public void setDocumentIds(List&lt;DocumentId&gt; value) {
+<span class="nc" id="L318">      _documentIds = value;</span>
+<span class="nc" id="L319">    }</span>
+
+    /**
+     * Add a new {@link DocumentId} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addDocumentId(DocumentId item) {
+<span class="nc" id="L327">      DocumentId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">      if (_documentIds == null) {</span>
+<span class="nc" id="L329">        _documentIds = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L331">      return _documentIds.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link DocumentId} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeDocumentId(DocumentId item) {
+<span class="nc" id="L340">      DocumentId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">      return _documentIds == null ? false : _documentIds.remove(value);</span>
+    }
+
+    public Citation getCitation() {
+<span class="nc" id="L345">      return _citation;</span>
+    }
+
+    public void setCitation(Citation value) {
+<span class="nc" id="L349">      _citation = value;</span>
+<span class="nc" id="L350">    }</span>
+
+    public List&lt;Rlink&gt; getRlinks() {
+<span class="fc" id="L353">      return _rlinks;</span>
+    }
+
+    public void setRlinks(List&lt;Rlink&gt; value) {
+<span class="nc" id="L357">      _rlinks = value;</span>
+<span class="nc" id="L358">    }</span>
+
+    /**
+     * Add a new {@link Rlink} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addRlink(Rlink item) {
+<span class="nc" id="L366">      Rlink value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L367" title="All 2 branches missed.">      if (_rlinks == null) {</span>
+<span class="nc" id="L368">        _rlinks = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L370">      return _rlinks.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Rlink} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeRlink(Rlink item) {
+<span class="nc" id="L379">      Rlink value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">      return _rlinks == null ? false : _rlinks.remove(value);</span>
+    }
+
+    public Base64 getBase64() {
+<span class="fc" id="L384">      return _base64;</span>
+    }
+
+    public void setBase64(Base64 value) {
+<span class="nc" id="L388">      _base64 = value;</span>
+<span class="nc" id="L389">    }</span>
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L392">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L396">      _remarks = value;</span>
+<span class="nc" id="L397">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L401">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+
+    /**
+     * A URL-based pointer to an external resource with an optional hash for verification and change detection.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Resource link&quot;,
+        description = &quot;A URL-based pointer to an external resource with an optional hash for verification and change detection.&quot;,
+        name = &quot;rlink&quot;,
+        metaschema = OscalMetadataMetaschema.class,
+        remarks = &quot;Multiple `rlink` objects can be included for a resource. In such a case, all provided `rlink` items are intended to be equivalent in content, but may differ in structure or format.\n&quot;
+                + &quot;\n&quot;
+                + &quot;A `media-type` is used to identify the format of a given rlink, and can be used to differentiate items in a collection of rlinks. The `media-type` provides a hint to the OSCAL document consumer about the structure of the resource referenced by the `rlink`.&quot;
+    )
+    public static class Rlink {
+      @BoundFlag(
+          formalName = &quot;Hypertext Reference&quot;,
+          description = &quot;A resolvable URL pointing to the referenced resource.&quot;,
+          useName = &quot;href&quot;,
+          required = true,
+          typeAdapter = UriReferenceAdapter.class,
+          remarks = &quot;This value may be either:\n&quot;
+                  + &quot;\n&quot;
+                  + &quot;1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n&quot;
+                  + &quot;2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or&quot;
+      )
+      private URI _href;
+
+      @BoundFlag(
+          formalName = &quot;Media Type&quot;,
+          description = &quot;A label that indicates the nature of a resource, as a data serialization or format.&quot;,
+          useName = &quot;media-type&quot;,
+          typeAdapter = StringAdapter.class
+      )
+      private String _mediaType;
+
+      /**
+       * &quot;A hash of the resource identified by &lt;code&gt;href&lt;/code&gt;, which can be used to verify the resource was not changed since it was hashed.&quot;
+       */
+      @BoundField(
+          formalName = &quot;Hash&quot;,
+          description = &quot;A hash of the resource identified by `href`, which can be used to verify the resource was not changed since it was hashed.&quot;,
+          useName = &quot;hash&quot;,
+          maxOccurs = -1,
+          remarks = &quot;The `hash` value can be used to confirm that the resource referenced by the `href` is the same resources that was hashed by retrieving the resource, calculating a hash, and comparing the result to this value.&quot;
+      )
+      @GroupAs(
+          name = &quot;hashes&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Hash&gt; _hashes;
+
+<span class="fc" id="L454">      public Rlink() {</span>
+<span class="fc" id="L455">      }</span>
+
+      public URI getHref() {
+<span class="fc" id="L458">        return _href;</span>
+      }
+
+      public void setHref(URI value) {
+<span class="nc" id="L462">        _href = value;</span>
+<span class="nc" id="L463">      }</span>
+
+      public String getMediaType() {
+<span class="nc" id="L466">        return _mediaType;</span>
+      }
+
+      public void setMediaType(String value) {
+<span class="nc" id="L470">        _mediaType = value;</span>
+<span class="nc" id="L471">      }</span>
+
+      public List&lt;Hash&gt; getHashes() {
+<span class="nc" id="L474">        return _hashes;</span>
+      }
+
+      public void setHashes(List&lt;Hash&gt; value) {
+<span class="nc" id="L478">        _hashes = value;</span>
+<span class="nc" id="L479">      }</span>
+
+      /**
+       * Add a new {@link Hash} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addHash(Hash item) {
+<span class="nc" id="L487">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">        if (_hashes == null) {</span>
+<span class="nc" id="L489">          _hashes = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L491">        return _hashes.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Hash} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeHash(Hash item) {
+<span class="nc" id="L500">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L501" title="All 2 branches missed.">        return _hashes == null ? false : _hashes.remove(value);</span>
+      }
+
+      @Override
+      public String toString() {
+<span class="nc" id="L506">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
+     * A resource encoded using the Base64 alphabet defined by &lt;a href=&quot;https://www.rfc-editor.org/rfc/rfc2045.html&quot;&gt;RFC 2045&lt;/a&gt;.
+     */
+    @MetaschemaField(
+        formalName = &quot;Base64&quot;,
+        description = &quot;A resource encoded using the Base64 alphabet defined by [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045.html).&quot;,
+        name = &quot;base64&quot;,
+        metaschema = OscalMetadataMetaschema.class,
+        isCollapsible = false
+    )
+    public static class Base64 {
+      @MetaschemaFieldValue(
+          valueKeyName = &quot;value&quot;,
+          typeAdapter = Base64Adapter.class
+      )
+      private ByteBuffer _value;
+
+      @BoundFlag(
+          formalName = &quot;File Name&quot;,
+          description = &quot;Name of the file before it was encoded as Base64 to be embedded in a `resource`. This is the name that will be assigned to the file when the file is decoded.&quot;,
+          useName = &quot;filename&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _filename;
+
+      @BoundFlag(
+          formalName = &quot;Media Type&quot;,
+          description = &quot;A label that indicates the nature of a resource, as a data serialization or format.&quot;,
+          useName = &quot;media-type&quot;,
+          typeAdapter = StringAdapter.class
+      )
+      private String _mediaType;
+
+<span class="nc" id="L543">      public Base64() {</span>
+<span class="nc" id="L544">      }</span>
+
+      public ByteBuffer getValue() {
+<span class="nc" id="L547">        return _value;</span>
+      }
+
+      public void setValue(ByteBuffer value) {
+<span class="nc" id="L551">        _value = value;</span>
+<span class="nc" id="L552">      }</span>
+
+      public String getFilename() {
+<span class="nc" id="L555">        return _filename;</span>
+      }
+
+      public void setFilename(String value) {
+<span class="nc" id="L559">        _filename = value;</span>
+<span class="nc" id="L560">      }</span>
+
+      public String getMediaType() {
+<span class="nc" id="L563">        return _mediaType;</span>
+      }
+
+      public void setMediaType(String value) {
+<span class="nc" id="L567">        _mediaType = value;</span>
+<span class="nc" id="L568">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L572">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
+     * An optional citation consisting of end note text using structured markup.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Citation&quot;,
+        description = &quot;An optional citation consisting of end note text using structured markup.&quot;,
+        name = &quot;citation&quot;,
+        metaschema = OscalMetadataMetaschema.class
+    )
+    public static class Citation {
+      /**
+       * &quot;A line of citation text.&quot;
+       */
+      @BoundField(
+          formalName = &quot;Citation Text&quot;,
+          description = &quot;A line of citation text.&quot;,
+          useName = &quot;text&quot;,
+          minOccurs = 1
+      )
+      @BoundFieldValue(
+          typeAdapter = MarkupLineAdapter.class
+      )
+      private MarkupLine _text;
+
+      @BoundAssembly(
+          formalName = &quot;Property&quot;,
+          description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+          useName = &quot;prop&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;props&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Property&gt; _props;
+
+      @BoundAssembly(
+          formalName = &quot;Link&quot;,
+          description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+          useName = &quot;link&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;links&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Link&gt; _links;
+
+<span class="fc" id="L624">      public Citation() {</span>
+<span class="fc" id="L625">      }</span>
+
+      public MarkupLine getText() {
+<span class="nc" id="L628">        return _text;</span>
+      }
+
+      public void setText(MarkupLine value) {
+<span class="nc" id="L632">        _text = value;</span>
+<span class="nc" id="L633">      }</span>
+
+      public List&lt;Property&gt; getProps() {
+<span class="nc" id="L636">        return _props;</span>
+      }
+
+      public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L640">        _props = value;</span>
+<span class="nc" id="L641">      }</span>
+
+      /**
+       * Add a new {@link Property} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addProp(Property item) {
+<span class="nc" id="L649">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L650" title="All 2 branches missed.">        if (_props == null) {</span>
+<span class="nc" id="L651">          _props = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L653">        return _props.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Property} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeProp(Property item) {
+<span class="nc" id="L662">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L663" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
+      }
+
+      public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L667">        return _links;</span>
+      }
+
+      public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L671">        _links = value;</span>
+<span class="nc" id="L672">      }</span>
+
+      /**
+       * Add a new {@link Link} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addLink(Link item) {
+<span class="nc" id="L680">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L681" title="All 2 branches missed.">        if (_links == null) {</span>
+<span class="nc" id="L682">          _links = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L684">        return _links.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Link} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeLink(Link item) {
+<span class="nc" id="L693">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L694" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
+      }
+
+      @Override
+      public String toString() {
+<span class="nc" id="L699">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

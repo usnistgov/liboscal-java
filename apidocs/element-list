@@ -1,0 +1,13 @@
+gov.nist.secauto.oscal.lib
+gov.nist.secauto.oscal.lib.metapath.function.library
+gov.nist.secauto.oscal.lib.model
+gov.nist.secauto.oscal.lib.model.control
+gov.nist.secauto.oscal.lib.model.control.catalog
+gov.nist.secauto.oscal.lib.model.control.profile
+gov.nist.secauto.oscal.lib.model.metadata
+gov.nist.secauto.oscal.lib.profile.resolver
+gov.nist.secauto.oscal.lib.profile.resolver.alter
+gov.nist.secauto.oscal.lib.profile.resolver.merge
+gov.nist.secauto.oscal.lib.profile.resolver.policy
+gov.nist.secauto.oscal.lib.profile.resolver.selection
+gov.nist.secauto.oscal.lib.profile.resolver.support

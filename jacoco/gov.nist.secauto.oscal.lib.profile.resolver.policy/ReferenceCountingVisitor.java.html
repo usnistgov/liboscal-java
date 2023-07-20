@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReferenceCountingVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.policy</a> &gt; <span class="el_source">ReferenceCountingVisitor.java</span></div><h1>ReferenceCountingVisitor.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+
+import com.vladsch.flexmark.ast.InlineLinkNode;
+import com.vladsch.flexmark.util.ast.Node;
+
+import gov.nist.secauto.metaschema.model.common.datatype.markup.IMarkupString;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorExtension.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.model.common.metapath.function.library.FnData;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IMarkupItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.oscal.lib.model.Link;
+import gov.nist.secauto.oscal.lib.model.Property;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
+import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.AbstractCatalogEntityVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.net.URI;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+
+import javax.xml.namespace.QName;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+public class ReferenceCountingVisitor
+    extends AbstractCatalogEntityVisitor&lt;ReferenceCountingVisitor.Context, Void&gt;
+    implements IReferenceVisitor&lt;ReferenceCountingVisitor.Context&gt; {
+<span class="fc" id="L75">  private static final Logger LOGGER = LogManager.getLogger(ReferenceCountingVisitor.class);</span>
+
+<span class="fc" id="L77">  private static final ReferenceCountingVisitor SINGLETON = new ReferenceCountingVisitor();</span>
+
+  @NonNull
+<span class="fc" id="L80">  private static final MetapathExpression PARAM_MARKUP_METAPATH</span>
+      = MetapathExpression
+<span class="fc" id="L82">          .compile(&quot;label|usage|constraint/(description|tests/remarks)|guideline/prose|select/choice|remarks&quot;);</span>
+  @NonNull
+<span class="fc" id="L84">  private static final MetapathExpression ROLE_MARKUP_METAPATH</span>
+<span class="fc" id="L85">      = MetapathExpression.compile(&quot;title|description|remarks&quot;);</span>
+  @NonNull
+<span class="fc" id="L87">  private static final MetapathExpression LOCATION_MARKUP_METAPATH</span>
+<span class="fc" id="L88">      = MetapathExpression.compile(&quot;title|remarks&quot;);</span>
+  @NonNull
+<span class="fc" id="L90">  private static final MetapathExpression PARTY_MARKUP_METAPATH</span>
+<span class="fc" id="L91">      = MetapathExpression.compile(&quot;title|remarks&quot;);</span>
+  @NonNull
+<span class="fc" id="L93">  private static final MetapathExpression RESOURCE_MARKUP_METAPATH</span>
+<span class="fc" id="L94">      = MetapathExpression.compile(&quot;title|description|remarks&quot;);</span>
+
+  @NonNull
+<span class="fc" id="L97">  private static final IReferencePolicy&lt;Property&gt; PROPERTY_POLICY_IGNORE = IReferencePolicy.ignore();</span>
+  @NonNull
+<span class="fc" id="L99">  private static final IReferencePolicy&lt;Link&gt; LINK_POLICY_IGNORE = IReferencePolicy.ignore();</span>
+
+  @NonNull
+  private static final Map&lt;QName, IReferencePolicy&lt;Property&gt;&gt; PROPERTY_POLICIES;
+  @NonNull
+  private static final Map&lt;String, IReferencePolicy&lt;Link&gt;&gt; LINK_POLICIES;
+  @NonNull
+<span class="fc" id="L106">  private static final InsertReferencePolicy INSERT_POLICY = new InsertReferencePolicy();</span>
+  @NonNull
+<span class="fc" id="L108">  private static final AnchorReferencePolicy ANCHOR_POLICY = new AnchorReferencePolicy();</span>
+
+  static {
+<span class="fc" id="L111">    PROPERTY_POLICIES = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L112">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, &quot;resolution-tool&quot;), PROPERTY_POLICY_IGNORE);</span>
+<span class="fc" id="L113">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, &quot;label&quot;), PROPERTY_POLICY_IGNORE);</span>
+<span class="fc" id="L114">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, &quot;sort-id&quot;), PROPERTY_POLICY_IGNORE);</span>
+<span class="fc" id="L115">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, &quot;alt-label&quot;), PROPERTY_POLICY_IGNORE);</span>
+<span class="fc" id="L116">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, &quot;alt-identifier&quot;), PROPERTY_POLICY_IGNORE);</span>
+<span class="fc" id="L117">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, &quot;method&quot;), PROPERTY_POLICY_IGNORE);</span>
+<span class="fc" id="L118">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.OSCAL_NAMESPACE, &quot;keep&quot;), PROPERTY_POLICY_IGNORE);</span>
+<span class="fc" id="L119">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.RMF_NAMESPACE, &quot;method&quot;), PROPERTY_POLICY_IGNORE);</span>
+<span class="fc" id="L120">    PROPERTY_POLICIES.put(AbstractProperty.qname(IProperty.RMF_NAMESPACE, &quot;aggregates&quot;),</span>
+<span class="fc" id="L121">        PropertyReferencePolicy.create(IIdentifierParser.IDENTITY_PARSER, IEntityItem.ItemType.PARAMETER));</span>
+
+<span class="fc" id="L123">    LINK_POLICIES = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L124">    LINK_POLICIES.put(&quot;source-profile&quot;, LINK_POLICY_IGNORE);</span>
+<span class="fc" id="L125">    LINK_POLICIES.put(&quot;citation&quot;, LinkReferencePolicy.create(IEntityItem.ItemType.RESOURCE));</span>
+<span class="fc" id="L126">    LINK_POLICIES.put(&quot;reference&quot;, LinkReferencePolicy.create(IEntityItem.ItemType.RESOURCE));</span>
+<span class="fc" id="L127">    LINK_POLICIES.put(&quot;related&quot;, LinkReferencePolicy.create(IEntityItem.ItemType.CONTROL));</span>
+<span class="fc" id="L128">    LINK_POLICIES.put(&quot;required&quot;, LinkReferencePolicy.create(IEntityItem.ItemType.CONTROL));</span>
+<span class="fc" id="L129">    LINK_POLICIES.put(&quot;corresp&quot;, LinkReferencePolicy.create(IEntityItem.ItemType.PART));</span>
+<span class="fc" id="L130">  }</span>
+
+  public static ReferenceCountingVisitor instance() {
+<span class="fc" id="L133">    return SINGLETON;</span>
+  }
+
+  public ReferenceCountingVisitor() {
+    // visit everything except parts, roles, locations, parties, parameters, and resources, which are
+    // handled differently by this visitor
+<span class="fc" id="L139">    super(ObjectUtils.notNull(EnumSet.complementOf(</span>
+<span class="fc" id="L140">        EnumSet.of(</span>
+            IEntityItem.ItemType.PART,
+            IEntityItem.ItemType.ROLE,
+            IEntityItem.ItemType.LOCATION,
+            IEntityItem.ItemType.PARTY,
+            IEntityItem.ItemType.PARAMETER,
+            IEntityItem.ItemType.RESOURCE))));
+<span class="fc" id="L147">  }</span>
+
+  @Override
+  protected Void newDefaultResult(Context context) {
+    // do nothing
+<span class="fc" id="L152">    return null;</span>
+  }
+
+  @Override
+  protected Void aggregateResults(Void first, Void second, Context context) {
+    // do nothing
+<span class="fc" id="L158">    return null;</span>
+  }
+
+  //
+  // public void visitProfile(@NonNull Profile profile) {
+  // // process children
+  // Metadata metadata = profile.getMetadata();
+  // if (metadata != null) {
+  // visitMetadata(metadata);
+  // }
+  //
+  // BackMatter backMatter = profile.getBackMatter();
+  // if (backMatter != null) {
+  // for (BackMatter.Resource resource : CollectionUtil.listOrEmpty(backMatter.getResources())) {
+  // visitResource(resource);
+  // }
+  // }
+  // }
+
+  public void visitCatalog(@NonNull IDocumentNodeItem catalogItem, @NonNull IIndexer indexer, @NonNull URI baseUri) {
+<span class="fc" id="L178">    Context context = new Context(indexer, baseUri);</span>
+<span class="fc" id="L179">    visitCatalog(catalogItem, context);</span>
+
+<span class="fc" id="L181">    IIndexer index = context.getIndexer();</span>
+    // resolve the entities picked up by the original indexing operation
+    // FIXME: Is this necessary?
+<span class="fc" id="L184">    IIndexer.getReferencedEntitiesAsStream(index.getEntitiesByItemType(IEntityItem.ItemType.ROLE))</span>
+<span class="fc" id="L185">        .forEachOrdered(</span>
+<span class="nc" id="L186">            item -&gt; resolveEntity(ObjectUtils.notNull(item), context, ReferenceCountingVisitor::resolveRole));</span>
+<span class="fc" id="L187">    IIndexer.getReferencedEntitiesAsStream(index.getEntitiesByItemType(IEntityItem.ItemType.LOCATION))</span>
+<span class="fc" id="L188">        .forEachOrdered(</span>
+<span class="nc" id="L189">            item -&gt; resolveEntity(ObjectUtils.notNull(item), context,</span>
+                ReferenceCountingVisitor::resolveLocation));
+<span class="fc" id="L191">    IIndexer.getReferencedEntitiesAsStream(index.getEntitiesByItemType(IEntityItem.ItemType.PARTY))</span>
+<span class="fc" id="L192">        .forEachOrdered(</span>
+<span class="nc" id="L193">            item -&gt; resolveEntity(ObjectUtils.notNull(item), context,</span>
+                ReferenceCountingVisitor::resolveParty));
+<span class="fc" id="L195">    IIndexer.getReferencedEntitiesAsStream(index.getEntitiesByItemType(IEntityItem.ItemType.PARAMETER))</span>
+<span class="fc" id="L196">        .forEachOrdered(</span>
+<span class="fc" id="L197">            item -&gt; resolveEntity(ObjectUtils.notNull(item), context,</span>
+                ReferenceCountingVisitor::resolveParameter));
+<span class="fc" id="L199">    IIndexer.getReferencedEntitiesAsStream(index.getEntitiesByItemType(IEntityItem.ItemType.RESOURCE))</span>
+<span class="fc" id="L200">        .forEachOrdered(</span>
+<span class="fc" id="L201">            item -&gt; resolveEntity(ObjectUtils.notNull(item), context,</span>
+                ReferenceCountingVisitor::resolveResource));
+<span class="fc" id="L203">  }</span>
+
+  @Override
+  public Void visitGroup(@NonNull IRequiredValueModelNodeItem item, Void childResult, Context context) {
+<span class="fc" id="L207">    IIndexer index = context.getIndexer();</span>
+    // handle the group if it is selected
+    // a group will only be selected if it contains a descendant control that is selected
+<span class="fc bfc" id="L210" title="All 2 branches covered.">    if (IIndexer.SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {</span>
+<span class="fc" id="L211">      CatalogGroup group = (CatalogGroup) item.getValue();</span>
+<span class="fc" id="L212">      String id = group.getId();</span>
+
+      boolean resolve;
+<span class="fc bfc" id="L215" title="All 2 branches covered.">      if (id == null) {</span>
+        // always resolve a group without an identifier
+<span class="fc" id="L217">        resolve = true;</span>
+      } else {
+<span class="fc" id="L219">        IEntityItem entity = index.getEntity(IEntityItem.ItemType.GROUP, id, false);</span>
+<span class="pc bpc" id="L220" title="1 of 4 branches missed.">        if (entity != null &amp;&amp; !context.isResolved(entity)) {</span>
+          // only resolve if not already resolved
+<span class="fc" id="L222">          context.markResolved(entity);</span>
+<span class="fc" id="L223">          resolve = true;</span>
+        } else {
+<span class="fc" id="L225">          resolve = false;</span>
+        }
+      }
+
+      // resolve only if requested
+<span class="fc bfc" id="L230" title="All 2 branches covered.">      if (resolve) {</span>
+<span class="fc" id="L231">        resolveGroup(item, context);</span>
+      }
+    }
+<span class="fc" id="L234">    return null;</span>
+  }
+
+  @Override
+  public Void visitControl(@NonNull IRequiredValueModelNodeItem item, Void childResult, Context context) {
+<span class="fc" id="L239">    IIndexer index = context.getIndexer();</span>
+    // handle the control if it is selected
+<span class="fc bfc" id="L241" title="All 2 branches covered.">    if (IIndexer.SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {</span>
+<span class="fc" id="L242">      Control control = (Control) item.getValue();</span>
+<span class="fc" id="L243">      IEntityItem entity</span>
+<span class="fc" id="L244">          = context.getIndexer().getEntity(IEntityItem.ItemType.CONTROL, ObjectUtils.notNull(control.getId()), false);</span>
+
+      // the control must always appear in the index
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">      assert entity != null;</span>
+
+<span class="fc bfc" id="L249" title="All 2 branches covered.">      if (!context.isResolved(entity)) {</span>
+<span class="fc" id="L250">        context.markResolved(entity);</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">        if (IIndexer.SelectionStatus.SELECTED.equals(context.getIndexer().getSelectionStatus(item))) {</span>
+<span class="fc" id="L252">          resolveControl(item, context);</span>
+        }
+      }
+    }
+<span class="fc" id="L256">    return null;</span>
+  }
+
+  @Override
+  protected void visitParts(@NonNull IRequiredValueModelNodeItem groupOrControlItem, Context context) {
+    // visits all descendant parts
+<span class="fc" id="L262">    CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()</span>
+<span class="fc" id="L263">        .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
+<span class="fc" id="L264">        .forEachOrdered(partItem -&gt; {</span>
+<span class="fc" id="L265">          visitPart(ObjectUtils.notNull(partItem), groupOrControlItem, context);</span>
+<span class="fc" id="L266">        });</span>
+<span class="fc" id="L267">  }</span>
+
+  @Override
+  protected void visitPart(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem groupOrControlItem,
+      Context context) {
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">    assert context != null;</span>
+
+<span class="fc" id="L274">    ControlPart part = (ControlPart) item.getValue();</span>
+<span class="fc" id="L275">    String id = part.getId();</span>
+
+    boolean resolve;
+<span class="fc bfc" id="L278" title="All 2 branches covered.">    if (id == null) {</span>
+      // always resolve a part without an identifier
+<span class="fc" id="L280">      resolve = true;</span>
+    } else {
+<span class="fc" id="L282">      IEntityItem entity = context.getIndexer().getEntity(IEntityItem.ItemType.PART, id, false);</span>
+<span class="pc bpc" id="L283" title="1 of 4 branches missed.">      if (entity != null &amp;&amp; !context.isResolved(entity)) {</span>
+        // only resolve if not already resolved
+<span class="fc" id="L285">        context.markResolved(entity);</span>
+<span class="fc" id="L286">        resolve = true;</span>
+      } else {
+<span class="fc" id="L288">        resolve = false;</span>
+      }
+    }
+
+<span class="fc bfc" id="L292" title="All 2 branches covered.">    if (resolve) {</span>
+<span class="fc" id="L293">      resolvePart(item, context);</span>
+    }
+<span class="fc" id="L295">  }</span>
+
+  protected void resolveGroup(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull Context context) {
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">    if (IIndexer.SelectionStatus.SELECTED.equals(context.getIndexer().getSelectionStatus(item))) {</span>
+
+      // process children
+<span class="fc" id="L303">      item.getModelItemsByName(&quot;title&quot;).forEach(child -&gt; handleMarkup(ObjectUtils.notNull(child), context));</span>
+<span class="pc" id="L304">      item.getModelItemsByName(&quot;prop&quot;).forEach(child -&gt; handleProperty(ObjectUtils.notNull(child), context));</span>
+<span class="pc" id="L305">      item.getModelItemsByName(&quot;link&quot;).forEach(child -&gt; handleLink(ObjectUtils.notNull(child), context));</span>
+
+      // always visit parts
+<span class="fc" id="L308">      visitParts(item, context);</span>
+
+      // skip parameters for now. These will be processed by a separate pass.
+    }
+<span class="fc" id="L312">  }</span>
+
+  protected void resolveControl(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull Context context) {
+    // process non-control, non-param children
+<span class="fc" id="L318">    item.getModelItemsByName(&quot;title&quot;).forEach(child -&gt; handleMarkup(ObjectUtils.notNull(child), context));</span>
+<span class="fc" id="L319">    item.getModelItemsByName(&quot;prop&quot;).forEach(child -&gt; handleProperty(ObjectUtils.notNull(child), context));</span>
+<span class="fc" id="L320">    item.getModelItemsByName(&quot;link&quot;).forEach(child -&gt; handleLink(ObjectUtils.notNull(child), context));</span>
+
+    // always visit parts
+<span class="fc" id="L323">    visitParts(item, context);</span>
+
+    // skip parameters for now. These will be processed by a separate pass.
+<span class="fc" id="L326">  }</span>
+
+  private static void resolveRole(@NonNull IEntityItem entity, @NonNull Context context) {
+<span class="nc" id="L329">    IRequiredValueModelNodeItem item = entity.getInstance();</span>
+<span class="nc" id="L330">    item.getModelItemsByName(&quot;prop&quot;).forEach(child -&gt; handleProperty(ObjectUtils.notNull(child), context));</span>
+<span class="nc" id="L331">    item.getModelItemsByName(&quot;link&quot;).forEach(child -&gt; handleLink(ObjectUtils.notNull(child), context));</span>
+<span class="nc" id="L332">    ROLE_MARKUP_METAPATH.evaluate(item).asList()</span>
+<span class="nc" id="L333">        .forEach(child -&gt; handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));</span>
+<span class="nc" id="L334">  }</span>
+
+  private static void resolveParty(@NonNull IEntityItem entity, @NonNull Context context) {
+<span class="nc" id="L337">    IRequiredValueModelNodeItem item = entity.getInstance();</span>
+<span class="nc" id="L338">    item.getModelItemsByName(&quot;prop&quot;).forEach(child -&gt; handleProperty(ObjectUtils.notNull(child), context));</span>
+<span class="nc" id="L339">    item.getModelItemsByName(&quot;link&quot;).forEach(child -&gt; handleLink(ObjectUtils.notNull(child), context));</span>
+<span class="nc" id="L340">    PARTY_MARKUP_METAPATH.evaluate(item).asList()</span>
+<span class="nc" id="L341">        .forEach(child -&gt; handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));</span>
+<span class="nc" id="L342">  }</span>
+
+  public static void resolveLocation(@NonNull IEntityItem entity, @NonNull Context context) {
+<span class="nc" id="L345">    IRequiredValueModelNodeItem item = entity.getInstance();</span>
+<span class="nc" id="L346">    item.getModelItemsByName(&quot;prop&quot;).forEach(child -&gt; handleProperty(ObjectUtils.notNull(child), context));</span>
+<span class="nc" id="L347">    item.getModelItemsByName(&quot;link&quot;).forEach(child -&gt; handleLink(ObjectUtils.notNull(child), context));</span>
+<span class="nc" id="L348">    LOCATION_MARKUP_METAPATH.evaluate(item).asList()</span>
+<span class="nc" id="L349">        .forEach(child -&gt; handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));</span>
+<span class="nc" id="L350">  }</span>
+
+  public static void resolveResource(@NonNull IEntityItem entity, @NonNull Context context) {
+<span class="fc" id="L353">    IRequiredValueModelNodeItem item = entity.getInstance();</span>
+
+<span class="fc" id="L355">    item.getModelItemsByName(&quot;prop&quot;).forEach(child -&gt; handleProperty(ObjectUtils.notNull(child), context));</span>
+
+<span class="fc" id="L357">    item.getModelItemsByName(&quot;citation&quot;).forEach(child -&gt; {</span>
+<span class="pc bpc" id="L358" title="1 of 2 branches missed.">      if (child != null) {</span>
+<span class="fc" id="L359">        child.getModelItemsByName(&quot;text&quot;)</span>
+<span class="fc" id="L360">            .forEach(citationChild -&gt; handleMarkup(ObjectUtils.notNull(citationChild), context));</span>
+<span class="fc" id="L361">        child.getModelItemsByName(&quot;prop&quot;)</span>
+<span class="pc" id="L362">            .forEach(citationChild -&gt; handleProperty(ObjectUtils.notNull(citationChild), context));</span>
+<span class="fc" id="L363">        child.getModelItemsByName(&quot;link&quot;)</span>
+<span class="pc" id="L364">            .forEach(citationChild -&gt; handleLink(ObjectUtils.notNull(citationChild), context));</span>
+      }
+<span class="fc" id="L366">    });</span>
+
+<span class="fc" id="L368">    RESOURCE_MARKUP_METAPATH.evaluate(item).asList()</span>
+<span class="fc" id="L369">        .forEach(child -&gt; handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));</span>
+<span class="fc" id="L370">  }</span>
+
+  public static void resolveParameter(@NonNull IEntityItem entity, @NonNull Context context) {
+<span class="fc" id="L373">    IRequiredValueModelNodeItem item = entity.getInstance();</span>
+
+<span class="fc" id="L375">    item.getModelItemsByName(&quot;prop&quot;).forEach(child -&gt; handleProperty(ObjectUtils.notNull(child), context));</span>
+<span class="pc" id="L376">    item.getModelItemsByName(&quot;link&quot;).forEach(child -&gt; handleLink(ObjectUtils.notNull(child), context));</span>
+<span class="fc" id="L377">    PARAM_MARKUP_METAPATH.evaluate(item).asList()</span>
+<span class="fc" id="L378">        .forEach(child -&gt; handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));</span>
+<span class="fc" id="L379">  }</span>
+
+  private static void resolvePart(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull Context context) {
+<span class="fc" id="L384">    item.getModelItemsByName(&quot;title&quot;).forEach(child -&gt; handleMarkup(ObjectUtils.notNull(child), context));</span>
+<span class="fc" id="L385">    item.getModelItemsByName(&quot;prop&quot;).forEach(child -&gt; handleProperty(ObjectUtils.notNull(child), context));</span>
+<span class="pc" id="L386">    item.getModelItemsByName(&quot;link&quot;).forEach(child -&gt; handleLink(ObjectUtils.notNull(child), context));</span>
+<span class="fc" id="L387">    item.getModelItemsByName(&quot;prose&quot;).forEach(child -&gt; handleMarkup(ObjectUtils.notNull(child), context));</span>
+    // item.getModelItemsByName(&quot;part&quot;).forEach(child -&gt; visitor.visitPart(ObjectUtils.notNull(child),
+    // context));
+<span class="fc" id="L390">  }</span>
+
+  private static void handleMarkup(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull Context context) {
+<span class="fc" id="L395">    IMarkupItem markupItem = (IMarkupItem) FnData.fnDataItem(item);</span>
+<span class="fc" id="L396">    IMarkupString&lt;?&gt; markup = markupItem.getValue();</span>
+<span class="fc" id="L397">    handleMarkup(item, markup, context);</span>
+<span class="fc" id="L398">  }</span>
+
+  private static void handleMarkup(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IMarkupString&lt;?&gt; text,
+      @NonNull Context context) {
+<span class="fc bfc" id="L404" title="All 2 branches covered.">    for (Node node : CollectionUtil.toIterable(text.getNodesAsStream().iterator())) {</span>
+<span class="fc bfc" id="L405" title="All 2 branches covered.">      if (node instanceof InsertAnchorNode) {</span>
+<span class="fc" id="L406">        handleInsert(contextItem, (InsertAnchorNode) node, context);</span>
+<span class="fc bfc" id="L407" title="All 2 branches covered.">      } else if (node instanceof InlineLinkNode) {</span>
+<span class="fc" id="L408">        handleAnchor(contextItem, (InlineLinkNode) node, context);</span>
+      }
+<span class="fc" id="L410">    }</span>
+<span class="fc" id="L411">  }</span>
+
+  private static void handleInsert(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull InsertAnchorNode node,
+      @NonNull Context context) {
+<span class="fc" id="L417">    boolean retval = INSERT_POLICY.handleReference(contextItem, node, context);</span>
+<span class="pc bpc" id="L418" title="2 of 4 branches missed.">    if (LOGGER.isWarnEnabled() &amp;&amp; !retval) {</span>
+<span class="nc" id="L419">      LOGGER.atWarn().log(&quot;Unsupported insert type '{}' at '{}'&quot;,</span>
+<span class="nc" id="L420">          node.getType().toString(),</span>
+<span class="nc" id="L421">          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER));</span>
+    }
+<span class="fc" id="L423">  }</span>
+
+  private static void handleAnchor(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull InlineLinkNode node,
+      @NonNull Context context) {
+<span class="fc" id="L429">    boolean result = ANCHOR_POLICY.handleReference(contextItem, node, context);</span>
+<span class="pc bpc" id="L430" title="2 of 4 branches missed.">    if (LOGGER.isWarnEnabled() &amp;&amp; !result) {</span>
+<span class="nc" id="L431">      LOGGER.atWarn().log(&quot;Unsupported anchor with href '{}' at '{}'&quot;,</span>
+<span class="nc" id="L432">          node.getUrl().toString(),</span>
+<span class="nc" id="L433">          contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER));</span>
+    }
+<span class="fc" id="L435">  }</span>
+
+  private static void handleProperty(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull Context context) {
+<span class="fc" id="L440">    Property property = (Property) item.getValue();</span>
+<span class="fc" id="L441">    QName qname = property.getQName();</span>
+
+<span class="fc" id="L443">    IReferencePolicy&lt;Property&gt; policy = PROPERTY_POLICIES.get(qname);</span>
+
+<span class="pc bpc" id="L445" title="2 of 4 branches missed.">    boolean result = policy != null &amp;&amp; policy.handleReference(item, property, context);</span>
+<span class="pc bpc" id="L446" title="2 of 4 branches missed.">    if (LOGGER.isWarnEnabled() &amp;&amp; !result) {</span>
+<span class="nc" id="L447">      LOGGER.atWarn().log(&quot;Unsupported property '{}' at '{}'&quot;,</span>
+<span class="nc" id="L448">          property.getQName(),</span>
+<span class="nc" id="L449">          item.toPath(IPathFormatter.METAPATH_PATH_FORMATER));</span>
+    }
+<span class="fc" id="L451">  }</span>
+
+  private static void handleLink(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull Context context) {
+<span class="fc" id="L456">    Link link = (Link) item.getValue();</span>
+<span class="fc" id="L457">    IReferencePolicy&lt;Link&gt; policy = null;</span>
+<span class="fc" id="L458">    String rel = link.getRel();</span>
+<span class="pc bpc" id="L459" title="1 of 2 branches missed.">    if (rel != null) {</span>
+<span class="fc" id="L460">      policy = LINK_POLICIES.get(rel);</span>
+    }
+
+<span class="pc bpc" id="L463" title="2 of 4 branches missed.">    boolean result = policy != null &amp;&amp; policy.handleReference(item, link, context);</span>
+<span class="pc bpc" id="L464" title="2 of 4 branches missed.">    if (LOGGER.isWarnEnabled() &amp;&amp; !result) {</span>
+<span class="nc" id="L465">      LOGGER.atWarn().log(&quot;unsupported link rel '{}' at '{}'&quot;,</span>
+<span class="nc" id="L466">          link.getRel(),</span>
+<span class="nc" id="L467">          item.toPath(IPathFormatter.METAPATH_PATH_FORMATER));</span>
+    }
+<span class="fc" id="L469">  }</span>
+
+  protected void resolveEntity(
+      @NonNull IEntityItem entity,
+      @NonNull Context context,
+      @NonNull BiConsumer&lt;IEntityItem, Context&gt; handler) {
+
+<span class="fc bfc" id="L476" title="All 2 branches covered.">    if (!context.isResolved(entity)) {</span>
+<span class="fc" id="L477">      context.markResolved(entity);</span>
+
+<span class="pc bpc" id="L479" title="1 of 2 branches missed.">      if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L480">        LOGGER.atDebug().log(&quot;Resolving {} identified as '{}'&quot;,</span>
+<span class="fc" id="L481">            entity.getItemType().name(),</span>
+<span class="fc" id="L482">            entity.getIdentifier());</span>
+      }
+
+<span class="fc" id="L485">      if (!IIndexer.SelectionStatus.UNSELECTED</span>
+<span class="pc bpc" id="L486" title="1 of 2 branches missed.">          .equals(context.getIndexer().getSelectionStatus(entity.getInstance()))) {</span>
+        // only resolve selected and unknown entities
+<span class="fc" id="L488">        handler.accept(entity, context);</span>
+      }
+    }
+<span class="fc" id="L491">  }</span>
+
+  public void resolveEntity(
+      @NonNull IEntityItem entity,
+      @NonNull Context context) {
+<span class="fc" id="L496">    resolveEntity(entity, context, (theEntity, theContext) -&gt; entityDispatch(</span>
+<span class="fc" id="L497">        ObjectUtils.notNull(theEntity),</span>
+<span class="fc" id="L498">        ObjectUtils.notNull(theContext)));</span>
+<span class="fc" id="L499">  }</span>
+
+  protected void entityDispatch(@NonNull IEntityItem entity, @NonNull Context context) {
+<span class="fc" id="L502">    IRequiredValueModelNodeItem item = entity.getInstance();</span>
+<span class="pc bpc" id="L503" title="4 of 9 branches missed.">    switch (entity.getItemType()) {</span>
+    case CONTROL:
+<span class="fc" id="L505">      resolveControl(item, context);</span>
+<span class="fc" id="L506">      break;</span>
+    case GROUP:
+<span class="fc" id="L508">      resolveGroup(item, context);</span>
+<span class="fc" id="L509">      break;</span>
+    case LOCATION:
+<span class="nc" id="L511">      resolveLocation(entity, context);</span>
+<span class="nc" id="L512">      break;</span>
+    case PARAMETER:
+<span class="fc" id="L514">      resolveParameter(entity, context);</span>
+<span class="fc" id="L515">      break;</span>
+    case PART:
+<span class="fc" id="L517">      resolvePart(item, context);</span>
+<span class="fc" id="L518">      break;</span>
+    case PARTY:
+<span class="nc" id="L520">      resolveParty(entity, context);</span>
+<span class="nc" id="L521">      break;</span>
+    case RESOURCE:
+<span class="fc" id="L523">      resolveResource(entity, context);</span>
+<span class="fc" id="L524">      break;</span>
+    case ROLE:
+<span class="nc" id="L526">      resolveRole(entity, context);</span>
+<span class="nc" id="L527">      break;</span>
+    default:
+<span class="nc" id="L529">      throw new UnsupportedOperationException(entity.getItemType().name());</span>
+    }
+<span class="fc" id="L531">  }</span>
+  //
+  // @Override
+  // protected Void newDefaultResult(Object context) {
+  // return null;
+  // }
+  //
+  // @Override
+  // protected Void aggregateResults(Object first, Object second, Object context) {
+  // return null;
+  // }
+
+  public static final class Context {
+    @NonNull
+    private final IIndexer indexer;
+    @NonNull
+    private final URI source;
+<span class="fc" id="L548">    @NonNull</span>
+    private final Set&lt;IEntityItem&gt; resolvedEntities = new HashSet&lt;&gt;();
+
+<span class="fc" id="L551">    private Context(@NonNull IIndexer indexer, @NonNull URI source) {</span>
+<span class="fc" id="L552">      this.indexer = indexer;</span>
+<span class="fc" id="L553">      this.source = source;</span>
+<span class="fc" id="L554">    }</span>
+
+    @NonNull
+    @SuppressFBWarnings(value = &quot;EI_EXPOSE_REP&quot;, justification = &quot;intending to expose this field&quot;)
+    public IIndexer getIndexer() {
+<span class="fc" id="L559">      return indexer;</span>
+    }
+
+    @Nullable
+    public IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier) {
+<span class="fc" id="L564">      return getIndexer().getEntity(itemType, identifier);</span>
+    }
+
+    @SuppressWarnings(&quot;unused&quot;)
+    @NonNull
+    private URI getSource() {
+<span class="nc" id="L570">      return source;</span>
+    }
+
+    public void markResolved(@NonNull IEntityItem entity) {
+<span class="fc" id="L574">      resolvedEntities.add(entity);</span>
+<span class="fc" id="L575">    }</span>
+
+    public boolean isResolved(@NonNull IEntityItem entity) {
+<span class="fc" id="L578">      return resolvedEntities.contains(entity);</span>
+    }
+
+    public void incrementReferenceCount(
+        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull IEntityItem.ItemType type,
+        @NonNull UUID identifier) {
+<span class="nc" id="L585">      incrementReferenceCountInternal(</span>
+          contextItem,
+          type,
+<span class="nc" id="L588">          ObjectUtils.notNull(identifier.toString()),</span>
+          false);
+<span class="nc" id="L590">    }</span>
+
+    public void incrementReferenceCount(
+        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull IEntityItem.ItemType type,
+        @NonNull String identifier) {
+<span class="nc" id="L596">      incrementReferenceCountInternal(</span>
+          contextItem,
+          type,
+          identifier,
+<span class="nc" id="L600">          type.isUuid());</span>
+<span class="nc" id="L601">    }</span>
+
+    private void incrementReferenceCountInternal(
+        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull IEntityItem.ItemType type,
+        @NonNull String identifier,
+        boolean normalize) {
+<span class="nc" id="L608">      IEntityItem item = getIndexer().getEntity(type, identifier, normalize);</span>
+<span class="nc bnc" id="L609" title="All 2 branches missed.">      if (item == null) {</span>
+<span class="nc bnc" id="L610" title="All 2 branches missed.">        if (LOGGER.isErrorEnabled()) {</span>
+<span class="nc" id="L611">          LOGGER.atError().log(&quot;Unknown reference to {} '{}' at '{}'&quot;,</span>
+<span class="nc" id="L612">              type.toString().toLowerCase(Locale.ROOT),</span>
+              identifier,
+<span class="nc" id="L614">              contextItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER));</span>
+        }
+      } else {
+<span class="nc" id="L617">        item.incrementReferenceCount();</span>
+      }
+<span class="nc" id="L619">    }</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

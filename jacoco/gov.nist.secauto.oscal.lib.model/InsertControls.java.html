@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertControls.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">InsertControls.java</span></div><h1>InsertControls.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Specifies which controls to use in the containing context.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Insert Controls&quot;,
+    description = &quot;Specifies which controls to use in the containing context.&quot;,
+    name = &quot;insert-controls&quot;,
+    metaschema = OscalProfileMetaschema.class,
+    remarks = &quot;To be schema-valid, this element must contain either (but not both) a single `include-all` directive, or a sequence of `include-controls` directives.\n&quot;
+            + &quot;\n&quot;
+            + &quot;If this directive is not provided, then no controls are to be inserted; i.e., all controls are included explicitly.&quot;
+)
+public class InsertControls {
+  @BoundFlag(
+      formalName = &quot;Order&quot;,
+      description = &quot;A designation of how a selection of controls in a profile is to be ordered.&quot;,
+      useName = &quot;order&quot;,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;keep&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;ascending&quot;, description = &quot;&quot;), @AllowedValue(value = &quot;descending&quot;, description = &quot;&quot;)})
+  )
+  private String _order;
+
+  @BoundAssembly(
+      formalName = &quot;Include All&quot;,
+      description = &quot;Include all controls from the imported catalog or profile resources.&quot;,
+      useName = &quot;include-all&quot;,
+      minOccurs = 1
+  )
+  private IncludeAll _includeAll;
+
+  @BoundAssembly(
+      formalName = &quot;Select Control&quot;,
+      description = &quot;Select a control or controls from an imported control set.&quot;,
+      useName = &quot;include-controls&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;include-controls&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ProfileSelectControlById&gt; _includeControls;
+
+  @BoundAssembly(
+      formalName = &quot;Select Control&quot;,
+      description = &quot;Select a control or controls from an imported control set.&quot;,
+      useName = &quot;exclude-controls&quot;,
+      maxOccurs = -1,
+      remarks = &quot;Identifies which controls to exclude, or eliminate, from the set of matching includes.&quot;
+  )
+  @GroupAs(
+      name = &quot;exclude-controls&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ProfileSelectControlById&gt; _excludeControls;
+
+<span class="nc" id="L79">  public InsertControls() {</span>
+<span class="nc" id="L80">  }</span>
+
+  public String getOrder() {
+<span class="nc" id="L83">    return _order;</span>
+  }
+
+  public void setOrder(String value) {
+<span class="nc" id="L87">    _order = value;</span>
+<span class="nc" id="L88">  }</span>
+
+  public IncludeAll getIncludeAll() {
+<span class="nc" id="L91">    return _includeAll;</span>
+  }
+
+  public void setIncludeAll(IncludeAll value) {
+<span class="nc" id="L95">    _includeAll = value;</span>
+<span class="nc" id="L96">  }</span>
+
+  public List&lt;ProfileSelectControlById&gt; getIncludeControls() {
+<span class="nc" id="L99">    return _includeControls;</span>
+  }
+
+  public void setIncludeControls(List&lt;ProfileSelectControlById&gt; value) {
+<span class="nc" id="L103">    _includeControls = value;</span>
+<span class="nc" id="L104">  }</span>
+
+  /**
+   * Add a new {@link ProfileSelectControlById} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addIncludeControls(ProfileSelectControlById item) {
+<span class="nc" id="L112">    ProfileSelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">    if (_includeControls == null) {</span>
+<span class="nc" id="L114">      _includeControls = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L116">    return _includeControls.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ProfileSelectControlById} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeIncludeControls(ProfileSelectControlById item) {
+<span class="nc" id="L125">    ProfileSelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">    return _includeControls == null ? false : _includeControls.remove(value);</span>
+  }
+
+  public List&lt;ProfileSelectControlById&gt; getExcludeControls() {
+<span class="nc" id="L130">    return _excludeControls;</span>
+  }
+
+  public void setExcludeControls(List&lt;ProfileSelectControlById&gt; value) {
+<span class="nc" id="L134">    _excludeControls = value;</span>
+<span class="nc" id="L135">  }</span>
+
+  /**
+   * Add a new {@link ProfileSelectControlById} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addExcludeControls(ProfileSelectControlById item) {
+<span class="nc" id="L143">    ProfileSelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">    if (_excludeControls == null) {</span>
+<span class="nc" id="L145">      _excludeControls = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L147">    return _excludeControls.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ProfileSelectControlById} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeExcludeControls(ProfileSelectControlById item) {
+<span class="nc" id="L156">    ProfileSelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">    return _excludeControls == null ? false : _excludeControls.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L162">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

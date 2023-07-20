@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IControlFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.selection</a> &gt; <span class="el_source">IControlFilter.java</span></div><h1>IControlFilter.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
+
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.IncludeAll;
+import gov.nist.secauto.oscal.lib.model.ProfileImport;
+import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
+import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public interface IControlFilter {
+  @NonNull
+<span class="fc" id="L43">  IControlFilter ALWAYS_MATCH = new IControlFilter() {</span>
+    @Override
+    public @NonNull Pair&lt;Boolean, Boolean&gt; match(@NonNull IControl control, boolean defaultMatch) {
+<span class="nc" id="L46">      return IControlSelectionFilter.MATCH;</span>
+    }
+
+    @Override
+    public @NonNull IControlSelectionFilter getInclusionFilter() {
+<span class="nc" id="L51">      return IControlSelectionFilter.ALL_MATCH;</span>
+    }
+
+    @Override
+    public @NonNull IControlSelectionFilter getExclusionFilter() {
+<span class="nc" id="L56">      return IControlSelectionFilter.NONE_MATCH;</span>
+    }
+  };
+
+  @NonNull
+<span class="fc" id="L61">  IControlFilter NONE_MATCH = new IControlFilter() {</span>
+
+    @Override
+    public @NonNull Pair&lt;Boolean, Boolean&gt; match(@NonNull IControl control, boolean defaultMatch) {
+<span class="nc" id="L65">      return IControlSelectionFilter.NON_MATCH;</span>
+    }
+
+    @Override
+    public @NonNull IControlSelectionFilter getInclusionFilter() {
+<span class="nc" id="L70">      return IControlSelectionFilter.NONE_MATCH;</span>
+    }
+
+    @Override
+    public @NonNull IControlSelectionFilter getExclusionFilter() {
+<span class="nc" id="L75">      return IControlSelectionFilter.NONE_MATCH;</span>
+    }
+  };
+
+  /**
+   * Construct a new filter instance based on the provided profile import statement.
+   *
+   * @param profileImport
+   *          an OSCAL profile import statement
+   * @return a new control filter
+   */
+  @NonNull
+  static IControlFilter newInstance(@NonNull ProfileImport profileImport) {
+<span class="fc" id="L88">    return new Filter(profileImport);</span>
+  }
+
+  @NonNull
+  static IControlFilter newInstance(@NonNull IControlSelectionFilter includes,
+      @NonNull IControlSelectionFilter excludes) {
+<span class="fc" id="L94">    return new Filter(includes, excludes);</span>
+  }
+
+  /**
+   * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
+   * first member of the pair indicates if the control matches, and the second indicates if the match
+   * applies to child controls as well.
+   *
+   * @param control
+   *          the control to check for a match
+   * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
+   *         otherwise), and if a match applies to child controls
+   */
+  @NonNull
+  default Pair&lt;Boolean, Boolean&gt; match(@NonNull IControl control) {
+<span class="nc" id="L109">    return match(control, false);</span>
+  }
+
+  /**
+   * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
+   * first member of the pair indicates if the control matches, and the second indicates if the match
+   * applies to child controls as well.
+   *
+   * @param control
+   *          the control to check for a match
+   * @param defaultMatch
+   *          the match status to use if the filter doesn't have an explicit hit
+   * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
+   *         otherwise), and if a match applies to child controls
+   */
+  @NonNull
+  Pair&lt;Boolean, Boolean&gt; match(@NonNull IControl control, boolean defaultMatch);
+
+  @NonNull
+  IControlSelectionFilter getInclusionFilter();
+
+  @NonNull
+  IControlSelectionFilter getExclusionFilter();
+
+  class Filter implements IControlFilter {
+    @NonNull
+    private final IControlSelectionFilter inclusionFilter;
+    @NonNull
+    private final IControlSelectionFilter exclusionFilter;
+
+<span class="fc" id="L139">    public Filter(@NonNull ProfileImport profileImport) {</span>
+<span class="fc" id="L140">      IncludeAll includeAll = profileImport.getIncludeAll();</span>
+
+<span class="fc bfc" id="L142" title="All 2 branches covered.">      if (includeAll == null) {</span>
+<span class="fc" id="L143">        List&lt;? extends IProfileSelectControlById&gt; selections = profileImport.getIncludeControls();</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (selections == null) {</span>
+<span class="nc" id="L145">          this.inclusionFilter = IControlSelectionFilter.NONE_MATCH;</span>
+        } else {
+<span class="fc" id="L147">          this.inclusionFilter = new DefaultControlSelectionFilter(selections);</span>
+        }
+<span class="fc" id="L149">      } else {</span>
+<span class="fc" id="L150">        this.inclusionFilter = IControlSelectionFilter.ALL_MATCH;</span>
+      }
+
+<span class="fc" id="L153">      List&lt;? extends IProfileSelectControlById&gt; selections = profileImport.getExcludeControls();</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">      if (selections == null) {</span>
+<span class="nc" id="L155">        this.exclusionFilter = IControlSelectionFilter.NONE_MATCH;</span>
+      } else {
+<span class="fc" id="L157">        this.exclusionFilter = new DefaultControlSelectionFilter(selections);</span>
+      }
+
+<span class="fc" id="L160">    }</span>
+
+<span class="fc" id="L162">    public Filter(@NonNull IControlSelectionFilter includes, @NonNull IControlSelectionFilter excludes) {</span>
+<span class="fc" id="L163">      this.inclusionFilter = includes;</span>
+<span class="fc" id="L164">      this.exclusionFilter = excludes;</span>
+<span class="fc" id="L165">    }</span>
+
+    @Override
+    @NonNull
+    public IControlSelectionFilter getInclusionFilter() {
+<span class="fc" id="L170">      return inclusionFilter;</span>
+    }
+
+    @Override
+    @NonNull
+    public IControlSelectionFilter getExclusionFilter() {
+<span class="fc" id="L176">      return exclusionFilter;</span>
+    }
+
+    @Override
+    public Pair&lt;Boolean, Boolean&gt; match(@NonNull IControl control, boolean defaultMatch) {
+<span class="fc" id="L181">      @NonNull Pair&lt;Boolean, Boolean&gt; result = getInclusionFilter().apply(control);</span>
+<span class="fc" id="L182">      boolean left = ObjectUtils.notNull(result.getLeft());</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">      if (left) {</span>
+        // this is a positive include match. Is it excluded?
+<span class="fc" id="L185">        Pair&lt;Boolean, Boolean&gt; excluded = getExclusionFilter().apply(control);</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (ObjectUtils.notNull(excluded.getLeft())) {</span>
+          // the effective result is a non-match
+<span class="fc" id="L188">          result = IControlSelectionFilter.NON_MATCH;</span>
+        }
+<span class="fc" id="L190">      } else {</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        result = defaultMatch ? IControlSelectionFilter.MATCH : IControlSelectionFilter.NON_MATCH;</span>
+      }
+<span class="fc" id="L193">      return result;</span>
+    }
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

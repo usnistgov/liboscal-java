@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfileImport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">ProfileImport.java</span></div><h1>ProfileImport.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriReferenceAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Import Resource&quot;,
+    description = &quot;Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.&quot;,
+    name = &quot;import&quot;,
+    metaschema = OscalProfileMetaschema.class,
+    remarks = &quot;The contents of the `import` element indicate which controls from the source will be included. Controls from the source catalog or profile may be either selected, using the `include-all` or `include-controls` directives, or de-selected (using an `exclude-controls` directive).&quot;
+)
+public class ProfileImport {
+  @BoundFlag(
+      formalName = &quot;Catalog or Profile Reference&quot;,
+      description = &quot;A resolvable URL reference to the base catalog or profile that this profile is tailoring.&quot;,
+      useName = &quot;href&quot;,
+      required = true,
+      typeAdapter = UriReferenceAdapter.class,
+      remarks = &quot;This value may be one of:\n&quot;
+              + &quot;\n&quot;
+              + &quot;1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n&quot;
+              + &quot;2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or\n&quot;
+              + &quot;3. a bare URI fragment (i.e., \\`#uuid\\`) pointing to a `back-matter` resource in this or an imported document (see [linking to another OSCAL object](https://pages.nist.gov/OSCAL/concepts/uri-use/#linking-to-another-oscal-object)).&quot;
+  )
+  private URI _href;
+
+  @BoundAssembly(
+      formalName = &quot;Include All&quot;,
+      description = &quot;Include all controls from the imported catalog or profile resources.&quot;,
+      useName = &quot;include-all&quot;,
+      minOccurs = 1,
+      remarks = &quot;Identifies that all controls are to be included from the imported catalog or profile.&quot;
+  )
+  private IncludeAll _includeAll;
+
+  @BoundAssembly(
+      formalName = &quot;Select Control&quot;,
+      description = &quot;Select a control or controls from an imported control set.&quot;,
+      useName = &quot;include-controls&quot;,
+      minOccurs = 1,
+      maxOccurs = -1,
+      remarks = &quot;If `with-child-controls` is \&quot;yes\&quot; on the call to a control, any controls appearing within it (child controls) will be selected, with no additional `call` directives required. This flag provides a way to include controls with all their dependent controls (enhancements) without having to call them individually.&quot;
+  )
+  @GroupAs(
+      name = &quot;include-controls&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ProfileSelectControlById&gt; _includeControls;
+
+  @BoundAssembly(
+      formalName = &quot;Select Control&quot;,
+      description = &quot;Select a control or controls from an imported control set.&quot;,
+      useName = &quot;exclude-controls&quot;,
+      maxOccurs = -1,
+      remarks = &quot;Identifies which controls to exclude, or eliminate, from the set of included controls by control identifier or match pattern.&quot;
+  )
+  @GroupAs(
+      name = &quot;exclude-controls&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ProfileSelectControlById&gt; _excludeControls;
+
+<span class="fc" id="L79">  public ProfileImport() {</span>
+<span class="fc" id="L80">  }</span>
+
+  public URI getHref() {
+<span class="fc" id="L83">    return _href;</span>
+  }
+
+  public void setHref(URI value) {
+<span class="fc" id="L87">    _href = value;</span>
+<span class="fc" id="L88">  }</span>
+
+  public IncludeAll getIncludeAll() {
+<span class="fc" id="L91">    return _includeAll;</span>
+  }
+
+  public void setIncludeAll(IncludeAll value) {
+<span class="fc" id="L95">    _includeAll = value;</span>
+<span class="fc" id="L96">  }</span>
+
+  public List&lt;ProfileSelectControlById&gt; getIncludeControls() {
+<span class="fc" id="L99">    return _includeControls;</span>
+  }
+
+  public void setIncludeControls(List&lt;ProfileSelectControlById&gt; value) {
+<span class="nc" id="L103">    _includeControls = value;</span>
+<span class="nc" id="L104">  }</span>
+
+  /**
+   * Add a new {@link ProfileSelectControlById} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addIncludeControls(ProfileSelectControlById item) {
+<span class="nc" id="L112">    ProfileSelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">    if (_includeControls == null) {</span>
+<span class="nc" id="L114">      _includeControls = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L116">    return _includeControls.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ProfileSelectControlById} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeIncludeControls(ProfileSelectControlById item) {
+<span class="nc" id="L125">    ProfileSelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">    return _includeControls == null ? false : _includeControls.remove(value);</span>
+  }
+
+  public List&lt;ProfileSelectControlById&gt; getExcludeControls() {
+<span class="fc" id="L130">    return _excludeControls;</span>
+  }
+
+  public void setExcludeControls(List&lt;ProfileSelectControlById&gt; value) {
+<span class="fc" id="L134">    _excludeControls = value;</span>
+<span class="fc" id="L135">  }</span>
+
+  /**
+   * Add a new {@link ProfileSelectControlById} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addExcludeControls(ProfileSelectControlById item) {
+<span class="nc" id="L143">    ProfileSelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">    if (_excludeControls == null) {</span>
+<span class="nc" id="L145">      _excludeControls = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L147">    return _excludeControls.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ProfileSelectControlById} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeExcludeControls(ProfileSelectControlById item) {
+<span class="nc" id="L156">    ProfileSelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">    return _excludeControls == null ? false : _excludeControls.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L162">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

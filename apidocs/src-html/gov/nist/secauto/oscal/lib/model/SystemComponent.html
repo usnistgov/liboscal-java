@@ -1,0 +1,538 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package gov.nist.secauto.oscal.lib.model;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;</a>
+<span class="sourceLineNo">009</span><a id="line.9">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;</a>
+<span class="sourceLineNo">010</span><a id="line.10">import gov.nist.secauto.metaschema.binding.model.annotations.Expect;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;</a>
+<span class="sourceLineNo">013</span><a id="line.13">import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;</a>
+<span class="sourceLineNo">014</span><a id="line.14">import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;</a>
+<span class="sourceLineNo">015</span><a id="line.15">import gov.nist.secauto.metaschema.binding.model.annotations.Matches;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;</a>
+<span class="sourceLineNo">019</span><a id="line.19">import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import gov.nist.secauto.metaschema.model.common.datatype.adapter.DateAdapter;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import gov.nist.secauto.metaschema.model.common.datatype.adapter.DateTimeAdapter;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import gov.nist.secauto.metaschema.model.common.datatype.adapter.IPv4AddressAdapter;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import gov.nist.secauto.metaschema.model.common.datatype.adapter.IPv6AddressAdapter;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import java.lang.Override;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import java.lang.String;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import java.util.LinkedList;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import java.util.List;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import java.util.UUID;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.apache.commons.lang3.builder.ReflectionToStringBuilder;</a>
+<span class="sourceLineNo">039</span><a id="line.39"></a>
+<span class="sourceLineNo">040</span><a id="line.40">/**</a>
+<span class="sourceLineNo">041</span><a id="line.41"> * A defined component that can be part of an implemented system.</a>
+<span class="sourceLineNo">042</span><a id="line.42"> */</a>
+<span class="sourceLineNo">043</span><a id="line.43">@MetaschemaAssembly(</a>
+<span class="sourceLineNo">044</span><a id="line.44">    formalName = "Component",</a>
+<span class="sourceLineNo">045</span><a id="line.45">    description = "A defined component that can be part of an implemented system.",</a>
+<span class="sourceLineNo">046</span><a id="line.46">    name = "system-component",</a>
+<span class="sourceLineNo">047</span><a id="line.47">    metaschema = OscalImplementationCommonMetaschema.class,</a>
+<span class="sourceLineNo">048</span><a id="line.48">    remarks = "Components may be products, services, application programming interface (APIs), policies, processes, plans, guidance, standards, or other tangible items that enable security and/or privacy.\n"</a>
+<span class="sourceLineNo">049</span><a id="line.49">            + "\n"</a>
+<span class="sourceLineNo">050</span><a id="line.50">            + "The `type` indicates which of these component types is represented.\n"</a>
+<span class="sourceLineNo">051</span><a id="line.51">            + "\n"</a>
+<span class="sourceLineNo">052</span><a id="line.52">            + "When defining a `service` component where are relationship to other components is known, one or more `link` entries with rel values of provided-by and used-by can be used to link to the specific component identifier(s) that provide and use the service respectively."</a>
+<span class="sourceLineNo">053</span><a id="line.53">)</a>
+<span class="sourceLineNo">054</span><a id="line.54">@ValueConstraints(</a>
+<span class="sourceLineNo">055</span><a id="line.55">    allowedValues = {</a>
+<span class="sourceLineNo">056</span><a id="line.56">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = {@AllowedValue(value = "implementation-point", description = "Relative placement of component ('internal' or 'external') to the system."), @AllowedValue(value = "leveraged-authorization-uuid", description = "UUID of the related leveraged-authorization assembly in this SSP."), @AllowedValue(value = "inherited-uuid", description = "UUID of the component as it was assigned in the leveraged system's SSP."), @AllowedValue(value = "asset-type", description = "Simple indication of the asset's function, such as Router, Storage Array, DNS Server."), @AllowedValue(value = "asset-id", description = "An organizationally specific identifier that is used to uniquely identify a logical or tangible item by the organization that owns the item."), @AllowedValue(value = "asset-tag", description = "An asset tag assigned by the organization responsible for maintaining the logical or tangible item."), @AllowedValue(value = "public", description = "Identifies whether the asset is publicly accessible (yes/no)"), @AllowedValue(value = "virtual", description = "Identifies whether the asset is virtualized (yes/no)"), @AllowedValue(value = "vlan-id", description = "Virtual LAN identifier of the asset."), @AllowedValue(value = "network-id", description = "The network identifier of the asset."), @AllowedValue(value = "label", description = "A human-readable label for the parent context."), @AllowedValue(value = "sort-id", description = "An alternative identifier, whose value is easily sortable among other such values in the document."), @AllowedValue(value = "baseline-configuration-name", description = "The name of the baseline configuration for the asset."), @AllowedValue(value = "allows-authenticated-scan", description = "Can the asset be check with an authenticated scan? (yes/no)"), @AllowedValue(value = "function", description = "The function provided by the asset for the system."), @AllowedValue(value = "version", description = "The version of the component."), @AllowedValue(value = "patch-level", description = "The specific patch level of the component."), @AllowedValue(value = "model", description = "The model of the component."), @AllowedValue(value = "release-date", description = "The date the component was released, such as a software release date or policy publication date."), @AllowedValue(value = "validation-type", description = "Used with component-type='validation' to provide a well-known name for a kind of validation."), @AllowedValue(value = "validation-reference", description = "Used with component-type='validation' to indicate the validating body's assigned identifier for their validation of this component.")}),</a>
+<span class="sourceLineNo">057</span><a id="line.57">        @AllowedValues(level = IConstraint.Level.ERROR, target = "link/@rel", allowOthers = true, values = {@AllowedValue(value = "depends-on", description = "A reference to another component that this component has a dependency on."), @AllowedValue(value = "validation", description = "A reference to another component of component-type=validation, that is a validation (e.g., FIPS 140-2) for this component"), @AllowedValue(value = "proof-of-compliance", description = "A pointer to a validation record (e.g., FIPS 140-2) or other compliance information."), @AllowedValue(value = "baseline-template", description = "A reference to the baseline template used to configure the asset."), @AllowedValue(value = "uses-service", description = "This service is used by the referenced component identifier."), @AllowedValue(value = "system-security-plan", description = "A link to the system security plan of the external system."), @AllowedValue(value = "uses-network", description = "This component uses the network provided by the identified network component."), @AllowedValue(value = "imported-from", description = "The hyperlink identifies a URI pointing to the `component` in a `component-definition` that originally defined the `component`.")}),</a>
+<span class="sourceLineNo">058</span><a id="line.58">        @AllowedValues(level = IConstraint.Level.ERROR, target = "responsible-role/@role-id", allowOthers = true, values = {@AllowedValue(value = "asset-owner", description = "Accountable for ensuring the asset is managed in accordance with organizational policies and procedures."), @AllowedValue(value = "asset-administrator", description = "Responsible for administering a set of assets."), @AllowedValue(value = "security-operations", description = "Members of the security operations center (SOC)."), @AllowedValue(value = "network-operations", description = "Members of the network operations center (NOC)."), @AllowedValue(value = "incident-response", description = "Responsible for responding to an event that could lead to loss of, or disruption to, an organization's operations, services or functions."), @AllowedValue(value = "help-desk", description = "Responsible for providing information and support to users."), @AllowedValue(value = "configuration-management", description = "Responsible for the configuration management processes governing changes to the asset."), @AllowedValue(value = "maintainer", description = "Responsible for the creation and maintenance of a component."), @AllowedValue(value = "provider", description = "Organization responsible for providing the component, if this is different from the \"maintainer\" (e.g., a reseller).")}),</a>
+<span class="sourceLineNo">059</span><a id="line.59">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='asset-type']/@value", values = {@AllowedValue(value = "operating-system", description = "System software that manages computer hardware, software resources, and provides common services for computer programs."), @AllowedValue(value = "database", description = "An electronic collection of data, or information, that is specially organized for rapid search and retrieval."), @AllowedValue(value = "web-server", description = "A system that delivers content or services to end users over the Internet or an intranet."), @AllowedValue(value = "dns-server", description = "A system that resolves domain names to internet protocol (IP) addresses."), @AllowedValue(value = "email-server", description = "A computer system that sends and receives electronic mail messages."), @AllowedValue(value = "directory-server", description = "A system that stores, organizes and provides access to directory information in order to unify network resources."), @AllowedValue(value = "pbx", description = "A private branch exchange (PBX) provides a a private telephone switchboard."), @AllowedValue(value = "firewall", description = "A network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules."), @AllowedValue(value = "router", description = "A physical or virtual networking device that forwards data packets between computer networks."), @AllowedValue(value = "switch", description = "A physical or virtual networking device that connects devices within a computer network by using packet switching to receive and forward data to the destination device."), @AllowedValue(value = "storage-array", description = "A consolidated, block-level data storage capability."), @AllowedValue(value = "appliance", description = "A physical or virtual machine that centralizes hardware, software, or services for a specific purpose.")}),</a>
+<span class="sourceLineNo">060</span><a id="line.60">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='allows-authenticated-scan']/@value", values = {@AllowedValue(value = "yes", description = "The component allows an authenticated scan."), @AllowedValue(value = "no", description = "The component does not allow an authenticated scan.")}),</a>
+<span class="sourceLineNo">061</span><a id="line.61">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='public']/@value", values = {@AllowedValue(value = "yes", description = "The component is publicly accessible."), @AllowedValue(value = "no", description = "The component is not publicly accessible.")}),</a>
+<span class="sourceLineNo">062</span><a id="line.62">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='virtual']/@value", values = {@AllowedValue(value = "yes", description = "The component is virtualized."), @AllowedValue(value = "no", description = "The component is not virtualized.")}),</a>
+<span class="sourceLineNo">063</span><a id="line.63">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='implementation-point']/@value", values = {@AllowedValue(value = "internal", description = "The component is implemented within the system boundary."), @AllowedValue(value = "external", description = "The component is implemented outside the system boundary.")}),</a>
+<span class="sourceLineNo">064</span><a id="line.64">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.)[@type=('software', 'hardware', 'service')]/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = @AllowedValue(value = "vendor-name", description = "The name of the company or organization")),</a>
+<span class="sourceLineNo">065</span><a id="line.65">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.)[@type='validation']/link/@rel", allowOthers = true, values = @AllowedValue(value = "validation-details", description = "A link to an online information provided by the authorizing body.")),</a>
+<span class="sourceLineNo">066</span><a id="line.66">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.)[@type='software']/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = @AllowedValue(value = "software-identifier", description = "If a \"software\" component-type, the identifier, such as a SWID tag, for the software component.")),</a>
+<span class="sourceLineNo">067</span><a id="line.67">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.)[@type='service']/link/@rel", allowOthers = true, values = {@AllowedValue(value = "provided-by", description = "This service is provided by the referenced component identifier."), @AllowedValue(value = "used-by", description = "This service is used by the referenced component identifier.")}),</a>
+<span class="sourceLineNo">068</span><a id="line.68">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.)[@type='interconnection']/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = {@AllowedValue(value = "isa-title", description = "Title of the Interconnection Security Agreement (ISA)."), @AllowedValue(value = "isa-date", description = "Date of the Interconnection Security Agreement (ISA)."), @AllowedValue(value = "isa-remote-system-name", description = "The name of the remote interconnected system."), @AllowedValue(value = "ipv4-address", description = "An Internet Protocol Version 4 interconnection address"), @AllowedValue(value = "ipv6-address", description = "An Internet Protocol Version 6 interconnection address"), @AllowedValue(value = "direction", description = "An Internet Protocol Version 6 interconnection address")}),</a>
+<span class="sourceLineNo">069</span><a id="line.69">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('ipv4-address','ipv6-address')]/@class", values = {@AllowedValue(value = "local", description = "The identified IP address is for this system."), @AllowedValue(value = "remote", description = "The identified IP address is for the remote system to which this system is connected.")}),</a>
+<span class="sourceLineNo">070</span><a id="line.70">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.)[@type='interconnection']/link/@rel", allowOthers = true, values = @AllowedValue(value = "isa-agreement", description = "A link to the system interconnection agreement.")),</a>
+<span class="sourceLineNo">071</span><a id="line.71">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.)[@type='interconnection']/responsible-role/@role-id", allowOthers = true, values = {@AllowedValue(value = "isa-poc-local", description = "Interconnection Security Agreement (ISA) point of contact (POC) for this system."), @AllowedValue(value = "isa-poc-remote", description = "Interconnection Security Agreement (ISA) point of contact (POC) for the remote interconnected system."), @AllowedValue(value = "isa-authorizing-official-local", description = "Interconnection Security Agreement (ISA) authorizing official for this system."), @AllowedValue(value = "isa-authorizing-official-remote", description = "Interconnection Security Agreement (ISA) authorizing official for the remote interconnected system.")}),</a>
+<span class="sourceLineNo">072</span><a id="line.72">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='direction']/@value", values = {@AllowedValue(value = "incoming", description = "Data from the remote system flows into this system."), @AllowedValue(value = "outgoing", description = "Data from this system flows to the remote system.")})</a>
+<span class="sourceLineNo">073</span><a id="line.73">    },</a>
+<span class="sourceLineNo">074</span><a id="line.74">    indexHasKey = @IndexHasKey(level = IConstraint.Level.ERROR, target = "prop[@name='physical-location']", indexName = "index-metadata-location-uuid", keyFields = @KeyField(target = "@value")),</a>
+<span class="sourceLineNo">075</span><a id="line.75">    matches = {</a>
+<span class="sourceLineNo">076</span><a id="line.76">        @Matches(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='inherited-uuid']/@value", typeAdapter = UuidAdapter.class),</a>
+<span class="sourceLineNo">077</span><a id="line.77">        @Matches(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='release-date']/@value", typeAdapter = DateAdapter.class),</a>
+<span class="sourceLineNo">078</span><a id="line.78">        @Matches(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='isa-date']/@value", typeAdapter = DateTimeAdapter.class),</a>
+<span class="sourceLineNo">079</span><a id="line.79">        @Matches(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='ipv4-address']/@value", typeAdapter = IPv4AddressAdapter.class),</a>
+<span class="sourceLineNo">080</span><a id="line.80">        @Matches(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='ipv6-address']/@value", typeAdapter = IPv6AddressAdapter.class)</a>
+<span class="sourceLineNo">081</span><a id="line.81">    },</a>
+<span class="sourceLineNo">082</span><a id="line.82">    expect = @Expect(level = IConstraint.Level.ERROR, test = "not(exists((.)[not(@type='service')]/protocol))")</a>
+<span class="sourceLineNo">083</span><a id="line.83">)</a>
+<span class="sourceLineNo">084</span><a id="line.84">@AssemblyConstraints(</a>
+<span class="sourceLineNo">085</span><a id="line.85">    isUnique = @IsUnique(id = "unique-system-component-responsible-role", level = IConstraint.Level.ERROR, target = "responsible-role", keyFields = @KeyField(target = "@role-id"), remarks = "Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.")</a>
+<span class="sourceLineNo">086</span><a id="line.86">)</a>
+<span class="sourceLineNo">087</span><a id="line.87">public class SystemComponent {</a>
+<span class="sourceLineNo">088</span><a id="line.88">  @BoundFlag(</a>
+<span class="sourceLineNo">089</span><a id="line.89">      formalName = "Component Identifier",</a>
+<span class="sourceLineNo">090</span><a id="line.90">      description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this component elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `component` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.",</a>
+<span class="sourceLineNo">091</span><a id="line.91">      useName = "uuid",</a>
+<span class="sourceLineNo">092</span><a id="line.92">      required = true,</a>
+<span class="sourceLineNo">093</span><a id="line.93">      typeAdapter = UuidAdapter.class</a>
+<span class="sourceLineNo">094</span><a id="line.94">  )</a>
+<span class="sourceLineNo">095</span><a id="line.95">  private UUID _uuid;</a>
+<span class="sourceLineNo">096</span><a id="line.96"></a>
+<span class="sourceLineNo">097</span><a id="line.97">  @BoundFlag(</a>
+<span class="sourceLineNo">098</span><a id="line.98">      formalName = "Component Type",</a>
+<span class="sourceLineNo">099</span><a id="line.99">      description = "A category describing the purpose of the component.",</a>
+<span class="sourceLineNo">100</span><a id="line.100">      useName = "type",</a>
+<span class="sourceLineNo">101</span><a id="line.101">      required = true,</a>
+<span class="sourceLineNo">102</span><a id="line.102">      typeAdapter = StringAdapter.class</a>
+<span class="sourceLineNo">103</span><a id="line.103">  )</a>
+<span class="sourceLineNo">104</span><a id="line.104">  @ValueConstraints(</a>
+<span class="sourceLineNo">105</span><a id="line.105">      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = "this-system", description = "The system as a whole."), @AllowedValue(value = "system", description = "An external system, which may be a leveraged system or the other side of an interconnection."), @AllowedValue(value = "interconnection", description = "A connection to something outside this system."), @AllowedValue(value = "software", description = "Any software, operating system, or firmware."), @AllowedValue(value = "hardware", description = "A physical device."), @AllowedValue(value = "service", description = "A service that may provide APIs."), @AllowedValue(value = "policy", description = "An enforceable policy."), @AllowedValue(value = "physical", description = "A tangible asset used to provide physical protections or countermeasures."), @AllowedValue(value = "process-procedure", description = "A list of steps or actions to take to achieve some end result."), @AllowedValue(value = "plan", description = "An applicable plan."), @AllowedValue(value = "guidance", description = "Any guideline or recommendation."), @AllowedValue(value = "standard", description = "Any organizational or industry standard."), @AllowedValue(value = "validation", description = "An external assessment performed on some other component, that has been validated by a third-party."), @AllowedValue(value = "network", description = "A physical or virtual network.")})</a>
+<span class="sourceLineNo">106</span><a id="line.106">  )</a>
+<span class="sourceLineNo">107</span><a id="line.107">  private String _type;</a>
+<span class="sourceLineNo">108</span><a id="line.108"></a>
+<span class="sourceLineNo">109</span><a id="line.109">  /**</a>
+<span class="sourceLineNo">110</span><a id="line.110">   * "A human readable name for the system component."</a>
+<span class="sourceLineNo">111</span><a id="line.111">   */</a>
+<span class="sourceLineNo">112</span><a id="line.112">  @BoundField(</a>
+<span class="sourceLineNo">113</span><a id="line.113">      formalName = "Component Title",</a>
+<span class="sourceLineNo">114</span><a id="line.114">      description = "A human readable name for the system component.",</a>
+<span class="sourceLineNo">115</span><a id="line.115">      useName = "title",</a>
+<span class="sourceLineNo">116</span><a id="line.116">      minOccurs = 1</a>
+<span class="sourceLineNo">117</span><a id="line.117">  )</a>
+<span class="sourceLineNo">118</span><a id="line.118">  @BoundFieldValue(</a>
+<span class="sourceLineNo">119</span><a id="line.119">      typeAdapter = MarkupLineAdapter.class</a>
+<span class="sourceLineNo">120</span><a id="line.120">  )</a>
+<span class="sourceLineNo">121</span><a id="line.121">  private MarkupLine _title;</a>
+<span class="sourceLineNo">122</span><a id="line.122"></a>
+<span class="sourceLineNo">123</span><a id="line.123">  /**</a>
+<span class="sourceLineNo">124</span><a id="line.124">   * "A description of the component, including information about its function."</a>
+<span class="sourceLineNo">125</span><a id="line.125">   */</a>
+<span class="sourceLineNo">126</span><a id="line.126">  @BoundField(</a>
+<span class="sourceLineNo">127</span><a id="line.127">      formalName = "Component Description",</a>
+<span class="sourceLineNo">128</span><a id="line.128">      description = "A description of the component, including information about its function.",</a>
+<span class="sourceLineNo">129</span><a id="line.129">      useName = "description",</a>
+<span class="sourceLineNo">130</span><a id="line.130">      minOccurs = 1</a>
+<span class="sourceLineNo">131</span><a id="line.131">  )</a>
+<span class="sourceLineNo">132</span><a id="line.132">  @BoundFieldValue(</a>
+<span class="sourceLineNo">133</span><a id="line.133">      typeAdapter = MarkupMultilineAdapter.class</a>
+<span class="sourceLineNo">134</span><a id="line.134">  )</a>
+<span class="sourceLineNo">135</span><a id="line.135">  private MarkupMultiline _description;</a>
+<span class="sourceLineNo">136</span><a id="line.136"></a>
+<span class="sourceLineNo">137</span><a id="line.137">  /**</a>
+<span class="sourceLineNo">138</span><a id="line.138">   * "A summary of the technological or business purpose of the component."</a>
+<span class="sourceLineNo">139</span><a id="line.139">   */</a>
+<span class="sourceLineNo">140</span><a id="line.140">  @BoundField(</a>
+<span class="sourceLineNo">141</span><a id="line.141">      formalName = "Purpose",</a>
+<span class="sourceLineNo">142</span><a id="line.142">      description = "A summary of the technological or business purpose of the component.",</a>
+<span class="sourceLineNo">143</span><a id="line.143">      useName = "purpose"</a>
+<span class="sourceLineNo">144</span><a id="line.144">  )</a>
+<span class="sourceLineNo">145</span><a id="line.145">  @BoundFieldValue(</a>
+<span class="sourceLineNo">146</span><a id="line.146">      typeAdapter = MarkupLineAdapter.class</a>
+<span class="sourceLineNo">147</span><a id="line.147">  )</a>
+<span class="sourceLineNo">148</span><a id="line.148">  private MarkupLine _purpose;</a>
+<span class="sourceLineNo">149</span><a id="line.149"></a>
+<span class="sourceLineNo">150</span><a id="line.150">  @BoundAssembly(</a>
+<span class="sourceLineNo">151</span><a id="line.151">      formalName = "Property",</a>
+<span class="sourceLineNo">152</span><a id="line.152">      description = "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",</a>
+<span class="sourceLineNo">153</span><a id="line.153">      useName = "prop",</a>
+<span class="sourceLineNo">154</span><a id="line.154">      maxOccurs = -1</a>
+<span class="sourceLineNo">155</span><a id="line.155">  )</a>
+<span class="sourceLineNo">156</span><a id="line.156">  @GroupAs(</a>
+<span class="sourceLineNo">157</span><a id="line.157">      name = "props",</a>
+<span class="sourceLineNo">158</span><a id="line.158">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">159</span><a id="line.159">  )</a>
+<span class="sourceLineNo">160</span><a id="line.160">  private List&lt;Property&gt; _props;</a>
+<span class="sourceLineNo">161</span><a id="line.161"></a>
+<span class="sourceLineNo">162</span><a id="line.162">  @BoundAssembly(</a>
+<span class="sourceLineNo">163</span><a id="line.163">      formalName = "Link",</a>
+<span class="sourceLineNo">164</span><a id="line.164">      description = "A reference to a local or remote resource, that has a specific relation to the containing object.",</a>
+<span class="sourceLineNo">165</span><a id="line.165">      useName = "link",</a>
+<span class="sourceLineNo">166</span><a id="line.166">      maxOccurs = -1</a>
+<span class="sourceLineNo">167</span><a id="line.167">  )</a>
+<span class="sourceLineNo">168</span><a id="line.168">  @GroupAs(</a>
+<span class="sourceLineNo">169</span><a id="line.169">      name = "links",</a>
+<span class="sourceLineNo">170</span><a id="line.170">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">171</span><a id="line.171">  )</a>
+<span class="sourceLineNo">172</span><a id="line.172">  private List&lt;Link&gt; _links;</a>
+<span class="sourceLineNo">173</span><a id="line.173"></a>
+<span class="sourceLineNo">174</span><a id="line.174">  /**</a>
+<span class="sourceLineNo">175</span><a id="line.175">   * "Describes the operational status of the system component."</a>
+<span class="sourceLineNo">176</span><a id="line.176">   */</a>
+<span class="sourceLineNo">177</span><a id="line.177">  @BoundAssembly(</a>
+<span class="sourceLineNo">178</span><a id="line.178">      formalName = "Status",</a>
+<span class="sourceLineNo">179</span><a id="line.179">      description = "Describes the operational status of the system component.",</a>
+<span class="sourceLineNo">180</span><a id="line.180">      useName = "status",</a>
+<span class="sourceLineNo">181</span><a id="line.181">      minOccurs = 1</a>
+<span class="sourceLineNo">182</span><a id="line.182">  )</a>
+<span class="sourceLineNo">183</span><a id="line.183">  private Status _status;</a>
+<span class="sourceLineNo">184</span><a id="line.184"></a>
+<span class="sourceLineNo">185</span><a id="line.185">  @BoundAssembly(</a>
+<span class="sourceLineNo">186</span><a id="line.186">      formalName = "Responsible Role",</a>
+<span class="sourceLineNo">187</span><a id="line.187">      description = "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.",</a>
+<span class="sourceLineNo">188</span><a id="line.188">      useName = "responsible-role",</a>
+<span class="sourceLineNo">189</span><a id="line.189">      maxOccurs = -1</a>
+<span class="sourceLineNo">190</span><a id="line.190">  )</a>
+<span class="sourceLineNo">191</span><a id="line.191">  @GroupAs(</a>
+<span class="sourceLineNo">192</span><a id="line.192">      name = "responsible-roles",</a>
+<span class="sourceLineNo">193</span><a id="line.193">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">194</span><a id="line.194">  )</a>
+<span class="sourceLineNo">195</span><a id="line.195">  private List&lt;ResponsibleRole&gt; _responsibleRoles;</a>
+<span class="sourceLineNo">196</span><a id="line.196"></a>
+<span class="sourceLineNo">197</span><a id="line.197">  @BoundAssembly(</a>
+<span class="sourceLineNo">198</span><a id="line.198">      formalName = "Service Protocol Information",</a>
+<span class="sourceLineNo">199</span><a id="line.199">      description = "Information about the protocol used to provide a service.",</a>
+<span class="sourceLineNo">200</span><a id="line.200">      useName = "protocol",</a>
+<span class="sourceLineNo">201</span><a id="line.201">      maxOccurs = -1,</a>
+<span class="sourceLineNo">202</span><a id="line.202">      remarks = "Used for `service` components to define the protocols supported by the service."</a>
+<span class="sourceLineNo">203</span><a id="line.203">  )</a>
+<span class="sourceLineNo">204</span><a id="line.204">  @GroupAs(</a>
+<span class="sourceLineNo">205</span><a id="line.205">      name = "protocols",</a>
+<span class="sourceLineNo">206</span><a id="line.206">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">207</span><a id="line.207">  )</a>
+<span class="sourceLineNo">208</span><a id="line.208">  private List&lt;Protocol&gt; _protocols;</a>
+<span class="sourceLineNo">209</span><a id="line.209"></a>
+<span class="sourceLineNo">210</span><a id="line.210">  @BoundField(</a>
+<span class="sourceLineNo">211</span><a id="line.211">      formalName = "Remarks",</a>
+<span class="sourceLineNo">212</span><a id="line.212">      description = "Additional commentary about the containing object.",</a>
+<span class="sourceLineNo">213</span><a id="line.213">      useName = "remarks"</a>
+<span class="sourceLineNo">214</span><a id="line.214">  )</a>
+<span class="sourceLineNo">215</span><a id="line.215">  @BoundFieldValue(</a>
+<span class="sourceLineNo">216</span><a id="line.216">      typeAdapter = MarkupMultilineAdapter.class</a>
+<span class="sourceLineNo">217</span><a id="line.217">  )</a>
+<span class="sourceLineNo">218</span><a id="line.218">  private MarkupMultiline _remarks;</a>
+<span class="sourceLineNo">219</span><a id="line.219"></a>
+<span class="sourceLineNo">220</span><a id="line.220">  public SystemComponent() {</a>
+<span class="sourceLineNo">221</span><a id="line.221">  }</a>
+<span class="sourceLineNo">222</span><a id="line.222"></a>
+<span class="sourceLineNo">223</span><a id="line.223">  public UUID getUuid() {</a>
+<span class="sourceLineNo">224</span><a id="line.224">    return _uuid;</a>
+<span class="sourceLineNo">225</span><a id="line.225">  }</a>
+<span class="sourceLineNo">226</span><a id="line.226"></a>
+<span class="sourceLineNo">227</span><a id="line.227">  public void setUuid(UUID value) {</a>
+<span class="sourceLineNo">228</span><a id="line.228">    _uuid = value;</a>
+<span class="sourceLineNo">229</span><a id="line.229">  }</a>
+<span class="sourceLineNo">230</span><a id="line.230"></a>
+<span class="sourceLineNo">231</span><a id="line.231">  public String getType() {</a>
+<span class="sourceLineNo">232</span><a id="line.232">    return _type;</a>
+<span class="sourceLineNo">233</span><a id="line.233">  }</a>
+<span class="sourceLineNo">234</span><a id="line.234"></a>
+<span class="sourceLineNo">235</span><a id="line.235">  public void setType(String value) {</a>
+<span class="sourceLineNo">236</span><a id="line.236">    _type = value;</a>
+<span class="sourceLineNo">237</span><a id="line.237">  }</a>
+<span class="sourceLineNo">238</span><a id="line.238"></a>
+<span class="sourceLineNo">239</span><a id="line.239">  public MarkupLine getTitle() {</a>
+<span class="sourceLineNo">240</span><a id="line.240">    return _title;</a>
+<span class="sourceLineNo">241</span><a id="line.241">  }</a>
+<span class="sourceLineNo">242</span><a id="line.242"></a>
+<span class="sourceLineNo">243</span><a id="line.243">  public void setTitle(MarkupLine value) {</a>
+<span class="sourceLineNo">244</span><a id="line.244">    _title = value;</a>
+<span class="sourceLineNo">245</span><a id="line.245">  }</a>
+<span class="sourceLineNo">246</span><a id="line.246"></a>
+<span class="sourceLineNo">247</span><a id="line.247">  public MarkupMultiline getDescription() {</a>
+<span class="sourceLineNo">248</span><a id="line.248">    return _description;</a>
+<span class="sourceLineNo">249</span><a id="line.249">  }</a>
+<span class="sourceLineNo">250</span><a id="line.250"></a>
+<span class="sourceLineNo">251</span><a id="line.251">  public void setDescription(MarkupMultiline value) {</a>
+<span class="sourceLineNo">252</span><a id="line.252">    _description = value;</a>
+<span class="sourceLineNo">253</span><a id="line.253">  }</a>
+<span class="sourceLineNo">254</span><a id="line.254"></a>
+<span class="sourceLineNo">255</span><a id="line.255">  public MarkupLine getPurpose() {</a>
+<span class="sourceLineNo">256</span><a id="line.256">    return _purpose;</a>
+<span class="sourceLineNo">257</span><a id="line.257">  }</a>
+<span class="sourceLineNo">258</span><a id="line.258"></a>
+<span class="sourceLineNo">259</span><a id="line.259">  public void setPurpose(MarkupLine value) {</a>
+<span class="sourceLineNo">260</span><a id="line.260">    _purpose = value;</a>
+<span class="sourceLineNo">261</span><a id="line.261">  }</a>
+<span class="sourceLineNo">262</span><a id="line.262"></a>
+<span class="sourceLineNo">263</span><a id="line.263">  public List&lt;Property&gt; getProps() {</a>
+<span class="sourceLineNo">264</span><a id="line.264">    return _props;</a>
+<span class="sourceLineNo">265</span><a id="line.265">  }</a>
+<span class="sourceLineNo">266</span><a id="line.266"></a>
+<span class="sourceLineNo">267</span><a id="line.267">  public void setProps(List&lt;Property&gt; value) {</a>
+<span class="sourceLineNo">268</span><a id="line.268">    _props = value;</a>
+<span class="sourceLineNo">269</span><a id="line.269">  }</a>
+<span class="sourceLineNo">270</span><a id="line.270"></a>
+<span class="sourceLineNo">271</span><a id="line.271">  /**</a>
+<span class="sourceLineNo">272</span><a id="line.272">   * Add a new {@link Property} item to the underlying collection.</a>
+<span class="sourceLineNo">273</span><a id="line.273">   * @param item the item to add</a>
+<span class="sourceLineNo">274</span><a id="line.274">   * @return {@code true}</a>
+<span class="sourceLineNo">275</span><a id="line.275">   */</a>
+<span class="sourceLineNo">276</span><a id="line.276">  public boolean addProp(Property item) {</a>
+<span class="sourceLineNo">277</span><a id="line.277">    Property value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">278</span><a id="line.278">    if (_props == null) {</a>
+<span class="sourceLineNo">279</span><a id="line.279">      _props = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">280</span><a id="line.280">    }</a>
+<span class="sourceLineNo">281</span><a id="line.281">    return _props.add(value);</a>
+<span class="sourceLineNo">282</span><a id="line.282">  }</a>
+<span class="sourceLineNo">283</span><a id="line.283"></a>
+<span class="sourceLineNo">284</span><a id="line.284">  /**</a>
+<span class="sourceLineNo">285</span><a id="line.285">   * Remove the first matching {@link Property} item from the underlying collection.</a>
+<span class="sourceLineNo">286</span><a id="line.286">   * @param item the item to remove</a>
+<span class="sourceLineNo">287</span><a id="line.287">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">288</span><a id="line.288">   */</a>
+<span class="sourceLineNo">289</span><a id="line.289">  public boolean removeProp(Property item) {</a>
+<span class="sourceLineNo">290</span><a id="line.290">    Property value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">291</span><a id="line.291">    return _props == null ? false : _props.remove(value);</a>
+<span class="sourceLineNo">292</span><a id="line.292">  }</a>
+<span class="sourceLineNo">293</span><a id="line.293"></a>
+<span class="sourceLineNo">294</span><a id="line.294">  public List&lt;Link&gt; getLinks() {</a>
+<span class="sourceLineNo">295</span><a id="line.295">    return _links;</a>
+<span class="sourceLineNo">296</span><a id="line.296">  }</a>
+<span class="sourceLineNo">297</span><a id="line.297"></a>
+<span class="sourceLineNo">298</span><a id="line.298">  public void setLinks(List&lt;Link&gt; value) {</a>
+<span class="sourceLineNo">299</span><a id="line.299">    _links = value;</a>
+<span class="sourceLineNo">300</span><a id="line.300">  }</a>
+<span class="sourceLineNo">301</span><a id="line.301"></a>
+<span class="sourceLineNo">302</span><a id="line.302">  /**</a>
+<span class="sourceLineNo">303</span><a id="line.303">   * Add a new {@link Link} item to the underlying collection.</a>
+<span class="sourceLineNo">304</span><a id="line.304">   * @param item the item to add</a>
+<span class="sourceLineNo">305</span><a id="line.305">   * @return {@code true}</a>
+<span class="sourceLineNo">306</span><a id="line.306">   */</a>
+<span class="sourceLineNo">307</span><a id="line.307">  public boolean addLink(Link item) {</a>
+<span class="sourceLineNo">308</span><a id="line.308">    Link value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">309</span><a id="line.309">    if (_links == null) {</a>
+<span class="sourceLineNo">310</span><a id="line.310">      _links = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">311</span><a id="line.311">    }</a>
+<span class="sourceLineNo">312</span><a id="line.312">    return _links.add(value);</a>
+<span class="sourceLineNo">313</span><a id="line.313">  }</a>
+<span class="sourceLineNo">314</span><a id="line.314"></a>
+<span class="sourceLineNo">315</span><a id="line.315">  /**</a>
+<span class="sourceLineNo">316</span><a id="line.316">   * Remove the first matching {@link Link} item from the underlying collection.</a>
+<span class="sourceLineNo">317</span><a id="line.317">   * @param item the item to remove</a>
+<span class="sourceLineNo">318</span><a id="line.318">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">319</span><a id="line.319">   */</a>
+<span class="sourceLineNo">320</span><a id="line.320">  public boolean removeLink(Link item) {</a>
+<span class="sourceLineNo">321</span><a id="line.321">    Link value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">322</span><a id="line.322">    return _links == null ? false : _links.remove(value);</a>
+<span class="sourceLineNo">323</span><a id="line.323">  }</a>
+<span class="sourceLineNo">324</span><a id="line.324"></a>
+<span class="sourceLineNo">325</span><a id="line.325">  public Status getStatus() {</a>
+<span class="sourceLineNo">326</span><a id="line.326">    return _status;</a>
+<span class="sourceLineNo">327</span><a id="line.327">  }</a>
+<span class="sourceLineNo">328</span><a id="line.328"></a>
+<span class="sourceLineNo">329</span><a id="line.329">  public void setStatus(Status value) {</a>
+<span class="sourceLineNo">330</span><a id="line.330">    _status = value;</a>
+<span class="sourceLineNo">331</span><a id="line.331">  }</a>
+<span class="sourceLineNo">332</span><a id="line.332"></a>
+<span class="sourceLineNo">333</span><a id="line.333">  public List&lt;ResponsibleRole&gt; getResponsibleRoles() {</a>
+<span class="sourceLineNo">334</span><a id="line.334">    return _responsibleRoles;</a>
+<span class="sourceLineNo">335</span><a id="line.335">  }</a>
+<span class="sourceLineNo">336</span><a id="line.336"></a>
+<span class="sourceLineNo">337</span><a id="line.337">  public void setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {</a>
+<span class="sourceLineNo">338</span><a id="line.338">    _responsibleRoles = value;</a>
+<span class="sourceLineNo">339</span><a id="line.339">  }</a>
+<span class="sourceLineNo">340</span><a id="line.340"></a>
+<span class="sourceLineNo">341</span><a id="line.341">  /**</a>
+<span class="sourceLineNo">342</span><a id="line.342">   * Add a new {@link ResponsibleRole} item to the underlying collection.</a>
+<span class="sourceLineNo">343</span><a id="line.343">   * @param item the item to add</a>
+<span class="sourceLineNo">344</span><a id="line.344">   * @return {@code true}</a>
+<span class="sourceLineNo">345</span><a id="line.345">   */</a>
+<span class="sourceLineNo">346</span><a id="line.346">  public boolean addResponsibleRole(ResponsibleRole item) {</a>
+<span class="sourceLineNo">347</span><a id="line.347">    ResponsibleRole value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">348</span><a id="line.348">    if (_responsibleRoles == null) {</a>
+<span class="sourceLineNo">349</span><a id="line.349">      _responsibleRoles = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">350</span><a id="line.350">    }</a>
+<span class="sourceLineNo">351</span><a id="line.351">    return _responsibleRoles.add(value);</a>
+<span class="sourceLineNo">352</span><a id="line.352">  }</a>
+<span class="sourceLineNo">353</span><a id="line.353"></a>
+<span class="sourceLineNo">354</span><a id="line.354">  /**</a>
+<span class="sourceLineNo">355</span><a id="line.355">   * Remove the first matching {@link ResponsibleRole} item from the underlying collection.</a>
+<span class="sourceLineNo">356</span><a id="line.356">   * @param item the item to remove</a>
+<span class="sourceLineNo">357</span><a id="line.357">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">358</span><a id="line.358">   */</a>
+<span class="sourceLineNo">359</span><a id="line.359">  public boolean removeResponsibleRole(ResponsibleRole item) {</a>
+<span class="sourceLineNo">360</span><a id="line.360">    ResponsibleRole value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">361</span><a id="line.361">    return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</a>
+<span class="sourceLineNo">362</span><a id="line.362">  }</a>
+<span class="sourceLineNo">363</span><a id="line.363"></a>
+<span class="sourceLineNo">364</span><a id="line.364">  public List&lt;Protocol&gt; getProtocols() {</a>
+<span class="sourceLineNo">365</span><a id="line.365">    return _protocols;</a>
+<span class="sourceLineNo">366</span><a id="line.366">  }</a>
+<span class="sourceLineNo">367</span><a id="line.367"></a>
+<span class="sourceLineNo">368</span><a id="line.368">  public void setProtocols(List&lt;Protocol&gt; value) {</a>
+<span class="sourceLineNo">369</span><a id="line.369">    _protocols = value;</a>
+<span class="sourceLineNo">370</span><a id="line.370">  }</a>
+<span class="sourceLineNo">371</span><a id="line.371"></a>
+<span class="sourceLineNo">372</span><a id="line.372">  /**</a>
+<span class="sourceLineNo">373</span><a id="line.373">   * Add a new {@link Protocol} item to the underlying collection.</a>
+<span class="sourceLineNo">374</span><a id="line.374">   * @param item the item to add</a>
+<span class="sourceLineNo">375</span><a id="line.375">   * @return {@code true}</a>
+<span class="sourceLineNo">376</span><a id="line.376">   */</a>
+<span class="sourceLineNo">377</span><a id="line.377">  public boolean addProtocol(Protocol item) {</a>
+<span class="sourceLineNo">378</span><a id="line.378">    Protocol value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">379</span><a id="line.379">    if (_protocols == null) {</a>
+<span class="sourceLineNo">380</span><a id="line.380">      _protocols = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">381</span><a id="line.381">    }</a>
+<span class="sourceLineNo">382</span><a id="line.382">    return _protocols.add(value);</a>
+<span class="sourceLineNo">383</span><a id="line.383">  }</a>
+<span class="sourceLineNo">384</span><a id="line.384"></a>
+<span class="sourceLineNo">385</span><a id="line.385">  /**</a>
+<span class="sourceLineNo">386</span><a id="line.386">   * Remove the first matching {@link Protocol} item from the underlying collection.</a>
+<span class="sourceLineNo">387</span><a id="line.387">   * @param item the item to remove</a>
+<span class="sourceLineNo">388</span><a id="line.388">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">389</span><a id="line.389">   */</a>
+<span class="sourceLineNo">390</span><a id="line.390">  public boolean removeProtocol(Protocol item) {</a>
+<span class="sourceLineNo">391</span><a id="line.391">    Protocol value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">392</span><a id="line.392">    return _protocols == null ? false : _protocols.remove(value);</a>
+<span class="sourceLineNo">393</span><a id="line.393">  }</a>
+<span class="sourceLineNo">394</span><a id="line.394"></a>
+<span class="sourceLineNo">395</span><a id="line.395">  public MarkupMultiline getRemarks() {</a>
+<span class="sourceLineNo">396</span><a id="line.396">    return _remarks;</a>
+<span class="sourceLineNo">397</span><a id="line.397">  }</a>
+<span class="sourceLineNo">398</span><a id="line.398"></a>
+<span class="sourceLineNo">399</span><a id="line.399">  public void setRemarks(MarkupMultiline value) {</a>
+<span class="sourceLineNo">400</span><a id="line.400">    _remarks = value;</a>
+<span class="sourceLineNo">401</span><a id="line.401">  }</a>
+<span class="sourceLineNo">402</span><a id="line.402"></a>
+<span class="sourceLineNo">403</span><a id="line.403">  @Override</a>
+<span class="sourceLineNo">404</span><a id="line.404">  public String toString() {</a>
+<span class="sourceLineNo">405</span><a id="line.405">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">406</span><a id="line.406">  }</a>
+<span class="sourceLineNo">407</span><a id="line.407"></a>
+<span class="sourceLineNo">408</span><a id="line.408">  /**</a>
+<span class="sourceLineNo">409</span><a id="line.409">   * Describes the operational status of the system component.</a>
+<span class="sourceLineNo">410</span><a id="line.410">   */</a>
+<span class="sourceLineNo">411</span><a id="line.411">  @MetaschemaAssembly(</a>
+<span class="sourceLineNo">412</span><a id="line.412">      formalName = "Status",</a>
+<span class="sourceLineNo">413</span><a id="line.413">      description = "Describes the operational status of the system component.",</a>
+<span class="sourceLineNo">414</span><a id="line.414">      name = "status",</a>
+<span class="sourceLineNo">415</span><a id="line.415">      metaschema = OscalImplementationCommonMetaschema.class</a>
+<span class="sourceLineNo">416</span><a id="line.416">  )</a>
+<span class="sourceLineNo">417</span><a id="line.417">  public static class Status {</a>
+<span class="sourceLineNo">418</span><a id="line.418">    @BoundFlag(</a>
+<span class="sourceLineNo">419</span><a id="line.419">        formalName = "State",</a>
+<span class="sourceLineNo">420</span><a id="line.420">        description = "The operational status.",</a>
+<span class="sourceLineNo">421</span><a id="line.421">        useName = "state",</a>
+<span class="sourceLineNo">422</span><a id="line.422">        required = true,</a>
+<span class="sourceLineNo">423</span><a id="line.423">        typeAdapter = TokenAdapter.class</a>
+<span class="sourceLineNo">424</span><a id="line.424">    )</a>
+<span class="sourceLineNo">425</span><a id="line.425">    @ValueConstraints(</a>
+<span class="sourceLineNo">426</span><a id="line.426">        allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = "under-development", description = "The component is being designed, developed, or implemented."), @AllowedValue(value = "operational", description = "The component is currently operational and is available for use in the system."), @AllowedValue(value = "disposition", description = "The component is no longer operational."), @AllowedValue(value = "other", description = "Some other state.")})</a>
+<span class="sourceLineNo">427</span><a id="line.427">    )</a>
+<span class="sourceLineNo">428</span><a id="line.428">    private String _state;</a>
+<span class="sourceLineNo">429</span><a id="line.429"></a>
+<span class="sourceLineNo">430</span><a id="line.430">    @BoundField(</a>
+<span class="sourceLineNo">431</span><a id="line.431">        formalName = "Remarks",</a>
+<span class="sourceLineNo">432</span><a id="line.432">        description = "Additional commentary about the containing object.",</a>
+<span class="sourceLineNo">433</span><a id="line.433">        useName = "remarks"</a>
+<span class="sourceLineNo">434</span><a id="line.434">    )</a>
+<span class="sourceLineNo">435</span><a id="line.435">    @BoundFieldValue(</a>
+<span class="sourceLineNo">436</span><a id="line.436">        typeAdapter = MarkupMultilineAdapter.class</a>
+<span class="sourceLineNo">437</span><a id="line.437">    )</a>
+<span class="sourceLineNo">438</span><a id="line.438">    private MarkupMultiline _remarks;</a>
+<span class="sourceLineNo">439</span><a id="line.439"></a>
+<span class="sourceLineNo">440</span><a id="line.440">    public Status() {</a>
+<span class="sourceLineNo">441</span><a id="line.441">    }</a>
+<span class="sourceLineNo">442</span><a id="line.442"></a>
+<span class="sourceLineNo">443</span><a id="line.443">    public String getState() {</a>
+<span class="sourceLineNo">444</span><a id="line.444">      return _state;</a>
+<span class="sourceLineNo">445</span><a id="line.445">    }</a>
+<span class="sourceLineNo">446</span><a id="line.446"></a>
+<span class="sourceLineNo">447</span><a id="line.447">    public void setState(String value) {</a>
+<span class="sourceLineNo">448</span><a id="line.448">      _state = value;</a>
+<span class="sourceLineNo">449</span><a id="line.449">    }</a>
+<span class="sourceLineNo">450</span><a id="line.450"></a>
+<span class="sourceLineNo">451</span><a id="line.451">    public MarkupMultiline getRemarks() {</a>
+<span class="sourceLineNo">452</span><a id="line.452">      return _remarks;</a>
+<span class="sourceLineNo">453</span><a id="line.453">    }</a>
+<span class="sourceLineNo">454</span><a id="line.454"></a>
+<span class="sourceLineNo">455</span><a id="line.455">    public void setRemarks(MarkupMultiline value) {</a>
+<span class="sourceLineNo">456</span><a id="line.456">      _remarks = value;</a>
+<span class="sourceLineNo">457</span><a id="line.457">    }</a>
+<span class="sourceLineNo">458</span><a id="line.458"></a>
+<span class="sourceLineNo">459</span><a id="line.459">    @Override</a>
+<span class="sourceLineNo">460</span><a id="line.460">    public String toString() {</a>
+<span class="sourceLineNo">461</span><a id="line.461">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">462</span><a id="line.462">    }</a>
+<span class="sourceLineNo">463</span><a id="line.463">  }</a>
+<span class="sourceLineNo">464</span><a id="line.464">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

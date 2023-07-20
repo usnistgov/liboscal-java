@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SystemImplementation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">SystemImplementation.java</span></div><h1>SystemImplementation.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.Index;
+import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.Matches;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.DateAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriReferenceAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.object.Date;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Provides information as to how the system is implemented.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;System Implementation&quot;,
+    description = &quot;Provides information as to how the system is implemented.&quot;,
+    name = &quot;system-implementation&quot;,
+    metaschema = OscalSspMetaschema.class
+)
+@ValueConstraints(
+    allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(component | inventory-item)/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='allows-authenticated-scan']/@value&quot;, values = {@AllowedValue(value = &quot;yes&quot;, description = &quot;The component allows an authenticated scan.&quot;), @AllowedValue(value = &quot;no&quot;, description = &quot;The component does not allow an authenticated scan.&quot;)}),
+    indexHasKey = {
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;component/prop[@name='leveraged-authorization-uuid']&quot;, indexName = &quot;index-system-implementation-leveraged-authorization-uuid&quot;, keyFields = @KeyField(target = &quot;@value&quot;)),
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;component/link[@rel='depends-on']&quot;, indexName = &quot;index-system-implementation-component-uuid&quot;, keyFields = @KeyField(target = &quot;@href&quot;)),
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;component/link[@rel='validated-by']&quot;, indexName = &quot;index-system-implementation-component-uuid-validation&quot;, keyFields = @KeyField(target = &quot;@href&quot;)),
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;component/link[@rel='proof-of-compliance']&quot;, indexName = &quot;index-system-implementation-component-uuid-validation&quot;, keyFields = @KeyField(target = &quot;@href&quot;)),
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;component/link[@rel='uses-service']&quot;, indexName = &quot;index-system-implementation-component-uuid-service&quot;, keyFields = @KeyField(target = &quot;@href&quot;)),
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;component[@type='service']/link[@rel='provided-by']&quot;, indexName = &quot;index-system-implementation-component-uuid-software&quot;, keyFields = @KeyField(target = &quot;@href&quot;))
+    }
+)
+@AssemblyConstraints(
+    index = {
+        @Index(level = IConstraint.Level.ERROR, target = &quot;leveraged-authorization&quot;, name = &quot;index-system-implementation-leveraged-authorization-uuid&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;)),
+        @Index(level = IConstraint.Level.ERROR, target = &quot;component&quot;, name = &quot;index-system-implementation-component-uuid&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;)),
+        @Index(level = IConstraint.Level.ERROR, target = &quot;component[@type='validation']&quot;, name = &quot;index-system-implementation-component-uuid-validation&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;)),
+        @Index(level = IConstraint.Level.ERROR, target = &quot;component[@type='service']&quot;, name = &quot;index-system-implementation-component-uuid-service&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;)),
+        @Index(level = IConstraint.Level.ERROR, target = &quot;component[@type='service']&quot;, name = &quot;index-system-implementation-component-uuid-software&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;))
+    },
+    isUnique = @IsUnique(id = &quot;unique-ssp-system-implementation-user&quot;, level = IConstraint.Level.ERROR, target = &quot;user&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;), remarks = &quot;A given `uuid` must be assigned only once to a user.&quot;)
+)
+public class SystemImplementation {
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  /**
+   * &quot;A description of another authorized system from which this system inherits capabilities that satisfy security requirements. Another term for this concept is a &lt;em&gt;common control provider&lt;/em&gt;.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Leveraged Authorization&quot;,
+      description = &quot;A description of another authorized system from which this system inherits capabilities that satisfy security requirements. Another term for this concept is a *common control provider*.&quot;,
+      useName = &quot;leveraged-authorization&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;leveraged-authorizations&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;LeveragedAuthorization&gt; _leveragedAuthorizations;
+
+  @BoundAssembly(
+      formalName = &quot;System User&quot;,
+      description = &quot;A type of user that interacts with the system based on an associated role.&quot;,
+      useName = &quot;user&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;users&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;SystemUser&gt; _users;
+
+  @BoundAssembly(
+      formalName = &quot;Component&quot;,
+      description = &quot;A defined component that can be part of an implemented system.&quot;,
+      useName = &quot;component&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;components&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;SystemComponent&gt; _components;
+
+  @BoundAssembly(
+      formalName = &quot;Inventory Item&quot;,
+      description = &quot;A single managed inventory item within the system.&quot;,
+      useName = &quot;inventory-item&quot;,
+      maxOccurs = -1,
+      remarks = &quot;A set of `inventory-item` entries that represent the managed inventory instances of the system.&quot;
+  )
+  @GroupAs(
+      name = &quot;inventory-items&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;InventoryItem&gt; _inventoryItems;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L157">  public SystemImplementation() {</span>
+<span class="nc" id="L158">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L161">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L165">    _props = value;</span>
+<span class="nc" id="L166">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L174">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L176">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L178">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L187">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L192">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L196">    _links = value;</span>
+<span class="nc" id="L197">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L205">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L207">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L209">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L218">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public List&lt;LeveragedAuthorization&gt; getLeveragedAuthorizations() {
+<span class="nc" id="L223">    return _leveragedAuthorizations;</span>
+  }
+
+  public void setLeveragedAuthorizations(List&lt;LeveragedAuthorization&gt; value) {
+<span class="nc" id="L227">    _leveragedAuthorizations = value;</span>
+<span class="nc" id="L228">  }</span>
+
+  /**
+   * Add a new {@link LeveragedAuthorization} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLeveragedAuthorization(LeveragedAuthorization item) {
+<span class="nc" id="L236">    LeveragedAuthorization value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">    if (_leveragedAuthorizations == null) {</span>
+<span class="nc" id="L238">      _leveragedAuthorizations = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L240">    return _leveragedAuthorizations.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link LeveragedAuthorization} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLeveragedAuthorization(LeveragedAuthorization item) {
+<span class="nc" id="L249">    LeveragedAuthorization value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">    return _leveragedAuthorizations == null ? false : _leveragedAuthorizations.remove(value);</span>
+  }
+
+  public List&lt;SystemUser&gt; getUsers() {
+<span class="nc" id="L254">    return _users;</span>
+  }
+
+  public void setUsers(List&lt;SystemUser&gt; value) {
+<span class="nc" id="L258">    _users = value;</span>
+<span class="nc" id="L259">  }</span>
+
+  /**
+   * Add a new {@link SystemUser} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addUser(SystemUser item) {
+<span class="nc" id="L267">    SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">    if (_users == null) {</span>
+<span class="nc" id="L269">      _users = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L271">    return _users.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link SystemUser} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeUser(SystemUser item) {
+<span class="nc" id="L280">    SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">    return _users == null ? false : _users.remove(value);</span>
+  }
+
+  public List&lt;SystemComponent&gt; getComponents() {
+<span class="nc" id="L285">    return _components;</span>
+  }
+
+  public void setComponents(List&lt;SystemComponent&gt; value) {
+<span class="nc" id="L289">    _components = value;</span>
+<span class="nc" id="L290">  }</span>
+
+  /**
+   * Add a new {@link SystemComponent} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addComponent(SystemComponent item) {
+<span class="nc" id="L298">    SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">    if (_components == null) {</span>
+<span class="nc" id="L300">      _components = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L302">    return _components.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link SystemComponent} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeComponent(SystemComponent item) {
+<span class="nc" id="L311">    SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">    return _components == null ? false : _components.remove(value);</span>
+  }
+
+  public List&lt;InventoryItem&gt; getInventoryItems() {
+<span class="nc" id="L316">    return _inventoryItems;</span>
+  }
+
+  public void setInventoryItems(List&lt;InventoryItem&gt; value) {
+<span class="nc" id="L320">    _inventoryItems = value;</span>
+<span class="nc" id="L321">  }</span>
+
+  /**
+   * Add a new {@link InventoryItem} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addInventoryItem(InventoryItem item) {
+<span class="nc" id="L329">    InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">    if (_inventoryItems == null) {</span>
+<span class="nc" id="L331">      _inventoryItems = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L333">    return _inventoryItems.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link InventoryItem} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeInventoryItem(InventoryItem item) {
+<span class="nc" id="L342">    InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L343" title="All 2 branches missed.">    return _inventoryItems == null ? false : _inventoryItems.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L347">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L351">    _remarks = value;</span>
+<span class="nc" id="L352">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L356">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * A description of another authorized system from which this system inherits capabilities that satisfy security requirements. Another term for this concept is a &lt;em&gt;common control provider&lt;/em&gt;.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Leveraged Authorization&quot;,
+      description = &quot;A description of another authorized system from which this system inherits capabilities that satisfy security requirements. Another term for this concept is a *common control provider*.&quot;,
+      name = &quot;leveraged-authorization&quot;,
+      metaschema = OscalSspMetaschema.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;link/@rel&quot;, allowOthers = true, values = @AllowedValue(value = &quot;system-security-plan&quot;, description = &quot;A reference to the system security plan for the leveraged authorization.&quot;)),
+      indexHasKey = @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;link[@rel='system-security-plan' and starts-with(@href,'#')]&quot;, indexName = &quot;index-back-matter-resource&quot;, keyFields = @KeyField(target = &quot;@href&quot;, pattern = &quot;#(.*)&quot;)),
+      matches = {
+          @Matches(level = IConstraint.Level.ERROR, target = &quot;link[@rel='system-security-plan']/@href[starts-with(.,'#')]&quot;, typeAdapter = UriReferenceAdapter.class),
+          @Matches(level = IConstraint.Level.ERROR, target = &quot;link[@rel='system-security-plan']/@href[not(starts-with(.,'#'))]&quot;, typeAdapter = UriAdapter.class)
+      }
+  )
+  public static class LeveragedAuthorization {
+    @BoundFlag(
+        formalName = &quot;Leveraged Authorization Universally Unique Identifier&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope and can be used to reference this leveraged authorization elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `leveraged authorization` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+        useName = &quot;uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _uuid;
+
+    /**
+     * &quot;A human readable name for the leveraged authorization in the context of the system.&quot;
+     */
+    @BoundField(
+        formalName = &quot;title field&quot;,
+        description = &quot;A human readable name for the leveraged authorization in the context of the system.&quot;,
+        useName = &quot;title&quot;,
+        minOccurs = 1
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupLineAdapter.class
+    )
+    private MarkupLine _title;
+
+    @BoundAssembly(
+        formalName = &quot;Property&quot;,
+        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+        useName = &quot;prop&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;props&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Property&gt; _props;
+
+    @BoundAssembly(
+        formalName = &quot;Link&quot;,
+        description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+        useName = &quot;link&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;links&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Link&gt; _links;
+
+    /**
+     * &quot;A &lt;a href=\&quot;https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented\&quot;&gt;machine-oriented&lt;/a&gt; identifier reference to the &lt;code&gt;party&lt;/code&gt; that manages the leveraged system.&quot;
+     */
+    @BoundField(
+        formalName = &quot;party-uuid field&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to the `party` that manages the leveraged system.&quot;,
+        useName = &quot;party-uuid&quot;,
+        minOccurs = 1
+    )
+    @BoundFieldValue(
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _partyUuid;
+
+    @BoundField(
+        formalName = &quot;System Authorization Date&quot;,
+        description = &quot;The date the system received its authorization.&quot;,
+        useName = &quot;date-authorized&quot;,
+        minOccurs = 1
+    )
+    @BoundFieldValue(
+        typeAdapter = DateAdapter.class
+    )
+    private Date _dateAuthorized;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L459">    public LeveragedAuthorization() {</span>
+<span class="nc" id="L460">    }</span>
+
+    public UUID getUuid() {
+<span class="nc" id="L463">      return _uuid;</span>
+    }
+
+    public void setUuid(UUID value) {
+<span class="nc" id="L467">      _uuid = value;</span>
+<span class="nc" id="L468">    }</span>
+
+    public MarkupLine getTitle() {
+<span class="nc" id="L471">      return _title;</span>
+    }
+
+    public void setTitle(MarkupLine value) {
+<span class="nc" id="L475">      _title = value;</span>
+<span class="nc" id="L476">    }</span>
+
+    public List&lt;Property&gt; getProps() {
+<span class="nc" id="L479">      return _props;</span>
+    }
+
+    public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L483">      _props = value;</span>
+<span class="nc" id="L484">    }</span>
+
+    /**
+     * Add a new {@link Property} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addProp(Property item) {
+<span class="nc" id="L492">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L494">        _props = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L496">      return _props.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Property} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeProp(Property item) {
+<span class="nc" id="L505">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L506" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+    }
+
+    public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L510">      return _links;</span>
+    }
+
+    public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L514">      _links = value;</span>
+<span class="nc" id="L515">    }</span>
+
+    /**
+     * Add a new {@link Link} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addLink(Link item) {
+<span class="nc" id="L523">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L524" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L525">        _links = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L527">      return _links.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Link} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeLink(Link item) {
+<span class="nc" id="L536">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L537" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+    }
+
+    public UUID getPartyUuid() {
+<span class="nc" id="L541">      return _partyUuid;</span>
+    }
+
+    public void setPartyUuid(UUID value) {
+<span class="nc" id="L545">      _partyUuid = value;</span>
+<span class="nc" id="L546">    }</span>
+
+    public Date getDateAuthorized() {
+<span class="nc" id="L549">      return _dateAuthorized;</span>
+    }
+
+    public void setDateAuthorized(Date value) {
+<span class="nc" id="L553">      _dateAuthorized = value;</span>
+<span class="nc" id="L554">    }</span>
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L557">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L561">      _remarks = value;</span>
+<span class="nc" id="L562">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L566">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

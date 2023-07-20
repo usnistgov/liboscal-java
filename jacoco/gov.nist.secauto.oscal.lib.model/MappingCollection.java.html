@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MappingCollection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">MappingCollection.java</span></div><h1>MappingCollection.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A collection of relationship-based control and/or control statement mappings.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Mapping Collection&quot;,
+    description = &quot;A collection of relationship-based control and/or control statement mappings.&quot;,
+    name = &quot;mapping-collection&quot;,
+    metaschema = OscalMappingMetaschema.class,
+    rootName = &quot;mapping-collection&quot;,
+    remarks = &quot;A mapping collection affirmatively declares the relationships that exist between sets of controls and/or control statements in a source and target. It is expected that inferences can be made based on what is mapped; however, no inferences should be made based on what is not mapped, since it is impossible to quantify how complete or granular a given mapping is.&quot;
+)
+public class MappingCollection {
+  @BoundFlag(
+      formalName = &quot;Mapping Collection Universally Unique Identifier&quot;,
+      description = &quot;A globally unique identifier with cross-instance scope for this catalog instance. This UUID should be changed when this document is revised.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundAssembly(
+      formalName = &quot;Document Metadata&quot;,
+      description = &quot;Provides information about the containing document, and defines concepts that are shared across the document.&quot;,
+      useName = &quot;metadata&quot;,
+      minOccurs = 1
+  )
+  private Metadata _metadata;
+
+  @BoundAssembly(
+      formalName = &quot;Control Mapping&quot;,
+      description = &quot;A mapping between two target resources.&quot;,
+      useName = &quot;mapping&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;mappings&quot;
+  )
+  private List&lt;Mapping&gt; _mappings;
+
+  @BoundAssembly(
+      formalName = &quot;Back matter&quot;,
+      description = &quot;A collection of resources that may be referenced from within the OSCAL document instance.&quot;,
+      useName = &quot;back-matter&quot;,
+      remarks = &quot;Back matter including references and resources.&quot;
+  )
+  private BackMatter _backMatter;
+
+<span class="nc" id="L66">  public MappingCollection() {</span>
+<span class="nc" id="L67">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L70">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L74">    _uuid = value;</span>
+<span class="nc" id="L75">  }</span>
+
+  public Metadata getMetadata() {
+<span class="nc" id="L78">    return _metadata;</span>
+  }
+
+  public void setMetadata(Metadata value) {
+<span class="nc" id="L82">    _metadata = value;</span>
+<span class="nc" id="L83">  }</span>
+
+  public List&lt;Mapping&gt; getMappings() {
+<span class="nc" id="L86">    return _mappings;</span>
+  }
+
+  public void setMappings(List&lt;Mapping&gt; value) {
+<span class="nc" id="L90">    _mappings = value;</span>
+<span class="nc" id="L91">  }</span>
+
+  /**
+   * Add a new {@link Mapping} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addMapping(Mapping item) {
+<span class="nc" id="L99">    Mapping value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">    if (_mappings == null) {</span>
+<span class="nc" id="L101">      _mappings = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L103">    return _mappings.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Mapping} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeMapping(Mapping item) {
+<span class="nc" id="L112">    Mapping value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">    return _mappings == null ? false : _mappings.remove(value);</span>
+  }
+
+  public BackMatter getBackMatter() {
+<span class="nc" id="L117">    return _backMatter;</span>
+  }
+
+  public void setBackMatter(BackMatter value) {
+<span class="nc" id="L121">    _backMatter = value;</span>
+<span class="nc" id="L122">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L126">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

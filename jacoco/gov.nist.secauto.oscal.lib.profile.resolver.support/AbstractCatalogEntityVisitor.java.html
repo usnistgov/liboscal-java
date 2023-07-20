@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractCatalogEntityVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.support</a> &gt; <span class="el_source">AbstractCatalogEntityVisitor.java</span></div><h1>AbstractCatalogEntityVisitor.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
+
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+/**
+ * Visits a catalog document and its children as designated.
+ * &lt;p&gt;
+ * This implementation is stateless. The {@code T} parameter can be used to convey state as needed.
+ *
+ * @param &lt;T&gt;
+ *          the state type
+ * @param &lt;R&gt;
+ *          the result type
+ */
+public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
+    extends AbstractCatalogVisitor&lt;T, R&gt; {
+  @NonNull
+<span class="fc" id="L55">  public static final MetapathExpression CHILD_PART_METAPATH</span>
+<span class="fc" id="L56">      = MetapathExpression.compile(&quot;part|part//part&quot;);</span>
+  @NonNull
+<span class="fc" id="L58">  private static final MetapathExpression BACK_MATTER_RESOURCES_METAPATH</span>
+<span class="fc" id="L59">      = MetapathExpression.compile(&quot;back-matter/resource&quot;);</span>
+  @NonNull
+<span class="fc" id="L61">  private static final Set&lt;IEntityItem.ItemType&gt; GROUP_CONTAINER_TYPES</span>
+<span class="fc" id="L62">      = ObjectUtils.notNull(EnumSet.of(</span>
+          IEntityItem.ItemType.GROUP,
+          IEntityItem.ItemType.CONTROL,
+          IEntityItem.ItemType.PARAMETER,
+          IEntityItem.ItemType.PART));
+  @NonNull
+<span class="fc" id="L68">  private static final Set&lt;IEntityItem.ItemType&gt; CONTROL_CONTAINER_TYPES</span>
+<span class="fc" id="L69">      = ObjectUtils.notNull(EnumSet.of(</span>
+          IEntityItem.ItemType.CONTROL,
+          IEntityItem.ItemType.PARAMETER,
+          IEntityItem.ItemType.PART));
+  @NonNull
+  private final Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit;
+
+  /**
+   * Create a new visitor that will visit the item types identified by {@code itemTypesToVisit}.
+   *
+   * @param itemTypesToVisit
+   *          the item type the visitor will visit
+   */
+<span class="fc" id="L82">  public AbstractCatalogEntityVisitor(@NonNull Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit) {</span>
+<span class="fc" id="L83">    this.itemTypesToVisit = CollectionUtil.unmodifiableSet(itemTypesToVisit);</span>
+<span class="fc" id="L84">  }</span>
+
+  public Set&lt;IEntityItem.ItemType&gt; getItemTypesToVisit() {
+<span class="fc" id="L87">    return CollectionUtil.unmodifiableSet(itemTypesToVisit);</span>
+  }
+
+  protected boolean isVisitedItemType(@NonNull IEntityItem.ItemType type) {
+<span class="fc" id="L91">    return itemTypesToVisit.contains(type);</span>
+  }
+
+  @Override
+  public R visitCatalog(IDocumentNodeItem catalogDocument, T state) {
+<span class="fc" id="L96">    R result = super.visitCatalog(catalogDocument, state);</span>
+
+<span class="fc" id="L98">    IRootAssemblyNodeItem root = catalogDocument.getRootAssemblyNodeItem();</span>
+<span class="fc" id="L99">    visitMetadata(root, state);</span>
+<span class="fc" id="L100">    visitBackMatter(root, state);</span>
+<span class="fc" id="L101">    return result;</span>
+  }
+
+  @Override
+  protected R visitGroupContainer(IRequiredValueModelNodeItem catalogOrGroup, R initialResult, T state) {
+    R retval;
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">    if (Collections.disjoint(getItemTypesToVisit(), GROUP_CONTAINER_TYPES)) {</span>
+<span class="nc" id="L108">      retval = initialResult;</span>
+    } else {
+<span class="fc" id="L110">      retval = super.visitGroupContainer(catalogOrGroup, initialResult, state);</span>
+    }
+<span class="fc" id="L112">    return retval;</span>
+  }
+
+  @Override
+  protected R visitControlContainer(IRequiredValueModelNodeItem catalogOrGroupOrControl, R initialResult, T state) {
+    R retval;
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">    if (Collections.disjoint(getItemTypesToVisit(), CONTROL_CONTAINER_TYPES)) {</span>
+<span class="nc" id="L119">      retval = initialResult;</span>
+    } else {
+      // first descend to all control container children
+<span class="fc" id="L122">      retval = super.visitControlContainer(catalogOrGroupOrControl, initialResult, state);</span>
+
+      // handle parameters
+<span class="fc bfc" id="L125" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.PARAMETER)) {</span>
+<span class="fc" id="L126">        retval = catalogOrGroupOrControl.getModelItemsByName(&quot;param&quot;).stream()</span>
+<span class="fc" id="L127">            .map(paramItem -&gt; {</span>
+<span class="fc" id="L128">              return visitParameter(ObjectUtils.requireNonNull(paramItem), catalogOrGroupOrControl, state);</span>
+            })
+<span class="fc" id="L130">            .reduce(retval, (first, second) -&gt; aggregateResults(first, second, state));</span>
+      } // TODO Auto-generated method stub
+    }
+<span class="fc" id="L133">    return retval;</span>
+  }
+
+  protected void visitParts(@NonNull IRequiredValueModelNodeItem groupOrControlItem, T state) {
+    // handle parts
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
+<span class="fc" id="L139">      CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()</span>
+<span class="fc" id="L140">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
+<span class="fc" id="L141">          .forEachOrdered(partItem -&gt; {</span>
+<span class="fc" id="L142">            visitPart(ObjectUtils.requireNonNull(partItem), groupOrControlItem, state);</span>
+<span class="fc" id="L143">          });</span>
+    }
+<span class="fc" id="L145">  }</span>
+
+  @Override
+  protected R visitGroupInternal(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
+<span class="fc" id="L150">      visitParts(item, state);</span>
+    }
+
+<span class="fc" id="L153">    R retval = childResult;</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.GROUP)) {</span>
+<span class="fc" id="L155">      retval = visitGroup(item, retval, state);</span>
+    }
+<span class="fc" id="L157">    return retval;</span>
+  }
+
+  @Override
+  protected R visitControlInternal(IRequiredValueModelNodeItem item, R childResult, T state) {
+<span class="fc bfc" id="L162" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
+<span class="fc" id="L163">      visitParts(item, state);</span>
+    }
+
+<span class="fc" id="L166">    R retval = childResult;</span>
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">    if (isVisitedItemType(IEntityItem.ItemType.CONTROL)) {</span>
+<span class="fc" id="L168">      retval = visitControl(item, retval, state);</span>
+    }
+<span class="fc" id="L170">    return retval;</span>
+  }
+
+  /**
+   * Called when visiting a parameter.
+   * &lt;p&gt;
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
+   *
+   * @param item
+   *          the Metapath item for the parameter
+   * @param catalogOrGroupOrControl
+   *          the parameter's parent Metapath item
+   * @param state
+   *          the calling context information
+   * @return a meaningful result of the given type
+   */
+  protected R visitParameter(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,
+      T state) {
+    // do nothing
+<span class="nc" id="L192">    return newDefaultResult(state);</span>
+  }
+
+  /**
+   * Called when visiting a part.
+   * &lt;p&gt;
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
+   *
+   * @param item
+   *          the Metapath item for the part
+   * @param groupOrControl
+   *          the part's parent Metapath item
+   * @param state
+   *          the calling context information
+   */
+  protected void visitPart( // NOPMD noop default
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IRequiredValueModelNodeItem groupOrControl,
+      T state) {
+    // do nothing
+<span class="nc" id="L213">  }</span>
+
+  /**
+   * Called when visiting the &quot;metadata&quot; section of an OSCAL document.
+   * &lt;p&gt;
+   * Visits each contained role, location, and party.
+   *
+   * @param rootItem
+   *          the root Metaschema node item containing the &quot;metadata&quot; node
+   * @param state
+   *          the calling context information
+   */
+  protected void visitMetadata(@NonNull IRootAssemblyNodeItem rootItem, T state) {
+<span class="fc" id="L226">    rootItem.getModelItemsByName(&quot;metadata&quot;).forEach(metadataItem -&gt; {</span>
+<span class="fc bfc" id="L227" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.ROLE)) {</span>
+<span class="fc" id="L228">        metadataItem.getModelItemsByName(&quot;role&quot;).forEach(roleItem -&gt; {</span>
+<span class="fc" id="L229">          visitRole(ObjectUtils.requireNonNull(roleItem), metadataItem, state);</span>
+<span class="fc" id="L230">        });</span>
+      }
+
+<span class="fc bfc" id="L233" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.LOCATION)) {</span>
+<span class="fc" id="L234">        metadataItem.getModelItemsByName(&quot;location&quot;).forEach(locationItem -&gt; {</span>
+<span class="nc" id="L235">          visitLocation(ObjectUtils.requireNonNull(locationItem), metadataItem, state);</span>
+<span class="nc" id="L236">        });</span>
+      }
+
+<span class="fc bfc" id="L239" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.PARTY)) {</span>
+<span class="fc" id="L240">        metadataItem.getModelItemsByName(&quot;party&quot;).forEach(partyItem -&gt; {</span>
+<span class="fc" id="L241">          visitParty(ObjectUtils.requireNonNull(partyItem), metadataItem, state);</span>
+<span class="fc" id="L242">        });</span>
+      }
+<span class="fc" id="L244">    });</span>
+<span class="fc" id="L245">  }</span>
+
+  /**
+   * Called when visiting a role in the &quot;metadata&quot; section of an OSCAL document.
+   * &lt;p&gt;
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
+   *
+   * @param item
+   *          the role Metaschema node item which is a child of the &quot;metadata&quot; node
+   * @param metadataItem
+   *          the &quot;metadata&quot; Metaschema node item containing the role
+   * @param state
+   *          the calling context information
+   */
+  protected void visitRole( // NOPMD noop default
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IRequiredValueModelNodeItem metadataItem,
+      T state) {
+    // do nothing
+<span class="nc" id="L265">  }</span>
+
+  /**
+   * Called when visiting a location in the &quot;metadata&quot; section of an OSCAL document.
+   * &lt;p&gt;
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
+   *
+   * @param item
+   *          the location Metaschema node item which is a child of the &quot;metadata&quot; node
+   * @param metadataItem
+   *          the &quot;metadata&quot; Metaschema node item containing the location
+   * @param state
+   *          the calling context information
+   */
+  protected void visitLocation( // NOPMD noop default
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IRequiredValueModelNodeItem metadataItem,
+      T state) {
+    // do nothing
+<span class="nc" id="L285">  }</span>
+
+  /**
+   * Called when visiting a party in the &quot;metadata&quot; section of an OSCAL document.
+   * &lt;p&gt;
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
+   *
+   * @param item
+   *          the party Metaschema node item which is a child of the &quot;metadata&quot; node
+   * @param metadataItem
+   *          the &quot;metadata&quot; Metaschema node item containing the party
+   * @param state
+   *          the calling context information
+   */
+  protected void visitParty( // NOPMD noop default
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IRequiredValueModelNodeItem metadataItem,
+      T state) {
+    // do nothing
+<span class="nc" id="L305">  }</span>
+
+  /**
+   * Called when visiting the &quot;back-matter&quot; section of an OSCAL document.
+   * &lt;p&gt;
+   * Visits each contained resource.
+   *
+   * @param rootItem
+   *          the root Metaschema node item containing the &quot;back-matter&quot; node
+   * @param state
+   *          the calling context information
+   */
+  protected void visitBackMatter(@NonNull IRootAssemblyNodeItem rootItem, T state) {
+<span class="fc bfc" id="L318" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.RESOURCE)) {</span>
+<span class="fc" id="L319">      BACK_MATTER_RESOURCES_METAPATH.evaluate(rootItem).asStream()</span>
+<span class="fc" id="L320">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
+<span class="fc" id="L321">          .forEachOrdered(resourceItem -&gt; {</span>
+<span class="fc" id="L322">            visitResource(ObjectUtils.requireNonNull(resourceItem), rootItem, state);</span>
+<span class="fc" id="L323">          });</span>
+    }
+<span class="fc" id="L325">  }</span>
+
+  /**
+   * Called when visiting a resource in the &quot;back-matter&quot; section of an OSCAL document.
+   * &lt;p&gt;
+   * Can be overridden by classes extending this interface to support processing of the visited
+   * object.
+   *
+   * @param item
+   *          the resource Metaschema node item which is a child of the &quot;metadata&quot; node
+   * @param backMatterItem
+   *          the resource Metaschema node item containing the party
+   * @param state
+   *          the calling context information
+   */
+  protected void visitResource( // NOPMD noop default
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IRootAssemblyNodeItem backMatterItem,
+      T state) {
+    // do nothing
+<span class="nc" id="L345">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

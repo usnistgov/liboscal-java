@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Capability.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Capability.java</span></div><h1>Capability.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A grouping of other components and/or capabilities.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Capability&quot;,
+    description = &quot;A grouping of other components and/or capabilities.&quot;,
+    name = &quot;capability&quot;,
+    metaschema = OscalComponentDefinitionMetaschema.class
+)
+@AssemblyConstraints(
+    isUnique = @IsUnique(id = &quot;unique-component-definition-capability-incorporates-component&quot;, level = IConstraint.Level.ERROR, target = &quot;incorporates-component&quot;, keyFields = @KeyField(target = &quot;@component-uuid&quot;), remarks = &quot;A given `component` must not be referenced more than once within the same `capability`.&quot;)
+)
+public class Capability {
+  @BoundFlag(
+      formalName = &quot;Capability Identifier&quot;,
+      description = &quot;Provides a globally unique means to identify a given capability.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundFlag(
+      formalName = &quot;Capability Name&quot;,
+      description = &quot;The capability's human-readable name.&quot;,
+      useName = &quot;name&quot;,
+      required = true,
+      typeAdapter = StringAdapter.class
+  )
+  private String _name;
+
+  /**
+   * &quot;A summary of the capability.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Capability Description&quot;,
+      description = &quot;A summary of the capability.&quot;,
+      useName = &quot;description&quot;,
+      minOccurs = 1
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundAssembly(
+      formalName = &quot;Incorporates Component&quot;,
+      description = &quot;The collection of components comprising this capability.&quot;,
+      useName = &quot;incorporates-component&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;incorporates-components&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;IncorporatesComponent&gt; _incorporatesComponents;
+
+  @BoundAssembly(
+      formalName = &quot;Control Implementation Set&quot;,
+      description = &quot;Defines how the component or capability supports a set of controls.&quot;,
+      useName = &quot;control-implementation&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;control-implementations&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ComponentControlImplementation&gt; _controlImplementations;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L130">  public Capability() {</span>
+<span class="nc" id="L131">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L134">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L138">    _uuid = value;</span>
+<span class="nc" id="L139">  }</span>
+
+  public String getName() {
+<span class="nc" id="L142">    return _name;</span>
+  }
+
+  public void setName(String value) {
+<span class="nc" id="L146">    _name = value;</span>
+<span class="nc" id="L147">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L150">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L154">    _description = value;</span>
+<span class="nc" id="L155">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L158">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L162">    _props = value;</span>
+<span class="nc" id="L163">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L171">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L173">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L175">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L184">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L189">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L193">    _links = value;</span>
+<span class="nc" id="L194">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L202">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L204">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L206">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L215">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public List&lt;IncorporatesComponent&gt; getIncorporatesComponents() {
+<span class="nc" id="L220">    return _incorporatesComponents;</span>
+  }
+
+  public void setIncorporatesComponents(List&lt;IncorporatesComponent&gt; value) {
+<span class="nc" id="L224">    _incorporatesComponents = value;</span>
+<span class="nc" id="L225">  }</span>
+
+  /**
+   * Add a new {@link IncorporatesComponent} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addIncorporatesComponent(IncorporatesComponent item) {
+<span class="nc" id="L233">    IncorporatesComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">    if (_incorporatesComponents == null) {</span>
+<span class="nc" id="L235">      _incorporatesComponents = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L237">    return _incorporatesComponents.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link IncorporatesComponent} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeIncorporatesComponent(IncorporatesComponent item) {
+<span class="nc" id="L246">    IncorporatesComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">    return _incorporatesComponents == null ? false : _incorporatesComponents.remove(value);</span>
+  }
+
+  public List&lt;ComponentControlImplementation&gt; getControlImplementations() {
+<span class="nc" id="L251">    return _controlImplementations;</span>
+  }
+
+  public void setControlImplementations(List&lt;ComponentControlImplementation&gt; value) {
+<span class="nc" id="L255">    _controlImplementations = value;</span>
+<span class="nc" id="L256">  }</span>
+
+  /**
+   * Add a new {@link ComponentControlImplementation} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addControlImplementation(ComponentControlImplementation item) {
+<span class="nc" id="L264">    ComponentControlImplementation value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">    if (_controlImplementations == null) {</span>
+<span class="nc" id="L266">      _controlImplementations = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L268">    return _controlImplementations.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ComponentControlImplementation} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeControlImplementation(ComponentControlImplementation item) {
+<span class="nc" id="L277">    ComponentControlImplementation value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">    return _controlImplementations == null ? false : _controlImplementations.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L282">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L286">    _remarks = value;</span>
+<span class="nc" id="L287">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L291">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

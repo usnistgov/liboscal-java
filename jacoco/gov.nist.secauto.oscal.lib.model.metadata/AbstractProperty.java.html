@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractProperty.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model.metadata</a> &gt; <span class="el_source">AbstractProperty.java</span></div><h1>AbstractProperty.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.model.metadata;
+
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.oscal.lib.model.Property;
+
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.xml.namespace.QName;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public abstract class AbstractProperty implements IProperty {
+
+  @NonNull
+  public static QName qname(URI namespace, @NonNull String name) {
+<span class="fc" id="L49">    return new QName(normalizeNamespace(namespace).toString(), name);</span>
+  }
+
+  @NonNull
+  public static QName qname(@NonNull String name) {
+<span class="nc" id="L54">    return new QName(OSCAL_NAMESPACE.toString(), name);</span>
+  }
+
+  @NonNull
+  public static URI normalizeNamespace(URI namespace) {
+<span class="fc" id="L59">    URI propertyNamespace = namespace;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    if (propertyNamespace == null) {</span>
+<span class="fc" id="L61">      propertyNamespace = OSCAL_NAMESPACE;</span>
+    }
+<span class="fc" id="L63">    return propertyNamespace;</span>
+  }
+
+  @SuppressWarnings(&quot;null&quot;)
+  @NonNull
+  public static Optional&lt;Property&gt; find(List&lt;Property&gt; props, @NonNull QName qname) {
+<span class="nc" id="L69">    return CollectionUtil.listOrEmpty(props).stream().filter(prop -&gt; qname.equals(prop.getQName())).findFirst();</span>
+  }
+
+<span class="fc" id="L72">  protected AbstractProperty() {</span>
+    // only concrete classes should construct
+<span class="fc" id="L74">  }</span>
+
+  public static List&lt;Property&gt; merge(@NonNull List&lt;Property&gt; original, @NonNull List&lt;Property&gt; additional) {
+<span class="nc" id="L77">    return Stream.concat(original.stream(), additional.stream())</span>
+<span class="nc" id="L78">        .collect(Collectors.toCollection(LinkedList::new));</span>
+  }
+
+  @Override
+  public boolean isNamespaceEqual(@NonNull URI namespace) {
+<span class="nc" id="L83">    return normalizeNamespace(getNs()).equals(namespace);</span>
+  }
+
+  @NonNull
+  public QName getQName() {
+<span class="fc" id="L88">    return new QName(normalizeNamespace(getNs()).toString(), getName());</span>
+  }
+
+  @NonNull
+  public static Builder builder(@NonNull String name) {
+<span class="fc" id="L93">    return new Builder(name);</span>
+  }
+
+  public static class Builder {
+    @NonNull
+    private final String name;
+
+    private UUID uuid;
+    private URI namespace;
+    private String value;
+    private String clazz;
+
+<span class="fc" id="L105">    public Builder(@NonNull String name) {</span>
+<span class="fc" id="L106">      this.name = Objects.requireNonNull(name, &quot;name&quot;);</span>
+<span class="fc" id="L107">    }</span>
+
+    @NonNull
+    public Builder uuid(@NonNull UUID uuid) {
+<span class="nc" id="L111">      this.uuid = Objects.requireNonNull(uuid);</span>
+<span class="nc" id="L112">      return this;</span>
+    }
+
+    @NonNull
+    public Builder namespace(@NonNull URI namespace) {
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">      if (IProperty.OSCAL_NAMESPACE.equals(namespace)) {</span>
+<span class="nc" id="L118">        this.namespace = null;</span>
+      } else {
+<span class="fc" id="L120">        this.namespace = Objects.requireNonNull(namespace);</span>
+      }
+<span class="fc" id="L122">      return this;</span>
+    }
+
+    @NonNull
+    public Builder value(@NonNull String value) {
+<span class="fc" id="L127">      this.value = Objects.requireNonNull(value);</span>
+<span class="fc" id="L128">      return this;</span>
+    }
+
+    @NonNull
+    public Builder clazz(@NonNull String clazz) {
+<span class="nc" id="L133">      this.clazz = Objects.requireNonNull(clazz);</span>
+<span class="nc" id="L134">      return this;</span>
+    }
+
+    @NonNull
+    public Property build() {
+<span class="fc" id="L139">      Property retval = new Property();</span>
+<span class="fc" id="L140">      retval.setName(name);</span>
+<span class="fc" id="L141">      retval.setValue(Objects.requireNonNull(value, &quot;value&quot;));</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">      if (uuid != null) {</span>
+<span class="nc" id="L143">        retval.setUuid(uuid);</span>
+      }
+<span class="fc bfc" id="L145" title="All 2 branches covered.">      if (namespace != null) {</span>
+<span class="fc" id="L146">        retval.setNs(namespace);</span>
+      }
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">      if (clazz != null) {</span>
+<span class="nc" id="L149">        retval.setClazz(clazz);</span>
+      }
+
+<span class="fc" id="L152">      return retval;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

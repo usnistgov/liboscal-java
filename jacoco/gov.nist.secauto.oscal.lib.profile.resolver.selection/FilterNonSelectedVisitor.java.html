@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FilterNonSelectedVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.selection</a> &gt; <span class="el_source">FilterNonSelectedVisitor.java</span></div><h1>FilterNonSelectedVisitor.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
+
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.BackMatter;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.oscal.lib.model.Metadata;
+import gov.nist.secauto.oscal.lib.model.Metadata.Location;
+import gov.nist.secauto.oscal.lib.model.Metadata.Party;
+import gov.nist.secauto.oscal.lib.model.Metadata.Role;
+import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.AbstractCatalogEntityVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer.SelectionStatus;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.EnumSet;
+import java.util.stream.Collectors;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+public class FilterNonSelectedVisitor
+    extends AbstractCatalogEntityVisitor&lt;FilterNonSelectedVisitor.Context, DefaultResult&gt; {
+<span class="fc" id="L61">  private static final Logger LOGGER = LogManager.getLogger(FilterNonSelectedVisitor.class);</span>
+<span class="fc" id="L62">  private static final FilterNonSelectedVisitor SINGLETON = new FilterNonSelectedVisitor();</span>
+
+  public static FilterNonSelectedVisitor instance() {
+<span class="fc" id="L65">    return SINGLETON;</span>
+  }
+
+  @SuppressWarnings(&quot;null&quot;)
+  protected FilterNonSelectedVisitor() {
+    // all other entity types are handled in a special way by this visitor
+<span class="fc" id="L71">    super(EnumSet.of(IEntityItem.ItemType.GROUP, IEntityItem.ItemType.CONTROL, IEntityItem.ItemType.PARAMETER));</span>
+<span class="fc" id="L72">  }</span>
+
+  public void visitCatalog(@NonNull IDocumentNodeItem catalogItem, @NonNull IIndexer indexer) {
+<span class="fc" id="L75">    Context context = new Context(indexer);</span>
+<span class="fc" id="L76">    IResult result = visitCatalog(catalogItem, context);</span>
+
+<span class="fc" id="L78">    IRootAssemblyNodeItem root = catalogItem.getRootAssemblyNodeItem();</span>
+
+<span class="fc" id="L80">    Catalog catalog = (Catalog) catalogItem.getValue();</span>
+<span class="fc" id="L81">    result.applyTo(catalog);</span>
+
+<span class="fc" id="L83">    root.getModelItemsByName(&quot;metadata&quot;).forEach(child -&gt; {</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">      assert child != null;</span>
+<span class="fc" id="L85">      visitMetadata(child, context);</span>
+<span class="fc" id="L86">    });</span>
+
+<span class="fc" id="L88">    root.getModelItemsByName(&quot;back-matter&quot;).forEach(child -&gt; {</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">      assert child != null;</span>
+<span class="fc" id="L90">      visitBackMatter(child, context);</span>
+<span class="fc" id="L91">    });</span>
+<span class="fc" id="L92">  }</span>
+
+  @Override
+  protected DefaultResult newDefaultResult(Context state) {
+<span class="fc" id="L96">    return new DefaultResult();</span>
+  }
+
+  @Override
+  protected DefaultResult aggregateResults(DefaultResult first, DefaultResult second, Context state) {
+<span class="fc" id="L101">    return first.append(ObjectUtils.notNull(second));</span>
+  }
+
+  protected void visitMetadata(@NonNull IRequiredValueModelNodeItem metadataItem, Context context) {
+<span class="fc" id="L105">    Metadata metadata = (Metadata) metadataItem.getValue();</span>
+
+<span class="fc" id="L107">    IIndexer index = context.getIndexer();</span>
+    // prune roles, parties, and locations
+    // keep entries with prop name:keep and any referenced
+<span class="fc" id="L110">    for (IEntityItem entity : IIndexer.getUnreferencedEntitiesAsStream(index.getEntitiesByItemType(ItemType.ROLE))</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        .collect(Collectors.toList())) {</span>
+<span class="fc" id="L112">      Role role = entity.getInstanceValue();</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">      if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L114">        LOGGER.atDebug().log(&quot;Removing role '{}'&quot;, role.getId());</span>
+      }
+<span class="fc" id="L116">      metadata.removeRole(role);</span>
+<span class="fc" id="L117">      index.removeItem(entity);</span>
+<span class="fc" id="L118">    }</span>
+
+<span class="fc" id="L120">    for (IEntityItem entity : IIndexer.getUnreferencedEntitiesAsStream(index.getEntitiesByItemType(ItemType.PARTY))</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        .collect(Collectors.toList())) {</span>
+<span class="fc" id="L122">      Party party = entity.getInstanceValue();</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">      if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L124">        LOGGER.atDebug().log(&quot;Removing party '{}'&quot;, party.getUuid());</span>
+      }
+<span class="fc" id="L126">      metadata.removeParty(party);</span>
+<span class="fc" id="L127">      index.removeItem(entity);</span>
+<span class="fc" id="L128">    }</span>
+
+<span class="fc" id="L130">    for (IEntityItem entity : IIndexer.getUnreferencedEntitiesAsStream(index.getEntitiesByItemType(ItemType.LOCATION))</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        .collect(Collectors.toList())) {</span>
+<span class="nc" id="L132">      Location location = entity.getInstanceValue();</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">      if (LOGGER.isDebugEnabled()) {</span>
+<span class="nc" id="L134">        LOGGER.atDebug().log(&quot;Removing location '{}'&quot;, location.getUuid());</span>
+      }
+<span class="nc" id="L136">      metadata.removeLocation(location);</span>
+<span class="nc" id="L137">      index.removeItem(entity);</span>
+<span class="nc" id="L138">    }</span>
+<span class="fc" id="L139">  }</span>
+
+  @SuppressWarnings(&quot;static-method&quot;)
+  private void visitBackMatter(@NonNull IRequiredValueModelNodeItem backMatterItem, Context context) {
+<span class="fc" id="L143">    BackMatter backMatter = (BackMatter) backMatterItem.getValue();</span>
+
+<span class="fc" id="L145">    IIndexer index = context.getIndexer();</span>
+<span class="fc" id="L146">    for (IEntityItem entity : IIndexer.getUnreferencedEntitiesAsStream(index.getEntitiesByItemType(ItemType.RESOURCE))</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        .collect(Collectors.toList())) {</span>
+<span class="fc" id="L148">      Resource resource = entity.getInstanceValue();</span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">      if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L150">        LOGGER.atDebug().log(&quot;Removing resource '{}'&quot;, resource.getUuid());</span>
+      }
+<span class="fc" id="L152">      backMatter.removeResource(resource);</span>
+<span class="fc" id="L153">      index.removeItem(entity);</span>
+<span class="fc" id="L154">    }</span>
+<span class="fc" id="L155">  }</span>
+
+  @Override
+  public DefaultResult visitGroup(
+      IRequiredValueModelNodeItem item,
+      DefaultResult childResult,
+      Context context) {
+<span class="fc" id="L162">    CatalogGroup group = (CatalogGroup) item.getValue();</span>
+
+<span class="fc" id="L164">    IIndexer index = context.getIndexer();</span>
+<span class="fc" id="L165">    String groupId = group.getId();</span>
+<span class="fc" id="L166">    DefaultResult retval = new DefaultResult();</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">      if (groupId != null) {</span>
+        // this group should always be found in the index
+<span class="fc" id="L170">        IEntityItem entity = ObjectUtils.requireNonNull(index.getEntity(ItemType.GROUP, groupId, false));</span>
+        // update the id
+<span class="fc" id="L172">        group.setId(entity.getIdentifier());</span>
+      }
+<span class="fc" id="L174">      childResult.applyTo(group);</span>
+    } else {
+<span class="fc" id="L176">      retval.removeGroup(group);</span>
+<span class="fc" id="L177">      retval.appendPromoted(ObjectUtils.notNull(childResult));</span>
+
+<span class="fc bfc" id="L179" title="All 2 branches covered.">      if (groupId != null) {</span>
+        // this group should always be found in the index
+<span class="fc" id="L181">        IEntityItem entity = ObjectUtils.requireNonNull(index.getEntity(ItemType.GROUP, groupId, false));</span>
+<span class="fc" id="L182">        index.removeItem(entity);</span>
+      }
+
+      // remove any associated parts from the index
+<span class="fc" id="L186">      removePartsFromIndex(item, index);</span>
+    }
+<span class="fc" id="L188">    return retval;</span>
+  }
+
+  @Override
+  public DefaultResult visitControl(
+      IRequiredValueModelNodeItem item,
+      DefaultResult childResult,
+      Context context) {
+<span class="fc" id="L196">    Control control = (Control) item.getValue();</span>
+<span class="fc" id="L197">    IIndexer index = context.getIndexer();</span>
+    // this control should always be found in the index
+<span class="fc" id="L199">    IEntityItem entity = ObjectUtils.requireNonNull(</span>
+<span class="fc" id="L200">        index.getEntity(ItemType.CONTROL, ObjectUtils.requireNonNull(control.getId()), false));</span>
+
+<span class="fc" id="L202">    IRequiredValueModelNodeItem parent = ObjectUtils.notNull(item.getParentContentNodeItem());</span>
+<span class="fc" id="L203">    DefaultResult retval = new DefaultResult();</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">    if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {</span>
+      // keep this control
+      // update the id
+<span class="fc" id="L207">      control.setId(entity.getIdentifier());</span>
+
+<span class="fc bfc" id="L209" title="All 2 branches covered.">      if (!SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {</span>
+        // promote this control
+<span class="fc" id="L211">        retval.promoteControl(control);</span>
+      }
+<span class="fc" id="L213">      childResult.applyTo(control);</span>
+    } else {
+      // remove this control and promote any needed children
+
+<span class="fc bfc" id="L217" title="All 2 branches covered.">      if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {</span>
+<span class="fc" id="L218">        retval.removeControl(control);</span>
+      }
+<span class="fc" id="L220">      retval.appendPromoted(ObjectUtils.notNull(childResult));</span>
+<span class="fc" id="L221">      index.removeItem(entity);</span>
+
+      // remove any associated parts from the index
+<span class="fc" id="L224">      removePartsFromIndex(item, index);</span>
+    }
+<span class="fc" id="L226">    return retval;</span>
+  }
+
+  protected static void removePartsFromIndex(@NonNull IRequiredValueModelNodeItem groupOrControlItem,
+      @NonNull IIndexer index) {
+<span class="fc" id="L231">    CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()</span>
+<span class="fc" id="L232">        .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
+<span class="fc" id="L233">        .forEachOrdered(partItem -&gt; {</span>
+<span class="fc" id="L234">          ControlPart part = (ControlPart) partItem.getValue();</span>
+<span class="fc" id="L235">          String id = part.getId();</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">          if (id != null) {</span>
+<span class="fc" id="L237">            IEntityItem entity = index.getEntity(IEntityItem.ItemType.PART, id);</span>
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">            if (entity != null) {</span>
+<span class="fc" id="L239">              index.removeItem(entity);</span>
+            }
+          }
+<span class="fc" id="L242">        });</span>
+<span class="fc" id="L243">  }</span>
+
+  @Override
+  protected DefaultResult visitParameter(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem parent,
+      Context context) {
+<span class="fc" id="L248">    Parameter param = (Parameter) item.getValue();</span>
+<span class="fc" id="L249">    IIndexer index = context.getIndexer();</span>
+    // this parameter should always be found in the index
+<span class="fc" id="L251">    IEntityItem entity = ObjectUtils.requireNonNull(</span>
+<span class="fc" id="L252">        index.getEntity(ItemType.PARAMETER, ObjectUtils.requireNonNull(param.getId()), false));</span>
+
+<span class="fc" id="L254">    DefaultResult retval = new DefaultResult();</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">    if (IIndexer.isReferencedEntity(entity)) {</span>
+      // keep the parameter
+      // update the id
+<span class="fc" id="L258">      param.setId(entity.getIdentifier());</span>
+
+      // a parameter is selected if it has a reference count greater than 0
+<span class="fc" id="L261">      index.setSelectionStatus(item, SelectionStatus.SELECTED);</span>
+
+      // promote this parameter
+<span class="fc bfc" id="L264" title="All 2 branches covered.">      if (SelectionStatus.UNSELECTED.equals(index.getSelectionStatus(parent))) {</span>
+<span class="fc" id="L265">        retval.promoteParameter(param);</span>
+      }
+    } else {
+      // don't keep the parameter
+<span class="fc bfc" id="L269" title="All 2 branches covered.">      if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {</span>
+<span class="fc" id="L270">        retval.removeParameter(param);</span>
+      }
+<span class="fc" id="L272">      index.removeItem(entity);</span>
+    }
+<span class="fc" id="L274">    return retval;</span>
+  }
+
+  protected static final class Context {
+
+    @NonNull
+    private final IIndexer indexer;
+
+    private Context(@NonNull IIndexer indexer) {
+<span class="fc" id="L283">      super();</span>
+<span class="fc" id="L284">      this.indexer = indexer;</span>
+<span class="fc" id="L285">    }</span>
+
+    @NonNull
+    @SuppressFBWarnings(value = &quot;EI_EXPOSE_REP&quot;, justification = &quot;provides intentional access to index state&quot;)
+    public IIndexer getIndexer() {
+<span class="fc" id="L290">      return indexer;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

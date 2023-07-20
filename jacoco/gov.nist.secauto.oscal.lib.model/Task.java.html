@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Task.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Task.java</span></div><h1>Task.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.DateTimeWithTZAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.PositiveIntegerAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.math.BigInteger;
+import java.time.ZonedDateTime;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Represents a scheduled event or milestone, which may be associated with a series of assessment actions.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Task&quot;,
+    description = &quot;Represents a scheduled event or milestone, which may be associated with a series of assessment actions.&quot;,
+    name = &quot;task&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class
+)
+public class Task {
+  @BoundFlag(
+      formalName = &quot;Task Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this task elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `task` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundFlag(
+      formalName = &quot;Task Type&quot;,
+      description = &quot;The type of task.&quot;,
+      useName = &quot;type&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;milestone&quot;, description = &quot;The task represents a planned milestone.&quot;), @AllowedValue(value = &quot;action&quot;, description = &quot;The task represents a specific assessment action to be performed.&quot;)})
+  )
+  private String _type;
+
+  /**
+   * &quot;The title for this task.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Task Title&quot;,
+      description = &quot;The title for this task.&quot;,
+      useName = &quot;title&quot;,
+      minOccurs = 1
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _title;
+
+  /**
+   * &quot;A human-readable description of this task.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Task Description&quot;,
+      description = &quot;A human-readable description of this task.&quot;,
+      useName = &quot;description&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  /**
+   * &quot;The timing under which the task is intended to occur.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Event Timing&quot;,
+      description = &quot;The timing under which the task is intended to occur.&quot;,
+      useName = &quot;timing&quot;
+  )
+  private Timing _timing;
+
+  /**
+   * &quot;Used to indicate that a task is dependent on another task.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Task Dependency&quot;,
+      description = &quot;Used to indicate that a task is dependent on another task.&quot;,
+      useName = &quot;dependency&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;dependencies&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Dependency&gt; _dependencies;
+
+  @BoundAssembly(
+      formalName = &quot;Task&quot;,
+      description = &quot;Represents a scheduled event or milestone, which may be associated with a series of assessment actions.&quot;,
+      useName = &quot;task&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;tasks&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Task&gt; _tasks;
+
+  /**
+   * &quot;Identifies an individual activity to be performed as part of a task.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Associated Activity&quot;,
+      description = &quot;Identifies an individual activity to be performed as part of a task.&quot;,
+      useName = &quot;associated-activity&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;associated-activities&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;AssociatedActivity&gt; _associatedActivities;
+
+  @BoundAssembly(
+      formalName = &quot;Subject of Assessment&quot;,
+      description = &quot;Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.&quot;,
+      useName = &quot;subject&quot;,
+      maxOccurs = -1,
+      remarks = &quot;The assessment subjects that the activity was performed against.&quot;
+  )
+  @GroupAs(
+      name = &quot;subjects&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;AssessmentSubject&gt; _subjects;
+
+  @BoundAssembly(
+      formalName = &quot;Responsible Role&quot;,
+      description = &quot;A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.&quot;,
+      useName = &quot;responsible-role&quot;,
+      maxOccurs = -1,
+      remarks = &quot;Identifies the person or organization responsible for performing a specific role related to the task.&quot;
+  )
+  @GroupAs(
+      name = &quot;responsible-roles&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ResponsibleRole&gt; _responsibleRoles;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L207">  public Task() {</span>
+<span class="nc" id="L208">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L211">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L215">    _uuid = value;</span>
+<span class="nc" id="L216">  }</span>
+
+  public String getType() {
+<span class="nc" id="L219">    return _type;</span>
+  }
+
+  public void setType(String value) {
+<span class="nc" id="L223">    _type = value;</span>
+<span class="nc" id="L224">  }</span>
+
+  public MarkupLine getTitle() {
+<span class="nc" id="L227">    return _title;</span>
+  }
+
+  public void setTitle(MarkupLine value) {
+<span class="nc" id="L231">    _title = value;</span>
+<span class="nc" id="L232">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L235">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L239">    _description = value;</span>
+<span class="nc" id="L240">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L243">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L247">    _props = value;</span>
+<span class="nc" id="L248">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L256">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L258">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L260">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L269">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L274">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L278">    _links = value;</span>
+<span class="nc" id="L279">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L287">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L289">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L291">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L300">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public Timing getTiming() {
+<span class="nc" id="L305">    return _timing;</span>
+  }
+
+  public void setTiming(Timing value) {
+<span class="nc" id="L309">    _timing = value;</span>
+<span class="nc" id="L310">  }</span>
+
+  public List&lt;Dependency&gt; getDependencies() {
+<span class="nc" id="L313">    return _dependencies;</span>
+  }
+
+  public void setDependencies(List&lt;Dependency&gt; value) {
+<span class="nc" id="L317">    _dependencies = value;</span>
+<span class="nc" id="L318">  }</span>
+
+  /**
+   * Add a new {@link Dependency} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addDependency(Dependency item) {
+<span class="nc" id="L326">    Dependency value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">    if (_dependencies == null) {</span>
+<span class="nc" id="L328">      _dependencies = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L330">    return _dependencies.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Dependency} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeDependency(Dependency item) {
+<span class="nc" id="L339">    Dependency value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L340" title="All 2 branches missed.">    return _dependencies == null ? false : _dependencies.remove(value);</span>
+  }
+
+  public List&lt;Task&gt; getTasks() {
+<span class="nc" id="L344">    return _tasks;</span>
+  }
+
+  public void setTasks(List&lt;Task&gt; value) {
+<span class="nc" id="L348">    _tasks = value;</span>
+<span class="nc" id="L349">  }</span>
+
+  /**
+   * Add a new {@link Task} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addTask(Task item) {
+<span class="nc" id="L357">    Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L358" title="All 2 branches missed.">    if (_tasks == null) {</span>
+<span class="nc" id="L359">      _tasks = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L361">    return _tasks.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Task} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeTask(Task item) {
+<span class="nc" id="L370">    Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">    return _tasks == null ? false : _tasks.remove(value);</span>
+  }
+
+  public List&lt;AssociatedActivity&gt; getAssociatedActivities() {
+<span class="nc" id="L375">    return _associatedActivities;</span>
+  }
+
+  public void setAssociatedActivities(List&lt;AssociatedActivity&gt; value) {
+<span class="nc" id="L379">    _associatedActivities = value;</span>
+<span class="nc" id="L380">  }</span>
+
+  /**
+   * Add a new {@link AssociatedActivity} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addAssociatedActivity(AssociatedActivity item) {
+<span class="nc" id="L388">    AssociatedActivity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">    if (_associatedActivities == null) {</span>
+<span class="nc" id="L390">      _associatedActivities = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L392">    return _associatedActivities.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link AssociatedActivity} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeAssociatedActivity(AssociatedActivity item) {
+<span class="nc" id="L401">    AssociatedActivity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">    return _associatedActivities == null ? false : _associatedActivities.remove(value);</span>
+  }
+
+  public List&lt;AssessmentSubject&gt; getSubjects() {
+<span class="nc" id="L406">    return _subjects;</span>
+  }
+
+  public void setSubjects(List&lt;AssessmentSubject&gt; value) {
+<span class="nc" id="L410">    _subjects = value;</span>
+<span class="nc" id="L411">  }</span>
+
+  /**
+   * Add a new {@link AssessmentSubject} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addSubject(AssessmentSubject item) {
+<span class="nc" id="L419">    AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L420" title="All 2 branches missed.">    if (_subjects == null) {</span>
+<span class="nc" id="L421">      _subjects = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L423">    return _subjects.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link AssessmentSubject} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeSubject(AssessmentSubject item) {
+<span class="nc" id="L432">    AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">    return _subjects == null ? false : _subjects.remove(value);</span>
+  }
+
+  public List&lt;ResponsibleRole&gt; getResponsibleRoles() {
+<span class="nc" id="L437">    return _responsibleRoles;</span>
+  }
+
+  public void setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {
+<span class="nc" id="L441">    _responsibleRoles = value;</span>
+<span class="nc" id="L442">  }</span>
+
+  /**
+   * Add a new {@link ResponsibleRole} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addResponsibleRole(ResponsibleRole item) {
+<span class="nc" id="L450">    ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L451" title="All 2 branches missed.">    if (_responsibleRoles == null) {</span>
+<span class="nc" id="L452">      _responsibleRoles = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L454">    return _responsibleRoles.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ResponsibleRole} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeResponsibleRole(ResponsibleRole item) {
+<span class="nc" id="L463">    ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">    return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L468">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L472">    _remarks = value;</span>
+<span class="nc" id="L473">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L477">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * The timing under which the task is intended to occur.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Event Timing&quot;,
+      description = &quot;The timing under which the task is intended to occur.&quot;,
+      name = &quot;timing&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class Timing {
+    /**
+     * &quot;The task is intended to occur on the specified date.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;On Date Condition&quot;,
+        description = &quot;The task is intended to occur on the specified date.&quot;,
+        useName = &quot;on-date&quot;,
+        minOccurs = 1
+    )
+    private OnDate _onDate;
+
+    /**
+     * &quot;The task is intended to occur within the specified date range.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;On Date Range Condition&quot;,
+        description = &quot;The task is intended to occur within the specified date range.&quot;,
+        useName = &quot;within-date-range&quot;,
+        minOccurs = 1
+    )
+    private WithinDateRange _withinDateRange;
+
+    /**
+     * &quot;The task is intended to occur at the specified frequency.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;Frequency Condition&quot;,
+        description = &quot;The task is intended to occur at the specified frequency.&quot;,
+        useName = &quot;at-frequency&quot;,
+        minOccurs = 1
+    )
+    private AtFrequency _atFrequency;
+
+<span class="nc" id="L523">    public Timing() {</span>
+<span class="nc" id="L524">    }</span>
+
+    public OnDate getOnDate() {
+<span class="nc" id="L527">      return _onDate;</span>
+    }
+
+    public void setOnDate(OnDate value) {
+<span class="nc" id="L531">      _onDate = value;</span>
+<span class="nc" id="L532">    }</span>
+
+    public WithinDateRange getWithinDateRange() {
+<span class="nc" id="L535">      return _withinDateRange;</span>
+    }
+
+    public void setWithinDateRange(WithinDateRange value) {
+<span class="nc" id="L539">      _withinDateRange = value;</span>
+<span class="nc" id="L540">    }</span>
+
+    public AtFrequency getAtFrequency() {
+<span class="nc" id="L543">      return _atFrequency;</span>
+    }
+
+    public void setAtFrequency(AtFrequency value) {
+<span class="nc" id="L547">      _atFrequency = value;</span>
+<span class="nc" id="L548">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L552">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+
+    /**
+     * The task is intended to occur within the specified date range.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;On Date Range Condition&quot;,
+        description = &quot;The task is intended to occur within the specified date range.&quot;,
+        name = &quot;within-date-range&quot;,
+        metaschema = OscalAssessmentCommonMetaschema.class
+    )
+    public static class WithinDateRange {
+      @BoundFlag(
+          formalName = &quot;Start Date Condition&quot;,
+          description = &quot;The task must occur on or after the specified date.&quot;,
+          useName = &quot;start&quot;,
+          required = true,
+          typeAdapter = DateTimeWithTZAdapter.class
+      )
+      private ZonedDateTime _start;
+
+      @BoundFlag(
+          formalName = &quot;End Date Condition&quot;,
+          description = &quot;The task must occur on or before the specified date.&quot;,
+          useName = &quot;end&quot;,
+          required = true,
+          typeAdapter = DateTimeWithTZAdapter.class
+      )
+      private ZonedDateTime _end;
+
+<span class="nc" id="L583">      public WithinDateRange() {</span>
+<span class="nc" id="L584">      }</span>
+
+      public ZonedDateTime getStart() {
+<span class="nc" id="L587">        return _start;</span>
+      }
+
+      public void setStart(ZonedDateTime value) {
+<span class="nc" id="L591">        _start = value;</span>
+<span class="nc" id="L592">      }</span>
+
+      public ZonedDateTime getEnd() {
+<span class="nc" id="L595">        return _end;</span>
+      }
+
+      public void setEnd(ZonedDateTime value) {
+<span class="nc" id="L599">        _end = value;</span>
+<span class="nc" id="L600">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L604">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
+     * The task is intended to occur on the specified date.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;On Date Condition&quot;,
+        description = &quot;The task is intended to occur on the specified date.&quot;,
+        name = &quot;on-date&quot;,
+        metaschema = OscalAssessmentCommonMetaschema.class
+    )
+    public static class OnDate {
+      @BoundFlag(
+          formalName = &quot;On Date Condition&quot;,
+          description = &quot;The task must occur on the specified date.&quot;,
+          useName = &quot;date&quot;,
+          required = true,
+          typeAdapter = DateTimeWithTZAdapter.class
+      )
+      private ZonedDateTime _date;
+
+<span class="nc" id="L627">      public OnDate() {</span>
+<span class="nc" id="L628">      }</span>
+
+      public ZonedDateTime getDate() {
+<span class="nc" id="L631">        return _date;</span>
+      }
+
+      public void setDate(ZonedDateTime value) {
+<span class="nc" id="L635">        _date = value;</span>
+<span class="nc" id="L636">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L640">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
+     * The task is intended to occur at the specified frequency.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Frequency Condition&quot;,
+        description = &quot;The task is intended to occur at the specified frequency.&quot;,
+        name = &quot;at-frequency&quot;,
+        metaschema = OscalAssessmentCommonMetaschema.class
+    )
+    public static class AtFrequency {
+      @BoundFlag(
+          formalName = &quot;Period&quot;,
+          description = &quot;The task must occur after the specified period has elapsed.&quot;,
+          useName = &quot;period&quot;,
+          required = true,
+          typeAdapter = PositiveIntegerAdapter.class
+      )
+      private BigInteger _period;
+
+      @BoundFlag(
+          formalName = &quot;Time Unit&quot;,
+          description = &quot;The unit of time for the period.&quot;,
+          useName = &quot;unit&quot;,
+          required = true,
+          typeAdapter = StringAdapter.class
+      )
+      @ValueConstraints(
+          allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;seconds&quot;, description = &quot;The period is specified in seconds.&quot;), @AllowedValue(value = &quot;minutes&quot;, description = &quot;The period is specified in minutes.&quot;), @AllowedValue(value = &quot;hours&quot;, description = &quot;The period is specified in hours.&quot;), @AllowedValue(value = &quot;days&quot;, description = &quot;The period is specified in days.&quot;), @AllowedValue(value = &quot;months&quot;, description = &quot;The period is specified in calendar months.&quot;), @AllowedValue(value = &quot;years&quot;, description = &quot;The period is specified in calendar years.&quot;)})
+      )
+      private String _unit;
+
+<span class="nc" id="L675">      public AtFrequency() {</span>
+<span class="nc" id="L676">      }</span>
+
+      public BigInteger getPeriod() {
+<span class="nc" id="L679">        return _period;</span>
+      }
+
+      public void setPeriod(BigInteger value) {
+<span class="nc" id="L683">        _period = value;</span>
+<span class="nc" id="L684">      }</span>
+
+      public String getUnit() {
+<span class="nc" id="L687">        return _unit;</span>
+      }
+
+      public void setUnit(String value) {
+<span class="nc" id="L691">        _unit = value;</span>
+<span class="nc" id="L692">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L696">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+  }
+
+  /**
+   * Used to indicate that a task is dependent on another task.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Task Dependency&quot;,
+      description = &quot;Used to indicate that a task is dependent on another task.&quot;,
+      name = &quot;dependency&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class Dependency {
+    @BoundFlag(
+        formalName = &quot;Task Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a unique task.&quot;,
+        useName = &quot;task-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _taskUuid;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L730">    public Dependency() {</span>
+<span class="nc" id="L731">    }</span>
+
+    public UUID getTaskUuid() {
+<span class="nc" id="L734">      return _taskUuid;</span>
+    }
+
+    public void setTaskUuid(UUID value) {
+<span class="nc" id="L738">      _taskUuid = value;</span>
+<span class="nc" id="L739">    }</span>
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L742">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L746">      _remarks = value;</span>
+<span class="nc" id="L747">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L751">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
+   * Identifies an individual activity to be performed as part of a task.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Associated Activity&quot;,
+      description = &quot;Identifies an individual activity to be performed as part of a task.&quot;,
+      name = &quot;associated-activity&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  @AssemblyConstraints(
+      isUnique = @IsUnique(id = &quot;unique-associated-activity-responsible-role&quot;, level = IConstraint.Level.ERROR, target = &quot;responsible-role&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;), remarks = &quot;Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.&quot;)
+  )
+  public static class AssociatedActivity {
+    @BoundFlag(
+        formalName = &quot;Activity Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an activity defined in the list of activities.&quot;,
+        useName = &quot;activity-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _activityUuid;
+
+    @BoundAssembly(
+        formalName = &quot;Property&quot;,
+        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+        useName = &quot;prop&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;props&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Property&gt; _props;
+
+    @BoundAssembly(
+        formalName = &quot;Link&quot;,
+        description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+        useName = &quot;link&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;links&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Link&gt; _links;
+
+    @BoundAssembly(
+        formalName = &quot;Responsible Role&quot;,
+        description = &quot;A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.&quot;,
+        useName = &quot;responsible-role&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Identifies the person or organization responsible for performing a specific role defined by the activity.&quot;
+    )
+    @GroupAs(
+        name = &quot;responsible-roles&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;ResponsibleRole&gt; _responsibleRoles;
+
+    @BoundAssembly(
+        formalName = &quot;Subject of Assessment&quot;,
+        description = &quot;Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.&quot;,
+        useName = &quot;subject&quot;,
+        minOccurs = 1,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;subjects&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;AssessmentSubject&gt; _subjects;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L837">    public AssociatedActivity() {</span>
+<span class="nc" id="L838">    }</span>
+
+    public UUID getActivityUuid() {
+<span class="nc" id="L841">      return _activityUuid;</span>
+    }
+
+    public void setActivityUuid(UUID value) {
+<span class="nc" id="L845">      _activityUuid = value;</span>
+<span class="nc" id="L846">    }</span>
+
+    public List&lt;Property&gt; getProps() {
+<span class="nc" id="L849">      return _props;</span>
+    }
+
+    public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L853">      _props = value;</span>
+<span class="nc" id="L854">    }</span>
+
+    /**
+     * Add a new {@link Property} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addProp(Property item) {
+<span class="nc" id="L862">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L863" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L864">        _props = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L866">      return _props.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Property} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeProp(Property item) {
+<span class="nc" id="L875">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L876" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+    }
+
+    public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L880">      return _links;</span>
+    }
+
+    public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L884">      _links = value;</span>
+<span class="nc" id="L885">    }</span>
+
+    /**
+     * Add a new {@link Link} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addLink(Link item) {
+<span class="nc" id="L893">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L894" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L895">        _links = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L897">      return _links.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Link} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeLink(Link item) {
+<span class="nc" id="L906">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L907" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+    }
+
+    public List&lt;ResponsibleRole&gt; getResponsibleRoles() {
+<span class="nc" id="L911">      return _responsibleRoles;</span>
+    }
+
+    public void setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {
+<span class="nc" id="L915">      _responsibleRoles = value;</span>
+<span class="nc" id="L916">    }</span>
+
+    /**
+     * Add a new {@link ResponsibleRole} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addResponsibleRole(ResponsibleRole item) {
+<span class="nc" id="L924">      ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L925" title="All 2 branches missed.">      if (_responsibleRoles == null) {</span>
+<span class="nc" id="L926">        _responsibleRoles = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L928">      return _responsibleRoles.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link ResponsibleRole} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeResponsibleRole(ResponsibleRole item) {
+<span class="nc" id="L937">      ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L938" title="All 2 branches missed.">      return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</span>
+    }
+
+    public List&lt;AssessmentSubject&gt; getSubjects() {
+<span class="nc" id="L942">      return _subjects;</span>
+    }
+
+    public void setSubjects(List&lt;AssessmentSubject&gt; value) {
+<span class="nc" id="L946">      _subjects = value;</span>
+<span class="nc" id="L947">    }</span>
+
+    /**
+     * Add a new {@link AssessmentSubject} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addSubject(AssessmentSubject item) {
+<span class="nc" id="L955">      AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L956" title="All 2 branches missed.">      if (_subjects == null) {</span>
+<span class="nc" id="L957">        _subjects = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L959">      return _subjects.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link AssessmentSubject} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeSubject(AssessmentSubject item) {
+<span class="nc" id="L968">      AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L969" title="All 2 branches missed.">      return _subjects == null ? false : _subjects.remove(value);</span>
+    }
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L973">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L977">      _remarks = value;</span>
+<span class="nc" id="L978">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L982">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

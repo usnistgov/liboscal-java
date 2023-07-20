@@ -1,0 +1,636 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Portions of this software was developed by employees of the National Institute</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * of Standards and Technology (NIST), an agency of the Federal Government and is</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * being made available as a public service. Pursuant to title 17 United States</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * Code Section 105, works of NIST employees are not subject to copyright</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * protection in the United States. This software may be subject to foreign</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * copyright. Permission in the United States and in foreign countries, to the</a>
+<span class="sourceLineNo">008</span><a id="line.8"> * extent that NIST may hold copyright, to use, copy, modify, create derivative</a>
+<span class="sourceLineNo">009</span><a id="line.9"> * works, and distribute this software and its documentation without fee is hereby</a>
+<span class="sourceLineNo">010</span><a id="line.10"> * granted on a non-exclusive basis, provided that this notice and disclaimer</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * of warranty appears in all copies.</a>
+<span class="sourceLineNo">012</span><a id="line.12"> *</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF</a>
+<span class="sourceLineNo">016</span><a id="line.16"> * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM</a>
+<span class="sourceLineNo">017</span><a id="line.17"> * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE</a>
+<span class="sourceLineNo">018</span><a id="line.18"> * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT</a>
+<span class="sourceLineNo">019</span><a id="line.19"> * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,</a>
+<span class="sourceLineNo">020</span><a id="line.20"> * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,</a>
+<span class="sourceLineNo">021</span><a id="line.21"> * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,</a>
+<span class="sourceLineNo">022</span><a id="line.22"> * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR</a>
+<span class="sourceLineNo">023</span><a id="line.23"> * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT</a>
+<span class="sourceLineNo">024</span><a id="line.24"> * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.</a>
+<span class="sourceLineNo">025</span><a id="line.25"> */</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27">package gov.nist.secauto.oscal.lib.profile.resolver.alter;</a>
+<span class="sourceLineNo">028</span><a id="line.28"></a>
+<span class="sourceLineNo">029</span><a id="line.29">import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import gov.nist.secauto.oscal.lib.model.Catalog;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import gov.nist.secauto.oscal.lib.model.CatalogGroup;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import gov.nist.secauto.oscal.lib.model.Control;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import gov.nist.secauto.oscal.lib.model.ControlPart;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import gov.nist.secauto.oscal.lib.model.Link;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import gov.nist.secauto.oscal.lib.model.MappingEntry;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import gov.nist.secauto.oscal.lib.model.Parameter;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import gov.nist.secauto.oscal.lib.model.Property;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import gov.nist.secauto.oscal.lib.model.control.catalog.ICatalogVisitor;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import gov.nist.secauto.oscal.lib.model.metadata.IProperty;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;</a>
+<span class="sourceLineNo">042</span><a id="line.42"></a>
+<span class="sourceLineNo">043</span><a id="line.43">import java.util.Collection;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import java.util.Collections;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import java.util.EnumMap;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import java.util.EnumSet;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import java.util.Iterator;</a>
+<span class="sourceLineNo">048</span><a id="line.48">import java.util.Locale;</a>
+<span class="sourceLineNo">049</span><a id="line.49">import java.util.Map;</a>
+<span class="sourceLineNo">050</span><a id="line.50">import java.util.Set;</a>
+<span class="sourceLineNo">051</span><a id="line.51">import java.util.concurrent.ConcurrentHashMap;</a>
+<span class="sourceLineNo">052</span><a id="line.52">import java.util.function.Function;</a>
+<span class="sourceLineNo">053</span><a id="line.53">import java.util.function.Supplier;</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">import edu.umd.cs.findbugs.annotations.NonNull;</a>
+<span class="sourceLineNo">056</span><a id="line.56">import edu.umd.cs.findbugs.annotations.Nullable;</a>
+<span class="sourceLineNo">057</span><a id="line.57"></a>
+<span class="sourceLineNo">058</span><a id="line.58">public class RemoveVisitor implements ICatalogVisitor&lt;Boolean, RemoveVisitor.Context&gt; {</a>
+<span class="sourceLineNo">059</span><a id="line.59">  public enum TargetType {</a>
+<span class="sourceLineNo">060</span><a id="line.60">    PARAM("param", Parameter.class),</a>
+<span class="sourceLineNo">061</span><a id="line.61">    PROP("prop", Property.class),</a>
+<span class="sourceLineNo">062</span><a id="line.62">    LINK("link", Link.class),</a>
+<span class="sourceLineNo">063</span><a id="line.63">    PART("part", ControlPart.class),</a>
+<span class="sourceLineNo">064</span><a id="line.64">    MAPPING("mapping", Control.Mapping.class),</a>
+<span class="sourceLineNo">065</span><a id="line.65">    MAP("map", MappingEntry.class);</a>
+<span class="sourceLineNo">066</span><a id="line.66"></a>
+<span class="sourceLineNo">067</span><a id="line.67">    @NonNull</a>
+<span class="sourceLineNo">068</span><a id="line.68">    private static final Map&lt;Class&lt;?&gt;, TargetType&gt; CLASS_TO_TYPE;</a>
+<span class="sourceLineNo">069</span><a id="line.69">    @NonNull</a>
+<span class="sourceLineNo">070</span><a id="line.70">    private static final Map&lt;String, TargetType&gt; NAME_TO_TYPE;</a>
+<span class="sourceLineNo">071</span><a id="line.71">    @NonNull</a>
+<span class="sourceLineNo">072</span><a id="line.72">    private final String fieldName;</a>
+<span class="sourceLineNo">073</span><a id="line.73">    @NonNull</a>
+<span class="sourceLineNo">074</span><a id="line.74">    private final Class&lt;?&gt; clazz;</a>
+<span class="sourceLineNo">075</span><a id="line.75"></a>
+<span class="sourceLineNo">076</span><a id="line.76">    static {</a>
+<span class="sourceLineNo">077</span><a id="line.77">      {</a>
+<span class="sourceLineNo">078</span><a id="line.78">        Map&lt;Class&lt;?&gt;, TargetType&gt; map = new ConcurrentHashMap&lt;&gt;();</a>
+<span class="sourceLineNo">079</span><a id="line.79">        for (TargetType type : TargetType.values()) {</a>
+<span class="sourceLineNo">080</span><a id="line.80">          map.put(type.getClazz(), type);</a>
+<span class="sourceLineNo">081</span><a id="line.81">        }</a>
+<span class="sourceLineNo">082</span><a id="line.82">        CLASS_TO_TYPE = CollectionUtil.unmodifiableMap(map);</a>
+<span class="sourceLineNo">083</span><a id="line.83">      }</a>
+<span class="sourceLineNo">084</span><a id="line.84"></a>
+<span class="sourceLineNo">085</span><a id="line.85">      {</a>
+<span class="sourceLineNo">086</span><a id="line.86">        Map&lt;String, TargetType&gt; map = new ConcurrentHashMap&lt;&gt;();</a>
+<span class="sourceLineNo">087</span><a id="line.87">        for (TargetType type : TargetType.values()) {</a>
+<span class="sourceLineNo">088</span><a id="line.88">          map.put(type.fieldName(), type);</a>
+<span class="sourceLineNo">089</span><a id="line.89">        }</a>
+<span class="sourceLineNo">090</span><a id="line.90">        NAME_TO_TYPE = CollectionUtil.unmodifiableMap(map);</a>
+<span class="sourceLineNo">091</span><a id="line.91">      }</a>
+<span class="sourceLineNo">092</span><a id="line.92">    }</a>
+<span class="sourceLineNo">093</span><a id="line.93"></a>
+<span class="sourceLineNo">094</span><a id="line.94">    /**</a>
+<span class="sourceLineNo">095</span><a id="line.95">     * Get the target type associated with the provided {@code clazz}.</a>
+<span class="sourceLineNo">096</span><a id="line.96">     *</a>
+<span class="sourceLineNo">097</span><a id="line.97">     * @param clazz</a>
+<span class="sourceLineNo">098</span><a id="line.98">     *          the class to identify the target type for</a>
+<span class="sourceLineNo">099</span><a id="line.99">     * @return the associated target type or {@code null} if the class is not associated with a target</a>
+<span class="sourceLineNo">100</span><a id="line.100">     *         type</a>
+<span class="sourceLineNo">101</span><a id="line.101">     */</a>
+<span class="sourceLineNo">102</span><a id="line.102">    @Nullable</a>
+<span class="sourceLineNo">103</span><a id="line.103">    public static TargetType forClass(@NonNull Class&lt;?&gt; clazz) {</a>
+<span class="sourceLineNo">104</span><a id="line.104">      Class&lt;?&gt; target = clazz;</a>
+<span class="sourceLineNo">105</span><a id="line.105">      TargetType retval;</a>
+<span class="sourceLineNo">106</span><a id="line.106">      // recurse over parent classes to find a match</a>
+<span class="sourceLineNo">107</span><a id="line.107">      do {</a>
+<span class="sourceLineNo">108</span><a id="line.108">        retval = CLASS_TO_TYPE.get(target);</a>
+<span class="sourceLineNo">109</span><a id="line.109">      } while (retval == null &amp;&amp; (target = target.getSuperclass()) != null);</a>
+<span class="sourceLineNo">110</span><a id="line.110">      return retval;</a>
+<span class="sourceLineNo">111</span><a id="line.111">    }</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">    /**</a>
+<span class="sourceLineNo">114</span><a id="line.114">     * Get the target type associated with the provided field {@code name}.</a>
+<span class="sourceLineNo">115</span><a id="line.115">     *</a>
+<span class="sourceLineNo">116</span><a id="line.116">     * @param name</a>
+<span class="sourceLineNo">117</span><a id="line.117">     *          the field name to identify the target type for</a>
+<span class="sourceLineNo">118</span><a id="line.118">     * @return the associated target type or {@code null} if the name is not associated with a target</a>
+<span class="sourceLineNo">119</span><a id="line.119">     *         type</a>
+<span class="sourceLineNo">120</span><a id="line.120">     */</a>
+<span class="sourceLineNo">121</span><a id="line.121">    @Nullable</a>
+<span class="sourceLineNo">122</span><a id="line.122">    public static TargetType forFieldName(@Nullable String name) {</a>
+<span class="sourceLineNo">123</span><a id="line.123">      return name == null ? null : NAME_TO_TYPE.get(name);</a>
+<span class="sourceLineNo">124</span><a id="line.124">    }</a>
+<span class="sourceLineNo">125</span><a id="line.125"></a>
+<span class="sourceLineNo">126</span><a id="line.126">    TargetType(@NonNull String fieldName, @NonNull Class&lt;?&gt; clazz) {</a>
+<span class="sourceLineNo">127</span><a id="line.127">      this.fieldName = fieldName;</a>
+<span class="sourceLineNo">128</span><a id="line.128">      this.clazz = clazz;</a>
+<span class="sourceLineNo">129</span><a id="line.129">    }</a>
+<span class="sourceLineNo">130</span><a id="line.130"></a>
+<span class="sourceLineNo">131</span><a id="line.131">    /**</a>
+<span class="sourceLineNo">132</span><a id="line.132">     * Get the field name associated with the target type.</a>
+<span class="sourceLineNo">133</span><a id="line.133">     *</a>
+<span class="sourceLineNo">134</span><a id="line.134">     * @return the name</a>
+<span class="sourceLineNo">135</span><a id="line.135">     */</a>
+<span class="sourceLineNo">136</span><a id="line.136">    public String fieldName() {</a>
+<span class="sourceLineNo">137</span><a id="line.137">      return fieldName;</a>
+<span class="sourceLineNo">138</span><a id="line.138">    }</a>
+<span class="sourceLineNo">139</span><a id="line.139"></a>
+<span class="sourceLineNo">140</span><a id="line.140">    /**</a>
+<span class="sourceLineNo">141</span><a id="line.141">     * Get the bound class associated with the target type.</a>
+<span class="sourceLineNo">142</span><a id="line.142">     *</a>
+<span class="sourceLineNo">143</span><a id="line.143">     * @return the class</a>
+<span class="sourceLineNo">144</span><a id="line.144">     */</a>
+<span class="sourceLineNo">145</span><a id="line.145">    public Class&lt;?&gt; getClazz() {</a>
+<span class="sourceLineNo">146</span><a id="line.146">      return clazz;</a>
+<span class="sourceLineNo">147</span><a id="line.147">    }</a>
+<span class="sourceLineNo">148</span><a id="line.148"></a>
+<span class="sourceLineNo">149</span><a id="line.149">  }</a>
+<span class="sourceLineNo">150</span><a id="line.150"></a>
+<span class="sourceLineNo">151</span><a id="line.151">  @NonNull</a>
+<span class="sourceLineNo">152</span><a id="line.152">  private static final RemoveVisitor INSTANCE = new RemoveVisitor();</a>
+<span class="sourceLineNo">153</span><a id="line.153"></a>
+<span class="sourceLineNo">154</span><a id="line.154">  private static final Map&lt;TargetType, Set&lt;TargetType&gt;&gt; APPLICABLE_TARGETS;</a>
+<span class="sourceLineNo">155</span><a id="line.155"></a>
+<span class="sourceLineNo">156</span><a id="line.156">  static {</a>
+<span class="sourceLineNo">157</span><a id="line.157">    APPLICABLE_TARGETS = new EnumMap&lt;&gt;(TargetType.class);</a>
+<span class="sourceLineNo">158</span><a id="line.158">    APPLICABLE_TARGETS.put(TargetType.PARAM, Set.of(TargetType.PROP, TargetType.LINK));</a>
+<span class="sourceLineNo">159</span><a id="line.159">    APPLICABLE_TARGETS.put(TargetType.PART, Set.of(TargetType.PART, TargetType.PROP, TargetType.LINK));</a>
+<span class="sourceLineNo">160</span><a id="line.160">    APPLICABLE_TARGETS.put(TargetType.MAPPING, Set.of(TargetType.MAP, TargetType.PROP, TargetType.LINK));</a>
+<span class="sourceLineNo">161</span><a id="line.161">    APPLICABLE_TARGETS.put(TargetType.MAP, Set.of(TargetType.PROP, TargetType.LINK));</a>
+<span class="sourceLineNo">162</span><a id="line.162">  }</a>
+<span class="sourceLineNo">163</span><a id="line.163"></a>
+<span class="sourceLineNo">164</span><a id="line.164">  private static Set&lt;TargetType&gt; getApplicableTypes(@NonNull TargetType type) {</a>
+<span class="sourceLineNo">165</span><a id="line.165">    return APPLICABLE_TARGETS.getOrDefault(type, CollectionUtil.emptySet());</a>
+<span class="sourceLineNo">166</span><a id="line.166">  }</a>
+<span class="sourceLineNo">167</span><a id="line.167"></a>
+<span class="sourceLineNo">168</span><a id="line.168">  private static &lt;T&gt; boolean handle(</a>
+<span class="sourceLineNo">169</span><a id="line.169">      @NonNull TargetType itemType,</a>
+<span class="sourceLineNo">170</span><a id="line.170">      @NonNull Supplier&lt;? extends Collection&lt;T&gt;&gt; supplier,</a>
+<span class="sourceLineNo">171</span><a id="line.171">      @Nullable Function&lt;T, Boolean&gt; handler,</a>
+<span class="sourceLineNo">172</span><a id="line.172">      @NonNull Context context) {</a>
+<span class="sourceLineNo">173</span><a id="line.173"></a>
+<span class="sourceLineNo">174</span><a id="line.174">    boolean handleChildren = !Collections.disjoint(context.getTargetItemTypes(), getApplicableTypes(itemType));</a>
+<span class="sourceLineNo">175</span><a id="line.175">    boolean retval = false;</a>
+<span class="sourceLineNo">176</span><a id="line.176">    if (context.isMatchingType(itemType)) {</a>
+<span class="sourceLineNo">177</span><a id="line.177">      // if the item type is applicable, attempt to remove any items</a>
+<span class="sourceLineNo">178</span><a id="line.178">      Iterator&lt;T&gt; iter = supplier.get().iterator();</a>
+<span class="sourceLineNo">179</span><a id="line.179">      while (iter.hasNext()) {</a>
+<span class="sourceLineNo">180</span><a id="line.180">        T item = iter.next();</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">        if (item == null || context.isApplicableTo(item)) {</a>
+<span class="sourceLineNo">183</span><a id="line.183">          iter.remove();</a>
+<span class="sourceLineNo">184</span><a id="line.184">          retval = true;</a>
+<span class="sourceLineNo">185</span><a id="line.185">          // ignore removed items and their children</a>
+<span class="sourceLineNo">186</span><a id="line.186">        } else if (handler != null &amp;&amp; handleChildren) {</a>
+<span class="sourceLineNo">187</span><a id="line.187">          // handle child items since they are applicable to the search criteria</a>
+<span class="sourceLineNo">188</span><a id="line.188">          retval = retval || handler.apply(item);</a>
+<span class="sourceLineNo">189</span><a id="line.189">        }</a>
+<span class="sourceLineNo">190</span><a id="line.190">      }</a>
+<span class="sourceLineNo">191</span><a id="line.191">    } else if (handleChildren &amp;&amp; handler != null) {</a>
+<span class="sourceLineNo">192</span><a id="line.192">      // if the child item type is applicable and there is a handler, iterate over children</a>
+<span class="sourceLineNo">193</span><a id="line.193">      Iterator&lt;T&gt; iter = supplier.get().iterator();</a>
+<span class="sourceLineNo">194</span><a id="line.194">      while (iter.hasNext()) {</a>
+<span class="sourceLineNo">195</span><a id="line.195">        T item = iter.next();</a>
+<span class="sourceLineNo">196</span><a id="line.196">        if (item != null) {</a>
+<span class="sourceLineNo">197</span><a id="line.197">          retval = retval || handler.apply(item);</a>
+<span class="sourceLineNo">198</span><a id="line.198">        }</a>
+<span class="sourceLineNo">199</span><a id="line.199">      }</a>
+<span class="sourceLineNo">200</span><a id="line.200">    }</a>
+<span class="sourceLineNo">201</span><a id="line.201">    return retval;</a>
+<span class="sourceLineNo">202</span><a id="line.202">  }</a>
+<span class="sourceLineNo">203</span><a id="line.203"></a>
+<span class="sourceLineNo">204</span><a id="line.204">  /**</a>
+<span class="sourceLineNo">205</span><a id="line.205">   * Apply the remove directive.</a>
+<span class="sourceLineNo">206</span><a id="line.206">   *</a>
+<span class="sourceLineNo">207</span><a id="line.207">   * @param control</a>
+<span class="sourceLineNo">208</span><a id="line.208">   *          the control target</a>
+<span class="sourceLineNo">209</span><a id="line.209">   * @param objectName</a>
+<span class="sourceLineNo">210</span><a id="line.210">   *          the name flag of a matching node to remove</a>
+<span class="sourceLineNo">211</span><a id="line.211">   * @param objectClass</a>
+<span class="sourceLineNo">212</span><a id="line.212">   *          the class flag of a matching node to remove</a>
+<span class="sourceLineNo">213</span><a id="line.213">   * @param objectId</a>
+<span class="sourceLineNo">214</span><a id="line.214">   *          the id flag of a matching node to remove</a>
+<span class="sourceLineNo">215</span><a id="line.215">   * @param objectNamespace</a>
+<span class="sourceLineNo">216</span><a id="line.216">   *          the namespace flag of a matching node to remove</a>
+<span class="sourceLineNo">217</span><a id="line.217">   * @param itemType</a>
+<span class="sourceLineNo">218</span><a id="line.218">   *          the type of a matching node to remove</a>
+<span class="sourceLineNo">219</span><a id="line.219">   * @return {@code true} if the modification was made or {@code false} otherwise</a>
+<span class="sourceLineNo">220</span><a id="line.220">   * @throws ProfileResolutionEvaluationException</a>
+<span class="sourceLineNo">221</span><a id="line.221">   *           if a processing error occurred during profile resolution</a>
+<span class="sourceLineNo">222</span><a id="line.222">   */</a>
+<span class="sourceLineNo">223</span><a id="line.223">  public static boolean remove(</a>
+<span class="sourceLineNo">224</span><a id="line.224">      @NonNull Control control,</a>
+<span class="sourceLineNo">225</span><a id="line.225">      @Nullable String objectName,</a>
+<span class="sourceLineNo">226</span><a id="line.226">      @Nullable String objectClass,</a>
+<span class="sourceLineNo">227</span><a id="line.227">      @Nullable String objectId,</a>
+<span class="sourceLineNo">228</span><a id="line.228">      @Nullable String objectNamespace,</a>
+<span class="sourceLineNo">229</span><a id="line.229">      @Nullable TargetType itemType) {</a>
+<span class="sourceLineNo">230</span><a id="line.230">    return INSTANCE.visitControl(</a>
+<span class="sourceLineNo">231</span><a id="line.231">        control,</a>
+<span class="sourceLineNo">232</span><a id="line.232">        new Context(objectName, objectClass, objectId, objectNamespace, itemType));</a>
+<span class="sourceLineNo">233</span><a id="line.233">  }</a>
+<span class="sourceLineNo">234</span><a id="line.234"></a>
+<span class="sourceLineNo">235</span><a id="line.235">  @Override</a>
+<span class="sourceLineNo">236</span><a id="line.236">  public Boolean visitCatalog(Catalog catalog, Context context) {</a>
+<span class="sourceLineNo">237</span><a id="line.237">    // not required</a>
+<span class="sourceLineNo">238</span><a id="line.238">    throw new UnsupportedOperationException("not needed");</a>
+<span class="sourceLineNo">239</span><a id="line.239">  }</a>
+<span class="sourceLineNo">240</span><a id="line.240"></a>
+<span class="sourceLineNo">241</span><a id="line.241">  @Override</a>
+<span class="sourceLineNo">242</span><a id="line.242">  public Boolean visitGroup(CatalogGroup group, Context context) {</a>
+<span class="sourceLineNo">243</span><a id="line.243">    // not required</a>
+<span class="sourceLineNo">244</span><a id="line.244">    throw new UnsupportedOperationException("not needed");</a>
+<span class="sourceLineNo">245</span><a id="line.245">  }</a>
+<span class="sourceLineNo">246</span><a id="line.246"></a>
+<span class="sourceLineNo">247</span><a id="line.247">  @Override</a>
+<span class="sourceLineNo">248</span><a id="line.248">  public Boolean visitControl(Control control, Context context) {</a>
+<span class="sourceLineNo">249</span><a id="line.249">    assert context != null;</a>
+<span class="sourceLineNo">250</span><a id="line.250"></a>
+<span class="sourceLineNo">251</span><a id="line.251">    // visit params</a>
+<span class="sourceLineNo">252</span><a id="line.252">    boolean retval = handle(</a>
+<span class="sourceLineNo">253</span><a id="line.253">        TargetType.PARAM,</a>
+<span class="sourceLineNo">254</span><a id="line.254">        () -&gt; CollectionUtil.listOrEmpty(control.getParams()),</a>
+<span class="sourceLineNo">255</span><a id="line.255">        child -&gt; visitParameter(ObjectUtils.notNull(child), context),</a>
+<span class="sourceLineNo">256</span><a id="line.256">        context);</a>
+<span class="sourceLineNo">257</span><a id="line.257"></a>
+<span class="sourceLineNo">258</span><a id="line.258">    // visit props</a>
+<span class="sourceLineNo">259</span><a id="line.259">    retval = retval || handle(</a>
+<span class="sourceLineNo">260</span><a id="line.260">        TargetType.PROP,</a>
+<span class="sourceLineNo">261</span><a id="line.261">        () -&gt; CollectionUtil.listOrEmpty(control.getProps()),</a>
+<span class="sourceLineNo">262</span><a id="line.262">        null,</a>
+<span class="sourceLineNo">263</span><a id="line.263">        context);</a>
+<span class="sourceLineNo">264</span><a id="line.264"></a>
+<span class="sourceLineNo">265</span><a id="line.265">    // visit links</a>
+<span class="sourceLineNo">266</span><a id="line.266">    retval = retval || handle(</a>
+<span class="sourceLineNo">267</span><a id="line.267">        TargetType.LINK,</a>
+<span class="sourceLineNo">268</span><a id="line.268">        () -&gt; CollectionUtil.listOrEmpty(control.getLinks()),</a>
+<span class="sourceLineNo">269</span><a id="line.269">        null,</a>
+<span class="sourceLineNo">270</span><a id="line.270">        context);</a>
+<span class="sourceLineNo">271</span><a id="line.271"></a>
+<span class="sourceLineNo">272</span><a id="line.272">    // visit parts</a>
+<span class="sourceLineNo">273</span><a id="line.273">    retval = retval || handle(</a>
+<span class="sourceLineNo">274</span><a id="line.274">        TargetType.PART,</a>
+<span class="sourceLineNo">275</span><a id="line.275">        () -&gt; CollectionUtil.listOrEmpty(control.getParts()),</a>
+<span class="sourceLineNo">276</span><a id="line.276">        child -&gt; visitPart(child, context),</a>
+<span class="sourceLineNo">277</span><a id="line.277">        context);</a>
+<span class="sourceLineNo">278</span><a id="line.278"></a>
+<span class="sourceLineNo">279</span><a id="line.279">    // visit mappings</a>
+<span class="sourceLineNo">280</span><a id="line.280">    Control.Mapping mapping = control.getMapping();</a>
+<span class="sourceLineNo">281</span><a id="line.281">    if (mapping != null) {</a>
+<span class="sourceLineNo">282</span><a id="line.282">      retval = retval || visitMapping(mapping, context);</a>
+<span class="sourceLineNo">283</span><a id="line.283">    }</a>
+<span class="sourceLineNo">284</span><a id="line.284">    return retval;</a>
+<span class="sourceLineNo">285</span><a id="line.285">  }</a>
+<span class="sourceLineNo">286</span><a id="line.286"></a>
+<span class="sourceLineNo">287</span><a id="line.287">  @Override</a>
+<span class="sourceLineNo">288</span><a id="line.288">  public Boolean visitParameter(Parameter parameter, Context context) {</a>
+<span class="sourceLineNo">289</span><a id="line.289">    assert context != null;</a>
+<span class="sourceLineNo">290</span><a id="line.290"></a>
+<span class="sourceLineNo">291</span><a id="line.291">    // visit props</a>
+<span class="sourceLineNo">292</span><a id="line.292">    boolean retval = handle(</a>
+<span class="sourceLineNo">293</span><a id="line.293">        TargetType.PROP,</a>
+<span class="sourceLineNo">294</span><a id="line.294">        () -&gt; CollectionUtil.listOrEmpty(parameter.getProps()),</a>
+<span class="sourceLineNo">295</span><a id="line.295">        null,</a>
+<span class="sourceLineNo">296</span><a id="line.296">        context);</a>
+<span class="sourceLineNo">297</span><a id="line.297"></a>
+<span class="sourceLineNo">298</span><a id="line.298">    // visit links</a>
+<span class="sourceLineNo">299</span><a id="line.299">    retval = retval || handle(</a>
+<span class="sourceLineNo">300</span><a id="line.300">        TargetType.LINK,</a>
+<span class="sourceLineNo">301</span><a id="line.301">        () -&gt; CollectionUtil.listOrEmpty(parameter.getLinks()),</a>
+<span class="sourceLineNo">302</span><a id="line.302">        null,</a>
+<span class="sourceLineNo">303</span><a id="line.303">        context);</a>
+<span class="sourceLineNo">304</span><a id="line.304">    return retval;</a>
+<span class="sourceLineNo">305</span><a id="line.305">  }</a>
+<span class="sourceLineNo">306</span><a id="line.306"></a>
+<span class="sourceLineNo">307</span><a id="line.307">  /**</a>
+<span class="sourceLineNo">308</span><a id="line.308">   * Visit the control part.</a>
+<span class="sourceLineNo">309</span><a id="line.309">   *</a>
+<span class="sourceLineNo">310</span><a id="line.310">   * @param part</a>
+<span class="sourceLineNo">311</span><a id="line.311">   *          the bound part object</a>
+<span class="sourceLineNo">312</span><a id="line.312">   * @param context</a>
+<span class="sourceLineNo">313</span><a id="line.313">   *          the visitor context</a>
+<span class="sourceLineNo">314</span><a id="line.314">   * @return {@code true} if the removal was applied or {@code false} otherwise</a>
+<span class="sourceLineNo">315</span><a id="line.315">   */</a>
+<span class="sourceLineNo">316</span><a id="line.316">  public boolean visitPart(ControlPart part, Context context) {</a>
+<span class="sourceLineNo">317</span><a id="line.317">    assert context != null;</a>
+<span class="sourceLineNo">318</span><a id="line.318"></a>
+<span class="sourceLineNo">319</span><a id="line.319">    // visit props</a>
+<span class="sourceLineNo">320</span><a id="line.320">    boolean retval = handle(</a>
+<span class="sourceLineNo">321</span><a id="line.321">        TargetType.PROP,</a>
+<span class="sourceLineNo">322</span><a id="line.322">        () -&gt; CollectionUtil.listOrEmpty(part.getProps()),</a>
+<span class="sourceLineNo">323</span><a id="line.323">        null,</a>
+<span class="sourceLineNo">324</span><a id="line.324">        context);</a>
+<span class="sourceLineNo">325</span><a id="line.325"></a>
+<span class="sourceLineNo">326</span><a id="line.326">    // visit links</a>
+<span class="sourceLineNo">327</span><a id="line.327">    retval = retval || handle(</a>
+<span class="sourceLineNo">328</span><a id="line.328">        TargetType.LINK,</a>
+<span class="sourceLineNo">329</span><a id="line.329">        () -&gt; CollectionUtil.listOrEmpty(part.getLinks()),</a>
+<span class="sourceLineNo">330</span><a id="line.330">        null,</a>
+<span class="sourceLineNo">331</span><a id="line.331">        context);</a>
+<span class="sourceLineNo">332</span><a id="line.332"></a>
+<span class="sourceLineNo">333</span><a id="line.333">    // visit parts</a>
+<span class="sourceLineNo">334</span><a id="line.334">    retval = retval || handle(</a>
+<span class="sourceLineNo">335</span><a id="line.335">        TargetType.PART,</a>
+<span class="sourceLineNo">336</span><a id="line.336">        () -&gt; CollectionUtil.listOrEmpty(part.getParts()),</a>
+<span class="sourceLineNo">337</span><a id="line.337">        child -&gt; visitPart(child, context),</a>
+<span class="sourceLineNo">338</span><a id="line.338">        context);</a>
+<span class="sourceLineNo">339</span><a id="line.339">    return retval;</a>
+<span class="sourceLineNo">340</span><a id="line.340">  }</a>
+<span class="sourceLineNo">341</span><a id="line.341"></a>
+<span class="sourceLineNo">342</span><a id="line.342">  /**</a>
+<span class="sourceLineNo">343</span><a id="line.343">   * Visit the control mapping.</a>
+<span class="sourceLineNo">344</span><a id="line.344">   *</a>
+<span class="sourceLineNo">345</span><a id="line.345">   * @param mapping</a>
+<span class="sourceLineNo">346</span><a id="line.346">   *          the bound mapping object</a>
+<span class="sourceLineNo">347</span><a id="line.347">   * @param context</a>
+<span class="sourceLineNo">348</span><a id="line.348">   *          the visitor context</a>
+<span class="sourceLineNo">349</span><a id="line.349">   * @return {@code true} if the removal was applied or {@code false} otherwise</a>
+<span class="sourceLineNo">350</span><a id="line.350">   */</a>
+<span class="sourceLineNo">351</span><a id="line.351">  public boolean visitMapping(Control.Mapping mapping, Context context) {</a>
+<span class="sourceLineNo">352</span><a id="line.352">    assert context != null;</a>
+<span class="sourceLineNo">353</span><a id="line.353"></a>
+<span class="sourceLineNo">354</span><a id="line.354">    // visit maps</a>
+<span class="sourceLineNo">355</span><a id="line.355">    return handle(</a>
+<span class="sourceLineNo">356</span><a id="line.356">        TargetType.MAP,</a>
+<span class="sourceLineNo">357</span><a id="line.357">        () -&gt; CollectionUtil.listOrEmpty(mapping.getMaps()),</a>
+<span class="sourceLineNo">358</span><a id="line.358">        child -&gt; visitMappingEntry(child, context),</a>
+<span class="sourceLineNo">359</span><a id="line.359">        context);</a>
+<span class="sourceLineNo">360</span><a id="line.360">  }</a>
+<span class="sourceLineNo">361</span><a id="line.361"></a>
+<span class="sourceLineNo">362</span><a id="line.362">  /**</a>
+<span class="sourceLineNo">363</span><a id="line.363">   * Visit the mapping entry.</a>
+<span class="sourceLineNo">364</span><a id="line.364">   *</a>
+<span class="sourceLineNo">365</span><a id="line.365">   * @param map</a>
+<span class="sourceLineNo">366</span><a id="line.366">   *          the bound mapping entry object</a>
+<span class="sourceLineNo">367</span><a id="line.367">   * @param context</a>
+<span class="sourceLineNo">368</span><a id="line.368">   *          the visitor context</a>
+<span class="sourceLineNo">369</span><a id="line.369">   * @return {@code true} if the removal was applied or {@code false} otherwise</a>
+<span class="sourceLineNo">370</span><a id="line.370">   */</a>
+<span class="sourceLineNo">371</span><a id="line.371">  public boolean visitMappingEntry(MappingEntry map, Context context) {</a>
+<span class="sourceLineNo">372</span><a id="line.372">    assert context != null;</a>
+<span class="sourceLineNo">373</span><a id="line.373"></a>
+<span class="sourceLineNo">374</span><a id="line.374">    // visit props</a>
+<span class="sourceLineNo">375</span><a id="line.375">    boolean retval = handle(</a>
+<span class="sourceLineNo">376</span><a id="line.376">        TargetType.PROP,</a>
+<span class="sourceLineNo">377</span><a id="line.377">        () -&gt; CollectionUtil.listOrEmpty(map.getProps()),</a>
+<span class="sourceLineNo">378</span><a id="line.378">        null,</a>
+<span class="sourceLineNo">379</span><a id="line.379">        context);</a>
+<span class="sourceLineNo">380</span><a id="line.380"></a>
+<span class="sourceLineNo">381</span><a id="line.381">    // visit links</a>
+<span class="sourceLineNo">382</span><a id="line.382">    retval = retval || handle(</a>
+<span class="sourceLineNo">383</span><a id="line.383">        TargetType.LINK,</a>
+<span class="sourceLineNo">384</span><a id="line.384">        () -&gt; CollectionUtil.listOrEmpty(map.getLinks()),</a>
+<span class="sourceLineNo">385</span><a id="line.385">        null,</a>
+<span class="sourceLineNo">386</span><a id="line.386">        context);</a>
+<span class="sourceLineNo">387</span><a id="line.387">    return retval;</a>
+<span class="sourceLineNo">388</span><a id="line.388">  }</a>
+<span class="sourceLineNo">389</span><a id="line.389"></a>
+<span class="sourceLineNo">390</span><a id="line.390">  static final class Context {</a>
+<span class="sourceLineNo">391</span><a id="line.391">    /**</a>
+<span class="sourceLineNo">392</span><a id="line.392">     * Types with an "name" flag.</a>
+<span class="sourceLineNo">393</span><a id="line.393">     */</a>
+<span class="sourceLineNo">394</span><a id="line.394">    @NonNull</a>
+<span class="sourceLineNo">395</span><a id="line.395">    private static final Set&lt;TargetType&gt; NAME_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">396</span><a id="line.396">        Set.of(TargetType.PART, TargetType.PROP));</a>
+<span class="sourceLineNo">397</span><a id="line.397">    /**</a>
+<span class="sourceLineNo">398</span><a id="line.398">     * Types with an "class" flag.</a>
+<span class="sourceLineNo">399</span><a id="line.399">     */</a>
+<span class="sourceLineNo">400</span><a id="line.400">    @NonNull</a>
+<span class="sourceLineNo">401</span><a id="line.401">    private static final Set&lt;TargetType&gt; CLASS_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">402</span><a id="line.402">        Set.of(TargetType.PARAM, TargetType.PART, TargetType.PROP));</a>
+<span class="sourceLineNo">403</span><a id="line.403">    /**</a>
+<span class="sourceLineNo">404</span><a id="line.404">     * Types with an "id" flag.</a>
+<span class="sourceLineNo">405</span><a id="line.405">     */</a>
+<span class="sourceLineNo">406</span><a id="line.406">    @NonNull</a>
+<span class="sourceLineNo">407</span><a id="line.407">    private static final Set&lt;TargetType&gt; ID_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">408</span><a id="line.408">        Set.of(TargetType.PARAM, TargetType.PART));</a>
+<span class="sourceLineNo">409</span><a id="line.409">    /**</a>
+<span class="sourceLineNo">410</span><a id="line.410">     * Types with an "ns" flag.</a>
+<span class="sourceLineNo">411</span><a id="line.411">     */</a>
+<span class="sourceLineNo">412</span><a id="line.412">    @NonNull</a>
+<span class="sourceLineNo">413</span><a id="line.413">    private static final Set&lt;TargetType&gt; NAMESPACE_TYPES = ObjectUtils.notNull(</a>
+<span class="sourceLineNo">414</span><a id="line.414">        Set.of(TargetType.PART, TargetType.PROP));</a>
+<span class="sourceLineNo">415</span><a id="line.415"></a>
+<span class="sourceLineNo">416</span><a id="line.416">    @Nullable</a>
+<span class="sourceLineNo">417</span><a id="line.417">    private final String objectName;</a>
+<span class="sourceLineNo">418</span><a id="line.418">    @Nullable</a>
+<span class="sourceLineNo">419</span><a id="line.419">    private final String objectClass;</a>
+<span class="sourceLineNo">420</span><a id="line.420">    @Nullable</a>
+<span class="sourceLineNo">421</span><a id="line.421">    private final String objectId;</a>
+<span class="sourceLineNo">422</span><a id="line.422">    @Nullable</a>
+<span class="sourceLineNo">423</span><a id="line.423">    private final String objectNamespace;</a>
+<span class="sourceLineNo">424</span><a id="line.424">    @NonNull</a>
+<span class="sourceLineNo">425</span><a id="line.425">    private final Set&lt;TargetType&gt; targetItemTypes;</a>
+<span class="sourceLineNo">426</span><a id="line.426"></a>
+<span class="sourceLineNo">427</span><a id="line.427">    private static boolean filterTypes(</a>
+<span class="sourceLineNo">428</span><a id="line.428">        @NonNull Set&lt;TargetType&gt; effectiveTypes,</a>
+<span class="sourceLineNo">429</span><a id="line.429">        @NonNull String criteria,</a>
+<span class="sourceLineNo">430</span><a id="line.430">        @NonNull Set&lt;TargetType&gt; allowedTypes,</a>
+<span class="sourceLineNo">431</span><a id="line.431">        @Nullable String value,</a>
+<span class="sourceLineNo">432</span><a id="line.432">        @Nullable TargetType itemType) {</a>
+<span class="sourceLineNo">433</span><a id="line.433">      boolean retval = false;</a>
+<span class="sourceLineNo">434</span><a id="line.434">      if (value != null) {</a>
+<span class="sourceLineNo">435</span><a id="line.435">        retval = effectiveTypes.retainAll(allowedTypes);</a>
+<span class="sourceLineNo">436</span><a id="line.436">        if (itemType != null &amp;&amp; !allowedTypes.contains(itemType)) {</a>
+<span class="sourceLineNo">437</span><a id="line.437">          throw new ProfileResolutionEvaluationException(</a>
+<span class="sourceLineNo">438</span><a id="line.438">              String.format("%s='%s' is not supported for items of type '%s'",</a>
+<span class="sourceLineNo">439</span><a id="line.439">                  criteria,</a>
+<span class="sourceLineNo">440</span><a id="line.440">                  value,</a>
+<span class="sourceLineNo">441</span><a id="line.441">                  itemType.fieldName()));</a>
+<span class="sourceLineNo">442</span><a id="line.442">        }</a>
+<span class="sourceLineNo">443</span><a id="line.443">      }</a>
+<span class="sourceLineNo">444</span><a id="line.444">      return retval;</a>
+<span class="sourceLineNo">445</span><a id="line.445">    }</a>
+<span class="sourceLineNo">446</span><a id="line.446"></a>
+<span class="sourceLineNo">447</span><a id="line.447">    private Context(</a>
+<span class="sourceLineNo">448</span><a id="line.448">        @Nullable String objectName,</a>
+<span class="sourceLineNo">449</span><a id="line.449">        @Nullable String objectClass,</a>
+<span class="sourceLineNo">450</span><a id="line.450">        @Nullable String objectId,</a>
+<span class="sourceLineNo">451</span><a id="line.451">        @Nullable String objectNamespace,</a>
+<span class="sourceLineNo">452</span><a id="line.452">        @Nullable TargetType itemType) {</a>
+<span class="sourceLineNo">453</span><a id="line.453"></a>
+<span class="sourceLineNo">454</span><a id="line.454">      // determine the set of effective item types to search for</a>
+<span class="sourceLineNo">455</span><a id="line.455">      // this helps with short-circuit searching for parts of the graph that cannot match</a>
+<span class="sourceLineNo">456</span><a id="line.456">      @NonNull Set&lt;TargetType&gt; targetItemTypes = ObjectUtils.notNull(EnumSet.allOf(TargetType.class));</a>
+<span class="sourceLineNo">457</span><a id="line.457">      filterTypes(targetItemTypes, "by-name", NAME_TYPES, objectName, itemType);</a>
+<span class="sourceLineNo">458</span><a id="line.458">      filterTypes(targetItemTypes, "by-class", CLASS_TYPES, objectClass, itemType);</a>
+<span class="sourceLineNo">459</span><a id="line.459">      filterTypes(targetItemTypes, "by-id", ID_TYPES, objectId, itemType);</a>
+<span class="sourceLineNo">460</span><a id="line.460">      filterTypes(targetItemTypes, "by-ns", NAMESPACE_TYPES, objectNamespace, itemType);</a>
+<span class="sourceLineNo">461</span><a id="line.461"></a>
+<span class="sourceLineNo">462</span><a id="line.462">      if (itemType != null) {</a>
+<span class="sourceLineNo">463</span><a id="line.463">        targetItemTypes.retainAll(Set.of(itemType));</a>
+<span class="sourceLineNo">464</span><a id="line.464">      }</a>
+<span class="sourceLineNo">465</span><a id="line.465"></a>
+<span class="sourceLineNo">466</span><a id="line.466">      if (targetItemTypes.isEmpty()) {</a>
+<span class="sourceLineNo">467</span><a id="line.467">        throw new ProfileResolutionEvaluationException("The filter matches no available item types");</a>
+<span class="sourceLineNo">468</span><a id="line.468">      }</a>
+<span class="sourceLineNo">469</span><a id="line.469"></a>
+<span class="sourceLineNo">470</span><a id="line.470">      this.objectName = objectName;</a>
+<span class="sourceLineNo">471</span><a id="line.471">      this.objectClass = objectClass;</a>
+<span class="sourceLineNo">472</span><a id="line.472">      this.objectId = objectId;</a>
+<span class="sourceLineNo">473</span><a id="line.473">      this.objectNamespace = objectNamespace;</a>
+<span class="sourceLineNo">474</span><a id="line.474">      this.targetItemTypes = CollectionUtil.unmodifiableSet(targetItemTypes);</a>
+<span class="sourceLineNo">475</span><a id="line.475">    }</a>
+<span class="sourceLineNo">476</span><a id="line.476"></a>
+<span class="sourceLineNo">477</span><a id="line.477">    @Nullable</a>
+<span class="sourceLineNo">478</span><a id="line.478">    public String getObjectName() {</a>
+<span class="sourceLineNo">479</span><a id="line.479">      return objectName;</a>
+<span class="sourceLineNo">480</span><a id="line.480">    }</a>
+<span class="sourceLineNo">481</span><a id="line.481"></a>
+<span class="sourceLineNo">482</span><a id="line.482">    @Nullable</a>
+<span class="sourceLineNo">483</span><a id="line.483">    public String getObjectClass() {</a>
+<span class="sourceLineNo">484</span><a id="line.484">      return objectClass;</a>
+<span class="sourceLineNo">485</span><a id="line.485">    }</a>
+<span class="sourceLineNo">486</span><a id="line.486"></a>
+<span class="sourceLineNo">487</span><a id="line.487">    @Nullable</a>
+<span class="sourceLineNo">488</span><a id="line.488">    public String getObjectId() {</a>
+<span class="sourceLineNo">489</span><a id="line.489">      return objectId;</a>
+<span class="sourceLineNo">490</span><a id="line.490">    }</a>
+<span class="sourceLineNo">491</span><a id="line.491"></a>
+<span class="sourceLineNo">492</span><a id="line.492">    @NonNull</a>
+<span class="sourceLineNo">493</span><a id="line.493">    public Set&lt;TargetType&gt; getTargetItemTypes() {</a>
+<span class="sourceLineNo">494</span><a id="line.494">      return targetItemTypes;</a>
+<span class="sourceLineNo">495</span><a id="line.495">    }</a>
+<span class="sourceLineNo">496</span><a id="line.496"></a>
+<span class="sourceLineNo">497</span><a id="line.497">    public boolean isMatchingType(@NonNull TargetType type) {</a>
+<span class="sourceLineNo">498</span><a id="line.498">      return getTargetItemTypes().contains(type);</a>
+<span class="sourceLineNo">499</span><a id="line.499">    }</a>
+<span class="sourceLineNo">500</span><a id="line.500"></a>
+<span class="sourceLineNo">501</span><a id="line.501">    @Nullable</a>
+<span class="sourceLineNo">502</span><a id="line.502">    public String getObjectNamespace() {</a>
+<span class="sourceLineNo">503</span><a id="line.503">      return objectNamespace;</a>
+<span class="sourceLineNo">504</span><a id="line.504">    }</a>
+<span class="sourceLineNo">505</span><a id="line.505"></a>
+<span class="sourceLineNo">506</span><a id="line.506">    private static boolean checkValue(@Nullable String actual, @Nullable String expected) {</a>
+<span class="sourceLineNo">507</span><a id="line.507">      return expected == null || expected.equals(actual);</a>
+<span class="sourceLineNo">508</span><a id="line.508">    }</a>
+<span class="sourceLineNo">509</span><a id="line.509"></a>
+<span class="sourceLineNo">510</span><a id="line.510">    public boolean isApplicableTo(@NonNull Object obj) {</a>
+<span class="sourceLineNo">511</span><a id="line.511">      TargetType objectType = TargetType.forClass(obj.getClass());</a>
+<span class="sourceLineNo">512</span><a id="line.512"></a>
+<span class="sourceLineNo">513</span><a id="line.513">      boolean retval = objectType != null &amp;&amp; getTargetItemTypes().contains(objectType);</a>
+<span class="sourceLineNo">514</span><a id="line.514">      if (retval) {</a>
+<span class="sourceLineNo">515</span><a id="line.515">        assert objectType != null;</a>
+<span class="sourceLineNo">516</span><a id="line.516"></a>
+<span class="sourceLineNo">517</span><a id="line.517">        // check other criteria</a>
+<span class="sourceLineNo">518</span><a id="line.518">        String actualName = null;</a>
+<span class="sourceLineNo">519</span><a id="line.519">        String actualClass = null;</a>
+<span class="sourceLineNo">520</span><a id="line.520">        String actualId = null;</a>
+<span class="sourceLineNo">521</span><a id="line.521">        String actualNamespace = null;</a>
+<span class="sourceLineNo">522</span><a id="line.522"></a>
+<span class="sourceLineNo">523</span><a id="line.523">        switch (objectType) {</a>
+<span class="sourceLineNo">524</span><a id="line.524">        case PARAM: {</a>
+<span class="sourceLineNo">525</span><a id="line.525">          Parameter param = (Parameter) obj;</a>
+<span class="sourceLineNo">526</span><a id="line.526">          actualClass = param.getClazz();</a>
+<span class="sourceLineNo">527</span><a id="line.527">          actualId = param.getId();</a>
+<span class="sourceLineNo">528</span><a id="line.528">          break;</a>
+<span class="sourceLineNo">529</span><a id="line.529">        }</a>
+<span class="sourceLineNo">530</span><a id="line.530">        case PROP: {</a>
+<span class="sourceLineNo">531</span><a id="line.531">          Property prop = (Property) obj;</a>
+<span class="sourceLineNo">532</span><a id="line.532">          actualName = prop.getName();</a>
+<span class="sourceLineNo">533</span><a id="line.533">          actualClass = prop.getClazz();</a>
+<span class="sourceLineNo">534</span><a id="line.534">          actualNamespace = prop.getNs() == null ? IProperty.OSCAL_NAMESPACE.toString() : prop.getNs().toString();</a>
+<span class="sourceLineNo">535</span><a id="line.535">          break;</a>
+<span class="sourceLineNo">536</span><a id="line.536">        }</a>
+<span class="sourceLineNo">537</span><a id="line.537">        case PART: {</a>
+<span class="sourceLineNo">538</span><a id="line.538">          ControlPart part = (ControlPart) obj;</a>
+<span class="sourceLineNo">539</span><a id="line.539">          actualName = part.getName();</a>
+<span class="sourceLineNo">540</span><a id="line.540">          actualClass = part.getClazz();</a>
+<span class="sourceLineNo">541</span><a id="line.541">          actualId = part.getId() == null ? null : part.getId().toString();</a>
+<span class="sourceLineNo">542</span><a id="line.542">          actualNamespace = part.getNs() == null ? IProperty.OSCAL_NAMESPACE.toString() : part.getNs().toString();</a>
+<span class="sourceLineNo">543</span><a id="line.543">          break;</a>
+<span class="sourceLineNo">544</span><a id="line.544">        }</a>
+<span class="sourceLineNo">545</span><a id="line.545">        case LINK:</a>
+<span class="sourceLineNo">546</span><a id="line.546">        case MAPPING:</a>
+<span class="sourceLineNo">547</span><a id="line.547">        case MAP:</a>
+<span class="sourceLineNo">548</span><a id="line.548">          // do nothing</a>
+<span class="sourceLineNo">549</span><a id="line.549">          break;</a>
+<span class="sourceLineNo">550</span><a id="line.550">        default:</a>
+<span class="sourceLineNo">551</span><a id="line.551">          throw new UnsupportedOperationException(objectType.name().toLowerCase(Locale.ROOT));</a>
+<span class="sourceLineNo">552</span><a id="line.552">        }</a>
+<span class="sourceLineNo">553</span><a id="line.553"></a>
+<span class="sourceLineNo">554</span><a id="line.554">        retval = checkValue(actualName, getObjectName())</a>
+<span class="sourceLineNo">555</span><a id="line.555">            &amp;&amp; checkValue(actualClass, getObjectClass())</a>
+<span class="sourceLineNo">556</span><a id="line.556">            &amp;&amp; checkValue(actualId, getObjectId())</a>
+<span class="sourceLineNo">557</span><a id="line.557">            &amp;&amp; checkValue(actualNamespace, getObjectNamespace());</a>
+<span class="sourceLineNo">558</span><a id="line.558">      }</a>
+<span class="sourceLineNo">559</span><a id="line.559">      return retval;</a>
+<span class="sourceLineNo">560</span><a id="line.560">    }</a>
+<span class="sourceLineNo">561</span><a id="line.561">  }</a>
+<span class="sourceLineNo">562</span><a id="line.562">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BasicIndexer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.support</a> &gt; <span class="el_source">BasicIndexer.java</span></div><h1>BasicIndexer.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
+
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
+import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.oscal.lib.model.Metadata.Location;
+import gov.nist.secauto.oscal.lib.model.Metadata.Party;
+import gov.nist.secauto.oscal.lib.model.Metadata.Role;
+import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public class BasicIndexer implements IIndexer {
+<span class="fc" id="L63">  private static final Logger LOGGER = LogManager.getLogger(ProfileResolver.class);</span>
+<span class="fc" id="L64">  private static final MetapathExpression CONTAINER_METAPATH</span>
+<span class="fc" id="L65">      = MetapathExpression.compile(&quot;(ancestor::control|ancestor::group)[1])&quot;);</span>
+
+  @NonNull
+  private final Map&lt;IEntityItem.ItemType, Map&lt;String, IEntityItem&gt;&gt; entityTypeToIdentifierToEntityMap;
+  @NonNull
+  private Map&lt;INodeItem, SelectionStatus&gt; nodeItemToSelectionStatusMap;
+
+  @Override
+  public void append(@NonNull IIndexer other) {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    for (ItemType itemType : ItemType.values()) {</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">      assert itemType != null;</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">      for (IEntityItem entity : other.getEntitiesByItemType(itemType)) {</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        assert entity != null;</span>
+<span class="fc" id="L78">        addItem(entity);</span>
+<span class="fc" id="L79">      }</span>
+    }
+
+<span class="fc" id="L82">    this.nodeItemToSelectionStatusMap.putAll(other.getSelectionStatusMap());</span>
+<span class="fc" id="L83">  }</span>
+
+<span class="fc" id="L85">  public BasicIndexer() {</span>
+<span class="fc" id="L86">    this.entityTypeToIdentifierToEntityMap = new EnumMap&lt;&gt;(IEntityItem.ItemType.class);</span>
+<span class="fc" id="L87">    this.nodeItemToSelectionStatusMap = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L88">  }</span>
+
+  @SuppressWarnings(&quot;PMD.AvoidInstantiatingObjectsInLoops&quot;) // needed
+<span class="nc" id="L91">  public BasicIndexer(IIndexer other) {</span>
+    // copy entity map
+<span class="nc" id="L93">    this.entityTypeToIdentifierToEntityMap = other.getEntities();</span>
+
+    // copy selection map
+<span class="nc" id="L96">    this.nodeItemToSelectionStatusMap = new ConcurrentHashMap&lt;&gt;(other.getSelectionStatusMap());</span>
+<span class="nc" id="L97">  }</span>
+
+  @Override
+  public void setSelectionStatus(@NonNull INodeItem item, @NonNull SelectionStatus selectionStatus) {
+<span class="fc" id="L101">    nodeItemToSelectionStatusMap.put(item, selectionStatus);</span>
+<span class="fc" id="L102">  }</span>
+
+  @Override
+  public Map&lt;INodeItem, SelectionStatus&gt; getSelectionStatusMap() {
+<span class="fc" id="L106">    return CollectionUtil.unmodifiableMap(nodeItemToSelectionStatusMap);</span>
+  }
+
+  @Override
+  public SelectionStatus getSelectionStatus(@NonNull INodeItem item) {
+<span class="fc" id="L111">    SelectionStatus retval = nodeItemToSelectionStatusMap.get(item);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">    return retval == null ? SelectionStatus.UNKNOWN : retval;</span>
+  }
+
+  @Override
+  public void resetSelectionStatus() {
+<span class="fc" id="L117">    nodeItemToSelectionStatusMap = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L118">  }</span>
+
+  @Override
+  public boolean isSelected(@NonNull IEntityItem entity) {
+    boolean retval;
+<span class="pc bpc" id="L123" title="1 of 4 branches missed.">    switch (entity.getItemType()) {</span>
+    case CONTROL:
+    case GROUP:
+<span class="fc" id="L126">      retval = IIndexer.SelectionStatus.SELECTED.equals(getSelectionStatus(entity.getInstance()));</span>
+<span class="fc" id="L127">      break;</span>
+    case PART: {
+<span class="fc" id="L129">      IRequiredValueModelNodeItem instance = entity.getInstance();</span>
+<span class="fc" id="L130">      IIndexer.SelectionStatus status = getSelectionStatus(instance);</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">      if (IIndexer.SelectionStatus.UNKNOWN.equals(status)) {</span>
+        // lookup the status if not known
+<span class="nc" id="L133">        IRequiredValueModelNodeItem containerItem = CONTAINER_METAPATH.evaluateAs(instance, ResultType.NODE);</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        assert containerItem != null;</span>
+<span class="nc" id="L135">        status = getSelectionStatus(containerItem);</span>
+
+        // cache the status
+<span class="nc" id="L138">        setSelectionStatus(instance, status);</span>
+      }
+<span class="fc" id="L140">      retval = IIndexer.SelectionStatus.SELECTED.equals(status);</span>
+<span class="fc" id="L141">      break;</span>
+    }
+    case PARAMETER:
+    case LOCATION:
+    case PARTY:
+    case RESOURCE:
+    case ROLE:
+      // always &quot;selected&quot;
+<span class="fc" id="L149">      retval = true;</span>
+<span class="fc" id="L150">      break;</span>
+    default:
+<span class="nc" id="L152">      throw new UnsupportedOperationException(entity.getItemType().name());</span>
+    }
+<span class="fc" id="L154">    return retval;</span>
+  }
+
+  @Override
+  public Map&lt;ItemType, Map&lt;String, IEntityItem&gt;&gt; getEntities() {
+    // make a copy
+<span class="nc" id="L160">    Map&lt;ItemType, Map&lt;String, IEntityItem&gt;&gt; copy = entityTypeToIdentifierToEntityMap.entrySet().stream()</span>
+<span class="nc" id="L161">        .map(entry -&gt; {</span>
+<span class="nc" id="L162">          ItemType key = entry.getKey();</span>
+<span class="nc" id="L163">          Map&lt;String, IEntityItem&gt; oldMap = entry.getValue();</span>
+
+<span class="nc" id="L165">          Map&lt;String, IEntityItem&gt; newMap = oldMap.entrySet().stream()</span>
+<span class="nc" id="L166">              .collect(Collectors.toMap(</span>
+                  Map.Entry::getKey,
+                  Map.Entry::getValue,
+<span class="nc" id="L169">                  (key1, key2) -&gt; key1,</span>
+                  LinkedHashMap::new)); // need ordering
+<span class="nc bnc" id="L171" title="All 2 branches missed.">          assert newMap != null;</span>
+          // use a synchronized map to ensure thread safety
+<span class="nc" id="L173">          return Map.entry(key, Collections.synchronizedMap(newMap));</span>
+        })
+<span class="nc" id="L175">        .collect(Collectors.toMap(</span>
+            Map.Entry::getKey,
+            Map.Entry::getValue,
+<span class="nc" id="L178">            (key1, key2) -&gt; key1,</span>
+            ConcurrentHashMap::new));
+
+<span class="nc bnc" id="L181" title="All 2 branches missed.">    assert copy != null;</span>
+<span class="nc" id="L182">    return copy;</span>
+  }
+
+  @Override
+  @NonNull
+  // TODO: rename to getEntitiesForItemType
+  public Collection&lt;IEntityItem&gt; getEntitiesByItemType(@NonNull IEntityItem.ItemType itemType) {
+<span class="fc" id="L189">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(itemType);</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">    return entityGroup == null ? CollectionUtil.emptyList() : ObjectUtils.notNull(entityGroup.values());</span>
+  }
+  //
+  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID identifier) {
+  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);
+  // }
+  //
+  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier) {
+  // return getEntity(itemType, identifier, itemType.isUuid());
+  // }
+
+  @Override
+  public IEntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier, boolean normalize) {
+<span class="fc" id="L203">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(itemType);</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">    String normalizedIdentifier = normalize ? normalizeIdentifier(identifier) : identifier;</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">    return entityGroup == null ? null : entityGroup.get(normalizedIdentifier);</span>
+  }
+
+  protected IEntityItem addItem(@NonNull IEntityItem item) {
+<span class="fc" id="L209">    IEntityItem.ItemType type = item.getItemType();</span>
+
+    @SuppressWarnings(&quot;PMD.UseConcurrentHashMap&quot;) // need ordering
+<span class="fc" id="L212">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.computeIfAbsent(</span>
+        type,
+<span class="fc" id="L214">        (key) -&gt; Collections.synchronizedMap(new LinkedHashMap&lt;&gt;()));</span>
+<span class="fc" id="L215">    IEntityItem oldEntity = entityGroup.put(item.getIdentifier(), item);</span>
+
+<span class="pc bpc" id="L217" title="1 of 4 branches missed.">    if (oldEntity != null &amp;&amp; LOGGER.isWarnEnabled()) {</span>
+<span class="fc" id="L218">      LOGGER.atWarn().log(&quot;Duplicate {} found with identifier {} in index.&quot;,</span>
+<span class="fc" id="L219">          oldEntity.getItemType().name().toLowerCase(Locale.ROOT),</span>
+<span class="fc" id="L220">          oldEntity.getIdentifier());</span>
+    }
+<span class="fc" id="L222">    return oldEntity;</span>
+  }
+
+  @NonNull
+  protected IEntityItem addItem(@NonNull AbstractEntityItem.Builder builder) {
+<span class="fc" id="L227">    IEntityItem retval = builder.build();</span>
+<span class="fc" id="L228">    addItem(retval);</span>
+<span class="fc" id="L229">    return retval;</span>
+  }
+
+  @Override
+  public boolean removeItem(@NonNull IEntityItem entity) {
+<span class="fc" id="L234">    IEntityItem.ItemType type = entity.getItemType();</span>
+<span class="fc" id="L235">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(type);</span>
+
+<span class="fc" id="L237">    boolean retval = false;</span>
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">    if (entityGroup != null) {</span>
+<span class="fc" id="L239">      retval = entityGroup.remove(entity.getIdentifier(), entity);</span>
+
+      // remove if present
+<span class="fc" id="L242">      nodeItemToSelectionStatusMap.remove(entity.getInstance());</span>
+
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">      if (retval) {</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L246">          LOGGER.atDebug().log(&quot;Removing {} '{}' from index.&quot;, type.name(), entity.getIdentifier());</span>
+        }
+<span class="nc bnc" id="L248" title="All 2 branches missed.">      } else if (LOGGER.isDebugEnabled()) {</span>
+<span class="nc" id="L249">        LOGGER.atDebug().log(&quot;The {} entity '{}' was not found in the index to remove.&quot;,</span>
+<span class="nc" id="L250">            type.name(),</span>
+<span class="nc" id="L251">            entity.getIdentifier());</span>
+      }
+    }
+<span class="fc" id="L254">    return retval;</span>
+  }
+
+  @Override
+  public IEntityItem addRole(IRequiredValueModelNodeItem item) {
+<span class="fc" id="L259">    Role role = (Role) item.getValue();</span>
+<span class="fc" id="L260">    String identifier = ObjectUtils.requireNonNull(role.getId());</span>
+
+<span class="fc" id="L262">    return addItem(newBuilder(item, ItemType.ROLE, identifier));</span>
+  }
+
+  @Override
+  public IEntityItem addLocation(IRequiredValueModelNodeItem item) {
+<span class="nc" id="L267">    Location location = (Location) item.getValue();</span>
+<span class="nc" id="L268">    UUID identifier = ObjectUtils.requireNonNull(location.getUuid());</span>
+
+<span class="nc" id="L270">    return addItem(newBuilder(item, ItemType.LOCATION, identifier));</span>
+  }
+
+  @Override
+  public IEntityItem addParty(IRequiredValueModelNodeItem item) {
+<span class="fc" id="L275">    Party party = (Party) item.getValue();</span>
+<span class="fc" id="L276">    UUID identifier = ObjectUtils.requireNonNull(party.getUuid());</span>
+
+<span class="fc" id="L278">    return addItem(newBuilder(item, ItemType.PARTY, identifier));</span>
+  }
+
+  @Override
+  public IEntityItem addGroup(IRequiredValueModelNodeItem item) {
+<span class="fc" id="L283">    CatalogGroup group = (CatalogGroup) item.getValue();</span>
+<span class="fc" id="L284">    String identifier = group.getId();</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">    return identifier == null ? null : addItem(newBuilder(item, ItemType.GROUP, identifier));</span>
+  }
+
+  @Override
+  public IEntityItem addControl(IRequiredValueModelNodeItem item) {
+<span class="fc" id="L290">    Control control = (Control) item.getValue();</span>
+<span class="fc" id="L291">    String identifier = ObjectUtils.requireNonNull(control.getId());</span>
+<span class="fc" id="L292">    return addItem(newBuilder(item, ItemType.CONTROL, identifier));</span>
+  }
+
+  @Override
+  public IEntityItem addParameter(IRequiredValueModelNodeItem item) {
+<span class="fc" id="L297">    Parameter parameter = (Parameter) item.getValue();</span>
+<span class="fc" id="L298">    String identifier = ObjectUtils.requireNonNull(parameter.getId());</span>
+
+<span class="fc" id="L300">    return addItem(newBuilder(item, ItemType.PARAMETER, identifier));</span>
+  }
+
+  @Override
+  public IEntityItem addPart(IRequiredValueModelNodeItem item) {
+<span class="fc" id="L305">    ControlPart part = (ControlPart) item.getValue();</span>
+<span class="fc" id="L306">    String identifier = part.getId();</span>
+
+<span class="fc bfc" id="L308" title="All 2 branches covered.">    return identifier == null ? null : addItem(newBuilder(item, ItemType.PART, identifier));</span>
+  }
+
+  @Override
+  public IEntityItem addResource(IRequiredValueModelNodeItem item) {
+<span class="fc" id="L313">    Resource resource = (Resource) item.getValue();</span>
+<span class="fc" id="L314">    UUID identifier = ObjectUtils.requireNonNull(resource.getUuid());</span>
+
+<span class="fc" id="L316">    return addItem(newBuilder(item, ItemType.RESOURCE, identifier));</span>
+  }
+
+  @NonNull
+  protected final AbstractEntityItem.Builder newBuilder(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull ItemType itemType,
+      @NonNull UUID identifier) {
+<span class="fc" id="L324">    return newBuilder(item, itemType, ObjectUtils.notNull(identifier.toString()));</span>
+  }
+
+  /**
+   * Create a new builder with the provided info.
+   * &lt;p&gt;
+   * This method can be overloaded to support applying additional data to the returned builder.
+   * &lt;p&gt;
+   * When working with identifiers that are case insensitve, it is important to ensure that the
+   * identifiers are normalized to lower case.
+   *
+   * @param item
+   *          the Metapath node to associate with the entity
+   * @param itemType
+   *          the type of entity
+   * @param identifier
+   *          the entity's identifier
+   * @return the entity builder
+   */
+  @NonNull
+  protected AbstractEntityItem.Builder newBuilder(
+      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull ItemType itemType,
+      @NonNull String identifier) {
+<span class="fc" id="L348">    return new AbstractEntityItem.Builder()</span>
+<span class="fc" id="L349">        .instance(item, itemType)</span>
+<span class="fc" id="L350">        .originalIdentifier(identifier)</span>
+<span class="fc" id="L351">        .source(ObjectUtils.requireNonNull(item.getBaseUri(), &quot;item must have an associated URI&quot;));</span>
+  }
+
+  /**
+   * Lower case UUID-based identifiers and leave others unmodified.
+   *
+   * @param identifier
+   *          the identifier
+   * @return the resulting normalized identifier
+   */
+  @NonNull
+  public String normalizeIdentifier(@NonNull String identifier) {
+<span class="fc bfc" id="L363" title="All 2 branches covered.">    return UuidAdapter.UUID_PATTERN.matcher(identifier).matches()</span>
+<span class="fc" id="L364">        ? ObjectUtils.notNull(identifier.toLowerCase(Locale.ROOT))</span>
+<span class="fc" id="L365">        : identifier;</span>
+  }
+  //
+  // private static class ItemGroup {
+  // @NonNull
+  // private final ItemType itemType;
+  // Map&lt;String, IEntityItem&gt; idToEntityMap;
+  //
+  // public ItemGroup(@NonNull ItemType itemType) {
+  // this.itemType = itemType;
+  // this.idToEntityMap = new LinkedHashMap&lt;&gt;();
+  // }
+  //
+  // public IEntityItem getEntity(@NonNull String identifier) {
+  // return idToEntityMap.get(identifier);
+  // }
+  //
+  // @SuppressWarnings(&quot;null&quot;)
+  // @NonNull
+  // public Collection&lt;IEntityItem&gt; getEntities() {
+  // return idToEntityMap.values();
+  // }
+  //
+  // public IEntityItem add(@NonNull IEntityItem entity) {
+  // assert itemType.equals(entity.getItemType());
+  // return idToEntityMap.put(entity.getOriginalIdentifier(), entity);
+  // }
+  // }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

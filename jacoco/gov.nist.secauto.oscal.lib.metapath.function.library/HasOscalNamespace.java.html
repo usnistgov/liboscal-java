@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HasOscalNamespace.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.metapath.function.library</a> &gt; <span class="el_source">HasOscalNamespace.java</span></div><h1>HasOscalNamespace.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.metapath.function.library;
+
+import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.model.common.metapath.ISequence;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathException;
+import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionUtils;
+import gov.nist.secauto.metaschema.model.common.metapath.function.IArgument;
+import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
+import gov.nist.secauto.metaschema.model.common.metapath.function.InvalidTypeFunctionException;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IBooleanItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDefinitionNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IStringItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.AssessmentPart;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.oscal.lib.model.Property;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
+
+import java.net.URI;
+import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public final class HasOscalNamespace {
+  @NonNull
+<span class="fc" id="L54">  static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()</span>
+<span class="fc" id="L55">      .name(&quot;has-oscal-namespace&quot;)</span>
+<span class="fc" id="L56">      .argument(IArgument.newBuilder()</span>
+<span class="fc" id="L57">          .name(&quot;namespace&quot;)</span>
+<span class="fc" id="L58">          .type(IStringItem.class)</span>
+<span class="fc" id="L59">          .oneOrMore()</span>
+<span class="fc" id="L60">          .build())</span>
+<span class="fc" id="L61">      .allowUnboundedArity(true)</span>
+<span class="fc" id="L62">      .returnType(IBooleanItem.class)</span>
+<span class="fc" id="L63">      .focusDependent()</span>
+<span class="fc" id="L64">      .contextIndependent()</span>
+<span class="fc" id="L65">      .deterministic()</span>
+<span class="fc" id="L66">      .returnOne()</span>
+<span class="fc" id="L67">      .functionHandler(HasOscalNamespace::executeOneArg)</span>
+<span class="fc" id="L68">      .build();</span>
+
+  @NonNull
+<span class="fc" id="L71">  static final IFunction SIGNATURE_TWO_ARGS = IFunction.builder()</span>
+<span class="fc" id="L72">      .name(&quot;has-oscal-namespace&quot;)</span>
+<span class="fc" id="L73">      .argument(IArgument.newBuilder()</span>
+<span class="fc" id="L74">          .name(&quot;propOrPart&quot;)</span>
+<span class="fc" id="L75">          .type(IDefinitionNodeItem.class)</span>
+<span class="fc" id="L76">          .one()</span>
+<span class="fc" id="L77">          .build())</span>
+<span class="fc" id="L78">      .argument(IArgument.newBuilder()</span>
+<span class="fc" id="L79">          .name(&quot;namespace&quot;)</span>
+<span class="fc" id="L80">          .type(IStringItem.class)</span>
+<span class="fc" id="L81">          .oneOrMore()</span>
+<span class="fc" id="L82">          .build())</span>
+<span class="fc" id="L83">      .allowUnboundedArity(true)</span>
+<span class="fc" id="L84">      .focusIndependent()</span>
+<span class="fc" id="L85">      .contextIndependent()</span>
+<span class="fc" id="L86">      .deterministic()</span>
+<span class="fc" id="L87">      .returnType(IBooleanItem.class)</span>
+<span class="fc" id="L88">      .returnOne()</span>
+<span class="fc" id="L89">      .functionHandler(HasOscalNamespace::executeTwoArg)</span>
+<span class="fc" id="L90">      .build();</span>
+
+  private HasOscalNamespace() {
+    // disable construction
+  }
+
+  @SuppressWarnings({ &quot;unused&quot;,
+      &quot;PMD.OnlyOneReturn&quot; // readability
+  })
+  @NonNull
+  public static ISequence&lt;?&gt; executeOneArg(
+      @NonNull IFunction function,
+      @NonNull List&lt;ISequence&lt;?&gt;&gt; arguments,
+      @NonNull DynamicContext dynamicContext,
+      INodeItem focus) {
+<span class="fc" id="L105">    INodeItem node = focus;</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">    if (node == null) {</span>
+<span class="nc" id="L107">      return ISequence.empty();</span>
+    }
+
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">    assert arguments.size() == 1;</span>
+<span class="fc" id="L111">    ISequence&lt;? extends IStringItem&gt; namespaceArgs = FunctionUtils.asType(</span>
+<span class="fc" id="L112">        ObjectUtils.notNull(arguments.get(0)));</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (namespaceArgs.isEmpty()) {</span>
+<span class="nc" id="L114">      return ISequence.empty();</span>
+    }
+
+<span class="fc" id="L117">    return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));</span>
+  }
+
+  @SuppressWarnings({ &quot;unused&quot;,
+      &quot;PMD.OnlyOneReturn&quot; // readability
+  })
+  @NonNull
+  public static ISequence&lt;?&gt; executeTwoArg(
+      @NonNull IFunction function,
+      @NonNull List&lt;ISequence&lt;?&gt;&gt; arguments,
+      @NonNull DynamicContext dynamicContext,
+      INodeItem focus) {
+<span class="nc" id="L129">    ISequence&lt;? extends IDefinitionNodeItem&gt; nodeSequence = FunctionUtils.asType(</span>
+<span class="nc" id="L130">        ObjectUtils.notNull(arguments.get(0)));</span>
+
+<span class="nc" id="L132">    IItem node = FunctionUtils.getFirstItem(nodeSequence, true);</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">    if (node == null) {</span>
+<span class="nc" id="L134">      return ISequence.empty();</span>
+    }
+
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    assert arguments.size() == 2;</span>
+<span class="nc" id="L138">    ISequence&lt;? extends IStringItem&gt; namespaceArgs = FunctionUtils.asType(</span>
+<span class="nc" id="L139">        ObjectUtils.notNull(arguments.get(1)));</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (namespaceArgs.isEmpty()) {</span>
+<span class="nc" id="L141">      return ISequence.empty();</span>
+    }
+
+<span class="nc" id="L144">    return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));</span>
+  }
+
+  @SuppressWarnings(&quot;PMD.LinguisticNaming&quot;) // false positive
+  @NonNull
+  public static IBooleanItem hasNamespace(
+      @NonNull IDefinitionNodeItem propOrPart,
+      @NonNull ISequence&lt;? extends IStringItem&gt; namespaces)
+      throws MetapathException {
+<span class="fc" id="L153">    Object propOrPartObject = propOrPart.getValue();</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">    if (propOrPartObject == null) {</span>
+<span class="nc" id="L155">      throw new InvalidTypeFunctionException(InvalidTypeFunctionException.NODE_HAS_NO_TYPED_VALUE, propOrPart);</span>
+    }
+
+    URI nodeNamespace;
+<span class="fc bfc" id="L159" title="All 2 branches covered.">    if (propOrPartObject instanceof Property) {</span>
+<span class="fc" id="L160">      nodeNamespace = ((Property) propOrPartObject).getNs();</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">    } else if (propOrPartObject instanceof ControlPart) {</span>
+<span class="fc" id="L162">      nodeNamespace = ((ControlPart) propOrPartObject).getNs();</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">    } else if (propOrPartObject instanceof AssessmentPart) {</span>
+<span class="nc" id="L164">      nodeNamespace = ((AssessmentPart) propOrPartObject).getNs();</span>
+    } else {
+<span class="nc" id="L166">      throw new MetapathException(</span>
+<span class="nc" id="L167">          String.format(&quot;Node of definition type '%s' has no OSCAL namespace&quot;, propOrPart.getDefinition().getName()));</span>
+    }
+
+<span class="fc" id="L170">    String nodeNamespaceString = AbstractProperty.normalizeNamespace(nodeNamespace).toString();</span>
+<span class="fc" id="L171">    return IBooleanItem.valueOf(namespaces.asStream()</span>
+<span class="fc" id="L172">        .map(node -&gt; nodeNamespaceString.equals(node.asString()))</span>
+<span class="fc" id="L173">        .anyMatch(bool -&gt; bool));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

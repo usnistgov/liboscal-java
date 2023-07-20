@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LocalDefinitions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">LocalDefinitions.java</span></div><h1>LocalDefinitions.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Allows components, and inventory-items to be defined within the POA&amp;amp;M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&amp;amp;M.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Local Definitions&quot;,
+    description = &quot;Allows components, and inventory-items to be defined within the POA\\&amp;M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA\\&amp;M.&quot;,
+    name = &quot;local-definitions&quot;,
+    metaschema = OscalPoamMetaschema.class
+)
+@AssemblyConstraints(
+    isUnique = @IsUnique(id = &quot;unique-poam-local-definitions-component&quot;, level = IConstraint.Level.ERROR, target = &quot;component&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;), remarks = &quot;Since multiple `component` entries can be provided, each component must have a unique `uuid`.&quot;)
+)
+public class LocalDefinitions {
+  @BoundAssembly(
+      formalName = &quot;Component&quot;,
+      description = &quot;A defined component that can be part of an implemented system.&quot;,
+      useName = &quot;component&quot;,
+      maxOccurs = -1,
+      remarks = &quot;Used to add any components, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)&quot;
+  )
+  @GroupAs(
+      name = &quot;components&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;SystemComponent&gt; _components;
+
+  @BoundAssembly(
+      formalName = &quot;Inventory Item&quot;,
+      description = &quot;A single managed inventory item within the system.&quot;,
+      useName = &quot;inventory-item&quot;,
+      maxOccurs = -1,
+      remarks = &quot;Used to add any inventory-items, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)&quot;
+  )
+  @GroupAs(
+      name = &quot;inventory-items&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;InventoryItem&gt; _inventoryItems;
+
+  @BoundAssembly(
+      formalName = &quot;Assessment Assets&quot;,
+      description = &quot;Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.&quot;,
+      useName = &quot;assessment-assets&quot;,
+      remarks = &quot;Specifies components or assessment-platforms used in the assessment.&quot;
+  )
+  private AssessmentAssets _assessmentAssets;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L80">  public LocalDefinitions() {</span>
+<span class="nc" id="L81">  }</span>
+
+  public List&lt;SystemComponent&gt; getComponents() {
+<span class="nc" id="L84">    return _components;</span>
+  }
+
+  public void setComponents(List&lt;SystemComponent&gt; value) {
+<span class="nc" id="L88">    _components = value;</span>
+<span class="nc" id="L89">  }</span>
+
+  /**
+   * Add a new {@link SystemComponent} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addComponent(SystemComponent item) {
+<span class="nc" id="L97">    SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    if (_components == null) {</span>
+<span class="nc" id="L99">      _components = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L101">    return _components.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link SystemComponent} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeComponent(SystemComponent item) {
+<span class="nc" id="L110">    SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    return _components == null ? false : _components.remove(value);</span>
+  }
+
+  public List&lt;InventoryItem&gt; getInventoryItems() {
+<span class="nc" id="L115">    return _inventoryItems;</span>
+  }
+
+  public void setInventoryItems(List&lt;InventoryItem&gt; value) {
+<span class="nc" id="L119">    _inventoryItems = value;</span>
+<span class="nc" id="L120">  }</span>
+
+  /**
+   * Add a new {@link InventoryItem} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addInventoryItem(InventoryItem item) {
+<span class="nc" id="L128">    InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    if (_inventoryItems == null) {</span>
+<span class="nc" id="L130">      _inventoryItems = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L132">    return _inventoryItems.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link InventoryItem} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeInventoryItem(InventoryItem item) {
+<span class="nc" id="L141">    InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">    return _inventoryItems == null ? false : _inventoryItems.remove(value);</span>
+  }
+
+  public AssessmentAssets getAssessmentAssets() {
+<span class="nc" id="L146">    return _assessmentAssets;</span>
+  }
+
+  public void setAssessmentAssets(AssessmentAssets value) {
+<span class="nc" id="L150">    _assessmentAssets = value;</span>
+<span class="nc" id="L151">  }</span>
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L154">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L158">    _remarks = value;</span>
+<span class="nc" id="L159">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L163">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

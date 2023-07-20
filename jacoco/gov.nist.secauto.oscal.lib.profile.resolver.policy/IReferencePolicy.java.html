@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IReferencePolicy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.policy</a> &gt; <span class="el_source">IReferencePolicy.java</span></div><h1>IReferencePolicy.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public interface IReferencePolicy&lt;T&gt; {
+  @NonNull
+<span class="fc" id="L36">  IReferencePolicy&lt;Object&gt; IGNORE_POLICY = new IReferencePolicy&lt;&gt;() {</span>
+
+    @Override
+    public boolean handleReference(
+        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull Object reference,
+        @NonNull ReferenceCountingVisitor.Context referenceVisitorContext) {
+<span class="fc" id="L43">      return true;</span>
+    }
+  };
+
+  /**
+   * Get a reference policy that will ignore processing the reference.
+   *
+   * @param &lt;T&gt;
+   *          the type of the reference object
+   * @return the policy
+   */
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @NonNull
+  static &lt;T&gt; IReferencePolicy&lt;T&gt; ignore() {
+<span class="fc" id="L57">    return (IReferencePolicy&lt;T&gt;) IGNORE_POLICY;</span>
+  }
+
+  /**
+   * Handle the provided {@code reference}.
+   *
+   * @param contextItem
+   *          the nodes containing the reference
+   * @param reference
+   *          the reference object to process
+   * @param referenceVisitorContext
+   *          used to lookup and resolve items
+   * @return {@code true} if the reference was handled, or {@code false} otherwise
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the reference
+   */
+  boolean handleReference(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull T reference,
+      @NonNull ReferenceCountingVisitor.Context referenceVisitorContext);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

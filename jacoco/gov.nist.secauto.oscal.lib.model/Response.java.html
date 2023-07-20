@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Response.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Response.java</span></div><h1>Response.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Describes either recommended or an actual plan for addressing the risk.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Risk Response&quot;,
+    description = &quot;Describes either recommended or an actual plan for addressing the risk.&quot;,
+    name = &quot;response&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class
+)
+@ValueConstraints(
+    allowedValues = {
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;type&quot;, description = &quot;&quot;)),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='type']/@value&quot;, values = {@AllowedValue(value = &quot;avoid&quot;, description = &quot;The risk will be eliminated.&quot;), @AllowedValue(value = &quot;mitigate&quot;, description = &quot;The risk will be reduced.&quot;), @AllowedValue(value = &quot;transfer&quot;, description = &quot;The risk will be transferred to another organization or entity.&quot;), @AllowedValue(value = &quot;accept&quot;, description = &quot;The risk will continue to exist without further efforts to address it. (Sometimes referred to as \&quot;Operationally required\&quot;)&quot;), @AllowedValue(value = &quot;share&quot;, description = &quot;The risk will be partially transferred to another organization or entity.&quot;), @AllowedValue(value = &quot;contingency&quot;, description = &quot;Plans will be made to address the risk impact if the risk occurs. (This is a form of mitigation.)&quot;), @AllowedValue(value = &quot;none&quot;, description = &quot;No response, such as when the identified risk is found to be a false positive.&quot;)})
+    }
+)
+public class Response {
+  @BoundFlag(
+      formalName = &quot;Remediation Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this remediation elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `risk response` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundFlag(
+      formalName = &quot;Remediation Intent&quot;,
+      description = &quot;Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner.&quot;,
+      useName = &quot;lifecycle&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;recommendation&quot;, description = &quot;Recommended remediation.&quot;), @AllowedValue(value = &quot;planned&quot;, description = &quot;The actions intended to resolve the risk.&quot;), @AllowedValue(value = &quot;completed&quot;, description = &quot;This remediation activities were performed to address the risk.&quot;)})
+  )
+  private String _lifecycle;
+
+  /**
+   * &quot;The title for this response activity.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Response Title&quot;,
+      description = &quot;The title for this response activity.&quot;,
+      useName = &quot;title&quot;,
+      minOccurs = 1
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _title;
+
+  /**
+   * &quot;A human-readable description of this response plan.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Response Description&quot;,
+      description = &quot;A human-readable description of this response plan.&quot;,
+      useName = &quot;description&quot;,
+      minOccurs = 1
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundAssembly(
+      formalName = &quot;Origin&quot;,
+      description = &quot;Identifies the source of the finding, such as a tool, interviewed person, or activity.&quot;,
+      useName = &quot;origin&quot;,
+      maxOccurs = -1,
+      remarks = &quot;Used to identify the individual and/or tool that generated this recommended or planned response.&quot;
+  )
+  @GroupAs(
+      name = &quot;origins&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Origin&gt; _origins;
+
+  /**
+   * &quot;Identifies an asset required to achieve remediation.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Required Asset&quot;,
+      description = &quot;Identifies an asset required to achieve remediation.&quot;,
+      useName = &quot;required-asset&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;required-assets&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;RequiredAsset&gt; _requiredAssets;
+
+  @BoundAssembly(
+      formalName = &quot;Task&quot;,
+      description = &quot;Represents a scheduled event or milestone, which may be associated with a series of assessment actions.&quot;,
+      useName = &quot;task&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;tasks&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Task&gt; _tasks;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L168">  public Response() {</span>
+<span class="nc" id="L169">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L172">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L176">    _uuid = value;</span>
+<span class="nc" id="L177">  }</span>
+
+  public String getLifecycle() {
+<span class="nc" id="L180">    return _lifecycle;</span>
+  }
+
+  public void setLifecycle(String value) {
+<span class="nc" id="L184">    _lifecycle = value;</span>
+<span class="nc" id="L185">  }</span>
+
+  public MarkupLine getTitle() {
+<span class="nc" id="L188">    return _title;</span>
+  }
+
+  public void setTitle(MarkupLine value) {
+<span class="nc" id="L192">    _title = value;</span>
+<span class="nc" id="L193">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L196">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L200">    _description = value;</span>
+<span class="nc" id="L201">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L204">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L208">    _props = value;</span>
+<span class="nc" id="L209">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L217">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L219">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L221">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L230">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L235">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L239">    _links = value;</span>
+<span class="nc" id="L240">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L248">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L250">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L252">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L261">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public List&lt;Origin&gt; getOrigins() {
+<span class="nc" id="L266">    return _origins;</span>
+  }
+
+  public void setOrigins(List&lt;Origin&gt; value) {
+<span class="nc" id="L270">    _origins = value;</span>
+<span class="nc" id="L271">  }</span>
+
+  /**
+   * Add a new {@link Origin} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addOrigin(Origin item) {
+<span class="nc" id="L279">    Origin value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">    if (_origins == null) {</span>
+<span class="nc" id="L281">      _origins = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L283">    return _origins.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Origin} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeOrigin(Origin item) {
+<span class="nc" id="L292">    Origin value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">    return _origins == null ? false : _origins.remove(value);</span>
+  }
+
+  public List&lt;RequiredAsset&gt; getRequiredAssets() {
+<span class="nc" id="L297">    return _requiredAssets;</span>
+  }
+
+  public void setRequiredAssets(List&lt;RequiredAsset&gt; value) {
+<span class="nc" id="L301">    _requiredAssets = value;</span>
+<span class="nc" id="L302">  }</span>
+
+  /**
+   * Add a new {@link RequiredAsset} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addRequiredAsset(RequiredAsset item) {
+<span class="nc" id="L310">    RequiredAsset value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">    if (_requiredAssets == null) {</span>
+<span class="nc" id="L312">      _requiredAssets = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L314">    return _requiredAssets.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link RequiredAsset} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeRequiredAsset(RequiredAsset item) {
+<span class="nc" id="L323">    RequiredAsset value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">    return _requiredAssets == null ? false : _requiredAssets.remove(value);</span>
+  }
+
+  public List&lt;Task&gt; getTasks() {
+<span class="nc" id="L328">    return _tasks;</span>
+  }
+
+  public void setTasks(List&lt;Task&gt; value) {
+<span class="nc" id="L332">    _tasks = value;</span>
+<span class="nc" id="L333">  }</span>
+
+  /**
+   * Add a new {@link Task} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addTask(Task item) {
+<span class="nc" id="L341">    Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">    if (_tasks == null) {</span>
+<span class="nc" id="L343">      _tasks = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L345">    return _tasks.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Task} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeTask(Task item) {
+<span class="nc" id="L354">    Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">    return _tasks == null ? false : _tasks.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L359">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L363">    _remarks = value;</span>
+<span class="nc" id="L364">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L368">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * Identifies an asset required to achieve remediation.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Required Asset&quot;,
+      description = &quot;Identifies an asset required to achieve remediation.&quot;,
+      name = &quot;required-asset&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class RequiredAsset {
+    @BoundFlag(
+        formalName = &quot;Required Universally Unique Identifier&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this required asset elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `asset` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+        useName = &quot;uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _uuid;
+
+    @BoundAssembly(
+        formalName = &quot;Identifies the Subject&quot;,
+        description = &quot;A [human-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#human-oriented) identifier reference to a resource. Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else.&quot;,
+        useName = &quot;subject&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Identifies an asset associated with this requirement, such as a party, system component, or inventory-item.&quot;
+    )
+    @GroupAs(
+        name = &quot;subjects&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;SubjectReference&gt; _subjects;
+
+    /**
+     * &quot;The title for this required asset.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Title for Required Asset&quot;,
+        description = &quot;The title for this required asset.&quot;,
+        useName = &quot;title&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupLineAdapter.class
+    )
+    private MarkupLine _title;
+
+    /**
+     * &quot;A human-readable description of this required asset.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Description of Required Asset&quot;,
+        description = &quot;A human-readable description of this required asset.&quot;,
+        useName = &quot;description&quot;,
+        minOccurs = 1
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _description;
+
+    @BoundAssembly(
+        formalName = &quot;Property&quot;,
+        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+        useName = &quot;prop&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;props&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Property&gt; _props;
+
+    @BoundAssembly(
+        formalName = &quot;Link&quot;,
+        description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+        useName = &quot;link&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;links&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Link&gt; _links;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L464">    public RequiredAsset() {</span>
+<span class="nc" id="L465">    }</span>
+
+    public UUID getUuid() {
+<span class="nc" id="L468">      return _uuid;</span>
+    }
+
+    public void setUuid(UUID value) {
+<span class="nc" id="L472">      _uuid = value;</span>
+<span class="nc" id="L473">    }</span>
+
+    public List&lt;SubjectReference&gt; getSubjects() {
+<span class="nc" id="L476">      return _subjects;</span>
+    }
+
+    public void setSubjects(List&lt;SubjectReference&gt; value) {
+<span class="nc" id="L480">      _subjects = value;</span>
+<span class="nc" id="L481">    }</span>
+
+    /**
+     * Add a new {@link SubjectReference} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addSubject(SubjectReference item) {
+<span class="nc" id="L489">      SubjectReference value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L490" title="All 2 branches missed.">      if (_subjects == null) {</span>
+<span class="nc" id="L491">        _subjects = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L493">      return _subjects.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link SubjectReference} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeSubject(SubjectReference item) {
+<span class="nc" id="L502">      SubjectReference value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">      return _subjects == null ? false : _subjects.remove(value);</span>
+    }
+
+    public MarkupLine getTitle() {
+<span class="nc" id="L507">      return _title;</span>
+    }
+
+    public void setTitle(MarkupLine value) {
+<span class="nc" id="L511">      _title = value;</span>
+<span class="nc" id="L512">    }</span>
+
+    public MarkupMultiline getDescription() {
+<span class="nc" id="L515">      return _description;</span>
+    }
+
+    public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L519">      _description = value;</span>
+<span class="nc" id="L520">    }</span>
+
+    public List&lt;Property&gt; getProps() {
+<span class="nc" id="L523">      return _props;</span>
+    }
+
+    public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L527">      _props = value;</span>
+<span class="nc" id="L528">    }</span>
+
+    /**
+     * Add a new {@link Property} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addProp(Property item) {
+<span class="nc" id="L536">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L537" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L538">        _props = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L540">      return _props.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Property} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeProp(Property item) {
+<span class="nc" id="L549">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L550" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+    }
+
+    public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L554">      return _links;</span>
+    }
+
+    public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L558">      _links = value;</span>
+<span class="nc" id="L559">    }</span>
+
+    /**
+     * Add a new {@link Link} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addLink(Link item) {
+<span class="nc" id="L567">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L568" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L569">        _links = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L571">      return _links.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Link} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeLink(Link item) {
+<span class="nc" id="L580">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+    }
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L585">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L589">      _remarks = value;</span>
+<span class="nc" id="L590">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L594">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

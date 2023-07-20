@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package gov.nist.secauto.oscal.lib.model;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriReferenceAdapter;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import java.lang.Override;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import java.lang.String;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import java.net.URI;</a>
+<span class="sourceLineNo">009</span><a id="line.9">import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;</a>
+<span class="sourceLineNo">010</span><a id="line.10">import org.apache.commons.lang3.builder.ReflectionToStringBuilder;</a>
+<span class="sourceLineNo">011</span><a id="line.11"></a>
+<span class="sourceLineNo">012</span><a id="line.12">/**</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * Loads a component definition from another resource.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> */</a>
+<span class="sourceLineNo">015</span><a id="line.15">@MetaschemaAssembly(</a>
+<span class="sourceLineNo">016</span><a id="line.16">    formalName = "Import Component Definition",</a>
+<span class="sourceLineNo">017</span><a id="line.17">    description = "Loads a component definition from another resource.",</a>
+<span class="sourceLineNo">018</span><a id="line.18">    name = "import-component-definition",</a>
+<span class="sourceLineNo">019</span><a id="line.19">    metaschema = OscalComponentDefinitionMetaschema.class</a>
+<span class="sourceLineNo">020</span><a id="line.20">)</a>
+<span class="sourceLineNo">021</span><a id="line.21">public class ImportComponentDefinition {</a>
+<span class="sourceLineNo">022</span><a id="line.22">  @BoundFlag(</a>
+<span class="sourceLineNo">023</span><a id="line.23">      formalName = "Hyperlink Reference",</a>
+<span class="sourceLineNo">024</span><a id="line.24">      description = "A link to a resource that defines a set of components and/or capabilities to import into this collection.",</a>
+<span class="sourceLineNo">025</span><a id="line.25">      useName = "href",</a>
+<span class="sourceLineNo">026</span><a id="line.26">      required = true,</a>
+<span class="sourceLineNo">027</span><a id="line.27">      typeAdapter = UriReferenceAdapter.class,</a>
+<span class="sourceLineNo">028</span><a id="line.28">      remarks = "This value may be one of:\n"</a>
+<span class="sourceLineNo">029</span><a id="line.29">              + "\n"</a>
+<span class="sourceLineNo">030</span><a id="line.30">              + "1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n"</a>
+<span class="sourceLineNo">031</span><a id="line.31">              + "2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or\n"</a>
+<span class="sourceLineNo">032</span><a id="line.32">              + "3. a bare URI fragment (i.e., \\`#uuid\\`) pointing to a `back-matter` resource in this or an imported document (see [linking to another OSCAL object](https://pages.nist.gov/OSCAL/concepts/uri-use/#linking-to-another-oscal-object))."</a>
+<span class="sourceLineNo">033</span><a id="line.33">  )</a>
+<span class="sourceLineNo">034</span><a id="line.34">  private URI _href;</a>
+<span class="sourceLineNo">035</span><a id="line.35"></a>
+<span class="sourceLineNo">036</span><a id="line.36">  public ImportComponentDefinition() {</a>
+<span class="sourceLineNo">037</span><a id="line.37">  }</a>
+<span class="sourceLineNo">038</span><a id="line.38"></a>
+<span class="sourceLineNo">039</span><a id="line.39">  public URI getHref() {</a>
+<span class="sourceLineNo">040</span><a id="line.40">    return _href;</a>
+<span class="sourceLineNo">041</span><a id="line.41">  }</a>
+<span class="sourceLineNo">042</span><a id="line.42"></a>
+<span class="sourceLineNo">043</span><a id="line.43">  public void setHref(URI value) {</a>
+<span class="sourceLineNo">044</span><a id="line.44">    _href = value;</a>
+<span class="sourceLineNo">045</span><a id="line.45">  }</a>
+<span class="sourceLineNo">046</span><a id="line.46"></a>
+<span class="sourceLineNo">047</span><a id="line.47">  @Override</a>
+<span class="sourceLineNo">048</span><a id="line.48">  public String toString() {</a>
+<span class="sourceLineNo">049</span><a id="line.49">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">050</span><a id="line.50">  }</a>
+<span class="sourceLineNo">051</span><a id="line.51">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

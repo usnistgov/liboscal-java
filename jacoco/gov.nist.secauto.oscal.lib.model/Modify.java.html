@@ -1,0 +1,988 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Modify.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Modify.java</span></div><h1>Modify.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Set parameters or amend controls in resolution.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Modify Controls&quot;,
+    description = &quot;Set parameters or amend controls in resolution.&quot;,
+    name = &quot;modify&quot;,
+    metaschema = OscalProfileMetaschema.class
+)
+@AssemblyConstraints(
+    isUnique = @IsUnique(id = &quot;unique-profile-modify-set-parameter&quot;, level = IConstraint.Level.ERROR, target = &quot;set-parameter&quot;, keyFields = @KeyField(target = &quot;@param-id&quot;), remarks = &quot;Since multiple `set-parameter` entries can be provided, each parameter must be set only once.&quot;)
+)
+public class Modify {
+  /**
+   * &quot;A parameter setting, to be propagated to points of insertion.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Parameter Setting&quot;,
+      description = &quot;A parameter setting, to be propagated to points of insertion.&quot;,
+      useName = &quot;set-parameter&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;set-parameters&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ProfileSetParameter&gt; _setParameters;
+
+  /**
+   * &quot;Specifies changes to be made to an included control when a profile is resolved.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Alteration&quot;,
+      description = &quot;Specifies changes to be made to an included control when a profile is resolved.&quot;,
+      useName = &quot;alter&quot;,
+      maxOccurs = -1,
+      remarks = &quot;Use `@control-id` to indicate the scope of alteration.\n&quot;
+              + &quot;\n&quot;
+              + &quot;It is an error for two `alter` elements to apply to the same control. In practice, multiple alterations can be applied (together), but it creates confusion.\n&quot;
+              + &quot;\n&quot;
+              + &quot;At present, no provision is made for altering many controls at once (for example, to systematically remove properties or add global properties); extending this element to match multiple control IDs could provide for this.&quot;
+  )
+  @GroupAs(
+      name = &quot;alters&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Alter&gt; _alters;
+
+<span class="fc" id="L78">  public Modify() {</span>
+<span class="fc" id="L79">  }</span>
+
+  public List&lt;ProfileSetParameter&gt; getSetParameters() {
+<span class="nc" id="L82">    return _setParameters;</span>
+  }
+
+  public void setSetParameters(List&lt;ProfileSetParameter&gt; value) {
+<span class="nc" id="L86">    _setParameters = value;</span>
+<span class="nc" id="L87">  }</span>
+
+  /**
+   * Add a new {@link ProfileSetParameter} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addSetParameter(ProfileSetParameter item) {
+<span class="nc" id="L95">    ProfileSetParameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">    if (_setParameters == null) {</span>
+<span class="nc" id="L97">      _setParameters = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L99">    return _setParameters.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ProfileSetParameter} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeSetParameter(ProfileSetParameter item) {
+<span class="nc" id="L108">    ProfileSetParameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">    return _setParameters == null ? false : _setParameters.remove(value);</span>
+  }
+
+  public List&lt;Alter&gt; getAlters() {
+<span class="nc" id="L113">    return _alters;</span>
+  }
+
+  public void setAlters(List&lt;Alter&gt; value) {
+<span class="nc" id="L117">    _alters = value;</span>
+<span class="nc" id="L118">  }</span>
+
+  /**
+   * Add a new {@link Alter} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addAlter(Alter item) {
+<span class="nc" id="L126">    Alter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    if (_alters == null) {</span>
+<span class="nc" id="L128">      _alters = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L130">    return _alters.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Alter} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeAlter(Alter item) {
+<span class="nc" id="L139">    Alter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    return _alters == null ? false : _alters.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L145">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * Specifies changes to be made to an included control when a profile is resolved.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Alteration&quot;,
+      description = &quot;Specifies changes to be made to an included control when a profile is resolved.&quot;,
+      name = &quot;alter&quot;,
+      metaschema = OscalProfileMetaschema.class,
+      remarks = &quot;Use `@control-id` to indicate the scope of alteration.\n&quot;
+              + &quot;\n&quot;
+              + &quot;It is an error for two `alter` elements to apply to the same control. In practice, multiple alterations can be applied (together), but it creates confusion.\n&quot;
+              + &quot;\n&quot;
+              + &quot;At present, no provision is made for altering many controls at once (for example, to systematically remove properties or add global properties); extending this element to match multiple control IDs could provide for this.&quot;
+  )
+  public static class Alter {
+    @BoundFlag(
+        formalName = &quot;Control Identifier Reference&quot;,
+        description = &quot;A reference to a control with a corresponding `id` value. When referencing an externally defined `control`, the `Control Identifier Reference` must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).&quot;,
+        useName = &quot;control-id&quot;,
+        required = true,
+        typeAdapter = TokenAdapter.class
+    )
+    private String _controlId;
+
+    /**
+     * &quot;Specifies objects to be removed from a control based on specific aspects of the object that must all match.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;Removal&quot;,
+        description = &quot;Specifies objects to be removed from a control based on specific aspects of the object that must all match.&quot;,
+        useName = &quot;remove&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Use `by-name`, `by-class`, `by-id` or `by-item-name` to indicate class tokens or ID reference, or the formal name, of the component to be removed or erased from a control, when a catalog is resolved. The control affected is indicated by the pointer on the removal's parent (containing) `alter` element.\n&quot;
+                + &quot;\n&quot;
+                + &quot;To change an element, use `remove` to remove the element, then `add` to add it back again with changes.&quot;
+    )
+    @GroupAs(
+        name = &quot;removes&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Remove&gt; _removes;
+
+    /**
+     * &quot;Specifies contents to be added into controls, in resolution.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;Addition&quot;,
+        description = &quot;Specifies contents to be added into controls, in resolution.&quot;,
+        useName = &quot;add&quot;,
+        maxOccurs = -1,
+        remarks = &quot;When no `by-id` is given, the addition is inserted into the control targeted by the alteration at the start or end as indicated by `position`. Only `position` values of \&quot;starting\&quot; or \&quot;ending\&quot; are permitted when there is no `by-id`.\n&quot;
+                + &quot;\n&quot;
+                + &quot;`by-id`, when given, should indicate, by its ID, an element inside the control to serve as the anchor point for the addition. In this case, `position` value may be any of the permitted values.&quot;
+    )
+    @GroupAs(
+        name = &quot;adds&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Add&gt; _adds;
+
+<span class="fc" id="L208">    public Alter() {</span>
+<span class="fc" id="L209">    }</span>
+
+    public String getControlId() {
+<span class="fc" id="L212">      return _controlId;</span>
+    }
+
+    public void setControlId(String value) {
+<span class="nc" id="L216">      _controlId = value;</span>
+<span class="nc" id="L217">    }</span>
+
+    public List&lt;Remove&gt; getRemoves() {
+<span class="nc" id="L220">      return _removes;</span>
+    }
+
+    public void setRemoves(List&lt;Remove&gt; value) {
+<span class="nc" id="L224">      _removes = value;</span>
+<span class="nc" id="L225">    }</span>
+
+    /**
+     * Add a new {@link Remove} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addRemove(Remove item) {
+<span class="nc" id="L233">      Remove value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">      if (_removes == null) {</span>
+<span class="nc" id="L235">        _removes = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L237">      return _removes.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Remove} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeRemove(Remove item) {
+<span class="nc" id="L246">      Remove value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">      return _removes == null ? false : _removes.remove(value);</span>
+    }
+
+    public List&lt;Add&gt; getAdds() {
+<span class="nc" id="L251">      return _adds;</span>
+    }
+
+    public void setAdds(List&lt;Add&gt; value) {
+<span class="nc" id="L255">      _adds = value;</span>
+<span class="nc" id="L256">    }</span>
+
+    /**
+     * Add a new {@link Add} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addAdd(Add item) {
+<span class="nc" id="L264">      Add value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">      if (_adds == null) {</span>
+<span class="nc" id="L266">        _adds = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L268">      return _adds.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Add} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeAdd(Add item) {
+<span class="nc" id="L277">      Add value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">      return _adds == null ? false : _adds.remove(value);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L283">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+
+    /**
+     * Specifies contents to be added into controls, in resolution.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Addition&quot;,
+        description = &quot;Specifies contents to be added into controls, in resolution.&quot;,
+        name = &quot;add&quot;,
+        metaschema = OscalProfileMetaschema.class,
+        remarks = &quot;When no `by-id` is given, the addition is inserted into the control targeted by the alteration at the start or end as indicated by `position`. Only `position` values of \&quot;starting\&quot; or \&quot;ending\&quot; are permitted when there is no `by-id`.\n&quot;
+                + &quot;\n&quot;
+                + &quot;`by-id`, when given, should indicate, by its ID, an element inside the control to serve as the anchor point for the addition. In this case, `position` value may be any of the permitted values.&quot;
+    )
+    @ValueConstraints(
+        allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;label&quot;, description = &quot;A human-readable label for the parent context, which may be rendered in place of the actual identifier for some use cases.&quot;), @AllowedValue(value = &quot;sort-id&quot;, description = &quot;An alternative identifier, whose value is easily sortable among other such values in the document.&quot;), @AllowedValue(value = &quot;alt-identifier&quot;, description = &quot;An alternate or aliased identifier for the parent context.&quot;)})
+    )
+    public static class Add {
+      @BoundFlag(
+          formalName = &quot;Position&quot;,
+          description = &quot;Where to add the new content with respect to the targeted element (beside it or inside it).&quot;,
+          useName = &quot;position&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      @ValueConstraints(
+          allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;before&quot;, description = &quot;Preceding the by-id target&quot;), @AllowedValue(value = &quot;after&quot;, description = &quot;Following the by-id target&quot;), @AllowedValue(value = &quot;starting&quot;, description = &quot;Inside the control or by-id target, at the start&quot;), @AllowedValue(value = &quot;ending&quot;, description = &quot;Inside the control or by-id target, at the end&quot;)})
+      )
+      private String _position;
+
+      @BoundFlag(
+          formalName = &quot;Reference by ID&quot;,
+          description = &quot;Target location of the addition.&quot;,
+          useName = &quot;by-id&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byId;
+
+      /**
+       * &quot;A name given to the control, which may be used by a tool for display and navigation.&quot;
+       */
+      @BoundField(
+          formalName = &quot;Title Change&quot;,
+          description = &quot;A name given to the control, which may be used by a tool for display and navigation.&quot;,
+          useName = &quot;title&quot;
+      )
+      @BoundFieldValue(
+          typeAdapter = MarkupLineAdapter.class
+      )
+      private MarkupLine _title;
+
+      @BoundAssembly(
+          formalName = &quot;Parameter&quot;,
+          description = &quot;Parameters provide a mechanism for the dynamic assignment of value(s) in a control.&quot;,
+          useName = &quot;param&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;params&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Parameter&gt; _params;
+
+      @BoundAssembly(
+          formalName = &quot;Property&quot;,
+          description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+          useName = &quot;prop&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;props&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Property&gt; _props;
+
+      @BoundAssembly(
+          formalName = &quot;Link&quot;,
+          description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+          useName = &quot;link&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;links&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Link&gt; _links;
+
+      @BoundAssembly(
+          formalName = &quot;Part&quot;,
+          description = &quot;An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.&quot;,
+          useName = &quot;part&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;parts&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;ControlPart&gt; _parts;
+
+<span class="fc" id="L382">      public Add() {</span>
+<span class="fc" id="L383">      }</span>
+
+      public String getPosition() {
+<span class="fc" id="L386">        return _position;</span>
+      }
+
+      public void setPosition(String value) {
+<span class="nc" id="L390">        _position = value;</span>
+<span class="nc" id="L391">      }</span>
+
+      public String getById() {
+<span class="fc" id="L394">        return _byId;</span>
+      }
+
+      public void setById(String value) {
+<span class="nc" id="L398">        _byId = value;</span>
+<span class="nc" id="L399">      }</span>
+
+      public MarkupLine getTitle() {
+<span class="fc" id="L402">        return _title;</span>
+      }
+
+      public void setTitle(MarkupLine value) {
+<span class="nc" id="L406">        _title = value;</span>
+<span class="nc" id="L407">      }</span>
+
+      public List&lt;Parameter&gt; getParams() {
+<span class="fc" id="L410">        return _params;</span>
+      }
+
+      public void setParams(List&lt;Parameter&gt; value) {
+<span class="nc" id="L414">        _params = value;</span>
+<span class="nc" id="L415">      }</span>
+
+      /**
+       * Add a new {@link Parameter} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addParam(Parameter item) {
+<span class="nc" id="L423">        Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L424" title="All 2 branches missed.">        if (_params == null) {</span>
+<span class="nc" id="L425">          _params = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L427">        return _params.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Parameter} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeParam(Parameter item) {
+<span class="nc" id="L436">        Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L437" title="All 2 branches missed.">        return _params == null ? false : _params.remove(value);</span>
+      }
+
+      public List&lt;Property&gt; getProps() {
+<span class="fc" id="L441">        return _props;</span>
+      }
+
+      public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L445">        _props = value;</span>
+<span class="nc" id="L446">      }</span>
+
+      /**
+       * Add a new {@link Property} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addProp(Property item) {
+<span class="nc" id="L454">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L455" title="All 2 branches missed.">        if (_props == null) {</span>
+<span class="nc" id="L456">          _props = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L458">        return _props.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Property} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeProp(Property item) {
+<span class="nc" id="L467">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L468" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
+      }
+
+      public List&lt;Link&gt; getLinks() {
+<span class="fc" id="L472">        return _links;</span>
+      }
+
+      public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L476">        _links = value;</span>
+<span class="nc" id="L477">      }</span>
+
+      /**
+       * Add a new {@link Link} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addLink(Link item) {
+<span class="nc" id="L485">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L486" title="All 2 branches missed.">        if (_links == null) {</span>
+<span class="nc" id="L487">          _links = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L489">        return _links.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Link} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeLink(Link item) {
+<span class="nc" id="L498">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L499" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
+      }
+
+      public List&lt;ControlPart&gt; getParts() {
+<span class="fc" id="L503">        return _parts;</span>
+      }
+
+      public void setParts(List&lt;ControlPart&gt; value) {
+<span class="nc" id="L507">        _parts = value;</span>
+<span class="nc" id="L508">      }</span>
+
+      /**
+       * Add a new {@link ControlPart} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addPart(ControlPart item) {
+<span class="nc" id="L516">        ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">        if (_parts == null) {</span>
+<span class="nc" id="L518">          _parts = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L520">        return _parts.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link ControlPart} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removePart(ControlPart item) {
+<span class="nc" id="L529">        ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L530" title="All 2 branches missed.">        return _parts == null ? false : _parts.remove(value);</span>
+      }
+
+      @Override
+      public String toString() {
+<span class="nc" id="L535">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
+     * Specifies objects to be removed from a control based on specific aspects of the object that must all match.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Removal&quot;,
+        description = &quot;Specifies objects to be removed from a control based on specific aspects of the object that must all match.&quot;,
+        name = &quot;remove&quot;,
+        metaschema = OscalProfileMetaschema.class,
+        remarks = &quot;Use `by-name`, `by-class`, `by-id` or `by-item-name` to indicate class tokens or ID reference, or the formal name, of the component to be removed or erased from a control, when a catalog is resolved. The control affected is indicated by the pointer on the removal's parent (containing) `alter` element.\n&quot;
+                + &quot;\n&quot;
+                + &quot;To change an element, use `remove` to remove the element, then `add` to add it back again with changes.&quot;
+    )
+    public static class Remove {
+      @BoundFlag(
+          formalName = &quot;Reference by (assigned) name&quot;,
+          description = &quot;Identify items remove by matching their assigned name.&quot;,
+          useName = &quot;by-name&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byName;
+
+      @BoundFlag(
+          formalName = &quot;Reference by class&quot;,
+          description = &quot;Identify items to remove by matching their `class`.&quot;,
+          useName = &quot;by-class&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byClass;
+
+      @BoundFlag(
+          formalName = &quot;Reference by ID&quot;,
+          description = &quot;Identify items to remove indicated by their `id`.&quot;,
+          useName = &quot;by-id&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byId;
+
+      @BoundFlag(
+          formalName = &quot;Item Name Reference&quot;,
+          description = &quot;Identify items to remove by the name of the item's information object name, e.g. `title` or `prop`.&quot;,
+          useName = &quot;by-item-name&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      @ValueConstraints(
+          allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;param&quot;, description = &quot;A descendant parameter and all of its descendants.&quot;), @AllowedValue(value = &quot;prop&quot;, description = &quot;A descendant property and all of its descendants.&quot;), @AllowedValue(value = &quot;link&quot;, description = &quot;A descendant link and all of its descendants.&quot;), @AllowedValue(value = &quot;part&quot;, description = &quot;A descendant parameter and all of its descendants.&quot;), @AllowedValue(value = &quot;mapping&quot;, description = &quot;A descendant mapping and all of its descendants.&quot;), @AllowedValue(value = &quot;map&quot;, description = &quot;A descendant mapping entry (map) and all of its descendants.&quot;)})
+      )
+      private String _byItemName;
+
+      @BoundFlag(
+          formalName = &quot;Item Namespace Reference&quot;,
+          description = &quot;Identify items to remove by the item's `ns`, which is the namespace associated with a `part`, or `prop`.&quot;,
+          useName = &quot;by-ns&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byNs;
+
+<span class="nc" id="L595">      public Remove() {</span>
+<span class="nc" id="L596">      }</span>
+
+      public String getByName() {
+<span class="nc" id="L599">        return _byName;</span>
+      }
+
+      public void setByName(String value) {
+<span class="nc" id="L603">        _byName = value;</span>
+<span class="nc" id="L604">      }</span>
+
+      public String getByClass() {
+<span class="nc" id="L607">        return _byClass;</span>
+      }
+
+      public void setByClass(String value) {
+<span class="nc" id="L611">        _byClass = value;</span>
+<span class="nc" id="L612">      }</span>
+
+      public String getById() {
+<span class="nc" id="L615">        return _byId;</span>
+      }
+
+      public void setById(String value) {
+<span class="nc" id="L619">        _byId = value;</span>
+<span class="nc" id="L620">      }</span>
+
+      public String getByItemName() {
+<span class="nc" id="L623">        return _byItemName;</span>
+      }
+
+      public void setByItemName(String value) {
+<span class="nc" id="L627">        _byItemName = value;</span>
+<span class="nc" id="L628">      }</span>
+
+      public String getByNs() {
+<span class="nc" id="L631">        return _byNs;</span>
+      }
+
+      public void setByNs(String value) {
+<span class="nc" id="L635">        _byNs = value;</span>
+<span class="nc" id="L636">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L640">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+  }
+
+  /**
+   * A parameter setting, to be propagated to points of insertion.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Parameter Setting&quot;,
+      description = &quot;A parameter setting, to be propagated to points of insertion.&quot;,
+      name = &quot;set-parameter&quot;,
+      metaschema = OscalProfileMetaschema.class
+  )
+  public static class ProfileSetParameter {
+    @BoundFlag(
+        formalName = &quot;Parameter ID&quot;,
+        description = &quot;An identifier for the parameter.&quot;,
+        useName = &quot;param-id&quot;,
+        required = true,
+        typeAdapter = TokenAdapter.class
+    )
+    private String _paramId;
+
+    @BoundFlag(
+        formalName = &quot;Parameter Class&quot;,
+        description = &quot;A textual label that provides a characterization of the parameter.&quot;,
+        useName = &quot;class&quot;,
+        typeAdapter = TokenAdapter.class,
+        remarks = &quot;A `class` can be used in validation rules to express extra constraints over named items of a specific `class` value.&quot;
+    )
+    private String _clazz;
+
+    @BoundFlag(
+        formalName = &quot;Depends On&quot;,
+        description = &quot;\\*\\*(deprecated)\\*\\* Another parameter invoking this one. This construct has been deprecated and should not be used.&quot;,
+        useName = &quot;depends-on&quot;,
+        typeAdapter = TokenAdapter.class
+    )
+    private String _dependsOn;
+
+    @BoundAssembly(
+        formalName = &quot;Property&quot;,
+        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+        useName = &quot;prop&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;props&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Property&gt; _props;
+
+    @BoundAssembly(
+        formalName = &quot;Link&quot;,
+        description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+        useName = &quot;link&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;links&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Link&gt; _links;
+
+    /**
+     * &quot;A short, placeholder name for the parameter, which can be used as a substitute for a &lt;code&gt;value&lt;/code&gt; if no value is assigned.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Parameter Label&quot;,
+        description = &quot;A short, placeholder name for the parameter, which can be used as a substitute for a `value` if no value is assigned.&quot;,
+        useName = &quot;label&quot;,
+        remarks = &quot;The label value should be suitable for inline display in a rendered catalog.&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupLineAdapter.class
+    )
+    private MarkupLine _label;
+
+    /**
+     * &quot;Describes the purpose and use of a parameter.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Parameter Usage Description&quot;,
+        description = &quot;Describes the purpose and use of a parameter.&quot;,
+        useName = &quot;usage&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _usage;
+
+    @BoundAssembly(
+        formalName = &quot;Constraint&quot;,
+        description = &quot;A formal or informal expression of a constraint or test.&quot;,
+        useName = &quot;constraint&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;constraints&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;ParameterConstraint&gt; _constraints;
+
+    @BoundAssembly(
+        formalName = &quot;Guideline&quot;,
+        description = &quot;A prose statement that provides a recommendation for the use of a parameter.&quot;,
+        useName = &quot;guideline&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;guidelines&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;ParameterGuideline&gt; _guidelines;
+
+    @BoundField(
+        formalName = &quot;Parameter Value&quot;,
+        description = &quot;A parameter value or set of values.&quot;,
+        useName = &quot;value&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Used to (re)define a parameter value.&quot;
+    )
+    @GroupAs(
+        name = &quot;values&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;String&gt; _values;
+
+    @BoundAssembly(
+        formalName = &quot;Selection&quot;,
+        description = &quot;Presenting a choice among alternatives.&quot;,
+        useName = &quot;select&quot;
+    )
+    private ParameterSelection _select;
+
+<span class="fc" id="L776">    public ProfileSetParameter() {</span>
+<span class="fc" id="L777">    }</span>
+
+    public String getParamId() {
+<span class="fc" id="L780">      return _paramId;</span>
+    }
+
+    public void setParamId(String value) {
+<span class="nc" id="L784">      _paramId = value;</span>
+<span class="nc" id="L785">    }</span>
+
+    public String getClazz() {
+<span class="fc" id="L788">      return _clazz;</span>
+    }
+
+    public void setClazz(String value) {
+<span class="nc" id="L792">      _clazz = value;</span>
+<span class="nc" id="L793">    }</span>
+
+    public String getDependsOn() {
+<span class="nc" id="L796">      return _dependsOn;</span>
+    }
+
+    public void setDependsOn(String value) {
+<span class="nc" id="L800">      _dependsOn = value;</span>
+<span class="nc" id="L801">    }</span>
+
+    public List&lt;Property&gt; getProps() {
+<span class="fc" id="L804">      return _props;</span>
+    }
+
+    public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L808">      _props = value;</span>
+<span class="nc" id="L809">    }</span>
+
+    /**
+     * Add a new {@link Property} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addProp(Property item) {
+<span class="nc" id="L817">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L818" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L819">        _props = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L821">      return _props.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Property} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeProp(Property item) {
+<span class="nc" id="L830">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L831" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+    }
+
+    public List&lt;Link&gt; getLinks() {
+<span class="fc" id="L835">      return _links;</span>
+    }
+
+    public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L839">      _links = value;</span>
+<span class="nc" id="L840">    }</span>
+
+    /**
+     * Add a new {@link Link} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addLink(Link item) {
+<span class="nc" id="L848">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L849" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L850">        _links = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L852">      return _links.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Link} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeLink(Link item) {
+<span class="nc" id="L861">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L862" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+    }
+
+    public MarkupLine getLabel() {
+<span class="fc" id="L866">      return _label;</span>
+    }
+
+    public void setLabel(MarkupLine value) {
+<span class="nc" id="L870">      _label = value;</span>
+<span class="nc" id="L871">    }</span>
+
+    public MarkupMultiline getUsage() {
+<span class="fc" id="L874">      return _usage;</span>
+    }
+
+    public void setUsage(MarkupMultiline value) {
+<span class="nc" id="L878">      _usage = value;</span>
+<span class="nc" id="L879">    }</span>
+
+    public List&lt;ParameterConstraint&gt; getConstraints() {
+<span class="fc" id="L882">      return _constraints;</span>
+    }
+
+    public void setConstraints(List&lt;ParameterConstraint&gt; value) {
+<span class="nc" id="L886">      _constraints = value;</span>
+<span class="nc" id="L887">    }</span>
+
+    /**
+     * Add a new {@link ParameterConstraint} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addConstraint(ParameterConstraint item) {
+<span class="nc" id="L895">      ParameterConstraint value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L896" title="All 2 branches missed.">      if (_constraints == null) {</span>
+<span class="nc" id="L897">        _constraints = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L899">      return _constraints.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link ParameterConstraint} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeConstraint(ParameterConstraint item) {
+<span class="nc" id="L908">      ParameterConstraint value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L909" title="All 2 branches missed.">      return _constraints == null ? false : _constraints.remove(value);</span>
+    }
+
+    public List&lt;ParameterGuideline&gt; getGuidelines() {
+<span class="fc" id="L913">      return _guidelines;</span>
+    }
+
+    public void setGuidelines(List&lt;ParameterGuideline&gt; value) {
+<span class="nc" id="L917">      _guidelines = value;</span>
+<span class="nc" id="L918">    }</span>
+
+    /**
+     * Add a new {@link ParameterGuideline} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addGuideline(ParameterGuideline item) {
+<span class="nc" id="L926">      ParameterGuideline value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L927" title="All 2 branches missed.">      if (_guidelines == null) {</span>
+<span class="nc" id="L928">        _guidelines = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L930">      return _guidelines.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link ParameterGuideline} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeGuideline(ParameterGuideline item) {
+<span class="nc" id="L939">      ParameterGuideline value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L940" title="All 2 branches missed.">      return _guidelines == null ? false : _guidelines.remove(value);</span>
+    }
+
+    public List&lt;String&gt; getValues() {
+<span class="fc" id="L944">      return _values;</span>
+    }
+
+    public void setValues(List&lt;String&gt; value) {
+<span class="nc" id="L948">      _values = value;</span>
+<span class="nc" id="L949">    }</span>
+
+    /**
+     * Add a new {@link String} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addValue(String item) {
+<span class="nc" id="L957">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L958" title="All 2 branches missed.">      if (_values == null) {</span>
+<span class="nc" id="L959">        _values = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L961">      return _values.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link String} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeValue(String item) {
+<span class="nc" id="L970">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L971" title="All 2 branches missed.">      return _values == null ? false : _values.remove(value);</span>
+    }
+
+    public ParameterSelection getSelect() {
+<span class="fc" id="L975">      return _select;</span>
+    }
+
+    public void setSelect(ParameterSelection value) {
+<span class="nc" id="L979">      _select = value;</span>
+<span class="nc" id="L980">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L984">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

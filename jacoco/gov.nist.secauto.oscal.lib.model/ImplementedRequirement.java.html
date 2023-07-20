@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImplementedRequirement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">ImplementedRequirement.java</span></div><h1>ImplementedRequirement.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.HasCardinality;
+import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Describes how the system satisfies the requirements of an individual control.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Control-based Requirement&quot;,
+    description = &quot;Describes how the system satisfies the requirements of an individual control.&quot;,
+    name = &quot;implemented-requirement&quot;,
+    metaschema = OscalSspMetaschema.class,
+    remarks = &quot;Use of `set-parameter` in this context, sets the parameter for the referenced control. Any `set-parameter` defined in a child context will override this value. If not overridden by a child, this value applies in the child context.&quot;
+)
+@ValueConstraints(
+    allowedValues = {
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.|statement|.//by-component)/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;control-origination&quot;, description = &quot;Identifies the source of the implemented control. Any `control-origination` prop defined in a child context will override the parent value.&quot;)),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;(.|statement|.//by-component)/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='control-origination']/@value&quot;, values = {@AllowedValue(value = &quot;organization&quot;, description = &quot;The control is implemented by the organization owning the system, but is not specific to the system itself.&quot;), @AllowedValue(value = &quot;system-specific&quot;, description = &quot;The control is implemented specifically to this system.&quot;), @AllowedValue(value = &quot;customer-configured&quot;, description = &quot;The control is provided by the system, but must be configured by the customer.&quot;), @AllowedValue(value = &quot;customer-provided&quot;, description = &quot;The control must be implemented by the customer.&quot;), @AllowedValue(value = &quot;inherited&quot;, description = &quot;This control is inherited from an underlying system.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;responsible-role/@role-id&quot;, allowOthers = true, values = {@AllowedValue(value = &quot;asset-owner&quot;, description = &quot;Accountable for ensuring the asset is managed in accordance with organizational policies and procedures.&quot;), @AllowedValue(value = &quot;asset-administrator&quot;, description = &quot;Responsible for administering a set of assets.&quot;), @AllowedValue(value = &quot;security-operations&quot;, description = &quot;Members of the security operations center (SOC).&quot;), @AllowedValue(value = &quot;network-operations&quot;, description = &quot;Members of the network operations center (NOC).&quot;), @AllowedValue(value = &quot;incident-response&quot;, description = &quot;Responsible for responding to an event that could lead to loss of, or disruption to, an organization's operations, services or functions.&quot;), @AllowedValue(value = &quot;help-desk&quot;, description = &quot;Responsible for providing information and support to users.&quot;), @AllowedValue(value = &quot;configuration-management&quot;, description = &quot;Responsible for the configuration management processes governing changes to the asset.&quot;)})
+    },
+    indexHasKey = {
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;responsible-role|statement/responsible-role|.//by-component//responsible-role&quot;, indexName = &quot;index-metadata-role-id&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;)),
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;responsible-role|statement/responsible-role|.//by-component//responsible-role&quot;, indexName = &quot;index-metadata-party-uuid&quot;, keyFields = @KeyField(target = &quot;party-uuid&quot;))
+    }
+)
+@AssemblyConstraints(
+    isUnique = {
+        @IsUnique(id = &quot;unique-ssp-implemented-requirement-set-parameter&quot;, level = IConstraint.Level.ERROR, target = &quot;set-parameter&quot;, keyFields = @KeyField(target = &quot;@param-id&quot;), remarks = &quot;Since multiple `set-parameter` entries can be provided, each parameter must be set only once.&quot;),
+        @IsUnique(id = &quot;unique-ssp-implemented-requirement-responsible-role&quot;, level = IConstraint.Level.ERROR, target = &quot;responsible-role&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;), remarks = &quot;Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.&quot;),
+        @IsUnique(id = &quot;unique-ssp-implemented-requirement-statement&quot;, level = IConstraint.Level.ERROR, target = &quot;statement&quot;, keyFields = @KeyField(target = &quot;@statement-id&quot;), remarks = &quot;Since `statement` entries can be referenced using the statement's statement-id, each statement must be referenced only once.&quot;),
+        @IsUnique(id = &quot;unique-ssp-implemented-requirement-by-component&quot;, level = IConstraint.Level.ERROR, target = &quot;by-component&quot;, keyFields = @KeyField(target = &quot;@component-uuid&quot;), remarks = &quot;Since `by-component` can reference `component` entries using the component's uuid, each component must be referenced only once. This ensures that all implementation statements are contained in the same `by-component` entry.&quot;)
+    },
+    hasCardinality = @HasCardinality(level = IConstraint.Level.ERROR, target = &quot;.//by-component&quot;, minOccurs = 1)
+)
+public class ImplementedRequirement {
+  @BoundFlag(
+      formalName = &quot;Control Requirement Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this control requirement elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `control requirement` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundFlag(
+      formalName = &quot;Control Identifier Reference&quot;,
+      description = &quot;A reference to a control with a corresponding `id` value. When referencing an externally defined `control`, the `Control Identifier Reference` must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).&quot;,
+      useName = &quot;control-id&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _controlId;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundAssembly(
+      formalName = &quot;Set Parameter Value&quot;,
+      description = &quot;Identifies the parameter that will be set by the enclosed value.&quot;,
+      useName = &quot;set-parameter&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;set-parameters&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;SetParameter&gt; _setParameters;
+
+  @BoundAssembly(
+      formalName = &quot;Responsible Role&quot;,
+      description = &quot;A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.&quot;,
+      useName = &quot;responsible-role&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;responsible-roles&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ResponsibleRole&gt; _responsibleRoles;
+
+  @BoundAssembly(
+      formalName = &quot;Specific Control Statement&quot;,
+      description = &quot;Identifies which statements within a control are addressed.&quot;,
+      useName = &quot;statement&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;statements&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Statement&gt; _statements;
+
+  @BoundAssembly(
+      formalName = &quot;Component Control Implementation&quot;,
+      description = &quot;Defines how the referenced component implements a set of controls.&quot;,
+      useName = &quot;by-component&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;by-components&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ByComponent&gt; _byComponents;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L163">  public ImplementedRequirement() {</span>
+<span class="nc" id="L164">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L167">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L171">    _uuid = value;</span>
+<span class="nc" id="L172">  }</span>
+
+  public String getControlId() {
+<span class="nc" id="L175">    return _controlId;</span>
+  }
+
+  public void setControlId(String value) {
+<span class="nc" id="L179">    _controlId = value;</span>
+<span class="nc" id="L180">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L183">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L187">    _props = value;</span>
+<span class="nc" id="L188">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L196">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L198">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L200">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L209">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L214">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L218">    _links = value;</span>
+<span class="nc" id="L219">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L227">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L229">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L231">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L240">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public List&lt;SetParameter&gt; getSetParameters() {
+<span class="nc" id="L245">    return _setParameters;</span>
+  }
+
+  public void setSetParameters(List&lt;SetParameter&gt; value) {
+<span class="nc" id="L249">    _setParameters = value;</span>
+<span class="nc" id="L250">  }</span>
+
+  /**
+   * Add a new {@link SetParameter} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addSetParameter(SetParameter item) {
+<span class="nc" id="L258">    SetParameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">    if (_setParameters == null) {</span>
+<span class="nc" id="L260">      _setParameters = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L262">    return _setParameters.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link SetParameter} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeSetParameter(SetParameter item) {
+<span class="nc" id="L271">    SetParameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">    return _setParameters == null ? false : _setParameters.remove(value);</span>
+  }
+
+  public List&lt;ResponsibleRole&gt; getResponsibleRoles() {
+<span class="nc" id="L276">    return _responsibleRoles;</span>
+  }
+
+  public void setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {
+<span class="nc" id="L280">    _responsibleRoles = value;</span>
+<span class="nc" id="L281">  }</span>
+
+  /**
+   * Add a new {@link ResponsibleRole} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addResponsibleRole(ResponsibleRole item) {
+<span class="nc" id="L289">    ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (_responsibleRoles == null) {</span>
+<span class="nc" id="L291">      _responsibleRoles = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L293">    return _responsibleRoles.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ResponsibleRole} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeResponsibleRole(ResponsibleRole item) {
+<span class="nc" id="L302">    ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">    return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</span>
+  }
+
+  public List&lt;Statement&gt; getStatements() {
+<span class="nc" id="L307">    return _statements;</span>
+  }
+
+  public void setStatements(List&lt;Statement&gt; value) {
+<span class="nc" id="L311">    _statements = value;</span>
+<span class="nc" id="L312">  }</span>
+
+  /**
+   * Add a new {@link Statement} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addStatement(Statement item) {
+<span class="nc" id="L320">    Statement value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">    if (_statements == null) {</span>
+<span class="nc" id="L322">      _statements = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L324">    return _statements.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Statement} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeStatement(Statement item) {
+<span class="nc" id="L333">    Statement value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L334" title="All 2 branches missed.">    return _statements == null ? false : _statements.remove(value);</span>
+  }
+
+  public List&lt;ByComponent&gt; getByComponents() {
+<span class="nc" id="L338">    return _byComponents;</span>
+  }
+
+  public void setByComponents(List&lt;ByComponent&gt; value) {
+<span class="nc" id="L342">    _byComponents = value;</span>
+<span class="nc" id="L343">  }</span>
+
+  /**
+   * Add a new {@link ByComponent} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addByComponent(ByComponent item) {
+<span class="nc" id="L351">    ByComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">    if (_byComponents == null) {</span>
+<span class="nc" id="L353">      _byComponents = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L355">    return _byComponents.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ByComponent} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeByComponent(ByComponent item) {
+<span class="nc" id="L364">    ByComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">    return _byComponents == null ? false : _byComponents.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L369">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L373">    _remarks = value;</span>
+<span class="nc" id="L374">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L378">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

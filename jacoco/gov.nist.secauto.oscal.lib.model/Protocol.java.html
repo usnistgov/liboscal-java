@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Protocol.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Protocol.java</span></div><h1>Protocol.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.Expect;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Information about the protocol used to provide a service.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Service Protocol Information&quot;,
+    description = &quot;Information about the protocol used to provide a service.&quot;,
+    name = &quot;protocol&quot;,
+    metaschema = OscalImplementationCommonMetaschema.class
+)
+@ValueConstraints(
+    expect = @Expect(level = IConstraint.Level.WARNING, test = &quot;@uuid&quot;, message = &quot;It is a best practice to provide a UUID.&quot;)
+)
+public class Protocol {
+  @BoundFlag(
+      formalName = &quot;Service Protocol Information Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this service protocol information elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `service protocol` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundFlag(
+      formalName = &quot;Protocol Name&quot;,
+      description = &quot;The common name of the protocol, which should be the appropriate \&quot;service name\&quot; from the [IANA Service Name and Transport Protocol Port Number Registry](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml).&quot;,
+      useName = &quot;name&quot;,
+      required = true,
+      typeAdapter = StringAdapter.class,
+      remarks = &quot;The short name of the protocol (e.g., https).&quot;
+  )
+  private String _name;
+
+  /**
+   * &quot;A human readable name for the protocol (e.g., Transport Layer Security).&quot;
+   */
+  @BoundField(
+      formalName = &quot;Protocol Title&quot;,
+      description = &quot;A human readable name for the protocol (e.g., Transport Layer Security).&quot;,
+      useName = &quot;title&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _title;
+
+  @BoundAssembly(
+      formalName = &quot;Port Range&quot;,
+      description = &quot;Where applicable this is the IPv4 port range on which the service operates.&quot;,
+      useName = &quot;port-range&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;port-ranges&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;PortRange&gt; _portRanges;
+
+<span class="nc" id="L82">  public Protocol() {</span>
+<span class="nc" id="L83">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L86">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L90">    _uuid = value;</span>
+<span class="nc" id="L91">  }</span>
+
+  public String getName() {
+<span class="nc" id="L94">    return _name;</span>
+  }
+
+  public void setName(String value) {
+<span class="nc" id="L98">    _name = value;</span>
+<span class="nc" id="L99">  }</span>
+
+  public MarkupLine getTitle() {
+<span class="nc" id="L102">    return _title;</span>
+  }
+
+  public void setTitle(MarkupLine value) {
+<span class="nc" id="L106">    _title = value;</span>
+<span class="nc" id="L107">  }</span>
+
+  public List&lt;PortRange&gt; getPortRanges() {
+<span class="nc" id="L110">    return _portRanges;</span>
+  }
+
+  public void setPortRanges(List&lt;PortRange&gt; value) {
+<span class="nc" id="L114">    _portRanges = value;</span>
+<span class="nc" id="L115">  }</span>
+
+  /**
+   * Add a new {@link PortRange} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addPortRange(PortRange item) {
+<span class="nc" id="L123">    PortRange value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">    if (_portRanges == null) {</span>
+<span class="nc" id="L125">      _portRanges = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L127">    return _portRanges.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link PortRange} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removePortRange(PortRange item) {
+<span class="nc" id="L136">    PortRange value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    return _portRanges == null ? false : _portRanges.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L142">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

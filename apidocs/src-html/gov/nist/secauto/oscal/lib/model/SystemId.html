@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package gov.nist.secauto.oscal.lib.model;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaField;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaFieldValue;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;</a>
+<span class="sourceLineNo">009</span><a id="line.9">import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;</a>
+<span class="sourceLineNo">010</span><a id="line.10">import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import java.lang.Override;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import java.lang.String;</a>
+<span class="sourceLineNo">013</span><a id="line.13">import java.net.URI;</a>
+<span class="sourceLineNo">014</span><a id="line.14">import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;</a>
+<span class="sourceLineNo">015</span><a id="line.15">import org.apache.commons.lang3.builder.ReflectionToStringBuilder;</a>
+<span class="sourceLineNo">016</span><a id="line.16"></a>
+<span class="sourceLineNo">017</span><a id="line.17">/**</a>
+<span class="sourceLineNo">018</span><a id="line.18"> * A &lt;a href="https://pages.nist.gov/OSCAL/concepts/identifier-use/#human-oriented"&gt;human-oriented&lt;/a&gt;, &lt;a href="https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique"&gt;globally unique&lt;/a&gt; identifier with &lt;a href="https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance"&gt;cross-instance&lt;/a&gt; scope that can be used to reference this system identification property elsewhere in &lt;a href="https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope"&gt;this or other OSCAL instances&lt;/a&gt;. When referencing an externally defined &lt;code&gt;system identification&lt;/code&gt;, the &lt;code&gt;system identification&lt;/code&gt; must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned &lt;a href="https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency"&gt;per-subject&lt;/a&gt;, which means it should be consistently used to identify the same system across revisions of the document.</a>
+<span class="sourceLineNo">019</span><a id="line.19"> */</a>
+<span class="sourceLineNo">020</span><a id="line.20">@MetaschemaField(</a>
+<span class="sourceLineNo">021</span><a id="line.21">    formalName = "System Identification",</a>
+<span class="sourceLineNo">022</span><a id="line.22">    description = "A [human-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#human-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this system identification property elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). When referencing an externally defined `system identification`, the `system identification` must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same system across revisions of the document.",</a>
+<span class="sourceLineNo">023</span><a id="line.23">    name = "system-id",</a>
+<span class="sourceLineNo">024</span><a id="line.24">    metaschema = OscalImplementationCommonMetaschema.class,</a>
+<span class="sourceLineNo">025</span><a id="line.25">    isCollapsible = false</a>
+<span class="sourceLineNo">026</span><a id="line.26">)</a>
+<span class="sourceLineNo">027</span><a id="line.27">public class SystemId {</a>
+<span class="sourceLineNo">028</span><a id="line.28">  @MetaschemaFieldValue(</a>
+<span class="sourceLineNo">029</span><a id="line.29">      valueKeyName = "id"</a>
+<span class="sourceLineNo">030</span><a id="line.30">  )</a>
+<span class="sourceLineNo">031</span><a id="line.31">  private String _value;</a>
+<span class="sourceLineNo">032</span><a id="line.32"></a>
+<span class="sourceLineNo">033</span><a id="line.33">  @BoundFlag(</a>
+<span class="sourceLineNo">034</span><a id="line.34">      formalName = "Identification System Type",</a>
+<span class="sourceLineNo">035</span><a id="line.35">      description = "Identifies the identification system from which the provided identifier was assigned.",</a>
+<span class="sourceLineNo">036</span><a id="line.36">      useName = "identifier-type",</a>
+<span class="sourceLineNo">037</span><a id="line.37">      typeAdapter = UriAdapter.class,</a>
+<span class="sourceLineNo">038</span><a id="line.38">      remarks = "This value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier)."</a>
+<span class="sourceLineNo">039</span><a id="line.39">  )</a>
+<span class="sourceLineNo">040</span><a id="line.40">  @ValueConstraints(</a>
+<span class="sourceLineNo">041</span><a id="line.41">      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = "https://fedramp.gov", description = "\\*\\*deprecated\\*\\* The identifier was assigned by FedRAMP. This has been deprecated; use `http://fedramp.gov/ns/oscal` instead."), @AllowedValue(value = "http://fedramp.gov/ns/oscal", description = "The identifier was assigned by FedRAMP."), @AllowedValue(value = "https://ietf.org/rfc/rfc4122", description = "\\*\\*deprecated\\*\\* A Universally Unique Identifier (UUID) as defined by RFC4122. This value has been deprecated; use `http://ietf.org/rfc/rfc4122` instead."), @AllowedValue(value = "http://ietf.org/rfc/rfc4122", description = "A Universally Unique Identifier (UUID) as defined by RFC4122.")})</a>
+<span class="sourceLineNo">042</span><a id="line.42">  )</a>
+<span class="sourceLineNo">043</span><a id="line.43">  private URI _identifierType;</a>
+<span class="sourceLineNo">044</span><a id="line.44"></a>
+<span class="sourceLineNo">045</span><a id="line.45">  public SystemId() {</a>
+<span class="sourceLineNo">046</span><a id="line.46">  }</a>
+<span class="sourceLineNo">047</span><a id="line.47"></a>
+<span class="sourceLineNo">048</span><a id="line.48">  public String getValue() {</a>
+<span class="sourceLineNo">049</span><a id="line.49">    return _value;</a>
+<span class="sourceLineNo">050</span><a id="line.50">  }</a>
+<span class="sourceLineNo">051</span><a id="line.51"></a>
+<span class="sourceLineNo">052</span><a id="line.52">  public void setValue(String value) {</a>
+<span class="sourceLineNo">053</span><a id="line.53">    _value = value;</a>
+<span class="sourceLineNo">054</span><a id="line.54">  }</a>
+<span class="sourceLineNo">055</span><a id="line.55"></a>
+<span class="sourceLineNo">056</span><a id="line.56">  public URI getIdentifierType() {</a>
+<span class="sourceLineNo">057</span><a id="line.57">    return _identifierType;</a>
+<span class="sourceLineNo">058</span><a id="line.58">  }</a>
+<span class="sourceLineNo">059</span><a id="line.59"></a>
+<span class="sourceLineNo">060</span><a id="line.60">  public void setIdentifierType(URI value) {</a>
+<span class="sourceLineNo">061</span><a id="line.61">    _identifierType = value;</a>
+<span class="sourceLineNo">062</span><a id="line.62">  }</a>
+<span class="sourceLineNo">063</span><a id="line.63"></a>
+<span class="sourceLineNo">064</span><a id="line.64">  @Override</a>
+<span class="sourceLineNo">065</span><a id="line.65">  public String toString() {</a>
+<span class="sourceLineNo">066</span><a id="line.66">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">067</span><a id="line.67">  }</a>
+<span class="sourceLineNo">068</span><a id="line.68">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

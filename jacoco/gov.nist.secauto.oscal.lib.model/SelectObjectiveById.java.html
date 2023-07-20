@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectObjectiveById.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">SelectObjectiveById.java</span></div><h1>SelectObjectiveById.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import java.lang.Override;
+import java.lang.String;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Used to select a control objective for inclusion/exclusion based on the control objective's identifier.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Select Objective&quot;,
+    description = &quot;Used to select a control objective for inclusion/exclusion based on the control objective's identifier.&quot;,
+    name = &quot;select-objective-by-id&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class
+)
+public class SelectObjectiveById {
+  @BoundFlag(
+      formalName = &quot;Objective ID&quot;,
+      description = &quot;Points to an assessment objective.&quot;,
+      useName = &quot;objective-id&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _objectiveId;
+
+<span class="nc" id="L30">  public SelectObjectiveById() {</span>
+<span class="nc" id="L31">  }</span>
+
+  public String getObjectiveId() {
+<span class="nc" id="L34">    return _objectiveId;</span>
+  }
+
+  public void setObjectiveId(String value) {
+<span class="nc" id="L38">    _objectiveId = value;</span>
+<span class="nc" id="L39">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L43">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

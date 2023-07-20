@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Impact.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Impact.java</span></div><h1>Impact.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * The expected level of impact resulting from the described information.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Impact Level&quot;,
+    description = &quot;The expected level of impact resulting from the described information.&quot;,
+    name = &quot;impact&quot;,
+    metaschema = OscalSspMetaschema.class
+)
+public class Impact {
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundField(
+      formalName = &quot;Base Level (Confidentiality, Integrity, or Availability)&quot;,
+      description = &quot;The prescribed base (Confidentiality, Integrity, or Availability) security impact level.&quot;,
+      useName = &quot;base&quot;,
+      minOccurs = 1
+  )
+  private String _base;
+
+  @BoundField(
+      formalName = &quot;Selected Level (Confidentiality, Integrity, or Availability)&quot;,
+      description = &quot;The selected (Confidentiality, Integrity, or Availability) security impact level.&quot;,
+      useName = &quot;selected&quot;
+  )
+  private String _selected;
+
+  @BoundField(
+      formalName = &quot;Adjustment Justification&quot;,
+      description = &quot;If the selected security level is different from the base security level, this contains the justification for the change.&quot;,
+      useName = &quot;adjustment-justification&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _adjustmentJustification;
+
+<span class="nc" id="L78">  public Impact() {</span>
+<span class="nc" id="L79">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L82">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L86">    _props = value;</span>
+<span class="nc" id="L87">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L95">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L97">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L99">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L108">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L113">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L117">    _links = value;</span>
+<span class="nc" id="L118">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L126">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L128">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L130">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L139">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public String getBase() {
+<span class="nc" id="L144">    return _base;</span>
+  }
+
+  public void setBase(String value) {
+<span class="nc" id="L148">    _base = value;</span>
+<span class="nc" id="L149">  }</span>
+
+  public String getSelected() {
+<span class="nc" id="L152">    return _selected;</span>
+  }
+
+  public void setSelected(String value) {
+<span class="nc" id="L156">    _selected = value;</span>
+<span class="nc" id="L157">  }</span>
+
+  public MarkupMultiline getAdjustmentJustification() {
+<span class="nc" id="L160">    return _adjustmentJustification;</span>
+  }
+
+  public void setAdjustmentJustification(MarkupMultiline value) {
+<span class="nc" id="L164">    _adjustmentJustification = value;</span>
+<span class="nc" id="L165">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L169">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

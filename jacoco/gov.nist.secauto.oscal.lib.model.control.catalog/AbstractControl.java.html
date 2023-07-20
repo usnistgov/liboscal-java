@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractControl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model.control.catalog</a> &gt; <span class="el_source">AbstractControl.java</span></div><h1>AbstractControl.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.model.control.catalog;
+
+import gov.nist.secauto.metaschema.binding.io.IDeserializationHandler;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.ControlPart;
+import gov.nist.secauto.oscal.lib.model.Link;
+import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.model.Property;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+<span class="fc" id="L46">public abstract class AbstractControl</span>
+    implements IDeserializationHandler, IControl {
+  private Control parent;
+
+  @Override
+  public Control getParentControl() {
+<span class="nc" id="L52">    return parent;</span>
+  }
+
+  @Override
+  public void setParentControl(Control parent) {
+<span class="fc" id="L57">    this.parent = parent;</span>
+<span class="fc" id="L58">  }</span>
+
+  @Override
+  public void beforeDeserialize(Object parent) { // NOPMD noop default
+    // do nothing
+<span class="fc" id="L63">  }</span>
+
+  @Override
+  public void afterDeserialize(Object parent) {
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (parent instanceof Control) {</span>
+<span class="fc" id="L68">      setParentControl((Control) parent);</span>
+    }
+<span class="fc" id="L70">  }</span>
+
+  @NonNull
+  @Override
+  public Stream&lt;String&gt; getReferencedParameterIds() {
+
+    // get parameters referenced by the group's parts
+<span class="nc" id="L77">    Stream&lt;String&gt; insertIds = CollectionUtil.listOrEmpty(getParts()).stream()</span>
+        // Get the full part hierarchy
+<span class="nc" id="L79">        .flatMap(part -&gt; Stream.concat(Stream.of(part), part.getPartsRecursively()))</span>
+        // Get the inserts for each part
+<span class="nc" id="L81">        .flatMap(part -&gt; part.getInserts(insert -&gt; &quot;param&quot;.equals(insert.getType().toString())))</span>
+        // Get the param ids for each insert
+<span class="nc" id="L83">        .map(insert -&gt; insert.getIdReference().toString())</span>
+<span class="nc" id="L84">        .flatMap(ObjectUtils::filterNull);</span>
+
+    // get parameters referenced by the control's parameters
+<span class="nc" id="L87">    Stream&lt;String&gt; parameterIds = CollectionUtil.listOrEmpty(getParams()).stream()</span>
+<span class="nc" id="L88">        .flatMap(ObjectUtils::filterNull)</span>
+<span class="nc" id="L89">        .flatMap(param -&gt; param.getParameterReferences());</span>
+
+<span class="nc" id="L91">    return ObjectUtils.notNull(</span>
+<span class="nc" id="L92">        Stream.concat(insertIds, parameterIds).distinct());</span>
+  }
+
+  @NonNull
+  public static Builder builder(@NonNull String id) {
+<span class="fc" id="L97">    return new Builder(id);</span>
+  }
+
+  public static class Builder {
+    @NonNull
+    private final String id;
+
+    private String clazz;
+    private MarkupLine title;
+<span class="fc" id="L106">    private final List&lt;Parameter&gt; params = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L107">    private final List&lt;Property&gt; props = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L108">    private final List&lt;Link&gt; links = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L109">    private final List&lt;ControlPart&gt; parts = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L110">    private final List&lt;Control&gt; controls = new LinkedList&lt;&gt;();</span>
+
+<span class="fc" id="L112">    public Builder(@NonNull String id) {</span>
+<span class="fc" id="L113">      this.id = Objects.requireNonNull(id, &quot;id&quot;);</span>
+<span class="fc" id="L114">    }</span>
+
+    @NonNull
+    public Builder clazz(@NonNull String value) {
+<span class="nc" id="L118">      this.clazz = Objects.requireNonNull(value);</span>
+<span class="nc" id="L119">      return this;</span>
+    }
+
+    @NonNull
+    public Builder title(@NonNull String markdown) {
+<span class="fc" id="L124">      this.title = MarkupLine.fromMarkdown(Objects.requireNonNull(markdown));</span>
+<span class="fc" id="L125">      return this;</span>
+    }
+
+    @NonNull
+    public Builder title(@NonNull MarkupLine value) {
+<span class="nc" id="L130">      this.title = Objects.requireNonNull(value);</span>
+<span class="nc" id="L131">      return this;</span>
+    }
+
+    @NonNull
+    public Builder param(@NonNull Parameter value) {
+<span class="fc" id="L136">      this.params.add(Objects.requireNonNull(value));</span>
+<span class="fc" id="L137">      return this;</span>
+    }
+
+    @NonNull
+    public Builder prop(@NonNull Property value) {
+<span class="nc" id="L142">      this.props.add(Objects.requireNonNull(value));</span>
+<span class="nc" id="L143">      return this;</span>
+    }
+
+    @NonNull
+    public Builder link(@NonNull Link value) {
+<span class="nc" id="L148">      this.links.add(Objects.requireNonNull(value));</span>
+<span class="nc" id="L149">      return this;</span>
+    }
+
+    @NonNull
+    public Builder part(@NonNull ControlPart value) {
+<span class="fc" id="L154">      this.parts.add(Objects.requireNonNull(value));</span>
+<span class="fc" id="L155">      return this;</span>
+    }
+
+    @NonNull
+    public Builder control(@NonNull Control value) {
+<span class="fc" id="L160">      this.controls.add(Objects.requireNonNull(value));</span>
+<span class="fc" id="L161">      return this;</span>
+    }
+
+    @NonNull
+    public Control build() {
+<span class="fc" id="L166">      Control retval = new Control();</span>
+<span class="fc" id="L167">      retval.setId(id);</span>
+
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">      if (title == null) {</span>
+<span class="nc" id="L170">        throw new IllegalStateException(&quot;a title must be provided&quot;);</span>
+      }
+<span class="fc" id="L172">      retval.setTitle(title);</span>
+
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">      if (clazz != null) {</span>
+<span class="nc" id="L175">        retval.setClazz(clazz);</span>
+      }
+<span class="fc bfc" id="L177" title="All 2 branches covered.">      if (!params.isEmpty()) {</span>
+<span class="fc" id="L178">        retval.setParams(params);</span>
+      }
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">      if (!props.isEmpty()) {</span>
+<span class="nc" id="L181">        retval.setProps(props);</span>
+      }
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">      if (!links.isEmpty()) {</span>
+<span class="nc" id="L184">        retval.setLinks(links);</span>
+      }
+<span class="fc bfc" id="L186" title="All 2 branches covered.">      if (!parts.isEmpty()) {</span>
+<span class="fc" id="L187">        retval.setParts(parts);</span>
+      }
+<span class="fc bfc" id="L189" title="All 2 branches covered.">      if (!controls.isEmpty()) {</span>
+<span class="fc" id="L190">        controls.forEach(control -&gt; control.setParentControl(retval));</span>
+<span class="fc" id="L191">        retval.setControls(controls);</span>
+      }
+
+<span class="fc" id="L194">      return retval;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

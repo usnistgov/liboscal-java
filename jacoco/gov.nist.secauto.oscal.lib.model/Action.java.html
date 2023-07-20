@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Action.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Action.java</span></div><h1>Action.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.DateTimeWithTZAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.net.URI;
+import java.time.ZonedDateTime;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * An action applied by a role within a given party to the content.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Action&quot;,
+    description = &quot;An action applied by a role within a given party to the content.&quot;,
+    name = &quot;action&quot;,
+    metaschema = OscalMetadataMetaschema.class
+)
+@ValueConstraints(
+    allowedValues = {
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;./system/@value&quot;, allowOthers = true, values = @AllowedValue(value = &quot;http://csrc.nist.gov/ns/oscal&quot;, description = &quot;This value identifies action types defined in the NIST OSCAL namespace.&quot;)),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;./type[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@value&quot;, values = {@AllowedValue(value = &quot;approval&quot;, description = &quot;An approval of a document instance's content.&quot;), @AllowedValue(value = &quot;request-changes&quot;, description = &quot;A request from the responisble party or parties to change the content.&quot;)})
+    },
+    indexHasKey = {
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;responsible-party&quot;, indexName = &quot;index-metadata-role-id&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;)),
+        @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;responsible-party&quot;, indexName = &quot;index-metadata-party-uuid&quot;, keyFields = @KeyField(target = &quot;party-uuid&quot;))
+    }
+)
+public class Action {
+  @BoundFlag(
+      formalName = &quot;Action Universally Unique Identifier&quot;,
+      description = &quot;A unique identifier that can be used to reference this defined action elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundFlag(
+      formalName = &quot;Action Occurrence Date&quot;,
+      description = &quot;The date and time when the action occurred.&quot;,
+      useName = &quot;date&quot;,
+      typeAdapter = DateTimeWithTZAdapter.class
+  )
+  private ZonedDateTime _date;
+
+  @BoundFlag(
+      formalName = &quot;Action Type&quot;,
+      description = &quot;The type of action documented by the assembly, such as an approval.&quot;,
+      useName = &quot;type&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _type;
+
+  @BoundFlag(
+      formalName = &quot;Action Type System&quot;,
+      description = &quot;Specifies the action type system used.&quot;,
+      useName = &quot;system&quot;,
+      required = true,
+      typeAdapter = UriAdapter.class,
+      remarks = &quot;Provides a means to segment the value space for the `type`, so that different organizations and individuals can assert control over the allowed `action`'s `type`. This allows the semantics associated with a given `type` to be defined on an organization-by-organization basis.\n&quot;
+              + &quot;\n&quot;
+              + &quot;An organization MUST use a URI that they have control over. e.g., a domain registered to the organization in a URI, a registered uniform resource names (URN) namespace.&quot;
+  )
+  private URI _system;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundAssembly(
+      formalName = &quot;Responsible Party&quot;,
+      description = &quot;A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.&quot;,
+      useName = &quot;responsible-party&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;responsible-parties&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ResponsibleParty&gt; _responsibleParties;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L137">  public Action() {</span>
+<span class="nc" id="L138">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L141">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L145">    _uuid = value;</span>
+<span class="nc" id="L146">  }</span>
+
+  public ZonedDateTime getDate() {
+<span class="nc" id="L149">    return _date;</span>
+  }
+
+  public void setDate(ZonedDateTime value) {
+<span class="nc" id="L153">    _date = value;</span>
+<span class="nc" id="L154">  }</span>
+
+  public String getType() {
+<span class="nc" id="L157">    return _type;</span>
+  }
+
+  public void setType(String value) {
+<span class="nc" id="L161">    _type = value;</span>
+<span class="nc" id="L162">  }</span>
+
+  public URI getSystem() {
+<span class="nc" id="L165">    return _system;</span>
+  }
+
+  public void setSystem(URI value) {
+<span class="nc" id="L169">    _system = value;</span>
+<span class="nc" id="L170">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L173">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L177">    _props = value;</span>
+<span class="nc" id="L178">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L186">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L188">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L190">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L199">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L204">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L208">    _links = value;</span>
+<span class="nc" id="L209">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L217">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L219">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L221">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L230">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public List&lt;ResponsibleParty&gt; getResponsibleParties() {
+<span class="nc" id="L235">    return _responsibleParties;</span>
+  }
+
+  public void setResponsibleParties(List&lt;ResponsibleParty&gt; value) {
+<span class="nc" id="L239">    _responsibleParties = value;</span>
+<span class="nc" id="L240">  }</span>
+
+  /**
+   * Add a new {@link ResponsibleParty} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addResponsibleParty(ResponsibleParty item) {
+<span class="nc" id="L248">    ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">    if (_responsibleParties == null) {</span>
+<span class="nc" id="L250">      _responsibleParties = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L252">    return _responsibleParties.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ResponsibleParty} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeResponsibleParty(ResponsibleParty item) {
+<span class="nc" id="L261">    ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">    return _responsibleParties == null ? false : _responsibleParties.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L266">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L270">    _remarks = value;</span>
+<span class="nc" id="L271">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L275">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

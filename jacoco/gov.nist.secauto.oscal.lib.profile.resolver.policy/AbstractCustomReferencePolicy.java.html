@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractCustomReferencePolicy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.policy</a> &gt; <span class="el_source">AbstractCustomReferencePolicy.java</span></div><h1>AbstractCustomReferencePolicy.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.policy;
+
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+
+public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICustomReferencePolicy&lt;TYPE&gt; {
+<span class="fc" id="L43">  private static final Logger LOGGER = LogManager.getLogger(AbstractCustomReferencePolicy.class);</span>
+
+  @NonNull
+  private final IIdentifierParser identifierParser;
+
+  protected AbstractCustomReferencePolicy(
+<span class="fc" id="L49">      @NonNull IIdentifierParser identifierParser) {</span>
+<span class="fc" id="L50">    this.identifierParser = identifierParser;</span>
+<span class="fc" id="L51">  }</span>
+
+  @Override
+  @NonNull
+  public IIdentifierParser getIdentifierParser() {
+<span class="fc" id="L56">    return identifierParser;</span>
+  }
+
+  /**
+   * Get the possible item types that can be searched in the order in which the identifier will be
+   * looked up.
+   * &lt;p&gt;
+   * The {@code reference} object is provided to allow for context sensitive item type tailoring.
+   *
+   * @param reference
+   *          the reference object
+   * @return a list of item types to search for
+   */
+  @NonNull
+  protected abstract List&lt;IEntityItem.ItemType&gt; getEntityItemTypes(@NonNull TYPE reference);
+
+  /**
+   * Handle an index hit.
+   *
+   * @param contextItem
+   *          the node containing the identifier reference
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param item
+   *          the referenced item
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
+   * @return {@code true} if the hit was handled or {@code false} otherwise
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index hit
+   */
+  protected boolean handleIndexHit(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull TYPE reference,
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
+
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (visitorContext.getIndexer().isSelected(item)) {</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">      if (!visitorContext.isResolved(item)) {</span>
+        // this referenced item will need to be resolved
+<span class="fc" id="L96">        ReferenceCountingVisitor.instance().resolveEntity(item, visitorContext);</span>
+      }
+<span class="fc" id="L98">      item.incrementReferenceCount();</span>
+
+<span class="fc bfc" id="L100" title="All 2 branches covered.">      if (item.isIdentifierReassigned()) {</span>
+<span class="fc" id="L101">        String referenceText = ObjectUtils.notNull(getReferenceText(reference));</span>
+<span class="fc" id="L102">        String newReferenceText = getIdentifierParser().update(referenceText, item.getIdentifier());</span>
+<span class="fc" id="L103">        setReferenceText(reference, newReferenceText);</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L105">          LOGGER.atDebug().log(&quot;Mapping {} reference '{}' to '{}'.&quot;, item.getItemType().name(), referenceText,</span>
+              newReferenceText);
+        }
+      }
+<span class="fc" id="L109">      handleSelected(contextItem, reference, item, visitorContext);</span>
+    } else {
+<span class="fc" id="L111">      handleUnselected(contextItem, reference, item, visitorContext);</span>
+    }
+<span class="fc" id="L113">    return true;</span>
+  }
+
+  /**
+   * Handle an index hit against an item related to an unselected control.
+   * &lt;p&gt;
+   * Subclasses can override this method to perform extra processing.
+   *
+   * @param contextItem
+   *          the node containing the identifier reference
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param item
+   *          the referenced item
+   * @param visitorContext
+   *          the reference visitor, which can be used for further processing
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index hit
+   */
+  protected void handleUnselected( // NOPMD noop default
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull TYPE reference,
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
+    // do nothing by default
+<span class="nc" id="L138">  }</span>
+
+  /**
+   * Handle an index hit against an item related to an selected control.
+   * &lt;p&gt;
+   * Subclasses can override this method to perform extra processing.
+   *
+   * @param contextItem
+   *          the node containing the identifier reference
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param item
+   *          the referenced item
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index hit
+   */
+  protected void handleSelected( // NOPMD noop default
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull TYPE reference,
+      @NonNull IEntityItem item,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
+    // do nothing by default
+<span class="fc" id="L162">  }</span>
+
+  /**
+   * Handle an index miss for a reference. This occurs when the referenced item was not found in the
+   * index.
+   * &lt;p&gt;
+   * Subclasses can override this method to perform extra processing.
+   *
+   * @param contextItem
+   *          the node containing the identifier reference
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param itemTypes
+   *          the possible item types for this reference
+   * @param identifier
+   *          the parsed identifier
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
+   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index miss
+   */
+  protected boolean handleIndexMiss(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull TYPE reference,
+      @NonNull List&lt;IEntityItem.ItemType&gt; itemTypes,
+      @NonNull String identifier,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
+    // provide no handler by default
+<span class="nc" id="L191">    return false;</span>
+  }
+
+  /**
+   * Handle the case where the identifier was not a syntax match for an expected identifier. This can
+   * occur when the reference is malformed, using an unrecognized syntax.
+   * &lt;p&gt;
+   * Subclasses can override this method to perform extra processing.
+   *
+   * @param contextItem
+   *          the node containing the identifier reference
+   * @param reference
+   *          the identifier reference object generating the hit
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
+   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the index miss due to a non match
+   */
+  protected boolean handleIdentifierNonMatch(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull TYPE reference,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
+    // provide no handler by default
+<span class="nc" id="L215">    return false;</span>
+  }
+
+  @Override
+  public boolean handleReference(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull TYPE type,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
+<span class="fc" id="L223">    String referenceText = getReferenceText(type);</span>
+
+    // if the reference text does not exist, ignore the reference; otherwise, handle it.
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">    return referenceText == null</span>
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">        || handleIdentifier(contextItem, type, getIdentifierParser().parse(referenceText), visitorContext);</span>
+  }
+
+  /**
+   * Handle the provided {@code identifier} for a given {@code type} of reference.
+   *
+   * @param contextItem
+   *          the node containing the identifier reference
+   * @param type
+   *          the item type of the reference
+   * @param identifier
+   *          the identifier
+   * @param visitorContext
+   *          the reference visitor state, which can be used for further processing
+   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   * @throws ProfileResolutionEvaluationException
+   *           if there was an error handing the reference
+   */
+  protected boolean handleIdentifier(
+      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull TYPE type,
+      @Nullable String identifier,
+      @NonNull ReferenceCountingVisitor.Context visitorContext) {
+    boolean retval;
+<span class="fc bfc" id="L251" title="All 2 branches covered.">    if (identifier == null) {</span>
+<span class="fc" id="L252">      retval = handleIdentifierNonMatch(contextItem, type, visitorContext);</span>
+    } else {
+<span class="fc" id="L254">      List&lt;IEntityItem.ItemType&gt; itemTypes = getEntityItemTypes(type);</span>
+<span class="fc" id="L255">      IEntityItem item = null;</span>
+<span class="pc bpc" id="L256" title="1 of 2 branches missed.">      for (IEntityItem.ItemType itemType : itemTypes) {</span>
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">        assert itemType != null;</span>
+
+<span class="fc" id="L259">        item = visitorContext.getEntity(itemType, identifier);</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">        if (item != null) {</span>
+<span class="fc" id="L261">          break;</span>
+        }
+<span class="fc" id="L263">      }</span>
+
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">      if (item == null) {</span>
+<span class="nc" id="L266">        retval = handleIndexMiss(contextItem, type, itemTypes, identifier, visitorContext);</span>
+      } else {
+<span class="fc" id="L268">        retval = handleIndexHit(contextItem, type, item, visitorContext);</span>
+      }
+    }
+<span class="fc" id="L271">    return retval;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

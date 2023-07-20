@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Property.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Property.java</span></div><h1>Property.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
+import java.lang.Override;
+import java.lang.String;
+import java.net.URI;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Property&quot;,
+    description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+    name = &quot;property&quot;,
+    metaschema = OscalMetadataMetaschema.class,
+    remarks = &quot;Properties permit the deployment and management of arbitrary controlled values, within OSCAL objects. A property can be included for any purpose useful to an application or implementation. Typically, properties will be used to sort, filter, select, order, and arrange OSCAL content objects, to relate OSCAL objects to one another, or to associate an OSCAL object to class hierarchies, taxonomies, or external authorities. Thus, the lexical composition of properties may be constrained by external processes to ensure consistency.\n&quot;
+            + &quot;\n&quot;
+            + &quot;Property allows for associated remarks that describe why the specific property value was applied to the containing object, or the significance of the value in the context of the containing object.&quot;
+)
+@ValueConstraints(
+    allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;.[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;marking&quot;, description = &quot;A label or descriptor that is tied to a sensitivity or classification marking system. An optional class can be used to define the specific marking system used for the associated value.&quot;))
+)
+public class Property extends AbstractProperty {
+  @BoundFlag(
+      formalName = &quot;Property Name&quot;,
+      description = &quot;A textual label, within a namespace, that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object.&quot;,
+      useName = &quot;name&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _name;
+
+  @BoundFlag(
+      formalName = &quot;Property Universally Unique Identifier&quot;,
+      description = &quot;A unique identifier for a property.&quot;,
+      useName = &quot;uuid&quot;,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundFlag(
+      formalName = &quot;Property Namespace&quot;,
+      description = &quot;A namespace qualifying the property's name. This allows different organizations to associate distinct semantics with the same name.&quot;,
+      useName = &quot;ns&quot;,
+      typeAdapter = UriAdapter.class,
+      remarks = &quot;This value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier).\n&quot;
+              + &quot;\n&quot;
+              + &quot;When a `ns` is not provided, its value should be assumed to be `http://csrc.nist.gov/ns/oscal` and the name should be a name defined by the associated OSCAL model.&quot;
+  )
+  private URI _ns;
+
+  @BoundFlag(
+      formalName = &quot;Property Value&quot;,
+      description = &quot;Indicates the value of the attribute, characteristic, or quality.&quot;,
+      useName = &quot;value&quot;,
+      required = true,
+      typeAdapter = StringAdapter.class
+  )
+  private String _value;
+
+  @BoundFlag(
+      formalName = &quot;Property Class&quot;,
+      description = &quot;A textual label that provides a sub-type or characterization of the property's `name`.&quot;,
+      useName = &quot;class&quot;,
+      typeAdapter = TokenAdapter.class,
+      remarks = &quot;This can be used to further distinguish or discriminate between the semantics of multiple properties of the same object with the same `name` and `ns`, or to group properties into categories.\n&quot;
+              + &quot;\n&quot;
+              + &quot;A `class` can be used in validation rules to express extra constraints over named items of a specific `class` value. It is available for grouping, but unlike `group` is not expected specifically to designate any group membership as such.&quot;
+  )
+  private String _clazz;
+
+  @BoundFlag(
+      formalName = &quot;Property Group&quot;,
+      description = &quot;An identifier for relating distinct sets of properties.&quot;,
+      useName = &quot;group&quot;,
+      typeAdapter = TokenAdapter.class,
+      remarks = &quot;Different sets of properties may relate to separate contexts. Declare a group on a property to associate it with one or more other properties in a given context.&quot;
+  )
+  private String _group;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="fc" id="L108">  public Property() {</span>
+<span class="fc" id="L109">  }</span>
+
+  public String getName() {
+<span class="fc" id="L112">    return _name;</span>
+  }
+
+  public void setName(String value) {
+<span class="fc" id="L116">    _name = value;</span>
+<span class="fc" id="L117">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L120">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L124">    _uuid = value;</span>
+<span class="nc" id="L125">  }</span>
+
+  public URI getNs() {
+<span class="fc" id="L128">    return _ns;</span>
+  }
+
+  public void setNs(URI value) {
+<span class="fc" id="L132">    _ns = value;</span>
+<span class="fc" id="L133">  }</span>
+
+  public String getValue() {
+<span class="fc" id="L136">    return _value;</span>
+  }
+
+  public void setValue(String value) {
+<span class="fc" id="L140">    _value = value;</span>
+<span class="fc" id="L141">  }</span>
+
+  public String getClazz() {
+<span class="nc" id="L144">    return _clazz;</span>
+  }
+
+  public void setClazz(String value) {
+<span class="nc" id="L148">    _clazz = value;</span>
+<span class="nc" id="L149">  }</span>
+
+  public String getGroup() {
+<span class="nc" id="L152">    return _group;</span>
+  }
+
+  public void setGroup(String value) {
+<span class="nc" id="L156">    _group = value;</span>
+<span class="nc" id="L157">  }</span>
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L160">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L164">    _remarks = value;</span>
+<span class="nc" id="L165">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L169">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

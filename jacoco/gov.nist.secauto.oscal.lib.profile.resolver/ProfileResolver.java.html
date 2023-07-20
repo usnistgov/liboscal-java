@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfileResolver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver</a> &gt; <span class="el_source">ProfileResolver.java</span></div><h1>ProfileResolver.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver;
+
+import gov.nist.secauto.metaschema.binding.io.BindingException;
+import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
+import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
+import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
+import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
+import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
+import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueAssemblyNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
+import gov.nist.secauto.oscal.lib.OscalUtils;
+import gov.nist.secauto.oscal.lib.model.BackMatter;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.model.Merge;
+import gov.nist.secauto.oscal.lib.model.Metadata;
+import gov.nist.secauto.oscal.lib.model.Modify;
+import gov.nist.secauto.oscal.lib.model.Modify.ProfileSetParameter;
+import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.model.Profile;
+import gov.nist.secauto.oscal.lib.model.ProfileImport;
+import gov.nist.secauto.oscal.lib.model.Property;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractLink;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
+import gov.nist.secauto.oscal.lib.profile.resolver.alter.AddVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.alter.RemoveVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.merge.FlatteningStructuringVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.Import;
+import gov.nist.secauto.oscal.lib.profile.resolver.selection.ImportCycleException;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.BasicIndexer;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.ControlIndexingVisitor;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+<span class="fc" id="L97">public class ProfileResolver {</span>
+<span class="fc" id="L98">  private static final Logger LOGGER = LogManager.getLogger(ProfileResolver.class);</span>
+<span class="fc" id="L99">  private static final MetapathExpression METAPATH_SET_PARAMETER</span>
+<span class="fc" id="L100">      = MetapathExpression.compile(&quot;/profile/modify/set-parameter&quot;);</span>
+<span class="fc" id="L101">  private static final MetapathExpression METAPATH_ALTER</span>
+<span class="fc" id="L102">      = MetapathExpression.compile(&quot;/profile/modify/alter&quot;);</span>
+<span class="fc" id="L103">  private static final MetapathExpression METAPATH_ALTER_REMOVE</span>
+<span class="fc" id="L104">      = MetapathExpression.compile(&quot;remove&quot;);</span>
+<span class="fc" id="L105">  private static final MetapathExpression METAPATH_ALTER_ADD</span>
+<span class="fc" id="L106">      = MetapathExpression.compile(&quot;add&quot;);</span>
+
+<span class="fc" id="L108">  public enum StructuringDirective {</span>
+<span class="fc" id="L109">    FLAT,</span>
+<span class="fc" id="L110">    AS_IS,</span>
+<span class="fc" id="L111">    CUSTOM;</span>
+  }
+
+  private IBoundLoader loader;
+  private DynamicContext dynamicContext;
+
+  /**
+   * Gets the configured loader or creates a new default loader if no loader was configured.
+   *
+   * @return the bound loader
+   */
+  @NonNull
+  public IBoundLoader getBoundLoader() {
+<span class="fc" id="L124">    synchronized (this) {</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">      if (loader == null) {</span>
+<span class="fc" id="L126">        loader = OscalBindingContext.instance().newBoundLoader();</span>
+<span class="fc" id="L127">        loader.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);</span>
+      }
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">      assert loader != null;</span>
+<span class="fc" id="L130">      return loader;</span>
+    }
+  }
+
+  public void setBoundLoader(@NonNull IBoundLoader loader) {
+<span class="nc" id="L135">    synchronized (this) {</span>
+<span class="nc" id="L136">      this.loader = loader;</span>
+<span class="nc" id="L137">    }</span>
+<span class="nc" id="L138">  }</span>
+
+  @NonNull
+  @SuppressFBWarnings(value = &quot;EI_EXPOSE_REP&quot;, justification = &quot;intending to expose this field&quot;)
+  public DynamicContext getDynamicContext() {
+<span class="fc" id="L143">    synchronized (this) {</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">      if (dynamicContext == null) {</span>
+<span class="nc" id="L145">        dynamicContext = new StaticContext().newDynamicContext();</span>
+<span class="nc" id="L146">        dynamicContext.setDocumentLoader(getBoundLoader());</span>
+      }
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">      assert dynamicContext != null;</span>
+<span class="fc" id="L149">      return dynamicContext;</span>
+    }
+  }
+
+  @SuppressFBWarnings(value = &quot;EI_EXPOSE_REP&quot;, justification = &quot;intending to store this parameter&quot;)
+  public void setDynamicContext(@NonNull DynamicContext dynamicContext) {
+<span class="fc" id="L155">    synchronized (this) {</span>
+<span class="fc" id="L156">      this.dynamicContext = dynamicContext;</span>
+<span class="fc" id="L157">    }</span>
+<span class="fc" id="L158">  }</span>
+
+  @NonNull
+  protected EntityResolver getEntityResolver(@NonNull URI documentUri) {
+<span class="fc" id="L162">    return new DocumentEntityResolver(documentUri);</span>
+  }
+
+  public IDocumentNodeItem resolveProfile(@NonNull URL url)
+      throws URISyntaxException, IOException, ProfileResolutionException {
+<span class="fc" id="L167">    IBoundLoader loader = getBoundLoader();</span>
+<span class="fc" id="L168">    IDocumentNodeItem catalogOrProfile = loader.loadAsNodeItem(url);</span>
+<span class="fc" id="L169">    return resolve(catalogOrProfile);</span>
+  }
+
+  public IDocumentNodeItem resolveProfile(@NonNull Path path) throws IOException, ProfileResolutionException {
+<span class="fc" id="L173">    IBoundLoader loader = getBoundLoader();</span>
+<span class="fc" id="L174">    IDocumentNodeItem catalogOrProfile = loader.loadAsNodeItem(path);</span>
+<span class="fc" id="L175">    return resolve(catalogOrProfile);</span>
+  }
+
+  public IDocumentNodeItem resolveProfile(@NonNull File file) throws IOException, ProfileResolutionException {
+<span class="fc" id="L179">    return resolveProfile(ObjectUtils.notNull(file.toPath()));</span>
+  }
+
+  /**
+   * Resolve the profile to a catalog.
+   *
+   * @param profileDocument
+   *          a {@link IDocumentNodeItem} containing the profile to resolve
+   * @param importHistory
+   *          the import stack for cycle detection
+   * @return the resolved profile
+   * @throws IOException
+   *           if an error occurred while loading the profile or an import
+   * @throws ProfileResolutionException
+   *           if an error occurred while resolving the profile
+   */
+  @NonNull
+  protected IDocumentNodeItem resolveProfile(
+      @NonNull IDocumentNodeItem profileDocument,
+      @NonNull Stack&lt;URI&gt; importHistory) throws IOException, ProfileResolutionException {
+<span class="fc" id="L199">    Catalog resolvedCatalog = new Catalog();</span>
+
+<span class="fc" id="L201">    generateMetadata(resolvedCatalog, profileDocument);</span>
+
+<span class="fc" id="L203">    IIndexer index = resolveImports(resolvedCatalog, profileDocument, importHistory);</span>
+<span class="fc" id="L204">    handleReferences(resolvedCatalog, profileDocument, index);</span>
+<span class="fc" id="L205">    handleMerge(resolvedCatalog, profileDocument, index);</span>
+<span class="fc" id="L206">    handleModify(resolvedCatalog, profileDocument);</span>
+
+<span class="fc" id="L208">    return DefaultNodeItemFactory.instance().newDocumentNodeItem(</span>
+        new RootAssemblyDefinition(
+<span class="fc" id="L210">            ObjectUtils.notNull(</span>
+<span class="fc" id="L211">                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),</span>
+        resolvedCatalog,
+<span class="fc" id="L213">        profileDocument.getBaseUri());</span>
+  }
+
+  @NonNull
+  public IDocumentNodeItem resolve(@NonNull IDocumentNodeItem profileOrCatalog)
+      throws IOException, ProfileResolutionException {
+<span class="fc" id="L219">    return resolve(profileOrCatalog, new Stack&lt;&gt;());</span>
+  }
+
+  @NonNull
+  protected IDocumentNodeItem resolve(@NonNull IDocumentNodeItem profileOrCatalog,
+      @NonNull Stack&lt;URI&gt; importHistory)
+      throws IOException, ProfileResolutionException {
+<span class="fc" id="L226">    Object profileObject = profileOrCatalog.getValue();</span>
+
+    IDocumentNodeItem retval;
+<span class="fc bfc" id="L229" title="All 2 branches covered.">    if (profileObject instanceof Catalog) {</span>
+      // already a catalog
+<span class="fc" id="L231">      retval = profileOrCatalog;</span>
+    } else {
+      // must be a profile
+<span class="fc" id="L234">      retval = resolveProfile(profileOrCatalog, importHistory);</span>
+    }
+<span class="fc" id="L236">    return retval;</span>
+  }
+
+  private static Profile toProfile(@NonNull IDocumentNodeItem profileDocument) {
+<span class="fc" id="L240">    Object object = profileDocument.getValue();</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">    assert object != null;</span>
+
+<span class="fc" id="L243">    return (Profile) object;</span>
+  }
+
+  @NonNull
+  private static Profile toProfile(@NonNull IRootAssemblyNodeItem profileItem) {
+<span class="fc" id="L248">    Object object = profileItem.getValue();</span>
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">    assert object != null;</span>
+
+<span class="fc" id="L251">    return (Profile) object;</span>
+  }
+
+  private static void generateMetadata(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument) {
+<span class="fc" id="L255">    resolvedCatalog.setUuid(UUID.randomUUID());</span>
+
+<span class="fc" id="L257">    Profile profile = toProfile(profileDocument);</span>
+<span class="fc" id="L258">    Metadata profileMetadata = profile.getMetadata();</span>
+
+<span class="fc" id="L260">    Metadata resolvedMetadata = new Metadata();</span>
+<span class="fc" id="L261">    resolvedMetadata.setTitle(profileMetadata.getTitle());</span>
+
+<span class="pc bpc" id="L263" title="1 of 2 branches missed.">    if (profileMetadata.getVersion() != null) {</span>
+<span class="fc" id="L264">      resolvedMetadata.setVersion(profileMetadata.getVersion());</span>
+    }
+
+    // metadata.setOscalVersion(OscalUtils.OSCAL_VERSION);
+<span class="fc" id="L268">    resolvedMetadata.setOscalVersion(profileMetadata.getOscalVersion());</span>
+
+<span class="fc" id="L270">    resolvedMetadata.setLastModified(ZonedDateTime.now(ZoneOffset.UTC));</span>
+
+<span class="fc" id="L272">    resolvedMetadata.addProp(AbstractProperty.builder(&quot;resolution-tool&quot;).value(&quot;libOSCAL-Java&quot;).build());</span>
+
+<span class="fc" id="L274">    URI profileUri = profileDocument.getDocumentUri();</span>
+<span class="fc" id="L275">    resolvedMetadata.addLink(AbstractLink.builder(profileUri).relation(&quot;source-profile&quot;).build());</span>
+
+<span class="fc" id="L277">    resolvedCatalog.setMetadata(resolvedMetadata);</span>
+<span class="fc" id="L278">  }</span>
+
+  @NonNull
+  private IIndexer resolveImports(
+      @NonNull Catalog resolvedCatalog,
+      @NonNull IDocumentNodeItem profileDocument,
+      @NonNull Stack&lt;URI&gt; importHistory)
+      throws IOException, ProfileResolutionException {
+
+<span class="fc" id="L287">    IRootAssemblyNodeItem profileItem = profileDocument.getRootAssemblyNodeItem();</span>
+
+    // first verify there is at least one import
+<span class="fc" id="L290">    List&lt;? extends IRequiredValueModelNodeItem&gt; profileImports = profileItem.getModelItemsByName(&quot;import&quot;);</span>
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">    if (profileImports.isEmpty()) {</span>
+<span class="nc" id="L292">      throw new ProfileResolutionException(String.format(&quot;Profile '%s' has no imports&quot;, profileItem.getBaseUri()));</span>
+    }
+
+    // now process each import
+<span class="fc" id="L296">    IIndexer retval = new BasicIndexer();</span>
+<span class="fc bfc" id="L297" title="All 2 branches covered.">    for (IRequiredValueModelNodeItem profileImportItem : profileImports) {</span>
+<span class="fc" id="L298">      IIndexer result = resolveImport(</span>
+<span class="fc" id="L299">          ObjectUtils.notNull(profileImportItem),</span>
+          profileDocument,
+          importHistory,
+          resolvedCatalog);
+<span class="fc" id="L303">      retval.append(result);</span>
+<span class="fc" id="L304">    }</span>
+<span class="fc" id="L305">    return retval;</span>
+  }
+
+  @NonNull
+  protected IIndexer resolveImport(
+      @NonNull IRequiredValueModelNodeItem profileImportItem,
+      @NonNull IDocumentNodeItem profileDocument,
+      @NonNull Stack&lt;URI&gt; importHistory,
+      @NonNull Catalog resolvedCatalog) throws IOException, ProfileResolutionException {
+<span class="fc" id="L314">    ProfileImport profileImport = (ProfileImport) profileImportItem.getValue();</span>
+
+<span class="fc" id="L316">    URI importUri = profileImport.getHref();</span>
+<span class="pc bpc" id="L317" title="1 of 2 branches missed.">    if (importUri == null) {</span>
+<span class="nc" id="L318">      throw new ProfileResolutionException(&quot;profileImport.getHref() must return a non-null URI&quot;);</span>
+    }
+
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">    if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L322">      LOGGER.atDebug().log(&quot;resolving profile import '{}'&quot;, importUri);</span>
+    }
+
+<span class="fc" id="L325">    InputSource source = newImportSource(importUri, profileDocument);</span>
+<span class="fc" id="L326">    URI sourceUri = ObjectUtils.notNull(URI.create(source.getSystemId()));</span>
+
+    // check for import cycle
+    try {
+<span class="fc" id="L330">      requireNonCycle(</span>
+          sourceUri,
+          importHistory);
+<span class="fc" id="L333">    } catch (ImportCycleException ex) {</span>
+<span class="fc" id="L334">      throw new IOException(ex);</span>
+<span class="fc" id="L335">    }</span>
+
+    // track the import in the import history
+<span class="fc" id="L338">    importHistory.push(sourceUri);</span>
+    try {
+<span class="fc" id="L340">      IDocumentNodeItem document = getDynamicContext().getDocumentLoader().loadAsNodeItem(source);</span>
+<span class="fc" id="L341">      IDocumentNodeItem importedCatalog = resolve(document, importHistory);</span>
+
+      // Create a defensive deep copy of the document and associated values, since we will be making
+      // changes to the data.
+      try {
+<span class="fc" id="L346">        importedCatalog = DefaultNodeItemFactory.instance().newDocumentNodeItem(</span>
+<span class="fc" id="L347">            importedCatalog.getRootAssemblyNodeItem().getDefinition(),</span>
+<span class="fc" id="L348">            OscalBindingContext.instance().copyBoundObject(importedCatalog.getValue(), null),</span>
+<span class="fc" id="L349">            importedCatalog.getDocumentUri());</span>
+
+<span class="fc" id="L351">        return new Import(profileDocument, profileImportItem)</span>
+<span class="fc" id="L352">            .resolve(importedCatalog, resolvedCatalog);</span>
+<span class="nc" id="L353">      } catch (BindingException ex) {</span>
+<span class="nc" id="L354">        throw new IOException(ex);</span>
+      }
+    } finally {
+      // pop the resolved catalog from the import history
+<span class="fc" id="L358">      URI poppedUri = ObjectUtils.notNull(importHistory.pop());</span>
+<span class="pc bpc" id="L359" title="1 of 2 branches missed.">      assert sourceUri.equals(poppedUri);</span>
+    }
+  }
+
+  @NonNull
+  protected InputSource newImportSource(
+      @NonNull URI importUri,
+      @NonNull IDocumentNodeItem profileDocument) throws IOException {
+
+    // Get the entity resolver to resolve relative references in the profile
+<span class="fc" id="L369">    EntityResolver resolver = getEntityResolver(profileDocument.getDocumentUri());</span>
+
+    InputSource source;
+<span class="fc bfc" id="L372" title="All 2 branches covered.">    if (OscalUtils.isInternalReference(importUri)) {</span>
+      // handle internal reference
+<span class="fc" id="L374">      String uuid = OscalUtils.internalReferenceFragmentToId(importUri);</span>
+
+<span class="fc" id="L376">      IRootAssemblyNodeItem profileItem = profileDocument.getRootAssemblyNodeItem();</span>
+<span class="fc" id="L377">      Profile profile = toProfile(profileItem);</span>
+<span class="fc" id="L378">      Resource resource = profile.getResourceByUuid(ObjectUtils.notNull(UUID.fromString(uuid)));</span>
+<span class="pc bpc" id="L379" title="1 of 2 branches missed.">      if (resource == null) {</span>
+<span class="nc" id="L380">        throw new IOException(</span>
+<span class="nc" id="L381">            String.format(&quot;unable to find the resource identified by '%s' used in profile import&quot;, importUri));</span>
+      }
+
+<span class="fc" id="L384">      source = OscalUtils.newInputSource(resource, resolver, null);</span>
+<span class="fc" id="L385">    } else {</span>
+      try {
+<span class="fc" id="L387">        source = resolver.resolveEntity(null, importUri.toASCIIString());</span>
+<span class="nc" id="L388">      } catch (SAXException ex) {</span>
+<span class="nc" id="L389">        throw new IOException(ex);</span>
+<span class="fc" id="L390">      }</span>
+    }
+
+<span class="pc bpc" id="L393" title="2 of 4 branches missed.">    if (source == null || source.getSystemId() == null) {</span>
+<span class="nc" id="L394">      throw new IOException(String.format(&quot;Unable to resolve import '%s'.&quot;, importUri.toString()));</span>
+    }
+
+<span class="fc" id="L397">    return source;</span>
+  }
+
+  private static void requireNonCycle(@NonNull URI uri, @NonNull Stack&lt;URI&gt; importHistory)
+      throws ImportCycleException {
+<span class="fc" id="L402">    List&lt;URI&gt; cycle = checkCycle(uri, importHistory);</span>
+<span class="fc bfc" id="L403" title="All 2 branches covered.">    if (!cycle.isEmpty()) {</span>
+<span class="fc" id="L404">      throw new ImportCycleException(String.format(&quot;Importing resource '%s' would result in the import cycle: %s&quot;, uri,</span>
+<span class="fc" id="L405">          cycle.stream().map(cycleUri -&gt; cycleUri.toString()).collect(Collectors.joining(&quot; -&gt; &quot;, &quot; -&gt; &quot;, &quot;&quot;))));</span>
+    }
+<span class="fc" id="L407">  }</span>
+
+  @NonNull
+  private static List&lt;URI&gt; checkCycle(@NonNull URI uri, @NonNull Stack&lt;URI&gt; importHistory) {
+<span class="fc" id="L411">    int index = importHistory.indexOf(uri);</span>
+
+    List&lt;URI&gt; retval;
+<span class="fc bfc" id="L414" title="All 2 branches covered.">    if (index == -1) {</span>
+<span class="fc" id="L415">      retval = CollectionUtil.emptyList();</span>
+    } else {
+<span class="fc" id="L417">      retval = CollectionUtil.unmodifiableList(</span>
+<span class="fc" id="L418">          ObjectUtils.notNull(importHistory.subList(0, index + 1)));</span>
+    }
+<span class="fc" id="L420">    return retval;</span>
+  }
+
+  // TODO: move this to an abstract method on profile
+  private static StructuringDirective getStructuringDirective(Profile profile) {
+<span class="fc" id="L425">    Merge merge = profile.getMerge();</span>
+
+    StructuringDirective retval;
+<span class="fc bfc" id="L428" title="All 2 branches covered.">    if (merge == null) {</span>
+<span class="fc" id="L429">      retval = StructuringDirective.FLAT;</span>
+<span class="pc bpc" id="L430" title="2 of 4 branches missed.">    } else if (merge.getAsIs() != null &amp;&amp; merge.getAsIs()) {</span>
+<span class="fc" id="L431">      retval = StructuringDirective.AS_IS;</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">    } else if (merge.getCustom() != null) {</span>
+<span class="nc" id="L433">      retval = StructuringDirective.CUSTOM;</span>
+    } else {
+<span class="nc" id="L435">      retval = StructuringDirective.FLAT;</span>
+    }
+<span class="fc" id="L437">    return retval;</span>
+  }
+
+  protected void handleMerge(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IIndexer importIndex) {
+    // handle combine
+
+    // handle structuring
+<span class="pc bpc" id="L445" title="1 of 3 branches missed.">    switch (getStructuringDirective(toProfile(profileDocument))) {</span>
+    case AS_IS:
+      // do nothing
+<span class="fc" id="L448">      break;</span>
+    case CUSTOM:
+<span class="nc" id="L450">      throw new UnsupportedOperationException(&quot;custom structuring&quot;);</span>
+    case FLAT:
+    default:
+<span class="fc" id="L453">      structureFlat(resolvedCatalog, profileDocument, importIndex);</span>
+      break;
+    }
+
+<span class="fc" id="L457">  }</span>
+
+  protected void structureFlat(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IIndexer importIndex) {
+<span class="pc bpc" id="L461" title="1 of 2 branches missed.">    if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L462">      LOGGER.debug(&quot;applying flat structuring directive&quot;);</span>
+    }
+
+    // {
+    // // rebuild an index
+    // IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
+    // new RootAssemblyDefinition(
+    // ObjectUtils.notNull(
+    // (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+    // resolvedCatalog,
+    // profileDocument.getBaseUri());
+    //
+    // // FIXME: need to find a better way to create an index that doesn't auto select groups
+    // IIndexer indexer = new BasicIndexer();
+    // ControlSelectionVisitor selectionVisitor
+    // = new ControlSelectionVisitor(IControlFilter.ALWAYS_MATCH, indexer);
+    // selectionVisitor.visitCatalog(resolvedCatalogItem);
+    // }
+
+    // rebuild the document, since the paths have changed
+<span class="fc" id="L482">    IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(</span>
+        new RootAssemblyDefinition(
+<span class="fc" id="L484">            ObjectUtils.notNull(</span>
+<span class="fc" id="L485">                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),</span>
+        resolvedCatalog,
+<span class="fc" id="L487">        profileDocument.getBaseUri());</span>
+
+<span class="fc" id="L489">    FlatteningStructuringVisitor.instance().visitCatalog(resolvedCatalogItem, importIndex);</span>
+<span class="fc" id="L490">  }</span>
+
+  @SuppressWarnings(&quot;PMD.ExceptionAsFlowControl&quot;) // ok
+  protected void handleModify(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument)
+      throws ProfileResolutionException {
+<span class="fc" id="L495">    IDocumentNodeItem resolvedCatalogDocument = DefaultNodeItemFactory.instance().newDocumentNodeItem(</span>
+        new RootAssemblyDefinition(
+<span class="fc" id="L497">            ObjectUtils.notNull(</span>
+<span class="fc" id="L498">                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),</span>
+        resolvedCatalog,
+<span class="fc" id="L500">        profileDocument.getBaseUri());</span>
+
+    try {
+<span class="fc" id="L503">      IIndexer indexer = new BasicIndexer();</span>
+<span class="fc" id="L504">      ControlIndexingVisitor visitor = new ControlIndexingVisitor(</span>
+<span class="fc" id="L505">          ObjectUtils.notNull(EnumSet.of(IEntityItem.ItemType.CONTROL, IEntityItem.ItemType.PARAMETER)));</span>
+<span class="fc" id="L506">      visitor.visitCatalog(resolvedCatalogDocument, indexer);</span>
+
+<span class="fc" id="L508">      METAPATH_SET_PARAMETER.evaluate(profileDocument)</span>
+<span class="fc" id="L509">          .forEach(item -&gt; {</span>
+<span class="fc" id="L510">            IRequiredValueAssemblyNodeItem setParameter = (IRequiredValueAssemblyNodeItem) item;</span>
+            try {
+<span class="fc" id="L512">              handleSetParameter(setParameter, indexer);</span>
+<span class="nc" id="L513">            } catch (ProfileResolutionEvaluationException ex) {</span>
+<span class="nc" id="L514">              throw new ProfileResolutionEvaluationException(</span>
+<span class="nc" id="L515">                  String.format(&quot;Unable to apply the set-parameter at '%s'. %s&quot;,</span>
+<span class="nc" id="L516">                      setParameter.toPath(IPathFormatter.METAPATH_PATH_FORMATER),</span>
+<span class="nc" id="L517">                      ex.getLocalizedMessage()),</span>
+                  ex);
+<span class="fc" id="L519">            }</span>
+<span class="fc" id="L520">          });</span>
+
+<span class="fc" id="L522">      METAPATH_ALTER.evaluate(profileDocument)</span>
+<span class="fc" id="L523">          .forEach(item -&gt; {</span>
+<span class="fc" id="L524">            handleAlter((IRequiredValueAssemblyNodeItem) item, indexer);</span>
+<span class="fc" id="L525">          });</span>
+<span class="nc" id="L526">    } catch (ProfileResolutionEvaluationException ex) {</span>
+<span class="nc" id="L527">      throw new ProfileResolutionException(ex.getLocalizedMessage(), ex);</span>
+<span class="fc" id="L528">    }</span>
+<span class="fc" id="L529">  }</span>
+
+  protected void handleSetParameter(IRequiredValueAssemblyNodeItem item, IIndexer indexer) {
+<span class="fc" id="L532">    ProfileSetParameter setParameter = (Modify.ProfileSetParameter) item.getValue();</span>
+<span class="fc" id="L533">    String paramId = ObjectUtils.requireNonNull(setParameter.getParamId());</span>
+<span class="fc" id="L534">    IEntityItem entity = indexer.getEntity(IEntityItem.ItemType.PARAMETER, paramId, false);</span>
+<span class="pc bpc" id="L535" title="1 of 2 branches missed.">    if (entity == null) {</span>
+<span class="nc" id="L536">      throw new ProfileResolutionEvaluationException(</span>
+<span class="nc" id="L537">          String.format(</span>
+              &quot;The parameter '%s' does not exist in the resolved catalog.&quot;,
+              paramId));
+    }
+
+<span class="fc" id="L542">    Parameter param = entity.getInstanceValue();</span>
+
+    // apply the set parameter values
+<span class="fc" id="L545">    param.setClazz(ModifyPhaseUtils.mergeItem(param.getClazz(), setParameter.getClazz()));</span>
+<span class="fc" id="L546">    param.setProps(ModifyPhaseUtils.merge(param.getProps(), setParameter.getProps(),</span>
+<span class="fc" id="L547">        ModifyPhaseUtils.identifierKey(Property::getUuid)));</span>
+<span class="fc" id="L548">    param.setLinks(ModifyPhaseUtils.merge(param.getLinks(), setParameter.getLinks(), ModifyPhaseUtils.identityKey()));</span>
+<span class="fc" id="L549">    param.setLabel(ModifyPhaseUtils.mergeItem(param.getLabel(), setParameter.getLabel()));</span>
+<span class="fc" id="L550">    param.setUsage(ModifyPhaseUtils.mergeItem(param.getUsage(), setParameter.getUsage()));</span>
+<span class="fc" id="L551">    param.setConstraints(</span>
+<span class="fc" id="L552">        ModifyPhaseUtils.merge(param.getConstraints(), setParameter.getConstraints(), ModifyPhaseUtils.identityKey()));</span>
+<span class="fc" id="L553">    param.setGuidelines(</span>
+<span class="fc" id="L554">        ModifyPhaseUtils.merge(param.getGuidelines(), setParameter.getGuidelines(), ModifyPhaseUtils.identityKey()));</span>
+<span class="fc" id="L555">    param.setValues(new LinkedList&lt;&gt;(setParameter.getValues()));</span>
+<span class="fc" id="L556">    param.setSelect(setParameter.getSelect());</span>
+<span class="fc" id="L557">  }</span>
+
+  protected void handleAlter(IRequiredValueAssemblyNodeItem item, IIndexer indexer) {
+<span class="fc" id="L560">    Modify.Alter alter = (Modify.Alter) item.getValue();</span>
+<span class="fc" id="L561">    String controlId = ObjectUtils.requireNonNull(alter.getControlId());</span>
+<span class="fc" id="L562">    IEntityItem entity = indexer.getEntity(IEntityItem.ItemType.CONTROL, controlId, false);</span>
+<span class="pc bpc" id="L563" title="1 of 2 branches missed.">    if (entity == null) {</span>
+<span class="nc" id="L564">      throw new ProfileResolutionEvaluationException(</span>
+<span class="nc" id="L565">          String.format(</span>
+              &quot;Unable to apply the alter targeting control '%s' at '%s'.&quot;
+                  + &quot; The control does not exist in the resolved catalog.&quot;,
+              controlId,
+<span class="nc" id="L569">              item.toPath(IPathFormatter.METAPATH_PATH_FORMATER)));</span>
+    }
+<span class="fc" id="L571">    Control control = entity.getInstanceValue();</span>
+
+<span class="fc" id="L573">    METAPATH_ALTER_REMOVE.evaluate(item)</span>
+<span class="fc" id="L574">        .forEach(nodeItem -&gt; {</span>
+<span class="nc" id="L575">          IRequiredValueNodeItem removeItem = (IRequiredValueNodeItem) nodeItem;</span>
+<span class="nc" id="L576">          Modify.Alter.Remove remove = ObjectUtils.notNull((Modify.Alter.Remove) removeItem.getValue());</span>
+
+          try {
+<span class="nc bnc" id="L579" title="All 2 branches missed.">            if (!RemoveVisitor.remove(</span>
+                control,
+<span class="nc" id="L581">                remove.getByName(),</span>
+<span class="nc" id="L582">                remove.getByClass(),</span>
+<span class="nc" id="L583">                remove.getById(),</span>
+<span class="nc" id="L584">                remove.getByNs(),</span>
+<span class="nc" id="L585">                RemoveVisitor.TargetType.forFieldName(remove.getByItemName()))) {</span>
+<span class="nc" id="L586">              throw new ProfileResolutionEvaluationException(</span>
+<span class="nc" id="L587">                  String.format(&quot;The remove did not match a valid target&quot;));</span>
+            }
+<span class="nc" id="L589">          } catch (ProfileResolutionEvaluationException ex) {</span>
+<span class="nc" id="L590">            throw new ProfileResolutionEvaluationException(</span>
+<span class="nc" id="L591">                String.format(&quot;Unable to apply the remove targeting control '%s' at '%s'. %s&quot;,</span>
+<span class="nc" id="L592">                    control.getId(),</span>
+<span class="nc" id="L593">                    removeItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),</span>
+<span class="nc" id="L594">                    ex.getLocalizedMessage()),</span>
+                ex);
+<span class="nc" id="L596">          }</span>
+<span class="nc" id="L597">        });</span>
+<span class="fc" id="L598">    METAPATH_ALTER_ADD.evaluate(item)</span>
+<span class="fc" id="L599">        .forEach(nodeItem -&gt; {</span>
+<span class="fc" id="L600">          IRequiredValueNodeItem addItem = (IRequiredValueNodeItem) nodeItem;</span>
+<span class="fc" id="L601">          Modify.Alter.Add add = ObjectUtils.notNull((Modify.Alter.Add) addItem.getValue());</span>
+<span class="fc" id="L602">          String byId = add.getById();</span>
+          try {
+<span class="pc bpc" id="L604" title="1 of 2 branches missed.">            if (!AddVisitor.add(</span>
+                control,
+<span class="fc" id="L606">                AddVisitor.Position.forName(add.getPosition()),</span>
+                byId,
+<span class="fc" id="L608">                add.getTitle(),</span>
+<span class="fc" id="L609">                CollectionUtil.listOrEmpty(add.getParams()),</span>
+<span class="fc" id="L610">                CollectionUtil.listOrEmpty(add.getProps()),</span>
+<span class="fc" id="L611">                CollectionUtil.listOrEmpty(add.getLinks()),</span>
+<span class="fc" id="L612">                CollectionUtil.listOrEmpty(add.getParts()))) {</span>
+
+<span class="nc" id="L614">              throw new ProfileResolutionEvaluationException(</span>
+<span class="nc" id="L615">                  String.format(&quot;The add did not match a valid target&quot;));</span>
+            }
+<span class="nc" id="L617">          } catch (ProfileResolutionEvaluationException ex) {</span>
+<span class="nc" id="L618">            throw new ProfileResolutionEvaluationException(</span>
+<span class="nc" id="L619">                String.format(&quot;Unable to apply the add targeting control '%s'%s at '%s'. %s&quot;,</span>
+<span class="nc" id="L620">                    control.getId(),</span>
+<span class="nc bnc" id="L621" title="All 2 branches missed.">                    byId == null ? &quot;&quot; : String.format(&quot; having by-id '%s'&quot;, byId),</span>
+<span class="nc" id="L622">                    addItem.toPath(IPathFormatter.METAPATH_PATH_FORMATER),</span>
+<span class="nc" id="L623">                    ex.getLocalizedMessage()),</span>
+                ex);
+<span class="fc" id="L625">          }</span>
+<span class="fc" id="L626">        });</span>
+<span class="fc" id="L627">  }</span>
+
+  private static void handleReferences(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IIndexer index) {
+
+<span class="fc" id="L632">    BasicIndexer profileIndex = new BasicIndexer();</span>
+
+<span class="fc" id="L634">    new ControlIndexingVisitor(ObjectUtils.notNull(EnumSet.allOf(ItemType.class)))</span>
+<span class="fc" id="L635">        .visitProfile(profileDocument, profileIndex);</span>
+
+    // copy roles, parties, and locations with prop name:keep and any referenced
+<span class="fc" id="L638">    Metadata resolvedMetadata = resolvedCatalog.getMetadata();</span>
+<span class="fc" id="L639">    resolvedMetadata.setRoles(</span>
+<span class="fc" id="L640">        IIndexer.filterDistinct(</span>
+<span class="fc" id="L641">            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getRoles()).stream()),</span>
+<span class="fc" id="L642">            profileIndex.getEntitiesByItemType(IEntityItem.ItemType.ROLE),</span>
+<span class="nc" id="L643">            item -&gt; item.getId())</span>
+<span class="fc" id="L644">            .collect(Collectors.toCollection(LinkedList::new)));</span>
+<span class="fc" id="L645">    resolvedMetadata.setParties(</span>
+<span class="fc" id="L646">        IIndexer.filterDistinct(</span>
+<span class="fc" id="L647">            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getParties()).stream()),</span>
+<span class="fc" id="L648">            profileIndex.getEntitiesByItemType(IEntityItem.ItemType.PARTY),</span>
+<span class="nc" id="L649">            item -&gt; item.getUuid())</span>
+<span class="fc" id="L650">            .collect(Collectors.toCollection(LinkedList::new)));</span>
+<span class="fc" id="L651">    resolvedMetadata.setLocations(</span>
+<span class="fc" id="L652">        IIndexer.filterDistinct(</span>
+<span class="fc" id="L653">            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getLocations()).stream()),</span>
+<span class="fc" id="L654">            profileIndex.getEntitiesByItemType(IEntityItem.ItemType.LOCATION),</span>
+<span class="nc" id="L655">            item -&gt; item.getUuid())</span>
+<span class="fc" id="L656">            .collect(Collectors.toCollection(LinkedList::new)));</span>
+
+    // copy resources
+<span class="fc" id="L659">    BackMatter resolvedBackMatter = resolvedCatalog.getBackMatter();</span>
+<span class="fc bfc" id="L660" title="All 2 branches covered.">    List&lt;Resource&gt; resolvedResources = resolvedBackMatter == null ? CollectionUtil.emptyList()</span>
+<span class="fc" id="L661">        : CollectionUtil.listOrEmpty(resolvedBackMatter.getResources());</span>
+
+<span class="fc" id="L663">    List&lt;Resource&gt; resources = IIndexer.filterDistinct(</span>
+<span class="fc" id="L664">        ObjectUtils.notNull(resolvedResources.stream()),</span>
+<span class="fc" id="L665">        profileIndex.getEntitiesByItemType(IEntityItem.ItemType.RESOURCE),</span>
+<span class="fc" id="L666">        item -&gt; item.getUuid())</span>
+<span class="fc" id="L667">        .collect(Collectors.toCollection(LinkedList::new));</span>
+
+<span class="fc bfc" id="L669" title="All 2 branches covered.">    if (!resources.isEmpty()) {</span>
+<span class="pc bpc" id="L670" title="1 of 2 branches missed.">      if (resolvedBackMatter == null) {</span>
+<span class="nc" id="L671">        resolvedBackMatter = new BackMatter();</span>
+<span class="nc" id="L672">        resolvedCatalog.setBackMatter(resolvedBackMatter);</span>
+      }
+
+<span class="fc" id="L675">      resolvedBackMatter.setResources(resources);</span>
+    }
+
+<span class="fc" id="L678">    index.append(profileIndex);</span>
+<span class="fc" id="L679">  }</span>
+
+  private class DocumentEntityResolver implements EntityResolver {
+    @NonNull
+    private final URI documentUri;
+
+<span class="fc" id="L685">    public DocumentEntityResolver(@NonNull URI documentUri) {</span>
+<span class="fc" id="L686">      this.documentUri = documentUri;</span>
+<span class="fc" id="L687">    }</span>
+
+    @NonNull
+    protected URI getDocumentUri() {
+<span class="fc" id="L691">      return documentUri;</span>
+    }
+
+    @Override
+    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+
+<span class="fc" id="L697">      URI resolvedUri = getDocumentUri().resolve(systemId);</span>
+
+<span class="fc" id="L699">      EntityResolver resolver = getDynamicContext().getDocumentLoader().getEntityResolver();</span>
+
+      InputSource retval;
+<span class="pc bpc" id="L702" title="1 of 2 branches missed.">      if (resolver == null) {</span>
+<span class="nc" id="L703">        retval = new InputSource(resolvedUri.toASCIIString());</span>
+      } else {
+<span class="fc" id="L705">        retval = resolver.resolveEntity(publicId, resolvedUri.toASCIIString());</span>
+      }
+<span class="fc" id="L707">      return retval;</span>
+    }
+
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ControlSelectionState.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.selection</a> &gt; <span class="el_source">ControlSelectionState.java</span></div><h1>ControlSelectionState.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.selection;
+
+import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueAssemblyNodeItem;
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.CatalogGroup;
+import gov.nist.secauto.oscal.lib.model.Control;
+import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+public class ControlSelectionState implements IControlSelectionState {
+<span class="fc" id="L47">  private static final MetapathExpression GROUP_CHILDREN = MetapathExpression.compile(&quot;group|descendant::control&quot;);</span>
+
+  @NonNull
+  private final IIndexer index;
+  @NonNull
+  private final IControlFilter filter;
+<span class="fc" id="L53">  @NonNull</span>
+  private final Map&lt;IRequiredValueModelNodeItem, SelectionState&gt; itemSelectionState = new ConcurrentHashMap&lt;&gt;();
+
+  @SuppressFBWarnings(value = &quot;EI_EXPOSE_REP2&quot;, justification = &quot;provides intentional access to index state&quot;)
+<span class="fc" id="L57">  public ControlSelectionState(@NonNull IIndexer index, @NonNull IControlFilter filter) {</span>
+<span class="fc" id="L58">    this.index = index;</span>
+<span class="fc" id="L59">    this.filter = filter;</span>
+<span class="fc" id="L60">  }</span>
+
+  @Override
+  @SuppressFBWarnings(value = &quot;EI_EXPOSE_REP&quot;, justification = &quot;provides intentional access to index state&quot;)
+  public IIndexer getIndex() {
+<span class="fc" id="L65">    return index;</span>
+  }
+
+  @NonNull
+  public IControlFilter getFilter() {
+<span class="fc" id="L70">    return filter;</span>
+  }
+
+  @Override
+  public boolean isSelected(@NonNull IRequiredValueModelNodeItem item) {
+<span class="fc" id="L75">    return getSelectionState(item).isSelected();</span>
+  }
+
+  @NonNull
+  protected SelectionState getSelectionState(@NonNull IRequiredValueModelNodeItem item) {
+<span class="fc" id="L80">    SelectionState retval = itemSelectionState.get(item);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">    if (retval == null) {</span>
+<span class="fc" id="L82">      Object itemValue = ObjectUtils.requireNonNull(item.getValue());</span>
+
+<span class="fc bfc" id="L84" title="All 2 branches covered.">      if (itemValue instanceof Control) {</span>
+<span class="fc" id="L85">        Control control = (Control) itemValue;</span>
+
+        // get the parent control if the parent is a control
+<span class="fc" id="L88">        IRequiredValueAssemblyNodeItem parentItem = ObjectUtils.requireNonNull(item.getParentContentNodeItem());</span>
+<span class="fc" id="L89">        Object parentValue = parentItem.getValue();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        Control parentControl = parentValue instanceof Control ? (Control) parentValue : null;</span>
+
+<span class="fc" id="L92">        boolean defaultMatch = false;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (parentControl != null) {</span>
+<span class="fc" id="L94">          SelectionState parentSelectionState = getSelectionState(parentItem);</span>
+<span class="fc bfc" id="L95" title="All 4 branches covered.">          defaultMatch = parentSelectionState.isSelected() &amp;&amp; parentSelectionState.isWithChildren();</span>
+        }
+
+<span class="fc" id="L98">        Pair&lt;Boolean, Boolean&gt; matchResult = getFilter().match(control, defaultMatch);</span>
+<span class="fc" id="L99">        boolean selected = matchResult.getLeft();</span>
+<span class="fc" id="L100">        boolean withChildren = matchResult.getRight();</span>
+
+<span class="fc" id="L102">        retval = new SelectionState(selected, withChildren);</span>
+
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">      } else if (itemValue instanceof CatalogGroup) {</span>
+        // get control selection status
+<span class="fc" id="L106">        boolean selected = GROUP_CHILDREN.evaluate(item).asStream()</span>
+<span class="fc" id="L107">            .map(child -&gt; {</span>
+<span class="fc" id="L108">              return getSelectionState((IRequiredValueModelNodeItem) ObjectUtils.requireNonNull(child)).isSelected();</span>
+            })
+<span class="fc bfc" id="L110" title="All 4 branches covered.">            .reduce(false, (first, second) -&gt; first || second);</span>
+
+<span class="fc" id="L112">        retval = new SelectionState(selected, false);</span>
+<span class="fc" id="L113">      } else {</span>
+<span class="nc" id="L114">        throw new IllegalStateException(</span>
+<span class="nc" id="L115">            String.format(&quot;Selection not supported for type '%s' at path '%s'&quot;,</span>
+<span class="nc" id="L116">                itemValue.getClass().getName(),</span>
+<span class="nc" id="L117">                item.toPath(IPathFormatter.METAPATH_PATH_FORMATER)));</span>
+      }
+<span class="fc" id="L119">      itemSelectionState.put(item, retval);</span>
+    }
+<span class="fc" id="L121">    return retval;</span>
+  }
+
+  private static final class SelectionState {
+    private final boolean selected;
+    private final boolean withChildren;
+
+<span class="fc" id="L128">    private SelectionState(boolean selected, boolean withChildren) {</span>
+<span class="fc" id="L129">      this.selected = selected;</span>
+<span class="fc" id="L130">      this.withChildren = withChildren;</span>
+<span class="fc" id="L131">    }</span>
+
+    public boolean isSelected() {
+<span class="fc" id="L134">      return selected;</span>
+    }
+
+    public boolean isWithChildren() {
+<span class="pc bpc" id="L138" title="1 of 4 branches missed.">      return selected &amp;&amp; withChildren;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

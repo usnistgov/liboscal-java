@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IEntityItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.support</a> &gt; <span class="el_source">IEntityItem.java</span></div><h1>IEntityItem.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
+
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+
+import java.net.URI;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public interface IEntityItem {
+
+<span class="fc" id="L37">  enum ItemType {</span>
+<span class="fc" id="L38">    ROLE(false),</span>
+<span class="fc" id="L39">    LOCATION(true),</span>
+<span class="fc" id="L40">    PARTY(true),</span>
+<span class="fc" id="L41">    GROUP(false),</span>
+<span class="fc" id="L42">    CONTROL(false),</span>
+<span class="fc" id="L43">    PART(false),</span>
+<span class="fc" id="L44">    PARAMETER(false),</span>
+<span class="fc" id="L45">    RESOURCE(true);</span>
+
+    private final boolean uuid;
+
+<span class="fc" id="L49">    ItemType(boolean isUuid) {</span>
+<span class="fc" id="L50">      this.uuid = isUuid;</span>
+<span class="fc" id="L51">    }</span>
+
+    public boolean isUuid() {
+<span class="fc" id="L54">      return uuid;</span>
+    }
+  }
+
+  /**
+   * Get the identifier originally assigned to this entity.
+   * &lt;p&gt;
+   * If the identifier value was reassigned, the return value of this method will be different than
+   * value returned by {@link #getIdentifier()}. In such cases, a call to
+   * {@link #isIdentifierReassigned()} is expected to return {@code true}.
+   * &lt;p&gt;
+   * If the value was not reassigned, the return value of this method will be the same value returned
+   * by {@link #getIdentifier()}. In this case, {@link #isIdentifierReassigned()} is expected to
+   * return {@code false}.
+   *
+   * @return the original identifier value before reassignment
+   */
+  @NonNull
+  String getOriginalIdentifier();
+
+  /**
+   * Get the entity's current identifier value.
+   *
+   * @return the identifier value
+   */
+  @NonNull
+  String getIdentifier();
+
+  /**
+   * Determine if the identifier was reassigned.
+   *
+   * @return {@code true} if the identifier was reassigned, or {@code false} otherwise
+   */
+  boolean isIdentifierReassigned();
+
+  @NonNull
+  IRequiredValueModelNodeItem getInstance();
+
+  void setInstance(@NonNull IRequiredValueModelNodeItem item);
+
+  @NonNull
+  &lt;T&gt; T getInstanceValue();
+
+  @NonNull
+  ItemType getItemType();
+
+  URI getSource();
+
+  int getReferenceCount();
+
+  void incrementReferenceCount();
+
+  int resetReferenceCount();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

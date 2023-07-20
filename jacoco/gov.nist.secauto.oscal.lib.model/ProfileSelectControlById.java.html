@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfileSelectControlById.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">ProfileSelectControlById.java</span></div><h1>ProfileSelectControlById.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.control.profile.AbstractProfileSelectControlById;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Select a control or controls from an imported control set.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Select Control&quot;,
+    description = &quot;Select a control or controls from an imported control set.&quot;,
+    name = &quot;select-control-by-id&quot;,
+    metaschema = OscalProfileMetaschema.class,
+    remarks = &quot;If `with-child-controls` is \&quot;yes\&quot; on the call to a control, no sibling `call`elements need to be used to call any controls appearing within it. Since generally, this is how control enhancements are represented (as controls within controls), this provides a way to include controls with all their dependent controls (enhancements) without having to call them individually.&quot;
+)
+public class ProfileSelectControlById extends AbstractProfileSelectControlById {
+  @BoundFlag(
+      formalName = &quot;Include Contained Controls with Control&quot;,
+      description = &quot;When a control is included, whether its child (dependent) controls are also included.&quot;,
+      useName = &quot;with-child-controls&quot;,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;yes&quot;, description = &quot;Include child controls with an included control.&quot;), @AllowedValue(value = &quot;no&quot;, description = &quot;When importing a control, only include child controls that are also explicitly called.&quot;)})
+  )
+  private String _withChildControls;
+
+  @BoundField(
+      formalName = &quot;Match Controls by Identifier&quot;,
+      description = &quot;Selecting a control by its ID given as a literal.&quot;,
+      useName = &quot;with-id&quot;,
+      maxOccurs = -1
+  )
+  @BoundFieldValue(
+      typeAdapter = TokenAdapter.class
+  )
+  @GroupAs(
+      name = &quot;with-ids&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;String&gt; _withIds;
+
+  @BoundAssembly(
+      formalName = &quot;Match Controls by Pattern&quot;,
+      description = &quot;Selecting a set of controls by matching their IDs with a wildcard pattern.&quot;,
+      useName = &quot;matching&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;matching&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Matching&gt; _matching;
+
+<span class="fc" id="L73">  public ProfileSelectControlById() {</span>
+<span class="fc" id="L74">  }</span>
+
+  public String getWithChildControls() {
+<span class="fc" id="L77">    return _withChildControls;</span>
+  }
+
+  public void setWithChildControls(String value) {
+<span class="fc" id="L81">    _withChildControls = value;</span>
+<span class="fc" id="L82">  }</span>
+
+  public List&lt;String&gt; getWithIds() {
+<span class="fc" id="L85">    return _withIds;</span>
+  }
+
+  public void setWithIds(List&lt;String&gt; value) {
+<span class="fc" id="L89">    _withIds = value;</span>
+<span class="fc" id="L90">  }</span>
+
+  /**
+   * Add a new {@link String} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addWithId(String item) {
+<span class="nc" id="L98">    String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    if (_withIds == null) {</span>
+<span class="nc" id="L100">      _withIds = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L102">    return _withIds.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link String} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeWithId(String item) {
+<span class="nc" id="L111">    String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    return _withIds == null ? false : _withIds.remove(value);</span>
+  }
+
+  public List&lt;Matching&gt; getMatching() {
+<span class="fc" id="L116">    return _matching;</span>
+  }
+
+  public void setMatching(List&lt;Matching&gt; value) {
+<span class="fc" id="L120">    _matching = value;</span>
+<span class="fc" id="L121">  }</span>
+
+  /**
+   * Add a new {@link Matching} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addMatching(Matching item) {
+<span class="nc" id="L129">    Matching value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (_matching == null) {</span>
+<span class="nc" id="L131">      _matching = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L133">    return _matching.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Matching} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeMatching(Matching item) {
+<span class="nc" id="L142">    Matching value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">    return _matching == null ? false : _matching.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L148">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

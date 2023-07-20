@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SystemSecurityPlan.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">SystemSecurityPlan.java</span></div><h1>SystemSecurityPlan.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.Index;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import java.lang.Override;
+import java.lang.String;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A system security plan, such as those described in NIST SP 800-18.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;System Security Plan (SSP)&quot;,
+    description = &quot;A system security plan, such as those described in NIST SP 800-18.&quot;,
+    name = &quot;system-security-plan&quot;,
+    metaschema = OscalSspMetaschema.class,
+    rootName = &quot;system-security-plan&quot;
+)
+@AssemblyConstraints(
+    index = @Index(level = IConstraint.Level.ERROR, target = &quot;control-implementation/implemented-requirement//by-component|doc(system-implementation/leveraged-authorization/link[@rel='system-security-plan']/@href)/system-security-plan/control-implementation/implemented-requirement//by-component&quot;, name = &quot;by-component-uuid&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;))
+)
+public class SystemSecurityPlan extends AbstractOscalInstance {
+  @BoundFlag(
+      formalName = &quot;System Security Plan Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this system security plan (SSP) elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `SSP` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundAssembly(
+      formalName = &quot;Document Metadata&quot;,
+      description = &quot;Provides information about the containing document, and defines concepts that are shared across the document.&quot;,
+      useName = &quot;metadata&quot;,
+      minOccurs = 1
+  )
+  private Metadata _metadata;
+
+  @BoundAssembly(
+      formalName = &quot;Import Profile&quot;,
+      description = &quot;Used to import the OSCAL profile representing the system's control baseline.&quot;,
+      useName = &quot;import-profile&quot;,
+      minOccurs = 1
+  )
+  private ImportProfile _importProfile;
+
+  @BoundAssembly(
+      formalName = &quot;System Characteristics&quot;,
+      description = &quot;Contains the characteristics of the system, such as its name, purpose, and security impact level.&quot;,
+      useName = &quot;system-characteristics&quot;,
+      minOccurs = 1
+  )
+  private SystemCharacteristics _systemCharacteristics;
+
+  @BoundAssembly(
+      formalName = &quot;System Implementation&quot;,
+      description = &quot;Provides information as to how the system is implemented.&quot;,
+      useName = &quot;system-implementation&quot;,
+      minOccurs = 1
+  )
+  private SystemImplementation _systemImplementation;
+
+  @BoundAssembly(
+      formalName = &quot;Control Implementation&quot;,
+      description = &quot;Describes how the system satisfies a set of controls.&quot;,
+      useName = &quot;control-implementation&quot;,
+      minOccurs = 1
+  )
+  private ControlImplementation _controlImplementation;
+
+  @BoundAssembly(
+      formalName = &quot;Back matter&quot;,
+      description = &quot;A collection of resources that may be referenced from within the OSCAL document instance.&quot;,
+      useName = &quot;back-matter&quot;
+  )
+  private BackMatter _backMatter;
+
+<span class="fc" id="L87">  public SystemSecurityPlan() {</span>
+<span class="fc" id="L88">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L91">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L95">    _uuid = value;</span>
+<span class="nc" id="L96">  }</span>
+
+  public Metadata getMetadata() {
+<span class="nc" id="L99">    return _metadata;</span>
+  }
+
+  public void setMetadata(Metadata value) {
+<span class="nc" id="L103">    _metadata = value;</span>
+<span class="nc" id="L104">  }</span>
+
+  public ImportProfile getImportProfile() {
+<span class="nc" id="L107">    return _importProfile;</span>
+  }
+
+  public void setImportProfile(ImportProfile value) {
+<span class="nc" id="L111">    _importProfile = value;</span>
+<span class="nc" id="L112">  }</span>
+
+  public SystemCharacteristics getSystemCharacteristics() {
+<span class="nc" id="L115">    return _systemCharacteristics;</span>
+  }
+
+  public void setSystemCharacteristics(SystemCharacteristics value) {
+<span class="nc" id="L119">    _systemCharacteristics = value;</span>
+<span class="nc" id="L120">  }</span>
+
+  public SystemImplementation getSystemImplementation() {
+<span class="nc" id="L123">    return _systemImplementation;</span>
+  }
+
+  public void setSystemImplementation(SystemImplementation value) {
+<span class="nc" id="L127">    _systemImplementation = value;</span>
+<span class="nc" id="L128">  }</span>
+
+  public ControlImplementation getControlImplementation() {
+<span class="nc" id="L131">    return _controlImplementation;</span>
+  }
+
+  public void setControlImplementation(ControlImplementation value) {
+<span class="nc" id="L135">    _controlImplementation = value;</span>
+<span class="nc" id="L136">  }</span>
+
+  public BackMatter getBackMatter() {
+<span class="nc" id="L139">    return _backMatter;</span>
+  }
+
+  public void setBackMatter(BackMatter value) {
+<span class="nc" id="L143">    _backMatter = value;</span>
+<span class="nc" id="L144">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L148">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

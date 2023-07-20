@@ -1,0 +1,454 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package gov.nist.secauto.oscal.lib.model;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;</a>
+<span class="sourceLineNo">009</span><a id="line.9">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;</a>
+<span class="sourceLineNo">010</span><a id="line.10">import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import gov.nist.secauto.metaschema.binding.model.annotations.HasCardinality;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;</a>
+<span class="sourceLineNo">013</span><a id="line.13">import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;</a>
+<span class="sourceLineNo">014</span><a id="line.14">import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;</a>
+<span class="sourceLineNo">015</span><a id="line.15">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;</a>
+<span class="sourceLineNo">019</span><a id="line.19">import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.lang.Override;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.lang.String;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.util.LinkedList;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.util.List;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import java.util.UUID;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import org.apache.commons.lang3.builder.ReflectionToStringBuilder;</a>
+<span class="sourceLineNo">031</span><a id="line.31"></a>
+<span class="sourceLineNo">032</span><a id="line.32">/**</a>
+<span class="sourceLineNo">033</span><a id="line.33"> * Describes how the system satisfies the requirements of an individual control.</a>
+<span class="sourceLineNo">034</span><a id="line.34"> */</a>
+<span class="sourceLineNo">035</span><a id="line.35">@MetaschemaAssembly(</a>
+<span class="sourceLineNo">036</span><a id="line.36">    formalName = "Control-based Requirement",</a>
+<span class="sourceLineNo">037</span><a id="line.37">    description = "Describes how the system satisfies the requirements of an individual control.",</a>
+<span class="sourceLineNo">038</span><a id="line.38">    name = "implemented-requirement",</a>
+<span class="sourceLineNo">039</span><a id="line.39">    metaschema = OscalSspMetaschema.class,</a>
+<span class="sourceLineNo">040</span><a id="line.40">    remarks = "Use of `set-parameter` in this context, sets the parameter for the referenced control. Any `set-parameter` defined in a child context will override this value. If not overridden by a child, this value applies in the child context."</a>
+<span class="sourceLineNo">041</span><a id="line.41">)</a>
+<span class="sourceLineNo">042</span><a id="line.42">@ValueConstraints(</a>
+<span class="sourceLineNo">043</span><a id="line.43">    allowedValues = {</a>
+<span class="sourceLineNo">044</span><a id="line.44">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.|statement|.//by-component)/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = @AllowedValue(value = "control-origination", description = "Identifies the source of the implemented control. Any `control-origination` prop defined in a child context will override the parent value.")),</a>
+<span class="sourceLineNo">045</span><a id="line.45">        @AllowedValues(level = IConstraint.Level.ERROR, target = "(.|statement|.//by-component)/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='control-origination']/@value", values = {@AllowedValue(value = "organization", description = "The control is implemented by the organization owning the system, but is not specific to the system itself."), @AllowedValue(value = "system-specific", description = "The control is implemented specifically to this system."), @AllowedValue(value = "customer-configured", description = "The control is provided by the system, but must be configured by the customer."), @AllowedValue(value = "customer-provided", description = "The control must be implemented by the customer."), @AllowedValue(value = "inherited", description = "This control is inherited from an underlying system.")}),</a>
+<span class="sourceLineNo">046</span><a id="line.46">        @AllowedValues(level = IConstraint.Level.ERROR, target = "responsible-role/@role-id", allowOthers = true, values = {@AllowedValue(value = "asset-owner", description = "Accountable for ensuring the asset is managed in accordance with organizational policies and procedures."), @AllowedValue(value = "asset-administrator", description = "Responsible for administering a set of assets."), @AllowedValue(value = "security-operations", description = "Members of the security operations center (SOC)."), @AllowedValue(value = "network-operations", description = "Members of the network operations center (NOC)."), @AllowedValue(value = "incident-response", description = "Responsible for responding to an event that could lead to loss of, or disruption to, an organization's operations, services or functions."), @AllowedValue(value = "help-desk", description = "Responsible for providing information and support to users."), @AllowedValue(value = "configuration-management", description = "Responsible for the configuration management processes governing changes to the asset.")})</a>
+<span class="sourceLineNo">047</span><a id="line.47">    },</a>
+<span class="sourceLineNo">048</span><a id="line.48">    indexHasKey = {</a>
+<span class="sourceLineNo">049</span><a id="line.49">        @IndexHasKey(level = IConstraint.Level.ERROR, target = "responsible-role|statement/responsible-role|.//by-component//responsible-role", indexName = "index-metadata-role-id", keyFields = @KeyField(target = "@role-id")),</a>
+<span class="sourceLineNo">050</span><a id="line.50">        @IndexHasKey(level = IConstraint.Level.ERROR, target = "responsible-role|statement/responsible-role|.//by-component//responsible-role", indexName = "index-metadata-party-uuid", keyFields = @KeyField(target = "party-uuid"))</a>
+<span class="sourceLineNo">051</span><a id="line.51">    }</a>
+<span class="sourceLineNo">052</span><a id="line.52">)</a>
+<span class="sourceLineNo">053</span><a id="line.53">@AssemblyConstraints(</a>
+<span class="sourceLineNo">054</span><a id="line.54">    isUnique = {</a>
+<span class="sourceLineNo">055</span><a id="line.55">        @IsUnique(id = "unique-ssp-implemented-requirement-set-parameter", level = IConstraint.Level.ERROR, target = "set-parameter", keyFields = @KeyField(target = "@param-id"), remarks = "Since multiple `set-parameter` entries can be provided, each parameter must be set only once."),</a>
+<span class="sourceLineNo">056</span><a id="line.56">        @IsUnique(id = "unique-ssp-implemented-requirement-responsible-role", level = IConstraint.Level.ERROR, target = "responsible-role", keyFields = @KeyField(target = "@role-id"), remarks = "Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once."),</a>
+<span class="sourceLineNo">057</span><a id="line.57">        @IsUnique(id = "unique-ssp-implemented-requirement-statement", level = IConstraint.Level.ERROR, target = "statement", keyFields = @KeyField(target = "@statement-id"), remarks = "Since `statement` entries can be referenced using the statement's statement-id, each statement must be referenced only once."),</a>
+<span class="sourceLineNo">058</span><a id="line.58">        @IsUnique(id = "unique-ssp-implemented-requirement-by-component", level = IConstraint.Level.ERROR, target = "by-component", keyFields = @KeyField(target = "@component-uuid"), remarks = "Since `by-component` can reference `component` entries using the component's uuid, each component must be referenced only once. This ensures that all implementation statements are contained in the same `by-component` entry.")</a>
+<span class="sourceLineNo">059</span><a id="line.59">    },</a>
+<span class="sourceLineNo">060</span><a id="line.60">    hasCardinality = @HasCardinality(level = IConstraint.Level.ERROR, target = ".//by-component", minOccurs = 1)</a>
+<span class="sourceLineNo">061</span><a id="line.61">)</a>
+<span class="sourceLineNo">062</span><a id="line.62">public class ImplementedRequirement {</a>
+<span class="sourceLineNo">063</span><a id="line.63">  @BoundFlag(</a>
+<span class="sourceLineNo">064</span><a id="line.64">      formalName = "Control Requirement Universally Unique Identifier",</a>
+<span class="sourceLineNo">065</span><a id="line.65">      description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this control requirement elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `control requirement` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.",</a>
+<span class="sourceLineNo">066</span><a id="line.66">      useName = "uuid",</a>
+<span class="sourceLineNo">067</span><a id="line.67">      required = true,</a>
+<span class="sourceLineNo">068</span><a id="line.68">      typeAdapter = UuidAdapter.class</a>
+<span class="sourceLineNo">069</span><a id="line.69">  )</a>
+<span class="sourceLineNo">070</span><a id="line.70">  private UUID _uuid;</a>
+<span class="sourceLineNo">071</span><a id="line.71"></a>
+<span class="sourceLineNo">072</span><a id="line.72">  @BoundFlag(</a>
+<span class="sourceLineNo">073</span><a id="line.73">      formalName = "Control Identifier Reference",</a>
+<span class="sourceLineNo">074</span><a id="line.74">      description = "A reference to a control with a corresponding `id` value. When referencing an externally defined `control`, the `Control Identifier Reference` must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).",</a>
+<span class="sourceLineNo">075</span><a id="line.75">      useName = "control-id",</a>
+<span class="sourceLineNo">076</span><a id="line.76">      required = true,</a>
+<span class="sourceLineNo">077</span><a id="line.77">      typeAdapter = TokenAdapter.class</a>
+<span class="sourceLineNo">078</span><a id="line.78">  )</a>
+<span class="sourceLineNo">079</span><a id="line.79">  private String _controlId;</a>
+<span class="sourceLineNo">080</span><a id="line.80"></a>
+<span class="sourceLineNo">081</span><a id="line.81">  @BoundAssembly(</a>
+<span class="sourceLineNo">082</span><a id="line.82">      formalName = "Property",</a>
+<span class="sourceLineNo">083</span><a id="line.83">      description = "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",</a>
+<span class="sourceLineNo">084</span><a id="line.84">      useName = "prop",</a>
+<span class="sourceLineNo">085</span><a id="line.85">      maxOccurs = -1</a>
+<span class="sourceLineNo">086</span><a id="line.86">  )</a>
+<span class="sourceLineNo">087</span><a id="line.87">  @GroupAs(</a>
+<span class="sourceLineNo">088</span><a id="line.88">      name = "props",</a>
+<span class="sourceLineNo">089</span><a id="line.89">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">090</span><a id="line.90">  )</a>
+<span class="sourceLineNo">091</span><a id="line.91">  private List&lt;Property&gt; _props;</a>
+<span class="sourceLineNo">092</span><a id="line.92"></a>
+<span class="sourceLineNo">093</span><a id="line.93">  @BoundAssembly(</a>
+<span class="sourceLineNo">094</span><a id="line.94">      formalName = "Link",</a>
+<span class="sourceLineNo">095</span><a id="line.95">      description = "A reference to a local or remote resource, that has a specific relation to the containing object.",</a>
+<span class="sourceLineNo">096</span><a id="line.96">      useName = "link",</a>
+<span class="sourceLineNo">097</span><a id="line.97">      maxOccurs = -1</a>
+<span class="sourceLineNo">098</span><a id="line.98">  )</a>
+<span class="sourceLineNo">099</span><a id="line.99">  @GroupAs(</a>
+<span class="sourceLineNo">100</span><a id="line.100">      name = "links",</a>
+<span class="sourceLineNo">101</span><a id="line.101">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">102</span><a id="line.102">  )</a>
+<span class="sourceLineNo">103</span><a id="line.103">  private List&lt;Link&gt; _links;</a>
+<span class="sourceLineNo">104</span><a id="line.104"></a>
+<span class="sourceLineNo">105</span><a id="line.105">  @BoundAssembly(</a>
+<span class="sourceLineNo">106</span><a id="line.106">      formalName = "Set Parameter Value",</a>
+<span class="sourceLineNo">107</span><a id="line.107">      description = "Identifies the parameter that will be set by the enclosed value.",</a>
+<span class="sourceLineNo">108</span><a id="line.108">      useName = "set-parameter",</a>
+<span class="sourceLineNo">109</span><a id="line.109">      maxOccurs = -1</a>
+<span class="sourceLineNo">110</span><a id="line.110">  )</a>
+<span class="sourceLineNo">111</span><a id="line.111">  @GroupAs(</a>
+<span class="sourceLineNo">112</span><a id="line.112">      name = "set-parameters",</a>
+<span class="sourceLineNo">113</span><a id="line.113">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">114</span><a id="line.114">  )</a>
+<span class="sourceLineNo">115</span><a id="line.115">  private List&lt;SetParameter&gt; _setParameters;</a>
+<span class="sourceLineNo">116</span><a id="line.116"></a>
+<span class="sourceLineNo">117</span><a id="line.117">  @BoundAssembly(</a>
+<span class="sourceLineNo">118</span><a id="line.118">      formalName = "Responsible Role",</a>
+<span class="sourceLineNo">119</span><a id="line.119">      description = "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.",</a>
+<span class="sourceLineNo">120</span><a id="line.120">      useName = "responsible-role",</a>
+<span class="sourceLineNo">121</span><a id="line.121">      maxOccurs = -1</a>
+<span class="sourceLineNo">122</span><a id="line.122">  )</a>
+<span class="sourceLineNo">123</span><a id="line.123">  @GroupAs(</a>
+<span class="sourceLineNo">124</span><a id="line.124">      name = "responsible-roles",</a>
+<span class="sourceLineNo">125</span><a id="line.125">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">126</span><a id="line.126">  )</a>
+<span class="sourceLineNo">127</span><a id="line.127">  private List&lt;ResponsibleRole&gt; _responsibleRoles;</a>
+<span class="sourceLineNo">128</span><a id="line.128"></a>
+<span class="sourceLineNo">129</span><a id="line.129">  @BoundAssembly(</a>
+<span class="sourceLineNo">130</span><a id="line.130">      formalName = "Specific Control Statement",</a>
+<span class="sourceLineNo">131</span><a id="line.131">      description = "Identifies which statements within a control are addressed.",</a>
+<span class="sourceLineNo">132</span><a id="line.132">      useName = "statement",</a>
+<span class="sourceLineNo">133</span><a id="line.133">      maxOccurs = -1</a>
+<span class="sourceLineNo">134</span><a id="line.134">  )</a>
+<span class="sourceLineNo">135</span><a id="line.135">  @GroupAs(</a>
+<span class="sourceLineNo">136</span><a id="line.136">      name = "statements",</a>
+<span class="sourceLineNo">137</span><a id="line.137">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">138</span><a id="line.138">  )</a>
+<span class="sourceLineNo">139</span><a id="line.139">  private List&lt;Statement&gt; _statements;</a>
+<span class="sourceLineNo">140</span><a id="line.140"></a>
+<span class="sourceLineNo">141</span><a id="line.141">  @BoundAssembly(</a>
+<span class="sourceLineNo">142</span><a id="line.142">      formalName = "Component Control Implementation",</a>
+<span class="sourceLineNo">143</span><a id="line.143">      description = "Defines how the referenced component implements a set of controls.",</a>
+<span class="sourceLineNo">144</span><a id="line.144">      useName = "by-component",</a>
+<span class="sourceLineNo">145</span><a id="line.145">      maxOccurs = -1</a>
+<span class="sourceLineNo">146</span><a id="line.146">  )</a>
+<span class="sourceLineNo">147</span><a id="line.147">  @GroupAs(</a>
+<span class="sourceLineNo">148</span><a id="line.148">      name = "by-components",</a>
+<span class="sourceLineNo">149</span><a id="line.149">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">150</span><a id="line.150">  )</a>
+<span class="sourceLineNo">151</span><a id="line.151">  private List&lt;ByComponent&gt; _byComponents;</a>
+<span class="sourceLineNo">152</span><a id="line.152"></a>
+<span class="sourceLineNo">153</span><a id="line.153">  @BoundField(</a>
+<span class="sourceLineNo">154</span><a id="line.154">      formalName = "Remarks",</a>
+<span class="sourceLineNo">155</span><a id="line.155">      description = "Additional commentary about the containing object.",</a>
+<span class="sourceLineNo">156</span><a id="line.156">      useName = "remarks"</a>
+<span class="sourceLineNo">157</span><a id="line.157">  )</a>
+<span class="sourceLineNo">158</span><a id="line.158">  @BoundFieldValue(</a>
+<span class="sourceLineNo">159</span><a id="line.159">      typeAdapter = MarkupMultilineAdapter.class</a>
+<span class="sourceLineNo">160</span><a id="line.160">  )</a>
+<span class="sourceLineNo">161</span><a id="line.161">  private MarkupMultiline _remarks;</a>
+<span class="sourceLineNo">162</span><a id="line.162"></a>
+<span class="sourceLineNo">163</span><a id="line.163">  public ImplementedRequirement() {</a>
+<span class="sourceLineNo">164</span><a id="line.164">  }</a>
+<span class="sourceLineNo">165</span><a id="line.165"></a>
+<span class="sourceLineNo">166</span><a id="line.166">  public UUID getUuid() {</a>
+<span class="sourceLineNo">167</span><a id="line.167">    return _uuid;</a>
+<span class="sourceLineNo">168</span><a id="line.168">  }</a>
+<span class="sourceLineNo">169</span><a id="line.169"></a>
+<span class="sourceLineNo">170</span><a id="line.170">  public void setUuid(UUID value) {</a>
+<span class="sourceLineNo">171</span><a id="line.171">    _uuid = value;</a>
+<span class="sourceLineNo">172</span><a id="line.172">  }</a>
+<span class="sourceLineNo">173</span><a id="line.173"></a>
+<span class="sourceLineNo">174</span><a id="line.174">  public String getControlId() {</a>
+<span class="sourceLineNo">175</span><a id="line.175">    return _controlId;</a>
+<span class="sourceLineNo">176</span><a id="line.176">  }</a>
+<span class="sourceLineNo">177</span><a id="line.177"></a>
+<span class="sourceLineNo">178</span><a id="line.178">  public void setControlId(String value) {</a>
+<span class="sourceLineNo">179</span><a id="line.179">    _controlId = value;</a>
+<span class="sourceLineNo">180</span><a id="line.180">  }</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">  public List&lt;Property&gt; getProps() {</a>
+<span class="sourceLineNo">183</span><a id="line.183">    return _props;</a>
+<span class="sourceLineNo">184</span><a id="line.184">  }</a>
+<span class="sourceLineNo">185</span><a id="line.185"></a>
+<span class="sourceLineNo">186</span><a id="line.186">  public void setProps(List&lt;Property&gt; value) {</a>
+<span class="sourceLineNo">187</span><a id="line.187">    _props = value;</a>
+<span class="sourceLineNo">188</span><a id="line.188">  }</a>
+<span class="sourceLineNo">189</span><a id="line.189"></a>
+<span class="sourceLineNo">190</span><a id="line.190">  /**</a>
+<span class="sourceLineNo">191</span><a id="line.191">   * Add a new {@link Property} item to the underlying collection.</a>
+<span class="sourceLineNo">192</span><a id="line.192">   * @param item the item to add</a>
+<span class="sourceLineNo">193</span><a id="line.193">   * @return {@code true}</a>
+<span class="sourceLineNo">194</span><a id="line.194">   */</a>
+<span class="sourceLineNo">195</span><a id="line.195">  public boolean addProp(Property item) {</a>
+<span class="sourceLineNo">196</span><a id="line.196">    Property value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">197</span><a id="line.197">    if (_props == null) {</a>
+<span class="sourceLineNo">198</span><a id="line.198">      _props = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">199</span><a id="line.199">    }</a>
+<span class="sourceLineNo">200</span><a id="line.200">    return _props.add(value);</a>
+<span class="sourceLineNo">201</span><a id="line.201">  }</a>
+<span class="sourceLineNo">202</span><a id="line.202"></a>
+<span class="sourceLineNo">203</span><a id="line.203">  /**</a>
+<span class="sourceLineNo">204</span><a id="line.204">   * Remove the first matching {@link Property} item from the underlying collection.</a>
+<span class="sourceLineNo">205</span><a id="line.205">   * @param item the item to remove</a>
+<span class="sourceLineNo">206</span><a id="line.206">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">207</span><a id="line.207">   */</a>
+<span class="sourceLineNo">208</span><a id="line.208">  public boolean removeProp(Property item) {</a>
+<span class="sourceLineNo">209</span><a id="line.209">    Property value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">210</span><a id="line.210">    return _props == null ? false : _props.remove(value);</a>
+<span class="sourceLineNo">211</span><a id="line.211">  }</a>
+<span class="sourceLineNo">212</span><a id="line.212"></a>
+<span class="sourceLineNo">213</span><a id="line.213">  public List&lt;Link&gt; getLinks() {</a>
+<span class="sourceLineNo">214</span><a id="line.214">    return _links;</a>
+<span class="sourceLineNo">215</span><a id="line.215">  }</a>
+<span class="sourceLineNo">216</span><a id="line.216"></a>
+<span class="sourceLineNo">217</span><a id="line.217">  public void setLinks(List&lt;Link&gt; value) {</a>
+<span class="sourceLineNo">218</span><a id="line.218">    _links = value;</a>
+<span class="sourceLineNo">219</span><a id="line.219">  }</a>
+<span class="sourceLineNo">220</span><a id="line.220"></a>
+<span class="sourceLineNo">221</span><a id="line.221">  /**</a>
+<span class="sourceLineNo">222</span><a id="line.222">   * Add a new {@link Link} item to the underlying collection.</a>
+<span class="sourceLineNo">223</span><a id="line.223">   * @param item the item to add</a>
+<span class="sourceLineNo">224</span><a id="line.224">   * @return {@code true}</a>
+<span class="sourceLineNo">225</span><a id="line.225">   */</a>
+<span class="sourceLineNo">226</span><a id="line.226">  public boolean addLink(Link item) {</a>
+<span class="sourceLineNo">227</span><a id="line.227">    Link value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">228</span><a id="line.228">    if (_links == null) {</a>
+<span class="sourceLineNo">229</span><a id="line.229">      _links = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">230</span><a id="line.230">    }</a>
+<span class="sourceLineNo">231</span><a id="line.231">    return _links.add(value);</a>
+<span class="sourceLineNo">232</span><a id="line.232">  }</a>
+<span class="sourceLineNo">233</span><a id="line.233"></a>
+<span class="sourceLineNo">234</span><a id="line.234">  /**</a>
+<span class="sourceLineNo">235</span><a id="line.235">   * Remove the first matching {@link Link} item from the underlying collection.</a>
+<span class="sourceLineNo">236</span><a id="line.236">   * @param item the item to remove</a>
+<span class="sourceLineNo">237</span><a id="line.237">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">238</span><a id="line.238">   */</a>
+<span class="sourceLineNo">239</span><a id="line.239">  public boolean removeLink(Link item) {</a>
+<span class="sourceLineNo">240</span><a id="line.240">    Link value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">241</span><a id="line.241">    return _links == null ? false : _links.remove(value);</a>
+<span class="sourceLineNo">242</span><a id="line.242">  }</a>
+<span class="sourceLineNo">243</span><a id="line.243"></a>
+<span class="sourceLineNo">244</span><a id="line.244">  public List&lt;SetParameter&gt; getSetParameters() {</a>
+<span class="sourceLineNo">245</span><a id="line.245">    return _setParameters;</a>
+<span class="sourceLineNo">246</span><a id="line.246">  }</a>
+<span class="sourceLineNo">247</span><a id="line.247"></a>
+<span class="sourceLineNo">248</span><a id="line.248">  public void setSetParameters(List&lt;SetParameter&gt; value) {</a>
+<span class="sourceLineNo">249</span><a id="line.249">    _setParameters = value;</a>
+<span class="sourceLineNo">250</span><a id="line.250">  }</a>
+<span class="sourceLineNo">251</span><a id="line.251"></a>
+<span class="sourceLineNo">252</span><a id="line.252">  /**</a>
+<span class="sourceLineNo">253</span><a id="line.253">   * Add a new {@link SetParameter} item to the underlying collection.</a>
+<span class="sourceLineNo">254</span><a id="line.254">   * @param item the item to add</a>
+<span class="sourceLineNo">255</span><a id="line.255">   * @return {@code true}</a>
+<span class="sourceLineNo">256</span><a id="line.256">   */</a>
+<span class="sourceLineNo">257</span><a id="line.257">  public boolean addSetParameter(SetParameter item) {</a>
+<span class="sourceLineNo">258</span><a id="line.258">    SetParameter value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">259</span><a id="line.259">    if (_setParameters == null) {</a>
+<span class="sourceLineNo">260</span><a id="line.260">      _setParameters = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">261</span><a id="line.261">    }</a>
+<span class="sourceLineNo">262</span><a id="line.262">    return _setParameters.add(value);</a>
+<span class="sourceLineNo">263</span><a id="line.263">  }</a>
+<span class="sourceLineNo">264</span><a id="line.264"></a>
+<span class="sourceLineNo">265</span><a id="line.265">  /**</a>
+<span class="sourceLineNo">266</span><a id="line.266">   * Remove the first matching {@link SetParameter} item from the underlying collection.</a>
+<span class="sourceLineNo">267</span><a id="line.267">   * @param item the item to remove</a>
+<span class="sourceLineNo">268</span><a id="line.268">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">269</span><a id="line.269">   */</a>
+<span class="sourceLineNo">270</span><a id="line.270">  public boolean removeSetParameter(SetParameter item) {</a>
+<span class="sourceLineNo">271</span><a id="line.271">    SetParameter value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">272</span><a id="line.272">    return _setParameters == null ? false : _setParameters.remove(value);</a>
+<span class="sourceLineNo">273</span><a id="line.273">  }</a>
+<span class="sourceLineNo">274</span><a id="line.274"></a>
+<span class="sourceLineNo">275</span><a id="line.275">  public List&lt;ResponsibleRole&gt; getResponsibleRoles() {</a>
+<span class="sourceLineNo">276</span><a id="line.276">    return _responsibleRoles;</a>
+<span class="sourceLineNo">277</span><a id="line.277">  }</a>
+<span class="sourceLineNo">278</span><a id="line.278"></a>
+<span class="sourceLineNo">279</span><a id="line.279">  public void setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {</a>
+<span class="sourceLineNo">280</span><a id="line.280">    _responsibleRoles = value;</a>
+<span class="sourceLineNo">281</span><a id="line.281">  }</a>
+<span class="sourceLineNo">282</span><a id="line.282"></a>
+<span class="sourceLineNo">283</span><a id="line.283">  /**</a>
+<span class="sourceLineNo">284</span><a id="line.284">   * Add a new {@link ResponsibleRole} item to the underlying collection.</a>
+<span class="sourceLineNo">285</span><a id="line.285">   * @param item the item to add</a>
+<span class="sourceLineNo">286</span><a id="line.286">   * @return {@code true}</a>
+<span class="sourceLineNo">287</span><a id="line.287">   */</a>
+<span class="sourceLineNo">288</span><a id="line.288">  public boolean addResponsibleRole(ResponsibleRole item) {</a>
+<span class="sourceLineNo">289</span><a id="line.289">    ResponsibleRole value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">290</span><a id="line.290">    if (_responsibleRoles == null) {</a>
+<span class="sourceLineNo">291</span><a id="line.291">      _responsibleRoles = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">292</span><a id="line.292">    }</a>
+<span class="sourceLineNo">293</span><a id="line.293">    return _responsibleRoles.add(value);</a>
+<span class="sourceLineNo">294</span><a id="line.294">  }</a>
+<span class="sourceLineNo">295</span><a id="line.295"></a>
+<span class="sourceLineNo">296</span><a id="line.296">  /**</a>
+<span class="sourceLineNo">297</span><a id="line.297">   * Remove the first matching {@link ResponsibleRole} item from the underlying collection.</a>
+<span class="sourceLineNo">298</span><a id="line.298">   * @param item the item to remove</a>
+<span class="sourceLineNo">299</span><a id="line.299">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">300</span><a id="line.300">   */</a>
+<span class="sourceLineNo">301</span><a id="line.301">  public boolean removeResponsibleRole(ResponsibleRole item) {</a>
+<span class="sourceLineNo">302</span><a id="line.302">    ResponsibleRole value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">303</span><a id="line.303">    return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</a>
+<span class="sourceLineNo">304</span><a id="line.304">  }</a>
+<span class="sourceLineNo">305</span><a id="line.305"></a>
+<span class="sourceLineNo">306</span><a id="line.306">  public List&lt;Statement&gt; getStatements() {</a>
+<span class="sourceLineNo">307</span><a id="line.307">    return _statements;</a>
+<span class="sourceLineNo">308</span><a id="line.308">  }</a>
+<span class="sourceLineNo">309</span><a id="line.309"></a>
+<span class="sourceLineNo">310</span><a id="line.310">  public void setStatements(List&lt;Statement&gt; value) {</a>
+<span class="sourceLineNo">311</span><a id="line.311">    _statements = value;</a>
+<span class="sourceLineNo">312</span><a id="line.312">  }</a>
+<span class="sourceLineNo">313</span><a id="line.313"></a>
+<span class="sourceLineNo">314</span><a id="line.314">  /**</a>
+<span class="sourceLineNo">315</span><a id="line.315">   * Add a new {@link Statement} item to the underlying collection.</a>
+<span class="sourceLineNo">316</span><a id="line.316">   * @param item the item to add</a>
+<span class="sourceLineNo">317</span><a id="line.317">   * @return {@code true}</a>
+<span class="sourceLineNo">318</span><a id="line.318">   */</a>
+<span class="sourceLineNo">319</span><a id="line.319">  public boolean addStatement(Statement item) {</a>
+<span class="sourceLineNo">320</span><a id="line.320">    Statement value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">321</span><a id="line.321">    if (_statements == null) {</a>
+<span class="sourceLineNo">322</span><a id="line.322">      _statements = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">323</span><a id="line.323">    }</a>
+<span class="sourceLineNo">324</span><a id="line.324">    return _statements.add(value);</a>
+<span class="sourceLineNo">325</span><a id="line.325">  }</a>
+<span class="sourceLineNo">326</span><a id="line.326"></a>
+<span class="sourceLineNo">327</span><a id="line.327">  /**</a>
+<span class="sourceLineNo">328</span><a id="line.328">   * Remove the first matching {@link Statement} item from the underlying collection.</a>
+<span class="sourceLineNo">329</span><a id="line.329">   * @param item the item to remove</a>
+<span class="sourceLineNo">330</span><a id="line.330">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">331</span><a id="line.331">   */</a>
+<span class="sourceLineNo">332</span><a id="line.332">  public boolean removeStatement(Statement item) {</a>
+<span class="sourceLineNo">333</span><a id="line.333">    Statement value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">334</span><a id="line.334">    return _statements == null ? false : _statements.remove(value);</a>
+<span class="sourceLineNo">335</span><a id="line.335">  }</a>
+<span class="sourceLineNo">336</span><a id="line.336"></a>
+<span class="sourceLineNo">337</span><a id="line.337">  public List&lt;ByComponent&gt; getByComponents() {</a>
+<span class="sourceLineNo">338</span><a id="line.338">    return _byComponents;</a>
+<span class="sourceLineNo">339</span><a id="line.339">  }</a>
+<span class="sourceLineNo">340</span><a id="line.340"></a>
+<span class="sourceLineNo">341</span><a id="line.341">  public void setByComponents(List&lt;ByComponent&gt; value) {</a>
+<span class="sourceLineNo">342</span><a id="line.342">    _byComponents = value;</a>
+<span class="sourceLineNo">343</span><a id="line.343">  }</a>
+<span class="sourceLineNo">344</span><a id="line.344"></a>
+<span class="sourceLineNo">345</span><a id="line.345">  /**</a>
+<span class="sourceLineNo">346</span><a id="line.346">   * Add a new {@link ByComponent} item to the underlying collection.</a>
+<span class="sourceLineNo">347</span><a id="line.347">   * @param item the item to add</a>
+<span class="sourceLineNo">348</span><a id="line.348">   * @return {@code true}</a>
+<span class="sourceLineNo">349</span><a id="line.349">   */</a>
+<span class="sourceLineNo">350</span><a id="line.350">  public boolean addByComponent(ByComponent item) {</a>
+<span class="sourceLineNo">351</span><a id="line.351">    ByComponent value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">352</span><a id="line.352">    if (_byComponents == null) {</a>
+<span class="sourceLineNo">353</span><a id="line.353">      _byComponents = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">354</span><a id="line.354">    }</a>
+<span class="sourceLineNo">355</span><a id="line.355">    return _byComponents.add(value);</a>
+<span class="sourceLineNo">356</span><a id="line.356">  }</a>
+<span class="sourceLineNo">357</span><a id="line.357"></a>
+<span class="sourceLineNo">358</span><a id="line.358">  /**</a>
+<span class="sourceLineNo">359</span><a id="line.359">   * Remove the first matching {@link ByComponent} item from the underlying collection.</a>
+<span class="sourceLineNo">360</span><a id="line.360">   * @param item the item to remove</a>
+<span class="sourceLineNo">361</span><a id="line.361">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">362</span><a id="line.362">   */</a>
+<span class="sourceLineNo">363</span><a id="line.363">  public boolean removeByComponent(ByComponent item) {</a>
+<span class="sourceLineNo">364</span><a id="line.364">    ByComponent value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">365</span><a id="line.365">    return _byComponents == null ? false : _byComponents.remove(value);</a>
+<span class="sourceLineNo">366</span><a id="line.366">  }</a>
+<span class="sourceLineNo">367</span><a id="line.367"></a>
+<span class="sourceLineNo">368</span><a id="line.368">  public MarkupMultiline getRemarks() {</a>
+<span class="sourceLineNo">369</span><a id="line.369">    return _remarks;</a>
+<span class="sourceLineNo">370</span><a id="line.370">  }</a>
+<span class="sourceLineNo">371</span><a id="line.371"></a>
+<span class="sourceLineNo">372</span><a id="line.372">  public void setRemarks(MarkupMultiline value) {</a>
+<span class="sourceLineNo">373</span><a id="line.373">    _remarks = value;</a>
+<span class="sourceLineNo">374</span><a id="line.374">  }</a>
+<span class="sourceLineNo">375</span><a id="line.375"></a>
+<span class="sourceLineNo">376</span><a id="line.376">  @Override</a>
+<span class="sourceLineNo">377</span><a id="line.377">  public String toString() {</a>
+<span class="sourceLineNo">378</span><a id="line.378">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">379</span><a id="line.379">  }</a>
+<span class="sourceLineNo">380</span><a id="line.380">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Link.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Link.java</span></div><h1>Link.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.Expect;
+import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.Matches;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriReferenceAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.oscal.lib.model.metadata.AbstractLink;
+import java.lang.Override;
+import java.lang.String;
+import java.net.URI;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A reference to a local or remote resource, that has a specific relation to the containing object.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Link&quot;,
+    description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+    name = &quot;link&quot;,
+    metaschema = OscalMetadataMetaschema.class,
+    remarks = &quot;To provide a cryptographic hash for a remote target resource, a local reference to a back matter `resource` is needed. The resource allows one or more hash values to be provided using the `rlink/hash` object.\n&quot;
+            + &quot;\n&quot;
+            + &quot;The OSCAL `link` is a roughly based on the HTML [link element](https://www.w3.org/TR/html401/struct/links.html#edef-LINK).&quot;
+)
+@ValueConstraints(
+    indexHasKey = @IndexHasKey(level = IConstraint.Level.ERROR, target = &quot;.[@rel=('reference') and starts-with(@href,'#')]&quot;, indexName = &quot;index-back-matter-resource&quot;, keyFields = @KeyField(target = &quot;@href&quot;, pattern = &quot;#(.*)&quot;)),
+    matches = {
+        @Matches(level = IConstraint.Level.ERROR, target = &quot;.[@rel=('reference') and starts-with(@href,'#')]/@href&quot;, typeAdapter = UriReferenceAdapter.class),
+        @Matches(level = IConstraint.Level.ERROR, target = &quot;.[@rel=('reference') and not(starts-with(@href,'#'))]/@href&quot;, typeAdapter = UriAdapter.class),
+        @Matches(level = IConstraint.Level.ERROR, target = &quot;@resource-fragment&quot;, pattern = &quot;(?:[0-9a-zA-Z-._~/?!$&amp;'()*+,;=:@]|%[0-9A-F][0-9A-F])+&quot;, remarks = &quot;This pattern is based on the fragment Augmented Backus-Naur form (ABNF) syntax provided in \\[RFC3986 section 3.5\\](https://www.rfc-editor.org/rfc/rfc3986#section-3.5). Uppercase alpha hex digits are required, which is the preferred normalized form defined in RFC3986.&quot;)
+    },
+    expect = @Expect(level = IConstraint.Level.ERROR, target = &quot;.[starts-with(@href,'#')]&quot;, test = &quot;not(exists(@media-type))&quot;, remarks = &quot;Since both `link` and `back-matter/resource` both allow specification of a `media-type`, the `media-type` on `link` may conflict with the any `media-type` entries on a resource's `rlink` or `base64` objects. This constraint prevents this from occurring.&quot;)
+)
+public class Link extends AbstractLink {
+  @BoundFlag(
+      formalName = &quot;Hypertext Reference&quot;,
+      description = &quot;A resolvable URL reference to a resource.&quot;,
+      useName = &quot;href&quot;,
+      required = true,
+      typeAdapter = UriReferenceAdapter.class,
+      remarks = &quot;This value may be one of:\n&quot;
+              + &quot;\n&quot;
+              + &quot;1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n&quot;
+              + &quot;2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or\n&quot;
+              + &quot;3. a bare URI fragment (i.e., \\`#uuid\\`) pointing to an OSCAL object by the objects identifier (e.g., id, uuid) in this or an imported document (see [linking to another OSCAL object](https://pages.nist.gov/OSCAL/concepts/uri-use/#linking-to-another-oscal-object)). The specific object type will differ based on the link relationship type.&quot;
+  )
+  private URI _href;
+
+  @BoundFlag(
+      formalName = &quot;Link Relation Type&quot;,
+      description = &quot;Describes the type of relationship provided by the link's hypertext reference. This can be an indicator of the link's purpose.&quot;,
+      useName = &quot;rel&quot;,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = @AllowedValue(value = &quot;reference&quot;, description = &quot;A generalized reference to a network resource (relative or absolute) or to a `back-matter` resource by UUID expressed as a bare URI fragment.&quot;))
+  )
+  private String _rel;
+
+  @BoundFlag(
+      formalName = &quot;Link Media Type&quot;,
+      description = &quot;A label that indicates the nature of a resource, as a data serialization or format.&quot;,
+      useName = &quot;media-type&quot;,
+      typeAdapter = StringAdapter.class,
+      remarks = &quot;The `media-type` provides a hint about the content model of the referenced resource. A valid entry from the [IANA Media Types registry](https://www.iana.org/assignments/media-types/media-types.xhtml) SHOULD be used.&quot;
+  )
+  private String _mediaType;
+
+  @BoundFlag(
+      formalName = &quot;Resource Fragment&quot;,
+      description = &quot;In case where the `href` points to a `back-matter/resource`, this value will indicate the URI [fragment](https://www.rfc-editor.org/rfc/rfc3986#section-3.5) to append to any `rlink` associated with the resource. This value MUST be [URI encoded](https://www.rfc-editor.org/rfc/rfc3986#section-2.1).&quot;,
+      useName = &quot;resource-fragment&quot;,
+      typeAdapter = StringAdapter.class
+  )
+  private String _resourceFragment;
+
+  /**
+   * &quot;A textual label to associate with the link, which may be used for presentation in a tool.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Link Text&quot;,
+      description = &quot;A textual label to associate with the link, which may be used for presentation in a tool.&quot;,
+      useName = &quot;text&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _text;
+
+<span class="fc" id="L105">  public Link() {</span>
+<span class="fc" id="L106">  }</span>
+
+  public URI getHref() {
+<span class="fc" id="L109">    return _href;</span>
+  }
+
+  public void setHref(URI value) {
+<span class="fc" id="L113">    _href = value;</span>
+<span class="fc" id="L114">  }</span>
+
+  public String getRel() {
+<span class="fc" id="L117">    return _rel;</span>
+  }
+
+  public void setRel(String value) {
+<span class="fc" id="L121">    _rel = value;</span>
+<span class="fc" id="L122">  }</span>
+
+  public String getMediaType() {
+<span class="nc" id="L125">    return _mediaType;</span>
+  }
+
+  public void setMediaType(String value) {
+<span class="nc" id="L129">    _mediaType = value;</span>
+<span class="nc" id="L130">  }</span>
+
+  public String getResourceFragment() {
+<span class="nc" id="L133">    return _resourceFragment;</span>
+  }
+
+  public void setResourceFragment(String value) {
+<span class="nc" id="L137">    _resourceFragment = value;</span>
+<span class="nc" id="L138">  }</span>
+
+  public MarkupLine getText() {
+<span class="nc" id="L141">    return _text;</span>
+  }
+
+  public void setText(MarkupLine value) {
+<span class="nc" id="L145">    _text = value;</span>
+<span class="nc" id="L146">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L150">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

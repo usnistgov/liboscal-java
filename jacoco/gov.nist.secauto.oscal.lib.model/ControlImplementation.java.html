@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ControlImplementation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">ControlImplementation.java</span></div><h1>ControlImplementation.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.Index;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Describes how the system satisfies a set of controls.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Control Implementation&quot;,
+    description = &quot;Describes how the system satisfies a set of controls.&quot;,
+    name = &quot;control-implementation&quot;,
+    metaschema = OscalSspMetaschema.class,
+    remarks = &quot;Use of `set-parameter` in this context, sets the parameter for all controls referenced by any `implemented-requirement` contained in this context. Any `set-parameter` defined in a child context will override this value. If not overridden by a child, this value applies in the child context.&quot;
+)
+@AssemblyConstraints(
+    index = @Index(level = IConstraint.Level.ERROR, target = &quot;implemented-requirement//by-component/export/provided&quot;, name = &quot;by-component-export-provided-uuid&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;)),
+    isUnique = @IsUnique(id = &quot;unique-ssp-control-implementation-set-parameter&quot;, level = IConstraint.Level.ERROR, target = &quot;set-parameter&quot;, keyFields = @KeyField(target = &quot;@param-id&quot;), remarks = &quot;Since multiple `set-parameter` entries can be provided, each parameter must be set only once.&quot;)
+)
+public class ControlImplementation {
+  /**
+   * &quot;A statement describing important things to know about how this set of control satisfaction documentation is approached.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Control Implementation Description&quot;,
+      description = &quot;A statement describing important things to know about how this set of control satisfaction documentation is approached.&quot;,
+      useName = &quot;description&quot;,
+      minOccurs = 1
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  @BoundAssembly(
+      formalName = &quot;Set Parameter Value&quot;,
+      description = &quot;Identifies the parameter that will be set by the enclosed value.&quot;,
+      useName = &quot;set-parameter&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;set-parameters&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;SetParameter&gt; _setParameters;
+
+  @BoundAssembly(
+      formalName = &quot;Control-based Requirement&quot;,
+      description = &quot;Describes how the system satisfies the requirements of an individual control.&quot;,
+      useName = &quot;implemented-requirement&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;implemented-requirements&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ImplementedRequirement&gt; _implementedRequirements;
+
+<span class="nc" id="L78">  public ControlImplementation() {</span>
+<span class="nc" id="L79">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L82">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L86">    _description = value;</span>
+<span class="nc" id="L87">  }</span>
+
+  public List&lt;SetParameter&gt; getSetParameters() {
+<span class="nc" id="L90">    return _setParameters;</span>
+  }
+
+  public void setSetParameters(List&lt;SetParameter&gt; value) {
+<span class="nc" id="L94">    _setParameters = value;</span>
+<span class="nc" id="L95">  }</span>
+
+  /**
+   * Add a new {@link SetParameter} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addSetParameter(SetParameter item) {
+<span class="nc" id="L103">    SetParameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">    if (_setParameters == null) {</span>
+<span class="nc" id="L105">      _setParameters = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L107">    return _setParameters.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link SetParameter} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeSetParameter(SetParameter item) {
+<span class="nc" id="L116">    SetParameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    return _setParameters == null ? false : _setParameters.remove(value);</span>
+  }
+
+  public List&lt;ImplementedRequirement&gt; getImplementedRequirements() {
+<span class="nc" id="L121">    return _implementedRequirements;</span>
+  }
+
+  public void setImplementedRequirements(List&lt;ImplementedRequirement&gt; value) {
+<span class="nc" id="L125">    _implementedRequirements = value;</span>
+<span class="nc" id="L126">  }</span>
+
+  /**
+   * Add a new {@link ImplementedRequirement} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addImplementedRequirement(ImplementedRequirement item) {
+<span class="nc" id="L134">    ImplementedRequirement value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (_implementedRequirements == null) {</span>
+<span class="nc" id="L136">      _implementedRequirements = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L138">    return _implementedRequirements.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ImplementedRequirement} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeImplementedRequirement(ImplementedRequirement item) {
+<span class="nc" id="L147">    ImplementedRequirement value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">    return _implementedRequirements == null ? false : _implementedRequirements.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L153">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

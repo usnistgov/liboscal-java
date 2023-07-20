@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package gov.nist.secauto.oscal.lib.model;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;</a>
+<span class="sourceLineNo">009</span><a id="line.9">import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;</a>
+<span class="sourceLineNo">010</span><a id="line.10">import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import java.lang.Override;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import java.lang.String;</a>
+<span class="sourceLineNo">013</span><a id="line.13">import java.util.LinkedList;</a>
+<span class="sourceLineNo">014</span><a id="line.14">import java.util.List;</a>
+<span class="sourceLineNo">015</span><a id="line.15">import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import org.apache.commons.lang3.builder.ReflectionToStringBuilder;</a>
+<span class="sourceLineNo">017</span><a id="line.17"></a>
+<span class="sourceLineNo">018</span><a id="line.18">/**</a>
+<span class="sourceLineNo">019</span><a id="line.19"> * Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.</a>
+<span class="sourceLineNo">020</span><a id="line.20"> */</a>
+<span class="sourceLineNo">021</span><a id="line.21">@MetaschemaAssembly(</a>
+<span class="sourceLineNo">022</span><a id="line.22">    formalName = "Select Control",</a>
+<span class="sourceLineNo">023</span><a id="line.23">    description = "Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.",</a>
+<span class="sourceLineNo">024</span><a id="line.24">    name = "select-control-by-id",</a>
+<span class="sourceLineNo">025</span><a id="line.25">    metaschema = OscalAssessmentCommonMetaschema.class</a>
+<span class="sourceLineNo">026</span><a id="line.26">)</a>
+<span class="sourceLineNo">027</span><a id="line.27">public class SelectControlById {</a>
+<span class="sourceLineNo">028</span><a id="line.28">  @BoundFlag(</a>
+<span class="sourceLineNo">029</span><a id="line.29">      formalName = "Control Identifier Reference",</a>
+<span class="sourceLineNo">030</span><a id="line.30">      description = "A reference to a control with a corresponding `id` value. When referencing an externally defined `control`, the `Control Identifier Reference` must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).",</a>
+<span class="sourceLineNo">031</span><a id="line.31">      useName = "control-id",</a>
+<span class="sourceLineNo">032</span><a id="line.32">      required = true,</a>
+<span class="sourceLineNo">033</span><a id="line.33">      typeAdapter = TokenAdapter.class</a>
+<span class="sourceLineNo">034</span><a id="line.34">  )</a>
+<span class="sourceLineNo">035</span><a id="line.35">  private String _controlId;</a>
+<span class="sourceLineNo">036</span><a id="line.36"></a>
+<span class="sourceLineNo">037</span><a id="line.37">  /**</a>
+<span class="sourceLineNo">038</span><a id="line.38">   * "Used to constrain the selection to only specificity identified statements."</a>
+<span class="sourceLineNo">039</span><a id="line.39">   */</a>
+<span class="sourceLineNo">040</span><a id="line.40">  @BoundField(</a>
+<span class="sourceLineNo">041</span><a id="line.41">      formalName = "Include Specific Statements",</a>
+<span class="sourceLineNo">042</span><a id="line.42">      description = "Used to constrain the selection to only specificity identified statements.",</a>
+<span class="sourceLineNo">043</span><a id="line.43">      useName = "statement-id",</a>
+<span class="sourceLineNo">044</span><a id="line.44">      maxOccurs = -1</a>
+<span class="sourceLineNo">045</span><a id="line.45">  )</a>
+<span class="sourceLineNo">046</span><a id="line.46">  @BoundFieldValue(</a>
+<span class="sourceLineNo">047</span><a id="line.47">      typeAdapter = TokenAdapter.class</a>
+<span class="sourceLineNo">048</span><a id="line.48">  )</a>
+<span class="sourceLineNo">049</span><a id="line.49">  @GroupAs(</a>
+<span class="sourceLineNo">050</span><a id="line.50">      name = "statement-ids",</a>
+<span class="sourceLineNo">051</span><a id="line.51">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">052</span><a id="line.52">  )</a>
+<span class="sourceLineNo">053</span><a id="line.53">  private List&lt;String&gt; _statementIds;</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">  public SelectControlById() {</a>
+<span class="sourceLineNo">056</span><a id="line.56">  }</a>
+<span class="sourceLineNo">057</span><a id="line.57"></a>
+<span class="sourceLineNo">058</span><a id="line.58">  public String getControlId() {</a>
+<span class="sourceLineNo">059</span><a id="line.59">    return _controlId;</a>
+<span class="sourceLineNo">060</span><a id="line.60">  }</a>
+<span class="sourceLineNo">061</span><a id="line.61"></a>
+<span class="sourceLineNo">062</span><a id="line.62">  public void setControlId(String value) {</a>
+<span class="sourceLineNo">063</span><a id="line.63">    _controlId = value;</a>
+<span class="sourceLineNo">064</span><a id="line.64">  }</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">  public List&lt;String&gt; getStatementIds() {</a>
+<span class="sourceLineNo">067</span><a id="line.67">    return _statementIds;</a>
+<span class="sourceLineNo">068</span><a id="line.68">  }</a>
+<span class="sourceLineNo">069</span><a id="line.69"></a>
+<span class="sourceLineNo">070</span><a id="line.70">  public void setStatementIds(List&lt;String&gt; value) {</a>
+<span class="sourceLineNo">071</span><a id="line.71">    _statementIds = value;</a>
+<span class="sourceLineNo">072</span><a id="line.72">  }</a>
+<span class="sourceLineNo">073</span><a id="line.73"></a>
+<span class="sourceLineNo">074</span><a id="line.74">  /**</a>
+<span class="sourceLineNo">075</span><a id="line.75">   * Add a new {@link String} item to the underlying collection.</a>
+<span class="sourceLineNo">076</span><a id="line.76">   * @param item the item to add</a>
+<span class="sourceLineNo">077</span><a id="line.77">   * @return {@code true}</a>
+<span class="sourceLineNo">078</span><a id="line.78">   */</a>
+<span class="sourceLineNo">079</span><a id="line.79">  public boolean addStatementId(String item) {</a>
+<span class="sourceLineNo">080</span><a id="line.80">    String value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">081</span><a id="line.81">    if (_statementIds == null) {</a>
+<span class="sourceLineNo">082</span><a id="line.82">      _statementIds = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">083</span><a id="line.83">    }</a>
+<span class="sourceLineNo">084</span><a id="line.84">    return _statementIds.add(value);</a>
+<span class="sourceLineNo">085</span><a id="line.85">  }</a>
+<span class="sourceLineNo">086</span><a id="line.86"></a>
+<span class="sourceLineNo">087</span><a id="line.87">  /**</a>
+<span class="sourceLineNo">088</span><a id="line.88">   * Remove the first matching {@link String} item from the underlying collection.</a>
+<span class="sourceLineNo">089</span><a id="line.89">   * @param item the item to remove</a>
+<span class="sourceLineNo">090</span><a id="line.90">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">091</span><a id="line.91">   */</a>
+<span class="sourceLineNo">092</span><a id="line.92">  public boolean removeStatementId(String item) {</a>
+<span class="sourceLineNo">093</span><a id="line.93">    String value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">094</span><a id="line.94">    return _statementIds == null ? false : _statementIds.remove(value);</a>
+<span class="sourceLineNo">095</span><a id="line.95">  }</a>
+<span class="sourceLineNo">096</span><a id="line.96"></a>
+<span class="sourceLineNo">097</span><a id="line.97">  @Override</a>
+<span class="sourceLineNo">098</span><a id="line.98">  public String toString() {</a>
+<span class="sourceLineNo">099</span><a id="line.99">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">100</span><a id="line.100">  }</a>
+<span class="sourceLineNo">101</span><a id="line.101">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

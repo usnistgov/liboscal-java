@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Mapping.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Mapping.java</span></div><h1>Mapping.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A mapping between two target resources.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Control Mapping&quot;,
+    description = &quot;A mapping between two target resources.&quot;,
+    name = &quot;mapping&quot;,
+    metaschema = OscalMappingMetaschema.class
+)
+public class Mapping {
+  @BoundFlag(
+      formalName = &quot;Mapping Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this mapping definition elsewhere in this or other OSCAL instances. The locally defined *UUID* of the `mapping` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same mapping across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundAssembly(
+      formalName = &quot;Mapped Resource Reference&quot;,
+      description = &quot;A reference to a resource that is either the source or target of a mapping.&quot;,
+      useName = &quot;source-resource&quot;,
+      minOccurs = 1
+  )
+  private MappingResourceReference _sourceResource;
+
+  @BoundAssembly(
+      formalName = &quot;Mapped Resource Reference&quot;,
+      description = &quot;A reference to a resource that is either the source or target of a mapping.&quot;,
+      useName = &quot;target-resource&quot;,
+      minOccurs = 1
+  )
+  private MappingResourceReference _targetResource;
+
+  @BoundAssembly(
+      formalName = &quot;Mapping Entry&quot;,
+      description = &quot;A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.&quot;,
+      useName = &quot;map&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;maps&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;MappingEntry&gt; _maps;
+
+<span class="nc" id="L66">  public Mapping() {</span>
+<span class="nc" id="L67">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L70">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L74">    _uuid = value;</span>
+<span class="nc" id="L75">  }</span>
+
+  public MappingResourceReference getSourceResource() {
+<span class="nc" id="L78">    return _sourceResource;</span>
+  }
+
+  public void setSourceResource(MappingResourceReference value) {
+<span class="nc" id="L82">    _sourceResource = value;</span>
+<span class="nc" id="L83">  }</span>
+
+  public MappingResourceReference getTargetResource() {
+<span class="nc" id="L86">    return _targetResource;</span>
+  }
+
+  public void setTargetResource(MappingResourceReference value) {
+<span class="nc" id="L90">    _targetResource = value;</span>
+<span class="nc" id="L91">  }</span>
+
+  public List&lt;MappingEntry&gt; getMaps() {
+<span class="nc" id="L94">    return _maps;</span>
+  }
+
+  public void setMaps(List&lt;MappingEntry&gt; value) {
+<span class="nc" id="L98">    _maps = value;</span>
+<span class="nc" id="L99">  }</span>
+
+  /**
+   * Add a new {@link MappingEntry} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addMap(MappingEntry item) {
+<span class="nc" id="L107">    MappingEntry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">    if (_maps == null) {</span>
+<span class="nc" id="L109">      _maps = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L111">    return _maps.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link MappingEntry} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeMap(MappingEntry item) {
+<span class="nc" id="L120">    MappingEntry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">    return _maps == null ? false : _maps.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L126">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

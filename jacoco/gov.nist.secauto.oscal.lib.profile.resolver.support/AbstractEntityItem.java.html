@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractEntityItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.profile.resolver.support</a> &gt; <span class="el_source">AbstractEntityItem.java</span></div><h1>AbstractEntityItem.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.profile.resolver.support;
+
+import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+
+import java.net.URI;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+public abstract class AbstractEntityItem implements IEntityItem {
+
+  @NonNull
+  private final String originalIdentifier;
+  @NonNull
+  private IRequiredValueModelNodeItem instance;
+  @NonNull
+  private final ItemType itemType;
+  @NonNull
+  private final URI source;
+  private int referenceCount; // 0 by default
+  // private boolean resolved; // false by default
+
+<span class="fc" id="L49">  protected AbstractEntityItem(@NonNull Builder builder) {</span>
+<span class="fc" id="L50">    this.itemType = ObjectUtils.requireNonNull(builder.itemType, &quot;itemType&quot;);</span>
+<span class="fc" id="L51">    this.originalIdentifier = ObjectUtils.requireNonNull(builder.originalIdentifier, &quot;originalIdentifier&quot;);</span>
+<span class="fc" id="L52">    this.instance = ObjectUtils.requireNonNull(builder.instance, &quot;instance&quot;);</span>
+<span class="fc" id="L53">    this.source = ObjectUtils.requireNonNull(builder.source, &quot;source&quot;);</span>
+<span class="fc" id="L54">  }</span>
+
+  @Override
+  @NonNull
+  public String getOriginalIdentifier() {
+<span class="fc" id="L59">    return originalIdentifier;</span>
+  }
+
+  @Override
+  @NonNull
+  public abstract String getIdentifier();
+
+  // @NonNull
+  // public String getIdentifier() {
+  // final String checkedReassignedIdentifier = reassignedIdentifier;
+  // return checkedReassignedIdentifier == null ? originalIdentifier : checkedReassignedIdentifier;
+  // }
+
+  @Override
+  @NonNull
+  public IRequiredValueModelNodeItem getInstance() {
+<span class="fc" id="L75">    return instance;</span>
+  }
+
+  @Override
+  public void setInstance(IRequiredValueModelNodeItem item) {
+<span class="fc" id="L80">    instance = item;</span>
+<span class="fc" id="L81">  }</span>
+
+  @Override
+  @NonNull
+  @SuppressWarnings(&quot;unchecked&quot;)
+  public &lt;T&gt; T getInstanceValue() {
+<span class="fc" id="L87">    return (T) getInstance().getValue();</span>
+  }
+
+  @Override
+  @NonNull
+  public ItemType getItemType() {
+<span class="fc" id="L93">    return itemType;</span>
+  }
+
+  @Override
+  @NonNull
+  public URI getSource() {
+<span class="fc" id="L99">    return source;</span>
+  }
+
+  @Override
+  public int getReferenceCount() {
+<span class="fc" id="L104">    return referenceCount;</span>
+  }
+
+  // public boolean isResolved() {
+  // return resolved;
+  // }
+  //
+  // public void markResolved() {
+  // resolved = true;
+  // }
+
+  @Override
+  public void incrementReferenceCount() {
+<span class="fc" id="L117">    referenceCount += 1;</span>
+<span class="fc" id="L118">  }</span>
+
+  @Override
+  public int resetReferenceCount() {
+<span class="fc" id="L122">    int retval = referenceCount;</span>
+<span class="fc" id="L123">    referenceCount = 0;</span>
+<span class="fc" id="L124">    return retval;</span>
+  }
+
+<span class="fc" id="L127">  static final class Builder {</span>
+    private String originalIdentifier;
+    private String reassignedIdentifier;
+    private IRequiredValueModelNodeItem instance;
+    private ItemType itemType;
+    private URI source;
+
+    @NonNull
+    public Builder instance(@NonNull IRequiredValueModelNodeItem item, @NonNull ItemType itemType) {
+<span class="fc" id="L136">      this.instance = item;</span>
+<span class="fc" id="L137">      this.itemType = itemType;</span>
+<span class="fc" id="L138">      return this;</span>
+    }
+
+    // @NonNull
+    // public Builder reassignedIdentifier(@NonNull UUID identifier) {
+    // // no need to normalize, since UUIDs are formatted lower case
+    // return reassignedIdentifier(identifier.toString());
+    // }
+
+    @NonNull
+    public Builder reassignedIdentifier(@NonNull String identifier) {
+<span class="fc" id="L149">      this.reassignedIdentifier = identifier;</span>
+<span class="fc" id="L150">      return this;</span>
+    }
+    //
+    // @NonNull
+    // public Builder originalIdentifier(@NonNull UUID identifier) {
+    // // no need to normalize, since UUIDs are formatted lower case
+    // return originalIdentifier(identifier.toString());
+    // }
+
+    @NonNull
+    public Builder originalIdentifier(@NonNull String identifier) {
+<span class="fc" id="L161">      this.originalIdentifier = identifier;</span>
+<span class="fc" id="L162">      return this;</span>
+    }
+
+    @NonNull
+    public Builder source(@NonNull URI source) {
+<span class="fc" id="L167">      this.source = source;</span>
+<span class="fc" id="L168">      return this;</span>
+    }
+
+    @NonNull
+    public IEntityItem build() {
+<span class="fc bfc" id="L173" title="All 2 branches covered.">      return reassignedIdentifier == null ? new OriginalEntityItem(this) : new ReassignedEntityItem(this);</span>
+    }
+  }
+
+  static final class OriginalEntityItem
+      extends AbstractEntityItem {
+
+    protected OriginalEntityItem(@NonNull Builder builder) {
+<span class="fc" id="L181">      super(builder);</span>
+<span class="fc" id="L182">    }</span>
+
+    @Override
+    public String getIdentifier() {
+<span class="fc" id="L186">      return getOriginalIdentifier();</span>
+    }
+
+    @Override
+    public boolean isIdentifierReassigned() {
+<span class="fc" id="L191">      return false;</span>
+    }
+  }
+
+  static final class ReassignedEntityItem
+      extends AbstractEntityItem {
+    @NonNull
+    private final String reassignedIdentifier;
+
+    protected ReassignedEntityItem(@NonNull Builder builder) {
+<span class="fc" id="L201">      super(builder);</span>
+<span class="fc" id="L202">      this.reassignedIdentifier = ObjectUtils.requireNonNull(builder.reassignedIdentifier);</span>
+<span class="fc" id="L203">    }</span>
+
+    @Override
+    public String getIdentifier() {
+<span class="fc" id="L207">      return reassignedIdentifier;</span>
+    }
+
+    @Override
+    public boolean isIdentifierReassigned() {
+<span class="fc" id="L212">      return true;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

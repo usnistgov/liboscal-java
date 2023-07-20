@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="FORMAT" timestamp="1689875021193">
+    <module artifactId="liboscal-java" groupId="gov.nist.secauto.oscal" version="2.0.0"/>
+    <files>
+        <file path="src/test/java/gov/nist/secauto/oscal/java/ExamplesTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/java/MetaschemaVisitorTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/java/OscalBindingContextTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/java/ReadWriteTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/lib/profile/resolver/ModifyPhaseUtilsTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/lib/profile/resolver/ProfileResolutionTests.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/lib/profile/resolver/TestUtil.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/lib/profile/resolver/policy/ReferenceCountingVisitorTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/lib/profile/resolver/selection/ControlSelectionVisitorTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/lib/profile/resolver/selection/DefaultControlSelectionFilterTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/lib/profile/resolver/selection/FilterNonSelectedVisitorTest.java" result="NOOP"/>
+        <file path="src/test/java/gov/nist/secauto/oscal/lib/profile/resolver/selection/ImportTest.java" result="NOOP"/>
+    </files>
+</licensePluginReport>

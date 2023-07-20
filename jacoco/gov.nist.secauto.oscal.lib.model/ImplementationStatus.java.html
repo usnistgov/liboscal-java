@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImplementationStatus.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">ImplementationStatus.java</span></div><h1>ImplementationStatus.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import java.lang.Override;
+import java.lang.String;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Indicates the degree to which the a given control is implemented.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Implementation Status&quot;,
+    description = &quot;Indicates the degree to which the a given control is implemented.&quot;,
+    name = &quot;implementation-status&quot;,
+    metaschema = OscalImplementationCommonMetaschema.class
+)
+public class ImplementationStatus {
+  @BoundFlag(
+      formalName = &quot;Implementation State&quot;,
+      description = &quot;Identifies the implementation status of the control or control objective.&quot;,
+      useName = &quot;state&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;implemented&quot;, description = &quot;The control is fully implemented.&quot;), @AllowedValue(value = &quot;partial&quot;, description = &quot;The control is partially implemented.&quot;), @AllowedValue(value = &quot;planned&quot;, description = &quot;There is a plan for implementing the control as explained in the remarks.&quot;), @AllowedValue(value = &quot;alternative&quot;, description = &quot;There is an alternative implementation for this control as explained in the remarks.&quot;), @AllowedValue(value = &quot;not-applicable&quot;, description = &quot;This control does not apply to this system as justified in the remarks.&quot;)})
+  )
+  private String _state;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L51">  public ImplementationStatus() {</span>
+<span class="nc" id="L52">  }</span>
+
+  public String getState() {
+<span class="nc" id="L55">    return _state;</span>
+  }
+
+  public void setState(String value) {
+<span class="nc" id="L59">    _state = value;</span>
+<span class="nc" id="L60">  }</span>
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L63">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L67">    _remarks = value;</span>
+<span class="nc" id="L68">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L72">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

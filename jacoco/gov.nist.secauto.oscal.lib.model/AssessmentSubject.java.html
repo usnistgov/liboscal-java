@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssessmentSubject.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">AssessmentSubject.java</span></div><h1>AssessmentSubject.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Subject of Assessment&quot;,
+    description = &quot;Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.&quot;,
+    name = &quot;assessment-subject&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class,
+    remarks = &quot;Processing of an include/exclude pair starts with processing the include, then removing matching entries in the exclude.&quot;
+)
+public class AssessmentSubject {
+  @BoundFlag(
+      formalName = &quot;Subject Type&quot;,
+      description = &quot;Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.&quot;,
+      useName = &quot;type&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;component&quot;, description = &quot;The referenced assessment subject is a component defined in the SSP, or in the `local-definitions` of an Assessment Plan or Assessment Results.&quot;), @AllowedValue(value = &quot;inventory-item&quot;, description = &quot;The referenced assessment subject is a inventory item defined in the SSP, or in the `local-definitions` of an Assessment Plan or Assessment Results.&quot;), @AllowedValue(value = &quot;location&quot;, description = &quot;The referenced assessment subject is a `location` defined in the `metadata` of the SSP, Assessment Plan, or Assessment Results.&quot;), @AllowedValue(value = &quot;party&quot;, description = &quot;The referenced assessment subject is a person or team to interview, who is defined as a `party` in the `metadata` of the SSP, Assessment Plan, or Assessment Results.&quot;), @AllowedValue(value = &quot;user&quot;, description = &quot;The referenced assessment subject is a `user` defined in the SSP, or in the `local-definitions` of an Assessment Plan or Assessment Results.&quot;)})
+  )
+  private String _type;
+
+  /**
+   * &quot;A human-readable description of the collection of subjects being included in this assessment.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Include Subjects Description&quot;,
+      description = &quot;A human-readable description of the collection of subjects being included in this assessment.&quot;,
+      useName = &quot;description&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundAssembly(
+      formalName = &quot;Include All&quot;,
+      description = &quot;Include all controls from the imported catalog or profile resources.&quot;,
+      useName = &quot;include-all&quot;,
+      minOccurs = 1
+  )
+  private IncludeAll _includeAll;
+
+  @BoundAssembly(
+      formalName = &quot;Select Assessment Subject&quot;,
+      description = &quot;Identifies a set of assessment subjects to include/exclude by UUID.&quot;,
+      useName = &quot;include-subject&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;include-subjects&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;SelectSubjectById&gt; _includeSubjects;
+
+  @BoundAssembly(
+      formalName = &quot;Select Assessment Subject&quot;,
+      description = &quot;Identifies a set of assessment subjects to include/exclude by UUID.&quot;,
+      useName = &quot;exclude-subject&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;exclude-subjects&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;SelectSubjectById&gt; _excludeSubjects;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L128">  public AssessmentSubject() {</span>
+<span class="nc" id="L129">  }</span>
+
+  public String getType() {
+<span class="nc" id="L132">    return _type;</span>
+  }
+
+  public void setType(String value) {
+<span class="nc" id="L136">    _type = value;</span>
+<span class="nc" id="L137">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L140">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L144">    _description = value;</span>
+<span class="nc" id="L145">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L148">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L152">    _props = value;</span>
+<span class="nc" id="L153">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L161">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L163">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L165">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L174">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L179">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L183">    _links = value;</span>
+<span class="nc" id="L184">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L192">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L194">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L196">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L205">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public IncludeAll getIncludeAll() {
+<span class="nc" id="L210">    return _includeAll;</span>
+  }
+
+  public void setIncludeAll(IncludeAll value) {
+<span class="nc" id="L214">    _includeAll = value;</span>
+<span class="nc" id="L215">  }</span>
+
+  public List&lt;SelectSubjectById&gt; getIncludeSubjects() {
+<span class="nc" id="L218">    return _includeSubjects;</span>
+  }
+
+  public void setIncludeSubjects(List&lt;SelectSubjectById&gt; value) {
+<span class="nc" id="L222">    _includeSubjects = value;</span>
+<span class="nc" id="L223">  }</span>
+
+  /**
+   * Add a new {@link SelectSubjectById} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addIncludeSubject(SelectSubjectById item) {
+<span class="nc" id="L231">    SelectSubjectById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">    if (_includeSubjects == null) {</span>
+<span class="nc" id="L233">      _includeSubjects = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L235">    return _includeSubjects.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link SelectSubjectById} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeIncludeSubject(SelectSubjectById item) {
+<span class="nc" id="L244">    SelectSubjectById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L245" title="All 2 branches missed.">    return _includeSubjects == null ? false : _includeSubjects.remove(value);</span>
+  }
+
+  public List&lt;SelectSubjectById&gt; getExcludeSubjects() {
+<span class="nc" id="L249">    return _excludeSubjects;</span>
+  }
+
+  public void setExcludeSubjects(List&lt;SelectSubjectById&gt; value) {
+<span class="nc" id="L253">    _excludeSubjects = value;</span>
+<span class="nc" id="L254">  }</span>
+
+  /**
+   * Add a new {@link SelectSubjectById} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addExcludeSubject(SelectSubjectById item) {
+<span class="nc" id="L262">    SelectSubjectById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">    if (_excludeSubjects == null) {</span>
+<span class="nc" id="L264">      _excludeSubjects = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L266">    return _excludeSubjects.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link SelectSubjectById} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeExcludeSubject(SelectSubjectById item) {
+<span class="nc" id="L275">    SelectSubjectById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">    return _excludeSubjects == null ? false : _excludeSubjects.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L280">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L284">    _remarks = value;</span>
+<span class="nc" id="L285">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L289">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

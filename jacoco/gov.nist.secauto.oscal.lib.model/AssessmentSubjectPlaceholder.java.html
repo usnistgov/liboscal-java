@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssessmentSubjectPlaceholder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">AssessmentSubjectPlaceholder.java</span></div><h1>AssessmentSubjectPlaceholder.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Used when the assessment subjects will be determined as part of one or more other assessment activities. These assessment subjects will be recorded in the assessment results in the assessment log.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Assessment Subject Placeholder&quot;,
+    description = &quot;Used when the assessment subjects will be determined as part of one or more other assessment activities. These assessment subjects will be recorded in the assessment results in the assessment log.&quot;,
+    name = &quot;assessment-subject-placeholder&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class
+)
+public class AssessmentSubjectPlaceholder {
+  @BoundFlag(
+      formalName = &quot;Assessment Subject Placeholder Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier for a set of assessment subjects that will be identified by a task or an activity that is part of a task. The locally defined *UUID* of the `assessment subject placeholder` can be used to reference the data item locally or globally (e.g., in an [imported OSCAL instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope)). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  /**
+   * &quot;A human-readable description of intent of this assessment subject placeholder.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Assessment Subject Placeholder Description&quot;,
+      description = &quot;A human-readable description of intent of this assessment subject placeholder.&quot;,
+      useName = &quot;description&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  /**
+   * &quot;Assessment subjects will be identified while conducting the referenced activity-instance.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Assessment Subject Source&quot;,
+      description = &quot;Assessment subjects will be identified while conducting the referenced activity-instance.&quot;,
+      useName = &quot;source&quot;,
+      minOccurs = 1,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;sources&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Source&gt; _sources;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L104">  public AssessmentSubjectPlaceholder() {</span>
+<span class="nc" id="L105">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L108">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L112">    _uuid = value;</span>
+<span class="nc" id="L113">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L116">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L120">    _description = value;</span>
+<span class="nc" id="L121">  }</span>
+
+  public List&lt;Source&gt; getSources() {
+<span class="nc" id="L124">    return _sources;</span>
+  }
+
+  public void setSources(List&lt;Source&gt; value) {
+<span class="nc" id="L128">    _sources = value;</span>
+<span class="nc" id="L129">  }</span>
+
+  /**
+   * Add a new {@link Source} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addSource(Source item) {
+<span class="nc" id="L137">    Source value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (_sources == null) {</span>
+<span class="nc" id="L139">      _sources = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L141">    return _sources.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Source} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeSource(Source item) {
+<span class="nc" id="L150">    Source value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">    return _sources == null ? false : _sources.remove(value);</span>
+  }
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L155">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L159">    _props = value;</span>
+<span class="nc" id="L160">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L168">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L170">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L172">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L181">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L186">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L190">    _links = value;</span>
+<span class="nc" id="L191">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L199">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L201">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L203">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L212">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L217">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L221">    _remarks = value;</span>
+<span class="nc" id="L222">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L226">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * Assessment subjects will be identified while conducting the referenced activity-instance.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Assessment Subject Source&quot;,
+      description = &quot;Assessment subjects will be identified while conducting the referenced activity-instance.&quot;,
+      name = &quot;source&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class Source {
+    @BoundFlag(
+        formalName = &quot;Task Universally Unique Identifier&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference (in this or other OSCAL instances) an assessment activity to be performed as part of the event. The locally defined *UUID* of the `task` can be used to reference the data item locally or globally (e.g., in an [imported OSCAL instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope)). This UUID should be assigned *per-subject*, which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+        useName = &quot;task-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _taskUuid;
+
+<span class="nc" id="L248">    public Source() {</span>
+<span class="nc" id="L249">    }</span>
+
+    public UUID getTaskUuid() {
+<span class="nc" id="L252">      return _taskUuid;</span>
+    }
+
+    public void setTaskUuid(UUID value) {
+<span class="nc" id="L256">      _taskUuid = value;</span>
+<span class="nc" id="L257">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L261">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ControlPart.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">ControlPart.java</span></div><h1>ControlPart.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.control.AbstractPart;
+import java.lang.Override;
+import java.lang.String;
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Part&quot;,
+    description = &quot;An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.&quot;,
+    name = &quot;part&quot;,
+    metaschema = OscalControlCommonMetaschema.class,
+    remarks = &quot;A `part` provides for logical partitioning of prose, and can be thought of as a grouping structure (e.g., section). A `part` can have child parts allowing for arbitrary nesting of prose content (e.g., statement hierarchy). A `part` can contain `prop` objects that allow for enriching prose text with structured name/value information.\n&quot;
+            + &quot;\n&quot;
+            + &quot;A `part` can be assigned an optional `id`, which allows references to this part from within a catalog, or within an instance of another OSCAL model that has a need to reference the part. Examples of where part referencing is used in OSCAL include:\n&quot;
+            + &quot;\n&quot;
+            + &quot;- Referencing a part by id to tailor (make modifications to) a control statement in a profile.\n&quot;
+            + &quot;- Referencing a control statement represented by a part in a system security plan implemented-requirement where a statement-level response is desired.\n&quot;
+            + &quot;\n&quot;
+            + &quot;Use of `part` and `prop` provides for a wide degree of extensibility within the OSCAL catalog model. The optional `ns` provides a means to qualify a part's `name`, allowing for organization-specific vocabularies to be defined with clear semantics. Any organization that extends OSCAL in this way should consistently assign a `ns` value that represents the organization, making a given namespace qualified `name` unique to that organization. This allows the combination of `ns` and `name` to always be unique and unambiguous, even when mixed with extensions from other organizations. Each organization is responsible for governance of their own extensions, and is strongly encouraged to publish their extensions as standards to their user community. If no `ns` is provided, the name is expected to be in the \&quot;OSCAL\&quot; namespace.\n&quot;
+            + &quot;\n&quot;
+            + &quot;To ensure a `ns` is unique to an organization and naming conflicts are avoided, a URI containing a DNS or other globally defined organization name should be used. For example, if FedRAMP and DoD both extend OSCAL, FedRAMP will use the `ns` `http://fedramp.gov/ns/oscal`, while DoD might use the `ns` `https://defense.gov` for any organization specific `name`.\n&quot;
+            + &quot;\n&quot;
+            + &quot;Tools that process OSCAL content are not required to interpret unrecognized OSCAL extensions; however, OSCAL compliant tools should not modify or remove unrecognized extensions, unless there is a compelling reason to do so, such as data sensitivity.&quot;
+)
+@ValueConstraints(
+    allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;label&quot;, description = &quot;A human-readable label for the parent context, which may be rendered in place of the actual identifier for some use cases.&quot;), @AllowedValue(value = &quot;sort-id&quot;, description = &quot;An alternative identifier, whose value is easily sortable among other such values in the document.&quot;), @AllowedValue(value = &quot;alt-identifier&quot;, description = &quot;An alternate or aliased identifier for the parent context.&quot;)})
+)
+public class ControlPart extends AbstractPart {
+  @BoundFlag(
+      formalName = &quot;Part Identifier&quot;,
+      description = &quot;A unique identifier for the part.&quot;,
+      useName = &quot;id&quot;,
+      typeAdapter = TokenAdapter.class,
+      remarks = &quot;While a part is not required to have an id, it is often desirable for an identifier to be provided, which allows the part to be referenced elsewhere in OSCAL document instances. For this reason, it is RECOMMENDED to provide a part identifier.&quot;
+  )
+  private String _id;
+
+  @BoundFlag(
+      formalName = &quot;Part Name&quot;,
+      description = &quot;A textual label that uniquely identifies the part's semantic type, which exists in a value space qualified by the `ns`.&quot;,
+      useName = &quot;name&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _name;
+
+  @BoundFlag(
+      formalName = &quot;Part Namespace&quot;,
+      description = &quot;An optional namespace qualifying the part's `name`. This allows different organizations to associate distinct semantics with the same name.&quot;,
+      useName = &quot;ns&quot;,
+      typeAdapter = UriAdapter.class,
+      remarks = &quot;This value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier).\n&quot;
+              + &quot;\n&quot;
+              + &quot;When a `ns` is not provided, its value should be assumed to be `http://csrc.nist.gov/ns/oscal` and the name should be a name defined by the associated OSCAL model.&quot;
+  )
+  private URI _ns;
+
+  @BoundFlag(
+      formalName = &quot;Part Class&quot;,
+      description = &quot;An optional textual providing a sub-type or characterization of the part's `name`, or a category to which the part belongs.&quot;,
+      useName = &quot;class&quot;,
+      typeAdapter = TokenAdapter.class,
+      remarks = &quot;One use of this flag is to distinguish or discriminate between the semantics of multiple parts of the same control with the same `name` and `ns` (since even within a given namespace it can be useful to overload a name).\n&quot;
+              + &quot;\n&quot;
+              + &quot;A `class` can be used in validation rules to express extra constraints over named items of a specific `class` value.\n&quot;
+              + &quot;\n&quot;
+              + &quot;A `class` can also be used in an OSCAL profile as a means to target an alteration to control content.&quot;
+  )
+  private String _clazz;
+
+  /**
+   * &quot;An optional name given to the part, which may be used by a tool for display and navigation.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Part Title&quot;,
+      description = &quot;An optional name given to the part, which may be used by a tool for display and navigation.&quot;,
+      useName = &quot;title&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _title;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  /**
+   * &quot;Permits multiple paragraphs, lists, tables etc.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Part Text&quot;,
+      description = &quot;Permits multiple paragraphs, lists, tables etc.&quot;,
+      useName = &quot;prose&quot;,
+      namespace = &quot;##none&quot;,
+      inXmlWrapped = false
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _prose;
+
+  @BoundAssembly(
+      formalName = &quot;Part&quot;,
+      description = &quot;An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.&quot;,
+      useName = &quot;part&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;parts&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ControlPart&gt; _parts;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+<span class="fc" id="L161">  public ControlPart() {</span>
+<span class="fc" id="L162">  }</span>
+
+  public String getId() {
+<span class="fc" id="L165">    return _id;</span>
+  }
+
+  public void setId(String value) {
+<span class="nc" id="L169">    _id = value;</span>
+<span class="nc" id="L170">  }</span>
+
+  public String getName() {
+<span class="nc" id="L173">    return _name;</span>
+  }
+
+  public void setName(String value) {
+<span class="fc" id="L177">    _name = value;</span>
+<span class="fc" id="L178">  }</span>
+
+  public URI getNs() {
+<span class="fc" id="L181">    return _ns;</span>
+  }
+
+  public void setNs(URI value) {
+<span class="nc" id="L185">    _ns = value;</span>
+<span class="nc" id="L186">  }</span>
+
+  public String getClazz() {
+<span class="nc" id="L189">    return _clazz;</span>
+  }
+
+  public void setClazz(String value) {
+<span class="nc" id="L193">    _clazz = value;</span>
+<span class="nc" id="L194">  }</span>
+
+  public MarkupLine getTitle() {
+<span class="nc" id="L197">    return _title;</span>
+  }
+
+  public void setTitle(MarkupLine value) {
+<span class="nc" id="L201">    _title = value;</span>
+<span class="nc" id="L202">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="fc" id="L205">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L209">    _props = value;</span>
+<span class="nc" id="L210">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L218">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L220">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L222">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L231">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public MarkupMultiline getProse() {
+<span class="nc" id="L236">    return _prose;</span>
+  }
+
+  public void setProse(MarkupMultiline value) {
+<span class="fc" id="L240">    _prose = value;</span>
+<span class="fc" id="L241">  }</span>
+
+  public List&lt;ControlPart&gt; getParts() {
+<span class="fc" id="L244">    return _parts;</span>
+  }
+
+  public void setParts(List&lt;ControlPart&gt; value) {
+<span class="fc" id="L248">    _parts = value;</span>
+<span class="fc" id="L249">  }</span>
+
+  /**
+   * Add a new {@link ControlPart} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addPart(ControlPart item) {
+<span class="nc" id="L257">    ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">    if (_parts == null) {</span>
+<span class="nc" id="L259">      _parts = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L261">    return _parts.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ControlPart} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removePart(ControlPart item) {
+<span class="nc" id="L270">    ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">    return _parts == null ? false : _parts.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="fc" id="L275">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L279">    _links = value;</span>
+<span class="nc" id="L280">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L288">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L290">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L292">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L301">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L307">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PortRange.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">PortRange.java</span></div><h1>PortRange.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.Expect;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.NonNegativeIntegerAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import java.lang.Override;
+import java.lang.String;
+import java.math.BigInteger;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Where applicable this is the IPv4 port range on which the service operates.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Port Range&quot;,
+    description = &quot;Where applicable this is the IPv4 port range on which the service operates.&quot;,
+    name = &quot;port-range&quot;,
+    metaschema = OscalImplementationCommonMetaschema.class,
+    remarks = &quot;To be validated as a natural number (integer \\&gt;= 1). A single port uses the same value for start and end. Use multiple 'port-range' entries for non-contiguous ranges.&quot;
+)
+@ValueConstraints(
+    expect = {
+        @Expect(id = &quot;port-range-start-and-end-not-specified&quot;, level = IConstraint.Level.WARNING, test = &quot;exists(@start) and exists(@end)&quot;, message = &quot;If a protocol is defined, it should include a start and end port range. To define a single port, the start and end should be the same value.&quot;),
+        @Expect(id = &quot;port-range-start-specified-with-no-end&quot;, level = IConstraint.Level.WARNING, test = &quot;exists(@start) and not(exists(@end))&quot;, message = &quot;A start port exists, but an end point does not. To define a single port, the start and end should be the same value.&quot;),
+        @Expect(id = &quot;port-range-end-specified-with-no-start&quot;, level = IConstraint.Level.WARNING, test = &quot;not(exists(@start)) and exists(@end)&quot;, message = &quot;An end point exists, but a start port does not. To define a single port, the start and end should be the same value.&quot;),
+        @Expect(id = &quot;port-range-end-date-is-before-start-date&quot;, level = IConstraint.Level.WARNING, test = &quot;@start &lt;= @end&quot;, message = &quot;The port range specified has an end port that is less than the start port.&quot;)
+    }
+)
+public class PortRange {
+  @BoundFlag(
+      formalName = &quot;Start&quot;,
+      description = &quot;Indicates the starting port number in a port range&quot;,
+      useName = &quot;start&quot;,
+      typeAdapter = NonNegativeIntegerAdapter.class,
+      remarks = &quot;Should be a number within a permitted range&quot;
+  )
+  private BigInteger _start;
+
+  @BoundFlag(
+      formalName = &quot;End&quot;,
+      description = &quot;Indicates the ending port number in a port range&quot;,
+      useName = &quot;end&quot;,
+      typeAdapter = NonNegativeIntegerAdapter.class,
+      remarks = &quot;Should be a number within a permitted range&quot;
+  )
+  private BigInteger _end;
+
+  @BoundFlag(
+      formalName = &quot;Transport&quot;,
+      description = &quot;Indicates the transport type.&quot;,
+      useName = &quot;transport&quot;,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;TCP&quot;, description = &quot;Transmission Control Protocol&quot;), @AllowedValue(value = &quot;UDP&quot;, description = &quot;User Datagram Protocol&quot;)})
+  )
+  private String _transport;
+
+<span class="nc" id="L66">  public PortRange() {</span>
+<span class="nc" id="L67">  }</span>
+
+  public BigInteger getStart() {
+<span class="nc" id="L70">    return _start;</span>
+  }
+
+  public void setStart(BigInteger value) {
+<span class="nc" id="L74">    _start = value;</span>
+<span class="nc" id="L75">  }</span>
+
+  public BigInteger getEnd() {
+<span class="nc" id="L78">    return _end;</span>
+  }
+
+  public void setEnd(BigInteger value) {
+<span class="nc" id="L82">    _end = value;</span>
+<span class="nc" id="L83">  }</span>
+
+  public String getTransport() {
+<span class="nc" id="L86">    return _transport;</span>
+  }
+
+  public void setTransport(String value) {
+<span class="nc" id="L90">    _transport = value;</span>
+<span class="nc" id="L91">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L95">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

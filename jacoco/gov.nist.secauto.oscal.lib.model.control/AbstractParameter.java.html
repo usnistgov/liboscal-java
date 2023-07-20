@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractParameter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model.control</a> &gt; <span class="el_source">AbstractParameter.java</span></div><h1>AbstractParameter.java</h1><pre class="source lang-java linenums">/*
+ * Portions of this software was developed by employees of the National Institute
+ * of Standards and Technology (NIST), an agency of the Federal Government and is
+ * being made available as a public service. Pursuant to title 17 United States
+ * Code Section 105, works of NIST employees are not subject to copyright
+ * protection in the United States. This software may be subject to foreign
+ * copyright. Permission in the United States and in foreign countries, to the
+ * extent that NIST may hold copyright, to use, copy, modify, create derivative
+ * works, and distribute this software and its documentation without fee is hereby
+ * granted on a non-exclusive basis, provided that this notice and disclaimer
+ * of warranty appears in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
+ * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
+ * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
+ * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
+ * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
+ * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
+ * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
+ * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
+ * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
+ * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ */
+
+package gov.nist.secauto.oscal.lib.model.control;
+
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.Link;
+import gov.nist.secauto.oscal.lib.model.Parameter;
+import gov.nist.secauto.oscal.lib.model.ParameterConstraint;
+import gov.nist.secauto.oscal.lib.model.ParameterGuideline;
+import gov.nist.secauto.oscal.lib.model.ParameterSelection;
+import gov.nist.secauto.oscal.lib.model.Property;
+import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+<span class="fc" id="L51">public abstract class AbstractParameter implements IParameter {</span>
+
+  @Override
+  public Stream&lt;String&gt; getParameterReferences() {
+
+    // handle prop name=&quot;aggregates&quot;
+<span class="nc" id="L57">    Stream&lt;String&gt; aggregatesIds = CollectionUtil.listOrEmpty(getProps()).stream()</span>
+<span class="nc" id="L58">        .filter(Objects::nonNull)</span>
+<span class="nc bnc" id="L59" title="All 4 branches missed.">        .filter(prop -&gt; prop.isNamespaceEqual(IProperty.OSCAL_NAMESPACE) &amp;&amp; &quot;aggregates&quot;.equals(prop.getName()))</span>
+<span class="nc" id="L60">        .map(prop -&gt; prop.getValue());</span>
+
+    // handle select/choice/insert
+<span class="nc" id="L63">    ParameterSelection selection = getSelect();</span>
+
+    Stream&lt;String&gt; selectInsertIds;
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (selection == null) {</span>
+<span class="nc" id="L67">      selectInsertIds = Stream.empty();</span>
+    } else {
+<span class="nc" id="L69">      selectInsertIds = CollectionUtil.listOrEmpty(selection.getChoice()).stream()</span>
+<span class="nc" id="L70">          .filter(Objects::nonNull)</span>
+<span class="nc" id="L71">          .flatMap(choice -&gt; choice.getInserts(insert -&gt; &quot;param&quot;.equals(insert.getType().toString())).stream()</span>
+<span class="nc" id="L72">              .map(insert -&gt; insert.getIdReference().toString()));</span>
+    }
+<span class="nc" id="L74">    Stream&lt;String&gt; retval = Stream.concat(aggregatesIds, selectInsertIds)</span>
+<span class="nc" id="L75">        .filter(Objects::nonNull)</span>
+<span class="nc" id="L76">        .distinct();</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">    assert retval != null;</span>
+<span class="nc" id="L78">    return retval;</span>
+  }
+
+  @NonNull
+  public static Builder builder(@NonNull String id) {
+<span class="fc" id="L83">    return new Builder(id);</span>
+  }
+
+  public static class Builder {
+    @NonNull
+    private final String id;
+
+    private String clazz;
+<span class="fc" id="L91">    private final List&lt;Property&gt; props = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L92">    private final List&lt;Link&gt; links = new LinkedList&lt;&gt;();</span>
+    private MarkupLine label;
+    private MarkupMultiline usage;
+<span class="fc" id="L95">    private final List&lt;ParameterConstraint&gt; constraints = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L96">    private final List&lt;ParameterGuideline&gt; guidelines = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L97">    private List&lt;String&gt; values = new LinkedList&lt;&gt;();</span>
+    private ParameterSelection selection;
+    private MarkupMultiline remarks;
+
+<span class="fc" id="L101">    public Builder(@NonNull String id) {</span>
+<span class="fc" id="L102">      this.id = ObjectUtils.requireNonNull(id);</span>
+<span class="fc" id="L103">    }</span>
+
+    @NonNull
+    public Builder clazz(@NonNull String value) {
+<span class="nc" id="L107">      this.clazz = ObjectUtils.requireNonNull(value);</span>
+<span class="nc" id="L108">      return this;</span>
+    }
+
+    @NonNull
+    public Builder prop(@NonNull Property value) {
+<span class="fc" id="L113">      this.props.add(ObjectUtils.requireNonNull(value));</span>
+<span class="fc" id="L114">      return this;</span>
+    }
+
+    @NonNull
+    public Builder link(@NonNull Link value) {
+<span class="nc" id="L119">      this.links.add(ObjectUtils.requireNonNull(value));</span>
+<span class="nc" id="L120">      return this;</span>
+    }
+
+    @NonNull
+    public Builder label(@NonNull String markdown) {
+<span class="nc" id="L125">      return label(MarkupLine.fromMarkdown(Objects.requireNonNull(markdown)));</span>
+    }
+
+    @NonNull
+    public Builder label(@NonNull MarkupLine value) {
+<span class="nc" id="L130">      this.label = ObjectUtils.requireNonNull(value);</span>
+<span class="nc" id="L131">      return this;</span>
+    }
+
+    @NonNull
+    public Builder usage(@NonNull String markdown) {
+<span class="nc" id="L136">      return usage(MarkupMultiline.fromMarkdown(ObjectUtils.requireNonNull(markdown)));</span>
+    }
+
+    @NonNull
+    public Builder usage(@NonNull MarkupMultiline value) {
+<span class="nc" id="L141">      this.usage = ObjectUtils.requireNonNull(value);</span>
+<span class="nc" id="L142">      return this;</span>
+    }
+
+    @NonNull
+    public Builder constraint(@NonNull ParameterConstraint value) {
+<span class="nc" id="L147">      this.constraints.add(ObjectUtils.requireNonNull(value));</span>
+<span class="nc" id="L148">      return this;</span>
+    }
+
+    @NonNull
+    public Builder guideline(@NonNull ParameterGuideline value) {
+<span class="nc" id="L153">      this.guidelines.add(ObjectUtils.requireNonNull(value));</span>
+<span class="nc" id="L154">      return this;</span>
+    }
+
+    @SuppressWarnings(&quot;null&quot;)
+    @NonNull
+    public Builder values(@NonNull String... values) {
+<span class="nc" id="L160">      return values(Arrays.asList(values));</span>
+    }
+
+    @NonNull
+    public Builder values(@NonNull Collection&lt;String&gt; values) {
+<span class="nc" id="L165">      this.values = new ArrayList&lt;&gt;(values);</span>
+<span class="nc" id="L166">      return this;</span>
+    }
+
+    @NonNull
+    public Builder select(@NonNull ParameterSelection value) {
+<span class="nc" id="L171">      this.selection = Objects.requireNonNull(value);</span>
+<span class="nc" id="L172">      return this;</span>
+    }
+
+    @NonNull
+    public Builder remarks(@NonNull MarkupMultiline value) {
+<span class="nc" id="L177">      this.remarks = Objects.requireNonNull(value);</span>
+<span class="nc" id="L178">      return this;</span>
+    }
+
+    @NonNull
+    public Parameter build() {
+<span class="fc" id="L183">      Parameter retval = new Parameter();</span>
+<span class="fc" id="L184">      retval.setId(id);</span>
+
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">      if (clazz != null) {</span>
+<span class="nc" id="L187">        retval.setClazz(clazz);</span>
+      }
+<span class="fc bfc" id="L189" title="All 2 branches covered.">      if (!props.isEmpty()) {</span>
+<span class="fc" id="L190">        retval.setProps(props);</span>
+      }
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">      if (!links.isEmpty()) {</span>
+<span class="nc" id="L193">        retval.setLinks(links);</span>
+      }
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">      if (label != null) {</span>
+<span class="nc" id="L196">        retval.setLabel(label);</span>
+      }
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">      if (usage != null) {</span>
+<span class="nc" id="L199">        retval.setUsage(usage);</span>
+      }
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">      if (!constraints.isEmpty()) {</span>
+<span class="nc" id="L202">        retval.setConstraints(constraints);</span>
+      }
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">      if (!guidelines.isEmpty()) {</span>
+<span class="nc" id="L205">        retval.setGuidelines(guidelines);</span>
+      }
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">      if (!values.isEmpty()) {</span>
+<span class="nc" id="L208">        retval.setValues(values);</span>
+      }
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">      if (selection != null) {</span>
+<span class="nc" id="L211">        retval.setSelect(selection);</span>
+      }
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">      if (remarks != null) {</span>
+<span class="nc" id="L214">        retval.setRemarks(remarks);</span>
+      }
+<span class="fc" id="L216">      return retval;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

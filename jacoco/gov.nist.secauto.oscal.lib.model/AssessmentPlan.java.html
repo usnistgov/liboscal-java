@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssessmentPlan.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">AssessmentPlan.java</span></div><h1>AssessmentPlan.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * An assessment plan, such as those provided by a FedRAMP assessor.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Security Assessment Plan (SAP)&quot;,
+    description = &quot;An assessment plan, such as those provided by a FedRAMP assessor.&quot;,
+    name = &quot;assessment-plan&quot;,
+    metaschema = OscalApMetaschema.class,
+    rootName = &quot;assessment-plan&quot;
+)
+public class AssessmentPlan extends AbstractOscalInstance {
+  @BoundFlag(
+      formalName = &quot;Assessment Plan Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this assessment plan in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ap-identifiers). The locally defined *UUID* of the `assessment plan` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundAssembly(
+      formalName = &quot;Document Metadata&quot;,
+      description = &quot;Provides information about the containing document, and defines concepts that are shared across the document.&quot;,
+      useName = &quot;metadata&quot;,
+      minOccurs = 1
+  )
+  private Metadata _metadata;
+
+  @BoundAssembly(
+      formalName = &quot;Import System Security Plan&quot;,
+      description = &quot;Used by the assessment plan and POA\\&amp;M to import information about the system.&quot;,
+      useName = &quot;import-ssp&quot;,
+      minOccurs = 1,
+      remarks = &quot;Used by the SAP to import information about the system being assessed.&quot;
+  )
+  private ImportSsp _importSsp;
+
+  /**
+   * &quot;Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Local Definitions&quot;,
+      description = &quot;Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.&quot;,
+      useName = &quot;local-definitions&quot;
+  )
+  private LocalDefinitions _localDefinitions;
+
+  /**
+   * &quot;Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.&quot;
+   */
+  @BoundAssembly(
+      formalName = &quot;Assessment Plan Terms and Conditions&quot;,
+      description = &quot;Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.&quot;,
+      useName = &quot;terms-and-conditions&quot;
+  )
+  private TermsAndConditions _termsAndConditions;
+
+  @BoundAssembly(
+      formalName = &quot;Reviewed Controls and Control Objectives&quot;,
+      description = &quot;Identifies the controls being assessed and their control objectives.&quot;,
+      useName = &quot;reviewed-controls&quot;,
+      minOccurs = 1
+  )
+  private ReviewedControls _reviewedControls;
+
+  @BoundAssembly(
+      formalName = &quot;Subject of Assessment&quot;,
+      description = &quot;Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.&quot;,
+      useName = &quot;assessment-subject&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;assessment-subjects&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;AssessmentSubject&gt; _assessmentSubjects;
+
+  @BoundAssembly(
+      formalName = &quot;Assessment Assets&quot;,
+      description = &quot;Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.&quot;,
+      useName = &quot;assessment-assets&quot;
+  )
+  private AssessmentAssets _assessmentAssets;
+
+  @BoundAssembly(
+      formalName = &quot;Task&quot;,
+      description = &quot;Represents a scheduled event or milestone, which may be associated with a series of assessment actions.&quot;,
+      useName = &quot;task&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;tasks&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Task&gt; _tasks;
+
+  @BoundAssembly(
+      formalName = &quot;Back matter&quot;,
+      description = &quot;A collection of resources that may be referenced from within the OSCAL document instance.&quot;,
+      useName = &quot;back-matter&quot;
+  )
+  private BackMatter _backMatter;
+
+<span class="nc" id="L132">  public AssessmentPlan() {</span>
+<span class="nc" id="L133">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L136">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L140">    _uuid = value;</span>
+<span class="nc" id="L141">  }</span>
+
+  public Metadata getMetadata() {
+<span class="nc" id="L144">    return _metadata;</span>
+  }
+
+  public void setMetadata(Metadata value) {
+<span class="nc" id="L148">    _metadata = value;</span>
+<span class="nc" id="L149">  }</span>
+
+  public ImportSsp getImportSsp() {
+<span class="nc" id="L152">    return _importSsp;</span>
+  }
+
+  public void setImportSsp(ImportSsp value) {
+<span class="nc" id="L156">    _importSsp = value;</span>
+<span class="nc" id="L157">  }</span>
+
+  public LocalDefinitions getLocalDefinitions() {
+<span class="nc" id="L160">    return _localDefinitions;</span>
+  }
+
+  public void setLocalDefinitions(LocalDefinitions value) {
+<span class="nc" id="L164">    _localDefinitions = value;</span>
+<span class="nc" id="L165">  }</span>
+
+  public TermsAndConditions getTermsAndConditions() {
+<span class="nc" id="L168">    return _termsAndConditions;</span>
+  }
+
+  public void setTermsAndConditions(TermsAndConditions value) {
+<span class="nc" id="L172">    _termsAndConditions = value;</span>
+<span class="nc" id="L173">  }</span>
+
+  public ReviewedControls getReviewedControls() {
+<span class="nc" id="L176">    return _reviewedControls;</span>
+  }
+
+  public void setReviewedControls(ReviewedControls value) {
+<span class="nc" id="L180">    _reviewedControls = value;</span>
+<span class="nc" id="L181">  }</span>
+
+  public List&lt;AssessmentSubject&gt; getAssessmentSubjects() {
+<span class="nc" id="L184">    return _assessmentSubjects;</span>
+  }
+
+  public void setAssessmentSubjects(List&lt;AssessmentSubject&gt; value) {
+<span class="nc" id="L188">    _assessmentSubjects = value;</span>
+<span class="nc" id="L189">  }</span>
+
+  /**
+   * Add a new {@link AssessmentSubject} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addAssessmentSubject(AssessmentSubject item) {
+<span class="nc" id="L197">    AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">    if (_assessmentSubjects == null) {</span>
+<span class="nc" id="L199">      _assessmentSubjects = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L201">    return _assessmentSubjects.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link AssessmentSubject} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeAssessmentSubject(AssessmentSubject item) {
+<span class="nc" id="L210">    AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">    return _assessmentSubjects == null ? false : _assessmentSubjects.remove(value);</span>
+  }
+
+  public AssessmentAssets getAssessmentAssets() {
+<span class="nc" id="L215">    return _assessmentAssets;</span>
+  }
+
+  public void setAssessmentAssets(AssessmentAssets value) {
+<span class="nc" id="L219">    _assessmentAssets = value;</span>
+<span class="nc" id="L220">  }</span>
+
+  public List&lt;Task&gt; getTasks() {
+<span class="nc" id="L223">    return _tasks;</span>
+  }
+
+  public void setTasks(List&lt;Task&gt; value) {
+<span class="nc" id="L227">    _tasks = value;</span>
+<span class="nc" id="L228">  }</span>
+
+  /**
+   * Add a new {@link Task} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addTask(Task item) {
+<span class="nc" id="L236">    Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">    if (_tasks == null) {</span>
+<span class="nc" id="L238">      _tasks = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L240">    return _tasks.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Task} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeTask(Task item) {
+<span class="nc" id="L249">    Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">    return _tasks == null ? false : _tasks.remove(value);</span>
+  }
+
+  public BackMatter getBackMatter() {
+<span class="nc" id="L254">    return _backMatter;</span>
+  }
+
+  public void setBackMatter(BackMatter value) {
+<span class="nc" id="L258">    _backMatter = value;</span>
+<span class="nc" id="L259">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L263">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+
+  /**
+   * Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Assessment Plan Terms and Conditions&quot;,
+      description = &quot;Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.&quot;,
+      name = &quot;terms-and-conditions&quot;,
+      metaschema = OscalApMetaschema.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;rules-of-engagement&quot;, description = &quot;Defines the circumstances, conditions, degree, and manner in which the use of cyber-attack techniques or actions may be applied to the assessment.&quot;), @AllowedValue(value = &quot;disclosures&quot;, description = &quot;Any information the assessor should make known to the system owner or authorizing official. Has child 'item' parts for each individual disclosure.&quot;), @AllowedValue(value = &quot;assessment-inclusions&quot;, description = &quot;Defines any assessment activities which the system owner or authorizing official wishes to ensure are performed as part of the assessment.&quot;), @AllowedValue(value = &quot;assessment-exclusions&quot;, description = &quot;Defines any assessment activities which the system owner or authorizing official explicitly prohibits from being performed as part of the assessment.&quot;), @AllowedValue(value = &quot;results-delivery&quot;, description = &quot;Defines conditions related to the delivery of the assessment results, such as when to deliver, how, and to whom.&quot;), @AllowedValue(value = &quot;assumptions&quot;, description = &quot;Defines any supposition made by the assessor. Has child 'item' parts for each assumption.&quot;), @AllowedValue(value = &quot;methodology&quot;, description = &quot;An explanation of practices, procedures, and rules used in the course of the assessment.&quot;)})
+  )
+  public static class TermsAndConditions {
+    @BoundAssembly(
+        formalName = &quot;Assessment Part&quot;,
+        description = &quot;A partition of an assessment plan or results or a child of another part.&quot;,
+        useName = &quot;part&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;parts&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;AssessmentPart&gt; _parts;
+
+<span class="nc" id="L291">    public TermsAndConditions() {</span>
+<span class="nc" id="L292">    }</span>
+
+    public List&lt;AssessmentPart&gt; getParts() {
+<span class="nc" id="L295">      return _parts;</span>
+    }
+
+    public void setParts(List&lt;AssessmentPart&gt; value) {
+<span class="nc" id="L299">      _parts = value;</span>
+<span class="nc" id="L300">    }</span>
+
+    /**
+     * Add a new {@link AssessmentPart} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addPart(AssessmentPart item) {
+<span class="nc" id="L308">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">      if (_parts == null) {</span>
+<span class="nc" id="L310">        _parts = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L312">      return _parts.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link AssessmentPart} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removePart(AssessmentPart item) {
+<span class="nc" id="L321">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">      return _parts == null ? false : _parts.remove(value);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L327">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
+   * Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Local Definitions&quot;,
+      description = &quot;Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.&quot;,
+      name = &quot;local-definitions&quot;,
+      metaschema = OscalApMetaschema.class
+  )
+  @AssemblyConstraints(
+      isUnique = {
+          @IsUnique(id = &quot;unique-ap-local-definitions-component&quot;, level = IConstraint.Level.ERROR, target = &quot;component&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;), remarks = &quot;Since multiple `component` entries can be provided, each component must have a unique `uuid`.&quot;),
+          @IsUnique(id = &quot;unique-ap-local-definitions-user&quot;, level = IConstraint.Level.ERROR, target = &quot;user&quot;, keyFields = @KeyField(target = &quot;@uuid&quot;), remarks = &quot;A given `uuid` must be assigned only once to a user.&quot;)
+      }
+  )
+  public static class LocalDefinitions {
+    @BoundAssembly(
+        formalName = &quot;Component&quot;,
+        description = &quot;A defined component that can be part of an implemented system.&quot;,
+        useName = &quot;component&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Used to add any components, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)&quot;
+    )
+    @GroupAs(
+        name = &quot;components&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;SystemComponent&gt; _components;
+
+    @BoundAssembly(
+        formalName = &quot;Inventory Item&quot;,
+        description = &quot;A single managed inventory item within the system.&quot;,
+        useName = &quot;inventory-item&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Used to add any inventory-items, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)&quot;
+    )
+    @GroupAs(
+        name = &quot;inventory-items&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;InventoryItem&gt; _inventoryItems;
+
+    @BoundAssembly(
+        formalName = &quot;System User&quot;,
+        description = &quot;A type of user that interacts with the system based on an associated role.&quot;,
+        useName = &quot;user&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Used to add any users, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)&quot;
+    )
+    @GroupAs(
+        name = &quot;users&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;SystemUser&gt; _users;
+
+    @BoundAssembly(
+        formalName = &quot;Assessment-Specific Control Objective&quot;,
+        description = &quot;A local definition of a control objective for this assessment. Uses catalog syntax for control objective and assessment actions.&quot;,
+        useName = &quot;objectives-and-methods&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;objectives-and-methods&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;LocalObjective&gt; _objectivesAndMethods;
+
+    @BoundAssembly(
+        formalName = &quot;Activity&quot;,
+        description = &quot;Identifies an assessment or related process that can be performed. In the assessment plan, this is an intended activity which may be associated with an assessment task. In the assessment results, this an activity that was actually performed as part of an assessment.&quot;,
+        useName = &quot;activity&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;activities&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Activity&gt; _activities;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L420">    public LocalDefinitions() {</span>
+<span class="nc" id="L421">    }</span>
+
+    public List&lt;SystemComponent&gt; getComponents() {
+<span class="nc" id="L424">      return _components;</span>
+    }
+
+    public void setComponents(List&lt;SystemComponent&gt; value) {
+<span class="nc" id="L428">      _components = value;</span>
+<span class="nc" id="L429">    }</span>
+
+    /**
+     * Add a new {@link SystemComponent} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addComponent(SystemComponent item) {
+<span class="nc" id="L437">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L438" title="All 2 branches missed.">      if (_components == null) {</span>
+<span class="nc" id="L439">        _components = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L441">      return _components.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link SystemComponent} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeComponent(SystemComponent item) {
+<span class="nc" id="L450">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L451" title="All 2 branches missed.">      return _components == null ? false : _components.remove(value);</span>
+    }
+
+    public List&lt;InventoryItem&gt; getInventoryItems() {
+<span class="nc" id="L455">      return _inventoryItems;</span>
+    }
+
+    public void setInventoryItems(List&lt;InventoryItem&gt; value) {
+<span class="nc" id="L459">      _inventoryItems = value;</span>
+<span class="nc" id="L460">    }</span>
+
+    /**
+     * Add a new {@link InventoryItem} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addInventoryItem(InventoryItem item) {
+<span class="nc" id="L468">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L469" title="All 2 branches missed.">      if (_inventoryItems == null) {</span>
+<span class="nc" id="L470">        _inventoryItems = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L472">      return _inventoryItems.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link InventoryItem} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeInventoryItem(InventoryItem item) {
+<span class="nc" id="L481">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L482" title="All 2 branches missed.">      return _inventoryItems == null ? false : _inventoryItems.remove(value);</span>
+    }
+
+    public List&lt;SystemUser&gt; getUsers() {
+<span class="nc" id="L486">      return _users;</span>
+    }
+
+    public void setUsers(List&lt;SystemUser&gt; value) {
+<span class="nc" id="L490">      _users = value;</span>
+<span class="nc" id="L491">    }</span>
+
+    /**
+     * Add a new {@link SystemUser} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addUser(SystemUser item) {
+<span class="nc" id="L499">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L500" title="All 2 branches missed.">      if (_users == null) {</span>
+<span class="nc" id="L501">        _users = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L503">      return _users.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link SystemUser} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeUser(SystemUser item) {
+<span class="nc" id="L512">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L513" title="All 2 branches missed.">      return _users == null ? false : _users.remove(value);</span>
+    }
+
+    public List&lt;LocalObjective&gt; getObjectivesAndMethods() {
+<span class="nc" id="L517">      return _objectivesAndMethods;</span>
+    }
+
+    public void setObjectivesAndMethods(List&lt;LocalObjective&gt; value) {
+<span class="nc" id="L521">      _objectivesAndMethods = value;</span>
+<span class="nc" id="L522">    }</span>
+
+    /**
+     * Add a new {@link LocalObjective} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addObjectivesAndMethods(LocalObjective item) {
+<span class="nc" id="L530">      LocalObjective value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L531" title="All 2 branches missed.">      if (_objectivesAndMethods == null) {</span>
+<span class="nc" id="L532">        _objectivesAndMethods = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L534">      return _objectivesAndMethods.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link LocalObjective} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeObjectivesAndMethods(LocalObjective item) {
+<span class="nc" id="L543">      LocalObjective value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L544" title="All 2 branches missed.">      return _objectivesAndMethods == null ? false : _objectivesAndMethods.remove(value);</span>
+    }
+
+    public List&lt;Activity&gt; getActivities() {
+<span class="nc" id="L548">      return _activities;</span>
+    }
+
+    public void setActivities(List&lt;Activity&gt; value) {
+<span class="nc" id="L552">      _activities = value;</span>
+<span class="nc" id="L553">    }</span>
+
+    /**
+     * Add a new {@link Activity} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addActivity(Activity item) {
+<span class="nc" id="L561">      Activity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L562" title="All 2 branches missed.">      if (_activities == null) {</span>
+<span class="nc" id="L563">        _activities = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L565">      return _activities.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Activity} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeActivity(Activity item) {
+<span class="nc" id="L574">      Activity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L575" title="All 2 branches missed.">      return _activities == null ? false : _activities.remove(value);</span>
+    }
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L579">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L583">      _remarks = value;</span>
+<span class="nc" id="L584">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L588">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

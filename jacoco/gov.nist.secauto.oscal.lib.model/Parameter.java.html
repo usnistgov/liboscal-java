@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Parameter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Parameter.java</span></div><h1>Parameter.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.Expect;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.control.AbstractParameter;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Parameters provide a mechanism for the dynamic assignment of value(s) in a control.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Parameter&quot;,
+    description = &quot;Parameters provide a mechanism for the dynamic assignment of value(s) in a control.&quot;,
+    name = &quot;parameter&quot;,
+    metaschema = OscalControlCommonMetaschema.class,
+    remarks = &quot;In a catalog, a parameter is typically used as a placeholder for the future assignment of a parameter value, although the OSCAL model allows for the direct assignment of a value if desired by the control author. The `value` may be optionally used to specify one or more values. If no value is provided, then it is expected that the value will be provided at the Profile or Implementation layer.\n&quot;
+            + &quot;\n&quot;
+            + &quot;A parameter can include a variety of metadata options that support the future solicitation of one or more values. A `label` provides a textual placeholder that can be used in a tool to solicit parameter value input, or to display in catalog documentation. The `desc` provides a short description of what the parameter is used for, which can be used in tooling to help a user understand how to use the parameter. A `constraint` can be used to provide criteria for the allowed values. A `guideline` provides a recommendation for the use of a parameter.&quot;
+)
+@ValueConstraints(
+    allowedValues = {
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;label&quot;, description = &quot;A human-readable label for the parent context, which may be rendered in place of the actual identifier for some use cases.&quot;), @AllowedValue(value = &quot;sort-id&quot;, description = &quot;An alternative identifier, whose value is easily sortable among other such values in the document.&quot;), @AllowedValue(value = &quot;alt-identifier&quot;, description = &quot;An alternate or aliased identifier for the parent context.&quot;), @AllowedValue(value = &quot;alt-label&quot;, description = &quot;An alternate to the value provided by the parameter's label. This will typically be qualified by a class.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/rmf')]/@name&quot;, values = @AllowedValue(value = &quot;aggregates&quot;, description = &quot;The parent parameter provides an aggregation of two or more other parameters, each described by this property.&quot;))
+    },
+    expect = @Expect(level = IConstraint.Level.ERROR, test = &quot;not(exists(@depends-on))&quot;, message = &quot;depends-on is deprecated&quot;)
+)
+public class Parameter extends AbstractParameter {
+  @BoundFlag(
+      formalName = &quot;Parameter Identifier&quot;,
+      description = &quot;A unique identifier for the parameter.&quot;,
+      useName = &quot;id&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _id;
+
+  @BoundFlag(
+      formalName = &quot;Parameter Class&quot;,
+      description = &quot;A textual label that provides a characterization of the type, purpose, use or scope of the parameter.&quot;,
+      useName = &quot;class&quot;,
+      typeAdapter = TokenAdapter.class,
+      remarks = &quot;A `class` can be used in validation rules to express extra constraints over named items of a specific `class` value.&quot;
+  )
+  private String _clazz;
+
+  @BoundFlag(
+      formalName = &quot;Depends on&quot;,
+      description = &quot;**(deprecated)** Another parameter invoking this one. This construct has been deprecated and should not be used.&quot;,
+      useName = &quot;depends-on&quot;,
+      typeAdapter = TokenAdapter.class
+  )
+  private String _dependsOn;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  /**
+   * &quot;A short, placeholder name for the parameter, which can be used as a substitute for a &lt;code&gt;value&lt;/code&gt; if no value is assigned.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Parameter Label&quot;,
+      description = &quot;A short, placeholder name for the parameter, which can be used as a substitute for a `value` if no value is assigned.&quot;,
+      useName = &quot;label&quot;,
+      remarks = &quot;The label value is intended use when rendering a parameter in generated documentation or a user interface when a parameter is referenced. Note that labels are not required to be distinctive, which means that parameters within the same control may have the same label.&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _label;
+
+  /**
+   * &quot;Describes the purpose and use of a parameter.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Parameter Usage Description&quot;,
+      description = &quot;Describes the purpose and use of a parameter.&quot;,
+      useName = &quot;usage&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _usage;
+
+  @BoundAssembly(
+      formalName = &quot;Constraint&quot;,
+      description = &quot;A formal or informal expression of a constraint or test.&quot;,
+      useName = &quot;constraint&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;constraints&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ParameterConstraint&gt; _constraints;
+
+  @BoundAssembly(
+      formalName = &quot;Guideline&quot;,
+      description = &quot;A prose statement that provides a recommendation for the use of a parameter.&quot;,
+      useName = &quot;guideline&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;guidelines&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;ParameterGuideline&gt; _guidelines;
+
+  @BoundField(
+      formalName = &quot;Parameter Value&quot;,
+      description = &quot;A parameter value or set of values.&quot;,
+      useName = &quot;value&quot;,
+      maxOccurs = -1,
+      remarks = &quot;A set of values provided in a catalog can be redefined in OSCAL's `profile` or `system-security-plan` models.&quot;
+  )
+  @GroupAs(
+      name = &quot;values&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;String&gt; _values;
+
+  @BoundAssembly(
+      formalName = &quot;Selection&quot;,
+      description = &quot;Presenting a choice among alternatives.&quot;,
+      useName = &quot;select&quot;,
+      remarks = &quot;The OSCAL parameter `value` construct can be used to prescribe a specific parameter value in a catalog or profile. In cases where a prescriptive value is not possible in a catalog or profile, it may be possible to constrain the set of possible values to a few options. Use of `select` in a parameter instead of `value` is a way of defining value options that **may** be set.\n&quot;
+              + &quot;\n&quot;
+              + &quot;A set of allowed parameter values expressed as a set of options which may be selected. These options constrain the permissible values that may be selected for the containing parameter. When the value assignment is made, such as in an OSCAL profile or system security plan, the actual selected value can be examined to determine if it matches one of the permissible choices for the parameter value.\n&quot;
+              + &quot;\n&quot;
+              + &quot;When the value of `how-many` is set to \&quot;one-or-more\&quot;, multiple values may be assigned reflecting more than one choice.&quot;
+  )
+  private ParameterSelection _select;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="fc" id="L185">  public Parameter() {</span>
+<span class="fc" id="L186">  }</span>
+
+  public String getId() {
+<span class="fc" id="L189">    return _id;</span>
+  }
+
+  public void setId(String value) {
+<span class="fc" id="L193">    _id = value;</span>
+<span class="fc" id="L194">  }</span>
+
+  public String getClazz() {
+<span class="fc" id="L197">    return _clazz;</span>
+  }
+
+  public void setClazz(String value) {
+<span class="fc" id="L201">    _clazz = value;</span>
+<span class="fc" id="L202">  }</span>
+
+  public String getDependsOn() {
+<span class="nc" id="L205">    return _dependsOn;</span>
+  }
+
+  public void setDependsOn(String value) {
+<span class="nc" id="L209">    _dependsOn = value;</span>
+<span class="nc" id="L210">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="fc" id="L213">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="fc" id="L217">    _props = value;</span>
+<span class="fc" id="L218">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L226">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L228">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L230">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L239">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="fc" id="L244">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="fc" id="L248">    _links = value;</span>
+<span class="fc" id="L249">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L257">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L259">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L261">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L270">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public MarkupLine getLabel() {
+<span class="fc" id="L275">    return _label;</span>
+  }
+
+  public void setLabel(MarkupLine value) {
+<span class="fc" id="L279">    _label = value;</span>
+<span class="fc" id="L280">  }</span>
+
+  public MarkupMultiline getUsage() {
+<span class="fc" id="L283">    return _usage;</span>
+  }
+
+  public void setUsage(MarkupMultiline value) {
+<span class="fc" id="L287">    _usage = value;</span>
+<span class="fc" id="L288">  }</span>
+
+  public List&lt;ParameterConstraint&gt; getConstraints() {
+<span class="fc" id="L291">    return _constraints;</span>
+  }
+
+  public void setConstraints(List&lt;ParameterConstraint&gt; value) {
+<span class="fc" id="L295">    _constraints = value;</span>
+<span class="fc" id="L296">  }</span>
+
+  /**
+   * Add a new {@link ParameterConstraint} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addConstraint(ParameterConstraint item) {
+<span class="nc" id="L304">    ParameterConstraint value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">    if (_constraints == null) {</span>
+<span class="nc" id="L306">      _constraints = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L308">    return _constraints.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ParameterConstraint} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeConstraint(ParameterConstraint item) {
+<span class="nc" id="L317">    ParameterConstraint value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">    return _constraints == null ? false : _constraints.remove(value);</span>
+  }
+
+  public List&lt;ParameterGuideline&gt; getGuidelines() {
+<span class="fc" id="L322">    return _guidelines;</span>
+  }
+
+  public void setGuidelines(List&lt;ParameterGuideline&gt; value) {
+<span class="fc" id="L326">    _guidelines = value;</span>
+<span class="fc" id="L327">  }</span>
+
+  /**
+   * Add a new {@link ParameterGuideline} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addGuideline(ParameterGuideline item) {
+<span class="nc" id="L335">    ParameterGuideline value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">    if (_guidelines == null) {</span>
+<span class="nc" id="L337">      _guidelines = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L339">    return _guidelines.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link ParameterGuideline} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeGuideline(ParameterGuideline item) {
+<span class="nc" id="L348">    ParameterGuideline value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">    return _guidelines == null ? false : _guidelines.remove(value);</span>
+  }
+
+  public List&lt;String&gt; getValues() {
+<span class="nc" id="L353">    return _values;</span>
+  }
+
+  public void setValues(List&lt;String&gt; value) {
+<span class="fc" id="L357">    _values = value;</span>
+<span class="fc" id="L358">  }</span>
+
+  /**
+   * Add a new {@link String} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addValue(String item) {
+<span class="nc" id="L366">    String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L367" title="All 2 branches missed.">    if (_values == null) {</span>
+<span class="nc" id="L368">      _values = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L370">    return _values.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link String} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeValue(String item) {
+<span class="nc" id="L379">    String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">    return _values == null ? false : _values.remove(value);</span>
+  }
+
+  public ParameterSelection getSelect() {
+<span class="nc" id="L384">    return _select;</span>
+  }
+
+  public void setSelect(ParameterSelection value) {
+<span class="fc" id="L388">    _select = value;</span>
+<span class="fc" id="L389">  }</span>
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L392">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L396">    _remarks = value;</span>
+<span class="nc" id="L397">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L401">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

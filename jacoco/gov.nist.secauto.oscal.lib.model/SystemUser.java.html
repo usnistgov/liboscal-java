@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SystemUser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">SystemUser.java</span></div><h1>SystemUser.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.IndexHasKey;
+import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A type of user that interacts with the system based on an associated role.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;System User&quot;,
+    description = &quot;A type of user that interacts with the system based on an associated role.&quot;,
+    name = &quot;system-user&quot;,
+    metaschema = OscalImplementationCommonMetaschema.class,
+    remarks = &quot;Permissible values to be determined closer to the application, such as by a receiving authority.&quot;
+)
+@ValueConstraints(
+    allowedValues = {
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;type&quot;, description = &quot;The type of user, such as internal, external, or general-public.&quot;), @AllowedValue(value = &quot;privilege-level&quot;, description = &quot;The user's privilege level within the system, such as privileged, non-privileged, no-logical-access.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='type']/@value&quot;, values = {@AllowedValue(value = &quot;internal&quot;, description = &quot;A user account for a person or entity that is part of the organization who owns or operates the system.&quot;), @AllowedValue(value = &quot;external&quot;, description = &quot;A user account for a person or entity that is not part of the organization who owns or operates the system.&quot;), @AllowedValue(value = &quot;general-public&quot;, description = &quot;A user of the system considered to be outside&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='privilege-level']/@value&quot;, values = {@AllowedValue(value = &quot;privileged&quot;, description = &quot;This role has elevated access to the system, such as a group or system administrator.&quot;), @AllowedValue(value = &quot;non-privileged&quot;, description = &quot;This role has typical user-level access to the system without elevated access.&quot;), @AllowedValue(value = &quot;no-logical-access&quot;, description = &quot;This role has no access to the system, such as a manager who approves access as part of a process.&quot;)}),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;role-id&quot;, allowOthers = true, values = {@AllowedValue(value = &quot;asset-owner&quot;, description = &quot;Accountable for ensuring the asset is managed in accordance with organizational policies and procedures.&quot;), @AllowedValue(value = &quot;asset-administrator&quot;, description = &quot;Responsible for administering a set of assets.&quot;), @AllowedValue(value = &quot;security-operations&quot;, description = &quot;Members of the security operations center (SOC).&quot;), @AllowedValue(value = &quot;network-operations&quot;, description = &quot;Members of the network operations center (NOC).&quot;), @AllowedValue(value = &quot;incident-response&quot;, description = &quot;Responsible for responding to an event that could lead to loss of, or disruption to, an organization's operations, services or functions.&quot;), @AllowedValue(value = &quot;help-desk&quot;, description = &quot;Responsible for providing information and support to users.&quot;), @AllowedValue(value = &quot;configuration-management&quot;, description = &quot;Responsible for the configuration management processes governing changes to the asset.&quot;)})
+    }
+)
+public class SystemUser {
+  @BoundFlag(
+      formalName = &quot;User Universally Unique Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this user class elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `system user` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      required = true,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  /**
+   * &quot;A name given to the user, which may be used by a tool for display and navigation.&quot;
+   */
+  @BoundField(
+      formalName = &quot;User Title&quot;,
+      description = &quot;A name given to the user, which may be used by a tool for display and navigation.&quot;,
+      useName = &quot;title&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _title;
+
+  /**
+   * &quot;A short common name, abbreviation, or acronym for the user.&quot;
+   */
+  @BoundField(
+      formalName = &quot;User Short Name&quot;,
+      description = &quot;A short common name, abbreviation, or acronym for the user.&quot;,
+      useName = &quot;short-name&quot;
+  )
+  private String _shortName;
+
+  /**
+   * &quot;A summary of the user's purpose within the system.&quot;
+   */
+  @BoundField(
+      formalName = &quot;User Description&quot;,
+      description = &quot;A summary of the user's purpose within the system.&quot;,
+      useName = &quot;description&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _description;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+  @BoundField(
+      formalName = &quot;Role Identifier Reference&quot;,
+      description = &quot;Reference to a role by UUID.&quot;,
+      useName = &quot;role-id&quot;,
+      maxOccurs = -1
+  )
+  @BoundFieldValue(
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      indexHasKey = @IndexHasKey(level = IConstraint.Level.ERROR, indexName = &quot;index-metadata-role-id&quot;, keyFields = @KeyField)
+  )
+  @GroupAs(
+      name = &quot;role-ids&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;String&gt; _roleIds;
+
+  @BoundAssembly(
+      formalName = &quot;Privilege&quot;,
+      description = &quot;Identifies a specific system privilege held by the user, along with an associated description and/or rationale for the privilege.&quot;,
+      useName = &quot;authorized-privilege&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;authorized-privileges&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;AuthorizedPrivilege&gt; _authorizedPrivileges;
+
+  @BoundField(
+      formalName = &quot;Remarks&quot;,
+      description = &quot;Additional commentary about the containing object.&quot;,
+      useName = &quot;remarks&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _remarks;
+
+<span class="nc" id="L159">  public SystemUser() {</span>
+<span class="nc" id="L160">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L163">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L167">    _uuid = value;</span>
+<span class="nc" id="L168">  }</span>
+
+  public MarkupLine getTitle() {
+<span class="nc" id="L171">    return _title;</span>
+  }
+
+  public void setTitle(MarkupLine value) {
+<span class="nc" id="L175">    _title = value;</span>
+<span class="nc" id="L176">  }</span>
+
+  public String getShortName() {
+<span class="nc" id="L179">    return _shortName;</span>
+  }
+
+  public void setShortName(String value) {
+<span class="nc" id="L183">    _shortName = value;</span>
+<span class="nc" id="L184">  }</span>
+
+  public MarkupMultiline getDescription() {
+<span class="nc" id="L187">    return _description;</span>
+  }
+
+  public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L191">    _description = value;</span>
+<span class="nc" id="L192">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L195">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L199">    _props = value;</span>
+<span class="nc" id="L200">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L208">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L210">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L212">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L221">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L226">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L230">    _links = value;</span>
+<span class="nc" id="L231">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L239">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L241">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L243">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L252">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  public List&lt;String&gt; getRoleIds() {
+<span class="nc" id="L257">    return _roleIds;</span>
+  }
+
+  public void setRoleIds(List&lt;String&gt; value) {
+<span class="nc" id="L261">    _roleIds = value;</span>
+<span class="nc" id="L262">  }</span>
+
+  /**
+   * Add a new {@link String} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addRoleId(String item) {
+<span class="nc" id="L270">    String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">    if (_roleIds == null) {</span>
+<span class="nc" id="L272">      _roleIds = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L274">    return _roleIds.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link String} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeRoleId(String item) {
+<span class="nc" id="L283">    String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">    return _roleIds == null ? false : _roleIds.remove(value);</span>
+  }
+
+  public List&lt;AuthorizedPrivilege&gt; getAuthorizedPrivileges() {
+<span class="nc" id="L288">    return _authorizedPrivileges;</span>
+  }
+
+  public void setAuthorizedPrivileges(List&lt;AuthorizedPrivilege&gt; value) {
+<span class="nc" id="L292">    _authorizedPrivileges = value;</span>
+<span class="nc" id="L293">  }</span>
+
+  /**
+   * Add a new {@link AuthorizedPrivilege} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addAuthorizedPrivilege(AuthorizedPrivilege item) {
+<span class="nc" id="L301">    AuthorizedPrivilege value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">    if (_authorizedPrivileges == null) {</span>
+<span class="nc" id="L303">      _authorizedPrivileges = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L305">    return _authorizedPrivileges.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link AuthorizedPrivilege} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeAuthorizedPrivilege(AuthorizedPrivilege item) {
+<span class="nc" id="L314">    AuthorizedPrivilege value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">    return _authorizedPrivileges == null ? false : _authorizedPrivileges.remove(value);</span>
+  }
+
+  public MarkupMultiline getRemarks() {
+<span class="nc" id="L319">    return _remarks;</span>
+  }
+
+  public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L323">    _remarks = value;</span>
+<span class="nc" id="L324">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L328">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

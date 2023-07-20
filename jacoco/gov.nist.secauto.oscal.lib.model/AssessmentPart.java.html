@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssessmentPart.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">AssessmentPart.java</span></div><h1>AssessmentPart.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.HasCardinality;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A partition of an assessment plan or results or a child of another part.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Assessment Part&quot;,
+    description = &quot;A partition of an assessment plan or results or a child of another part.&quot;,
+    name = &quot;assessment-part&quot;,
+    metaschema = OscalAssessmentCommonMetaschema.class,
+    remarks = &quot;A `part` provides for logical partitioning of prose, and can be thought of as a grouping structure (e.g., section). A `part` can have child parts allowing for arbitrary nesting of prose content (e.g., statement hierarchy). A `part` can contain `prop` objects that allow for enriching prose text with structured name/value information.\n&quot;
+            + &quot;\n&quot;
+            + &quot;A `part` can be assigned an optional `id`, which allows for internal and external references to the textual concept contained within a `part`. A `id` provides a means for an OSCAL profile, or a higher layer OSCAL model to reference a specific part within a `catalog`. For example, an `id` can be used to reference or to make modifications to a control statement in a profile.\n&quot;
+            + &quot;\n&quot;
+            + &quot;Use of `part` and `prop` provides for a wide degree of extensibility within the OSCAL catalog model. The optional `ns` provides a means to qualify a part's `name`, allowing for organization-specific vocabularies to be defined with clear semantics. Any organization that extends OSCAL in this way should consistently assign a `ns` value that represents the organization, making a given namespace qualified `name` unique to that organization. This allows the combination of `ns` and `name` to always be unique and unambiguous, even when mixed with extensions from other organizations. Each organization is responsible for governance of their own extensions, and is strongly encouraged to publish their extensions as standards to their user community. If no `ns` is provided, the name is expected to be in the \&quot;OSCAL\&quot; namespace.\n&quot;
+            + &quot;\n&quot;
+            + &quot;To ensure a `ns` is unique to an organization and naming conflicts are avoided, a URI containing a DNS or other globally defined organization name should be used. For example, if FedRAMP and DoD both extend OSCAL, FedRAMP will use the `ns` `http://fedramp.gov/ns/oscal`, while DoD might use the `ns` `https://defense.gov` for any organization specific `name`.\n&quot;
+            + &quot;\n&quot;
+            + &quot;Tools that process OSCAL content are not required to interpret unrecognized OSCAL extensions; however, OSCAL compliant tools should not modify or remove unrecognized extensions, unless there is a compelling reason to do so, such as data sensitivity.&quot;
+)
+@ValueConstraints(
+    allowedValues = {
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;.[@name='objective']/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;method&quot;, description = &quot;The assessment method to use. This typically appears on parts with the name \&quot;objective\&quot;.&quot;)),
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;.[@name='objective']/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='method']/@value&quot;, values = {@AllowedValue(value = &quot;INTERVIEW&quot;, description = &quot;The process of holding discussions with individuals or groups of individuals within an organization to once again, facilitate assessor understanding, achieve clarification, or obtain evidence.&quot;), @AllowedValue(value = &quot;EXAMINE&quot;, description = &quot;The process of reviewing, inspecting, observing, studying, or analyzing one or more assessment objects (i.e., specifications, mechanisms, or activities).&quot;), @AllowedValue(value = &quot;TEST&quot;, description = &quot;The process of exercising one or more assessment objects (i.e., activities or mechanisms) under specified conditions to compare actual with expected behavior.&quot;)})
+    }
+)
+@AssemblyConstraints(
+    hasCardinality = @HasCardinality(level = IConstraint.Level.ERROR, target = &quot;.[@name='objective']/prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='method']&quot;, minOccurs = 1)
+)
+public class AssessmentPart {
+  @BoundFlag(
+      formalName = &quot;Part Identifier&quot;,
+      description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this part elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `part` can be used to reference the data item locally or globally (e.g., in an ported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+      useName = &quot;uuid&quot;,
+      typeAdapter = UuidAdapter.class
+  )
+  private UUID _uuid;
+
+  @BoundFlag(
+      formalName = &quot;Part Name&quot;,
+      description = &quot;A textual label that uniquely identifies the part's semantic type.&quot;,
+      useName = &quot;name&quot;,
+      required = true,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;asset&quot;, description = &quot;An assessment asset.&quot;), @AllowedValue(value = &quot;method&quot;, description = &quot;An assessment method.&quot;), @AllowedValue(value = &quot;objective&quot;, description = &quot;Describes a set of control objectives.&quot;)})
+  )
+  private String _name;
+
+  @BoundFlag(
+      formalName = &quot;Part Namespace&quot;,
+      description = &quot;A namespace qualifying the part's name. This allows different organizations to associate distinct semantics with the same name.&quot;,
+      useName = &quot;ns&quot;,
+      typeAdapter = UriAdapter.class,
+      remarks = &quot;This value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier).\n&quot;
+              + &quot;\n&quot;
+              + &quot;When a `ns` is not provided, its value should be assumed to be `http://csrc.nist.gov/ns/oscal` and the name should be a name defined by the associated OSCAL model.&quot;
+  )
+  private URI _ns;
+
+  @BoundFlag(
+      formalName = &quot;Part Class&quot;,
+      description = &quot;A textual label that provides a sub-type or characterization of the part's `name`. This can be used to further distinguish or discriminate between the semantics of multiple parts of the same control with the same `name` and `ns`.&quot;,
+      useName = &quot;class&quot;,
+      typeAdapter = TokenAdapter.class,
+      remarks = &quot;A `class` can be used in validation rules to express extra constraints over named items of a specific `class` value.\n&quot;
+              + &quot;\n&quot;
+              + &quot;A `class` can also be used in an OSCAL profile as a means to target an alteration to control content.&quot;
+  )
+  private String _clazz;
+
+  /**
+   * &quot;A name given to the part, which may be used by a tool for display and navigation.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Part Title&quot;,
+      description = &quot;A name given to the part, which may be used by a tool for display and navigation.&quot;,
+      useName = &quot;title&quot;
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupLineAdapter.class
+  )
+  private MarkupLine _title;
+
+  @BoundAssembly(
+      formalName = &quot;Property&quot;,
+      description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+      useName = &quot;prop&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;props&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Property&gt; _props;
+
+  /**
+   * &quot;Permits multiple paragraphs, lists, tables etc.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Part Text&quot;,
+      description = &quot;Permits multiple paragraphs, lists, tables etc.&quot;,
+      useName = &quot;prose&quot;,
+      namespace = &quot;##none&quot;,
+      inXmlWrapped = false
+  )
+  @BoundFieldValue(
+      typeAdapter = MarkupMultilineAdapter.class
+  )
+  private MarkupMultiline _prose;
+
+  @BoundAssembly(
+      formalName = &quot;Assessment Part&quot;,
+      description = &quot;A partition of an assessment plan or results or a child of another part.&quot;,
+      useName = &quot;part&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;parts&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;AssessmentPart&gt; _parts;
+
+  @BoundAssembly(
+      formalName = &quot;Link&quot;,
+      description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+      useName = &quot;link&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;links&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;Link&gt; _links;
+
+<span class="nc" id="L167">  public AssessmentPart() {</span>
+<span class="nc" id="L168">  }</span>
+
+  public UUID getUuid() {
+<span class="nc" id="L171">    return _uuid;</span>
+  }
+
+  public void setUuid(UUID value) {
+<span class="nc" id="L175">    _uuid = value;</span>
+<span class="nc" id="L176">  }</span>
+
+  public String getName() {
+<span class="nc" id="L179">    return _name;</span>
+  }
+
+  public void setName(String value) {
+<span class="nc" id="L183">    _name = value;</span>
+<span class="nc" id="L184">  }</span>
+
+  public URI getNs() {
+<span class="nc" id="L187">    return _ns;</span>
+  }
+
+  public void setNs(URI value) {
+<span class="nc" id="L191">    _ns = value;</span>
+<span class="nc" id="L192">  }</span>
+
+  public String getClazz() {
+<span class="nc" id="L195">    return _clazz;</span>
+  }
+
+  public void setClazz(String value) {
+<span class="nc" id="L199">    _clazz = value;</span>
+<span class="nc" id="L200">  }</span>
+
+  public MarkupLine getTitle() {
+<span class="nc" id="L203">    return _title;</span>
+  }
+
+  public void setTitle(MarkupLine value) {
+<span class="nc" id="L207">    _title = value;</span>
+<span class="nc" id="L208">  }</span>
+
+  public List&lt;Property&gt; getProps() {
+<span class="nc" id="L211">    return _props;</span>
+  }
+
+  public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L215">    _props = value;</span>
+<span class="nc" id="L216">  }</span>
+
+  /**
+   * Add a new {@link Property} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addProp(Property item) {
+<span class="nc" id="L224">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L226">      _props = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L228">    return _props.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Property} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeProp(Property item) {
+<span class="nc" id="L237">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+  }
+
+  public MarkupMultiline getProse() {
+<span class="nc" id="L242">    return _prose;</span>
+  }
+
+  public void setProse(MarkupMultiline value) {
+<span class="nc" id="L246">    _prose = value;</span>
+<span class="nc" id="L247">  }</span>
+
+  public List&lt;AssessmentPart&gt; getParts() {
+<span class="nc" id="L250">    return _parts;</span>
+  }
+
+  public void setParts(List&lt;AssessmentPart&gt; value) {
+<span class="nc" id="L254">    _parts = value;</span>
+<span class="nc" id="L255">  }</span>
+
+  /**
+   * Add a new {@link AssessmentPart} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addPart(AssessmentPart item) {
+<span class="nc" id="L263">    AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">    if (_parts == null) {</span>
+<span class="nc" id="L265">      _parts = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L267">    return _parts.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link AssessmentPart} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removePart(AssessmentPart item) {
+<span class="nc" id="L276">    AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">    return _parts == null ? false : _parts.remove(value);</span>
+  }
+
+  public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L281">    return _links;</span>
+  }
+
+  public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L285">    _links = value;</span>
+<span class="nc" id="L286">  }</span>
+
+  /**
+   * Add a new {@link Link} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addLink(Link item) {
+<span class="nc" id="L294">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L296">      _links = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L298">    return _links.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link Link} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeLink(Link item) {
+<span class="nc" id="L307">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L313">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

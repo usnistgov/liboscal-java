@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Address.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OSCAL Java Library</a> &gt; <a href="index.source.html" class="el_package">gov.nist.secauto.oscal.lib.model</a> &gt; <span class="el_source">Address.java</span></div><h1>Address.java</h1><pre class="source lang-java linenums">package gov.nist.secauto.oscal.lib.model;
+
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;
+import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;
+import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;
+import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;
+import gov.nist.secauto.metaschema.binding.model.annotations.Matches;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
+import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
+import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
+import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import java.lang.Override;
+import java.lang.String;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * A postal address for the location.
+ */
+@MetaschemaAssembly(
+    formalName = &quot;Address&quot;,
+    description = &quot;A postal address for the location.&quot;,
+    name = &quot;address&quot;,
+    metaschema = OscalMetadataMetaschema.class
+)
+public class Address {
+  @BoundFlag(
+      formalName = &quot;Address Type&quot;,
+      description = &quot;Indicates the type of address.&quot;,
+      useName = &quot;type&quot;,
+      typeAdapter = TokenAdapter.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, allowOthers = true, values = {@AllowedValue(value = &quot;home&quot;, description = &quot;A home address.&quot;), @AllowedValue(value = &quot;work&quot;, description = &quot;A work address.&quot;)})
+  )
+  private String _type;
+
+  @BoundField(
+      formalName = &quot;Address line&quot;,
+      description = &quot;A single line of an address.&quot;,
+      useName = &quot;addr-line&quot;,
+      maxOccurs = -1
+  )
+  @GroupAs(
+      name = &quot;addr-lines&quot;,
+      inJson = JsonGroupAsBehavior.LIST
+  )
+  private List&lt;String&gt; _addrLines;
+
+  /**
+   * &quot;City, town or geographical region for the mailing address.&quot;
+   */
+  @BoundField(
+      formalName = &quot;City&quot;,
+      description = &quot;City, town or geographical region for the mailing address.&quot;,
+      useName = &quot;city&quot;
+  )
+  private String _city;
+
+  /**
+   * &quot;State, province or analogous geographical region for a mailing address.&quot;
+   */
+  @BoundField(
+      formalName = &quot;State&quot;,
+      description = &quot;State, province or analogous geographical region for a mailing address.&quot;,
+      useName = &quot;state&quot;
+  )
+  private String _state;
+
+  /**
+   * &quot;Postal or ZIP code for mailing address.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Postal Code&quot;,
+      description = &quot;Postal or ZIP code for mailing address.&quot;,
+      useName = &quot;postal-code&quot;
+  )
+  private String _postalCode;
+
+  /**
+   * &quot;The ISO 3166-1 alpha-2 country code for the mailing address.&quot;
+   */
+  @BoundField(
+      formalName = &quot;Country Code&quot;,
+      description = &quot;The ISO 3166-1 alpha-2 country code for the mailing address.&quot;,
+      useName = &quot;country&quot;
+  )
+  @ValueConstraints(
+      matches = @Matches(level = IConstraint.Level.ERROR, pattern = &quot;[A-Z]{2}&quot;)
+  )
+  private String _country;
+
+<span class="fc" id="L98">  public Address() {</span>
+<span class="fc" id="L99">  }</span>
+
+  public String getType() {
+<span class="nc" id="L102">    return _type;</span>
+  }
+
+  public void setType(String value) {
+<span class="nc" id="L106">    _type = value;</span>
+<span class="nc" id="L107">  }</span>
+
+  public List&lt;String&gt; getAddrLines() {
+<span class="nc" id="L110">    return _addrLines;</span>
+  }
+
+  public void setAddrLines(List&lt;String&gt; value) {
+<span class="nc" id="L114">    _addrLines = value;</span>
+<span class="nc" id="L115">  }</span>
+
+  /**
+   * Add a new {@link String} item to the underlying collection.
+   * @param item the item to add
+   * @return {@code true}
+   */
+  public boolean addAddrLine(String item) {
+<span class="nc" id="L123">    String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">    if (_addrLines == null) {</span>
+<span class="nc" id="L125">      _addrLines = new LinkedList&lt;&gt;();</span>
+    }
+<span class="nc" id="L127">    return _addrLines.add(value);</span>
+  }
+
+  /**
+   * Remove the first matching {@link String} item from the underlying collection.
+   * @param item the item to remove
+   * @return {@code true} if the item was removed or {@code false} otherwise
+   */
+  public boolean removeAddrLine(String item) {
+<span class="nc" id="L136">    String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    return _addrLines == null ? false : _addrLines.remove(value);</span>
+  }
+
+  public String getCity() {
+<span class="nc" id="L141">    return _city;</span>
+  }
+
+  public void setCity(String value) {
+<span class="nc" id="L145">    _city = value;</span>
+<span class="nc" id="L146">  }</span>
+
+  public String getState() {
+<span class="nc" id="L149">    return _state;</span>
+  }
+
+  public void setState(String value) {
+<span class="nc" id="L153">    _state = value;</span>
+<span class="nc" id="L154">  }</span>
+
+  public String getPostalCode() {
+<span class="nc" id="L157">    return _postalCode;</span>
+  }
+
+  public void setPostalCode(String value) {
+<span class="nc" id="L161">    _postalCode = value;</span>
+<span class="nc" id="L162">  }</span>
+
+  public String getCountry() {
+<span class="nc" id="L165">    return _country;</span>
+  }
+
+  public void setCountry(String value) {
+<span class="nc" id="L169">    _country = value;</span>
+<span class="nc" id="L170">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L174">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

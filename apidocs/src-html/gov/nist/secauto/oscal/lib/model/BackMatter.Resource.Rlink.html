@@ -1,0 +1,777 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package gov.nist.secauto.oscal.lib.model;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValue;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import gov.nist.secauto.metaschema.binding.model.annotations.AllowedValues;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import gov.nist.secauto.metaschema.binding.model.annotations.AssemblyConstraints;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import gov.nist.secauto.metaschema.binding.model.annotations.BoundAssembly;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import gov.nist.secauto.metaschema.binding.model.annotations.BoundField;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFieldValue;</a>
+<span class="sourceLineNo">009</span><a id="line.9">import gov.nist.secauto.metaschema.binding.model.annotations.BoundFlag;</a>
+<span class="sourceLineNo">010</span><a id="line.10">import gov.nist.secauto.metaschema.binding.model.annotations.Expect;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import gov.nist.secauto.metaschema.binding.model.annotations.GroupAs;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import gov.nist.secauto.metaschema.binding.model.annotations.HasCardinality;</a>
+<span class="sourceLineNo">013</span><a id="line.13">import gov.nist.secauto.metaschema.binding.model.annotations.Index;</a>
+<span class="sourceLineNo">014</span><a id="line.14">import gov.nist.secauto.metaschema.binding.model.annotations.IsUnique;</a>
+<span class="sourceLineNo">015</span><a id="line.15">import gov.nist.secauto.metaschema.binding.model.annotations.KeyField;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import gov.nist.secauto.metaschema.binding.model.annotations.Matches;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaField;</a>
+<span class="sourceLineNo">019</span><a id="line.19">import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaFieldValue;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import gov.nist.secauto.metaschema.model.common.datatype.adapter.Base64Adapter;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import gov.nist.secauto.metaschema.model.common.datatype.adapter.DateTimeWithTZAdapter;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import gov.nist.secauto.metaschema.model.common.datatype.adapter.StringAdapter;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import gov.nist.secauto.metaschema.model.common.datatype.adapter.UriReferenceAdapter;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultilineAdapter;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import gov.nist.secauto.oscal.lib.model.metadata.AbstractBackMatter;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import java.lang.Override;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import java.lang.String;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import java.net.URI;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import java.nio.ByteBuffer;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import java.util.LinkedList;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import java.util.List;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import java.util.UUID;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.commons.lang3.builder.ReflectionToStringBuilder;</a>
+<span class="sourceLineNo">044</span><a id="line.44"></a>
+<span class="sourceLineNo">045</span><a id="line.45">/**</a>
+<span class="sourceLineNo">046</span><a id="line.46"> * A collection of resources that may be referenced from within the OSCAL document instance.</a>
+<span class="sourceLineNo">047</span><a id="line.47"> */</a>
+<span class="sourceLineNo">048</span><a id="line.48">@MetaschemaAssembly(</a>
+<span class="sourceLineNo">049</span><a id="line.49">    formalName = "Back matter",</a>
+<span class="sourceLineNo">050</span><a id="line.50">    description = "A collection of resources that may be referenced from within the OSCAL document instance.",</a>
+<span class="sourceLineNo">051</span><a id="line.51">    name = "back-matter",</a>
+<span class="sourceLineNo">052</span><a id="line.52">    metaschema = OscalMetadataMetaschema.class,</a>
+<span class="sourceLineNo">053</span><a id="line.53">    remarks = "Provides a collection of identified `resource` objects that can be referenced by a `link` with a `rel` value of \"reference\" and an `href` value that is a fragment \"#\" followed by a reference to a reference's `uuid`. Other specialized link \"rel\" values also use this pattern when indicated in that context of use."</a>
+<span class="sourceLineNo">054</span><a id="line.54">)</a>
+<span class="sourceLineNo">055</span><a id="line.55">@AssemblyConstraints(</a>
+<span class="sourceLineNo">056</span><a id="line.56">    index = @Index(level = IConstraint.Level.ERROR, target = "resource", name = "index-back-matter-resource", keyFields = @KeyField(target = "@uuid"))</a>
+<span class="sourceLineNo">057</span><a id="line.57">)</a>
+<span class="sourceLineNo">058</span><a id="line.58">public class BackMatter extends AbstractBackMatter {</a>
+<span class="sourceLineNo">059</span><a id="line.59">  /**</a>
+<span class="sourceLineNo">060</span><a id="line.60">   * "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources."</a>
+<span class="sourceLineNo">061</span><a id="line.61">   */</a>
+<span class="sourceLineNo">062</span><a id="line.62">  @BoundAssembly(</a>
+<span class="sourceLineNo">063</span><a id="line.63">      formalName = "Resource",</a>
+<span class="sourceLineNo">064</span><a id="line.64">      description = "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.",</a>
+<span class="sourceLineNo">065</span><a id="line.65">      useName = "resource",</a>
+<span class="sourceLineNo">066</span><a id="line.66">      maxOccurs = -1,</a>
+<span class="sourceLineNo">067</span><a id="line.67">      remarks = "A resource can be used in two ways. 1) it may point to an specific retrievable network resource using a `rlink`, or 2) it may be included as an attachment using a `base64`. A resource may contain multiple `rlink` and `base64` entries that represent alternative download locations (rlink) and attachments (base64) for the same resource.\n"</a>
+<span class="sourceLineNo">068</span><a id="line.68">              + "\n"</a>
+<span class="sourceLineNo">069</span><a id="line.69">              + "Both rlink and base64 allow for a `media-type` to be specified, which is used to distinguish between different representations of the same resource (e.g., Microsoft Word, PDF). When multiple `rlink` and `base64` items are included for a given resource, all items must contain equivalent information. This allows the document consumer to choose a preferred item to process based on a the selected item's `media-type`. This is extremely important when the items represent OSCAL content that is represented in alternate formats (i.e., XML, JSON, YAML), allowing the same OSCAL data to be processed from any of the available formats indicated by the items.\n"</a>
+<span class="sourceLineNo">070</span><a id="line.70">              + "\n"</a>
+<span class="sourceLineNo">071</span><a id="line.71">              + "When a resource includes a citation, then the `title` and `citation` properties must both be included."</a>
+<span class="sourceLineNo">072</span><a id="line.72">  )</a>
+<span class="sourceLineNo">073</span><a id="line.73">  @GroupAs(</a>
+<span class="sourceLineNo">074</span><a id="line.74">      name = "resources",</a>
+<span class="sourceLineNo">075</span><a id="line.75">      inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">076</span><a id="line.76">  )</a>
+<span class="sourceLineNo">077</span><a id="line.77">  private List&lt;Resource&gt; _resources;</a>
+<span class="sourceLineNo">078</span><a id="line.78"></a>
+<span class="sourceLineNo">079</span><a id="line.79">  public BackMatter() {</a>
+<span class="sourceLineNo">080</span><a id="line.80">  }</a>
+<span class="sourceLineNo">081</span><a id="line.81"></a>
+<span class="sourceLineNo">082</span><a id="line.82">  public List&lt;Resource&gt; getResources() {</a>
+<span class="sourceLineNo">083</span><a id="line.83">    return _resources;</a>
+<span class="sourceLineNo">084</span><a id="line.84">  }</a>
+<span class="sourceLineNo">085</span><a id="line.85"></a>
+<span class="sourceLineNo">086</span><a id="line.86">  public void setResources(List&lt;Resource&gt; value) {</a>
+<span class="sourceLineNo">087</span><a id="line.87">    _resources = value;</a>
+<span class="sourceLineNo">088</span><a id="line.88">  }</a>
+<span class="sourceLineNo">089</span><a id="line.89"></a>
+<span class="sourceLineNo">090</span><a id="line.90">  /**</a>
+<span class="sourceLineNo">091</span><a id="line.91">   * Add a new {@link Resource} item to the underlying collection.</a>
+<span class="sourceLineNo">092</span><a id="line.92">   * @param item the item to add</a>
+<span class="sourceLineNo">093</span><a id="line.93">   * @return {@code true}</a>
+<span class="sourceLineNo">094</span><a id="line.94">   */</a>
+<span class="sourceLineNo">095</span><a id="line.95">  public boolean addResource(Resource item) {</a>
+<span class="sourceLineNo">096</span><a id="line.96">    Resource value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">097</span><a id="line.97">    if (_resources == null) {</a>
+<span class="sourceLineNo">098</span><a id="line.98">      _resources = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">099</span><a id="line.99">    }</a>
+<span class="sourceLineNo">100</span><a id="line.100">    return _resources.add(value);</a>
+<span class="sourceLineNo">101</span><a id="line.101">  }</a>
+<span class="sourceLineNo">102</span><a id="line.102"></a>
+<span class="sourceLineNo">103</span><a id="line.103">  /**</a>
+<span class="sourceLineNo">104</span><a id="line.104">   * Remove the first matching {@link Resource} item from the underlying collection.</a>
+<span class="sourceLineNo">105</span><a id="line.105">   * @param item the item to remove</a>
+<span class="sourceLineNo">106</span><a id="line.106">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">107</span><a id="line.107">   */</a>
+<span class="sourceLineNo">108</span><a id="line.108">  public boolean removeResource(Resource item) {</a>
+<span class="sourceLineNo">109</span><a id="line.109">    Resource value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">110</span><a id="line.110">    return _resources == null ? false : _resources.remove(value);</a>
+<span class="sourceLineNo">111</span><a id="line.111">  }</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">  @Override</a>
+<span class="sourceLineNo">114</span><a id="line.114">  public String toString() {</a>
+<span class="sourceLineNo">115</span><a id="line.115">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">116</span><a id="line.116">  }</a>
+<span class="sourceLineNo">117</span><a id="line.117"></a>
+<span class="sourceLineNo">118</span><a id="line.118">  /**</a>
+<span class="sourceLineNo">119</span><a id="line.119">   * A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.</a>
+<span class="sourceLineNo">120</span><a id="line.120">   */</a>
+<span class="sourceLineNo">121</span><a id="line.121">  @MetaschemaAssembly(</a>
+<span class="sourceLineNo">122</span><a id="line.122">      formalName = "Resource",</a>
+<span class="sourceLineNo">123</span><a id="line.123">      description = "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.",</a>
+<span class="sourceLineNo">124</span><a id="line.124">      name = "resource",</a>
+<span class="sourceLineNo">125</span><a id="line.125">      metaschema = OscalMetadataMetaschema.class,</a>
+<span class="sourceLineNo">126</span><a id="line.126">      remarks = "A resource can be used in two ways. 1) it may point to an specific retrievable network resource using a `rlink`, or 2) it may be included as an attachment using a `base64`. A resource may contain multiple `rlink` and `base64` entries that represent alternative download locations (rlink) and attachments (base64) for the same resource.\n"</a>
+<span class="sourceLineNo">127</span><a id="line.127">              + "\n"</a>
+<span class="sourceLineNo">128</span><a id="line.128">              + "Both rlink and base64 allow for a `media-type` to be specified, which is used to distinguish between different representations of the same resource (e.g., Microsoft Word, PDF). When multiple `rlink` and `base64` items are included for a given resource, all items must contain equivalent information. This allows the document consumer to choose a preferred item to process based on a the selected item's `media-type`. This is extremely important when the items represent OSCAL content that is represented in alternate formats (i.e., XML, JSON, YAML), allowing the same OSCAL data to be processed from any of the available formats indicated by the items.\n"</a>
+<span class="sourceLineNo">129</span><a id="line.129">              + "\n"</a>
+<span class="sourceLineNo">130</span><a id="line.130">              + "When a resource includes a citation, then the `title` and `citation` properties must both be included."</a>
+<span class="sourceLineNo">131</span><a id="line.131">  )</a>
+<span class="sourceLineNo">132</span><a id="line.132">  @ValueConstraints(</a>
+<span class="sourceLineNo">133</span><a id="line.133">      allowedValues = {</a>
+<span class="sourceLineNo">134</span><a id="line.134">          @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = {@AllowedValue(value = "type", description = "Identifies the type of resource represented. The most specific appropriate type value SHOULD be used."), @AllowedValue(value = "version", description = "For resources representing a published document, this represents the version number of that document."), @AllowedValue(value = "published", description = "For resources representing a published document, this represents the publication date of that document.")}),</a>
+<span class="sourceLineNo">135</span><a id="line.135">          @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='type']/@value", values = {@AllowedValue(value = "logo", description = "Indicates the resource is an organization's logo."), @AllowedValue(value = "image", description = "Indicates the resource represents an image."), @AllowedValue(value = "screen-shot", description = "Indicates the resource represents an image of screen content."), @AllowedValue(value = "law", description = "Indicates the resource represents an applicable law."), @AllowedValue(value = "regulation", description = "Indicates the resource represents an applicable regulation."), @AllowedValue(value = "standard", description = "Indicates the resource represents an applicable standard."), @AllowedValue(value = "external-guidance", description = "Indicates the resource represents applicable guidance."), @AllowedValue(value = "acronyms", description = "Indicates the resource provides a list of relevant acronyms."), @AllowedValue(value = "citation", description = "Indicates the resource cites relevant information."), @AllowedValue(value = "policy", description = "Indicates the resource is a policy."), @AllowedValue(value = "procedure", description = "Indicates the resource is a procedure."), @AllowedValue(value = "system-guide", description = "Indicates the resource is guidance document related to the subject system of an SSP."), @AllowedValue(value = "users-guide", description = "Indicates the resource is guidance document a user's guide or administrator's guide."), @AllowedValue(value = "administrators-guide", description = "Indicates the resource is guidance document a administrator's guide."), @AllowedValue(value = "rules-of-behavior", description = "Indicates the resource represents rules of behavior content."), @AllowedValue(value = "plan", description = "Indicates the resource represents a plan."), @AllowedValue(value = "artifact", description = "Indicates the resource represents an artifact, such as may be reviewed by an assessor."), @AllowedValue(value = "evidence", description = "Indicates the resource represents evidence, such as to support an assessment finding."), @AllowedValue(value = "tool-output", description = "Indicates the resource represents output from a tool."), @AllowedValue(value = "raw-data", description = "Indicates the resource represents machine data, which may require a tool or analysis for interpretation or presentation."), @AllowedValue(value = "interview-notes", description = "Indicates the resource represents notes from an interview, such as may be collected during an assessment."), @AllowedValue(value = "questionnaire", description = "Indicates the resource is a set of questions, possibly with responses."), @AllowedValue(value = "report", description = "Indicates the resource is a report."), @AllowedValue(value = "agreement", description = "Indicates the resource is a formal agreement between two or more parties.")})</a>
+<span class="sourceLineNo">136</span><a id="line.136">      },</a>
+<span class="sourceLineNo">137</span><a id="line.137">      matches = @Matches(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='published']/@value", typeAdapter = DateTimeWithTZAdapter.class),</a>
+<span class="sourceLineNo">138</span><a id="line.138">      expect = @Expect(level = IConstraint.Level.ERROR, target = ".[citation]", test = "title")</a>
+<span class="sourceLineNo">139</span><a id="line.139">  )</a>
+<span class="sourceLineNo">140</span><a id="line.140">  @AssemblyConstraints(</a>
+<span class="sourceLineNo">141</span><a id="line.141">      isUnique = {</a>
+<span class="sourceLineNo">142</span><a id="line.142">          @IsUnique(id = "unique-resource-rlink-href", level = IConstraint.Level.ERROR, target = "rlink", keyFields = {@KeyField(target = "@href"), @KeyField(target = "@media-type")}),</a>
+<span class="sourceLineNo">143</span><a id="line.143">          @IsUnique(id = "unique-resource-base64-filename", level = IConstraint.Level.ERROR, target = "base64", keyFields = @KeyField(target = "@filename"))</a>
+<span class="sourceLineNo">144</span><a id="line.144">      },</a>
+<span class="sourceLineNo">145</span><a id="line.145">      hasCardinality = @HasCardinality(level = IConstraint.Level.WARNING, target = "rlink|base64", minOccurs = 1)</a>
+<span class="sourceLineNo">146</span><a id="line.146">  )</a>
+<span class="sourceLineNo">147</span><a id="line.147">  public static class Resource {</a>
+<span class="sourceLineNo">148</span><a id="line.148">    @BoundFlag(</a>
+<span class="sourceLineNo">149</span><a id="line.149">        formalName = "Resource Universally Unique Identifier",</a>
+<span class="sourceLineNo">150</span><a id="line.150">        description = "A unique identifier for a resource.",</a>
+<span class="sourceLineNo">151</span><a id="line.151">        useName = "uuid",</a>
+<span class="sourceLineNo">152</span><a id="line.152">        required = true,</a>
+<span class="sourceLineNo">153</span><a id="line.153">        typeAdapter = UuidAdapter.class</a>
+<span class="sourceLineNo">154</span><a id="line.154">    )</a>
+<span class="sourceLineNo">155</span><a id="line.155">    private UUID _uuid;</a>
+<span class="sourceLineNo">156</span><a id="line.156"></a>
+<span class="sourceLineNo">157</span><a id="line.157">    /**</a>
+<span class="sourceLineNo">158</span><a id="line.158">     * "An optional name given to the resource, which may be used by a tool for display and navigation."</a>
+<span class="sourceLineNo">159</span><a id="line.159">     */</a>
+<span class="sourceLineNo">160</span><a id="line.160">    @BoundField(</a>
+<span class="sourceLineNo">161</span><a id="line.161">        formalName = "Resource Title",</a>
+<span class="sourceLineNo">162</span><a id="line.162">        description = "An optional name given to the resource, which may be used by a tool for display and navigation.",</a>
+<span class="sourceLineNo">163</span><a id="line.163">        useName = "title"</a>
+<span class="sourceLineNo">164</span><a id="line.164">    )</a>
+<span class="sourceLineNo">165</span><a id="line.165">    @BoundFieldValue(</a>
+<span class="sourceLineNo">166</span><a id="line.166">        typeAdapter = MarkupLineAdapter.class</a>
+<span class="sourceLineNo">167</span><a id="line.167">    )</a>
+<span class="sourceLineNo">168</span><a id="line.168">    private MarkupLine _title;</a>
+<span class="sourceLineNo">169</span><a id="line.169"></a>
+<span class="sourceLineNo">170</span><a id="line.170">    /**</a>
+<span class="sourceLineNo">171</span><a id="line.171">     * "An optional short summary of the resource used to indicate the purpose of the resource."</a>
+<span class="sourceLineNo">172</span><a id="line.172">     */</a>
+<span class="sourceLineNo">173</span><a id="line.173">    @BoundField(</a>
+<span class="sourceLineNo">174</span><a id="line.174">        formalName = "Resource Description",</a>
+<span class="sourceLineNo">175</span><a id="line.175">        description = "An optional short summary of the resource used to indicate the purpose of the resource.",</a>
+<span class="sourceLineNo">176</span><a id="line.176">        useName = "description"</a>
+<span class="sourceLineNo">177</span><a id="line.177">    )</a>
+<span class="sourceLineNo">178</span><a id="line.178">    @BoundFieldValue(</a>
+<span class="sourceLineNo">179</span><a id="line.179">        typeAdapter = MarkupMultilineAdapter.class</a>
+<span class="sourceLineNo">180</span><a id="line.180">    )</a>
+<span class="sourceLineNo">181</span><a id="line.181">    private MarkupMultiline _description;</a>
+<span class="sourceLineNo">182</span><a id="line.182"></a>
+<span class="sourceLineNo">183</span><a id="line.183">    @BoundAssembly(</a>
+<span class="sourceLineNo">184</span><a id="line.184">        formalName = "Property",</a>
+<span class="sourceLineNo">185</span><a id="line.185">        description = "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",</a>
+<span class="sourceLineNo">186</span><a id="line.186">        useName = "prop",</a>
+<span class="sourceLineNo">187</span><a id="line.187">        maxOccurs = -1</a>
+<span class="sourceLineNo">188</span><a id="line.188">    )</a>
+<span class="sourceLineNo">189</span><a id="line.189">    @GroupAs(</a>
+<span class="sourceLineNo">190</span><a id="line.190">        name = "props",</a>
+<span class="sourceLineNo">191</span><a id="line.191">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">192</span><a id="line.192">    )</a>
+<span class="sourceLineNo">193</span><a id="line.193">    private List&lt;Property&gt; _props;</a>
+<span class="sourceLineNo">194</span><a id="line.194"></a>
+<span class="sourceLineNo">195</span><a id="line.195">    @BoundField(</a>
+<span class="sourceLineNo">196</span><a id="line.196">        formalName = "Document Identifier",</a>
+<span class="sourceLineNo">197</span><a id="line.197">        description = "A document identifier qualified by an identifier `scheme`.",</a>
+<span class="sourceLineNo">198</span><a id="line.198">        useName = "document-id",</a>
+<span class="sourceLineNo">199</span><a id="line.199">        maxOccurs = -1</a>
+<span class="sourceLineNo">200</span><a id="line.200">    )</a>
+<span class="sourceLineNo">201</span><a id="line.201">    @GroupAs(</a>
+<span class="sourceLineNo">202</span><a id="line.202">        name = "document-ids",</a>
+<span class="sourceLineNo">203</span><a id="line.203">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">204</span><a id="line.204">    )</a>
+<span class="sourceLineNo">205</span><a id="line.205">    private List&lt;DocumentId&gt; _documentIds;</a>
+<span class="sourceLineNo">206</span><a id="line.206"></a>
+<span class="sourceLineNo">207</span><a id="line.207">    /**</a>
+<span class="sourceLineNo">208</span><a id="line.208">     * "An optional citation consisting of end note text using structured markup."</a>
+<span class="sourceLineNo">209</span><a id="line.209">     */</a>
+<span class="sourceLineNo">210</span><a id="line.210">    @BoundAssembly(</a>
+<span class="sourceLineNo">211</span><a id="line.211">        formalName = "Citation",</a>
+<span class="sourceLineNo">212</span><a id="line.212">        description = "An optional citation consisting of end note text using structured markup.",</a>
+<span class="sourceLineNo">213</span><a id="line.213">        useName = "citation"</a>
+<span class="sourceLineNo">214</span><a id="line.214">    )</a>
+<span class="sourceLineNo">215</span><a id="line.215">    private Citation _citation;</a>
+<span class="sourceLineNo">216</span><a id="line.216"></a>
+<span class="sourceLineNo">217</span><a id="line.217">    /**</a>
+<span class="sourceLineNo">218</span><a id="line.218">     * "A URL-based pointer to an external resource with an optional hash for verification and change detection."</a>
+<span class="sourceLineNo">219</span><a id="line.219">     */</a>
+<span class="sourceLineNo">220</span><a id="line.220">    @BoundAssembly(</a>
+<span class="sourceLineNo">221</span><a id="line.221">        formalName = "Resource link",</a>
+<span class="sourceLineNo">222</span><a id="line.222">        description = "A URL-based pointer to an external resource with an optional hash for verification and change detection.",</a>
+<span class="sourceLineNo">223</span><a id="line.223">        useName = "rlink",</a>
+<span class="sourceLineNo">224</span><a id="line.224">        maxOccurs = -1,</a>
+<span class="sourceLineNo">225</span><a id="line.225">        remarks = "Multiple `rlink` objects can be included for a resource. In such a case, all provided `rlink` items are intended to be equivalent in content, but may differ in structure or format.\n"</a>
+<span class="sourceLineNo">226</span><a id="line.226">                + "\n"</a>
+<span class="sourceLineNo">227</span><a id="line.227">                + "A `media-type` is used to identify the format of a given rlink, and can be used to differentiate items in a collection of rlinks. The `media-type` provides a hint to the OSCAL document consumer about the structure of the resource referenced by the `rlink`."</a>
+<span class="sourceLineNo">228</span><a id="line.228">    )</a>
+<span class="sourceLineNo">229</span><a id="line.229">    @GroupAs(</a>
+<span class="sourceLineNo">230</span><a id="line.230">        name = "rlinks",</a>
+<span class="sourceLineNo">231</span><a id="line.231">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">232</span><a id="line.232">    )</a>
+<span class="sourceLineNo">233</span><a id="line.233">    private List&lt;Rlink&gt; _rlinks;</a>
+<span class="sourceLineNo">234</span><a id="line.234"></a>
+<span class="sourceLineNo">235</span><a id="line.235">    /**</a>
+<span class="sourceLineNo">236</span><a id="line.236">     * "A resource encoded using the Base64 alphabet defined by &lt;a href=\"https://www.rfc-editor.org/rfc/rfc2045.html\"&gt;RFC 2045&lt;/a&gt;."</a>
+<span class="sourceLineNo">237</span><a id="line.237">     */</a>
+<span class="sourceLineNo">238</span><a id="line.238">    @BoundField(</a>
+<span class="sourceLineNo">239</span><a id="line.239">        formalName = "Base64",</a>
+<span class="sourceLineNo">240</span><a id="line.240">        description = "A resource encoded using the Base64 alphabet defined by [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045.html).",</a>
+<span class="sourceLineNo">241</span><a id="line.241">        useName = "base64"</a>
+<span class="sourceLineNo">242</span><a id="line.242">    )</a>
+<span class="sourceLineNo">243</span><a id="line.243">    private Base64 _base64;</a>
+<span class="sourceLineNo">244</span><a id="line.244"></a>
+<span class="sourceLineNo">245</span><a id="line.245">    @BoundField(</a>
+<span class="sourceLineNo">246</span><a id="line.246">        formalName = "Remarks",</a>
+<span class="sourceLineNo">247</span><a id="line.247">        description = "Additional commentary about the containing object.",</a>
+<span class="sourceLineNo">248</span><a id="line.248">        useName = "remarks"</a>
+<span class="sourceLineNo">249</span><a id="line.249">    )</a>
+<span class="sourceLineNo">250</span><a id="line.250">    @BoundFieldValue(</a>
+<span class="sourceLineNo">251</span><a id="line.251">        typeAdapter = MarkupMultilineAdapter.class</a>
+<span class="sourceLineNo">252</span><a id="line.252">    )</a>
+<span class="sourceLineNo">253</span><a id="line.253">    private MarkupMultiline _remarks;</a>
+<span class="sourceLineNo">254</span><a id="line.254"></a>
+<span class="sourceLineNo">255</span><a id="line.255">    public Resource() {</a>
+<span class="sourceLineNo">256</span><a id="line.256">    }</a>
+<span class="sourceLineNo">257</span><a id="line.257"></a>
+<span class="sourceLineNo">258</span><a id="line.258">    public UUID getUuid() {</a>
+<span class="sourceLineNo">259</span><a id="line.259">      return _uuid;</a>
+<span class="sourceLineNo">260</span><a id="line.260">    }</a>
+<span class="sourceLineNo">261</span><a id="line.261"></a>
+<span class="sourceLineNo">262</span><a id="line.262">    public void setUuid(UUID value) {</a>
+<span class="sourceLineNo">263</span><a id="line.263">      _uuid = value;</a>
+<span class="sourceLineNo">264</span><a id="line.264">    }</a>
+<span class="sourceLineNo">265</span><a id="line.265"></a>
+<span class="sourceLineNo">266</span><a id="line.266">    public MarkupLine getTitle() {</a>
+<span class="sourceLineNo">267</span><a id="line.267">      return _title;</a>
+<span class="sourceLineNo">268</span><a id="line.268">    }</a>
+<span class="sourceLineNo">269</span><a id="line.269"></a>
+<span class="sourceLineNo">270</span><a id="line.270">    public void setTitle(MarkupLine value) {</a>
+<span class="sourceLineNo">271</span><a id="line.271">      _title = value;</a>
+<span class="sourceLineNo">272</span><a id="line.272">    }</a>
+<span class="sourceLineNo">273</span><a id="line.273"></a>
+<span class="sourceLineNo">274</span><a id="line.274">    public MarkupMultiline getDescription() {</a>
+<span class="sourceLineNo">275</span><a id="line.275">      return _description;</a>
+<span class="sourceLineNo">276</span><a id="line.276">    }</a>
+<span class="sourceLineNo">277</span><a id="line.277"></a>
+<span class="sourceLineNo">278</span><a id="line.278">    public void setDescription(MarkupMultiline value) {</a>
+<span class="sourceLineNo">279</span><a id="line.279">      _description = value;</a>
+<span class="sourceLineNo">280</span><a id="line.280">    }</a>
+<span class="sourceLineNo">281</span><a id="line.281"></a>
+<span class="sourceLineNo">282</span><a id="line.282">    public List&lt;Property&gt; getProps() {</a>
+<span class="sourceLineNo">283</span><a id="line.283">      return _props;</a>
+<span class="sourceLineNo">284</span><a id="line.284">    }</a>
+<span class="sourceLineNo">285</span><a id="line.285"></a>
+<span class="sourceLineNo">286</span><a id="line.286">    public void setProps(List&lt;Property&gt; value) {</a>
+<span class="sourceLineNo">287</span><a id="line.287">      _props = value;</a>
+<span class="sourceLineNo">288</span><a id="line.288">    }</a>
+<span class="sourceLineNo">289</span><a id="line.289"></a>
+<span class="sourceLineNo">290</span><a id="line.290">    /**</a>
+<span class="sourceLineNo">291</span><a id="line.291">     * Add a new {@link Property} item to the underlying collection.</a>
+<span class="sourceLineNo">292</span><a id="line.292">     * @param item the item to add</a>
+<span class="sourceLineNo">293</span><a id="line.293">     * @return {@code true}</a>
+<span class="sourceLineNo">294</span><a id="line.294">     */</a>
+<span class="sourceLineNo">295</span><a id="line.295">    public boolean addProp(Property item) {</a>
+<span class="sourceLineNo">296</span><a id="line.296">      Property value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">297</span><a id="line.297">      if (_props == null) {</a>
+<span class="sourceLineNo">298</span><a id="line.298">        _props = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">299</span><a id="line.299">      }</a>
+<span class="sourceLineNo">300</span><a id="line.300">      return _props.add(value);</a>
+<span class="sourceLineNo">301</span><a id="line.301">    }</a>
+<span class="sourceLineNo">302</span><a id="line.302"></a>
+<span class="sourceLineNo">303</span><a id="line.303">    /**</a>
+<span class="sourceLineNo">304</span><a id="line.304">     * Remove the first matching {@link Property} item from the underlying collection.</a>
+<span class="sourceLineNo">305</span><a id="line.305">     * @param item the item to remove</a>
+<span class="sourceLineNo">306</span><a id="line.306">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">307</span><a id="line.307">     */</a>
+<span class="sourceLineNo">308</span><a id="line.308">    public boolean removeProp(Property item) {</a>
+<span class="sourceLineNo">309</span><a id="line.309">      Property value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">310</span><a id="line.310">      return _props == null ? false : _props.remove(value);</a>
+<span class="sourceLineNo">311</span><a id="line.311">    }</a>
+<span class="sourceLineNo">312</span><a id="line.312"></a>
+<span class="sourceLineNo">313</span><a id="line.313">    public List&lt;DocumentId&gt; getDocumentIds() {</a>
+<span class="sourceLineNo">314</span><a id="line.314">      return _documentIds;</a>
+<span class="sourceLineNo">315</span><a id="line.315">    }</a>
+<span class="sourceLineNo">316</span><a id="line.316"></a>
+<span class="sourceLineNo">317</span><a id="line.317">    public void setDocumentIds(List&lt;DocumentId&gt; value) {</a>
+<span class="sourceLineNo">318</span><a id="line.318">      _documentIds = value;</a>
+<span class="sourceLineNo">319</span><a id="line.319">    }</a>
+<span class="sourceLineNo">320</span><a id="line.320"></a>
+<span class="sourceLineNo">321</span><a id="line.321">    /**</a>
+<span class="sourceLineNo">322</span><a id="line.322">     * Add a new {@link DocumentId} item to the underlying collection.</a>
+<span class="sourceLineNo">323</span><a id="line.323">     * @param item the item to add</a>
+<span class="sourceLineNo">324</span><a id="line.324">     * @return {@code true}</a>
+<span class="sourceLineNo">325</span><a id="line.325">     */</a>
+<span class="sourceLineNo">326</span><a id="line.326">    public boolean addDocumentId(DocumentId item) {</a>
+<span class="sourceLineNo">327</span><a id="line.327">      DocumentId value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">328</span><a id="line.328">      if (_documentIds == null) {</a>
+<span class="sourceLineNo">329</span><a id="line.329">        _documentIds = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">330</span><a id="line.330">      }</a>
+<span class="sourceLineNo">331</span><a id="line.331">      return _documentIds.add(value);</a>
+<span class="sourceLineNo">332</span><a id="line.332">    }</a>
+<span class="sourceLineNo">333</span><a id="line.333"></a>
+<span class="sourceLineNo">334</span><a id="line.334">    /**</a>
+<span class="sourceLineNo">335</span><a id="line.335">     * Remove the first matching {@link DocumentId} item from the underlying collection.</a>
+<span class="sourceLineNo">336</span><a id="line.336">     * @param item the item to remove</a>
+<span class="sourceLineNo">337</span><a id="line.337">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">338</span><a id="line.338">     */</a>
+<span class="sourceLineNo">339</span><a id="line.339">    public boolean removeDocumentId(DocumentId item) {</a>
+<span class="sourceLineNo">340</span><a id="line.340">      DocumentId value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">341</span><a id="line.341">      return _documentIds == null ? false : _documentIds.remove(value);</a>
+<span class="sourceLineNo">342</span><a id="line.342">    }</a>
+<span class="sourceLineNo">343</span><a id="line.343"></a>
+<span class="sourceLineNo">344</span><a id="line.344">    public Citation getCitation() {</a>
+<span class="sourceLineNo">345</span><a id="line.345">      return _citation;</a>
+<span class="sourceLineNo">346</span><a id="line.346">    }</a>
+<span class="sourceLineNo">347</span><a id="line.347"></a>
+<span class="sourceLineNo">348</span><a id="line.348">    public void setCitation(Citation value) {</a>
+<span class="sourceLineNo">349</span><a id="line.349">      _citation = value;</a>
+<span class="sourceLineNo">350</span><a id="line.350">    }</a>
+<span class="sourceLineNo">351</span><a id="line.351"></a>
+<span class="sourceLineNo">352</span><a id="line.352">    public List&lt;Rlink&gt; getRlinks() {</a>
+<span class="sourceLineNo">353</span><a id="line.353">      return _rlinks;</a>
+<span class="sourceLineNo">354</span><a id="line.354">    }</a>
+<span class="sourceLineNo">355</span><a id="line.355"></a>
+<span class="sourceLineNo">356</span><a id="line.356">    public void setRlinks(List&lt;Rlink&gt; value) {</a>
+<span class="sourceLineNo">357</span><a id="line.357">      _rlinks = value;</a>
+<span class="sourceLineNo">358</span><a id="line.358">    }</a>
+<span class="sourceLineNo">359</span><a id="line.359"></a>
+<span class="sourceLineNo">360</span><a id="line.360">    /**</a>
+<span class="sourceLineNo">361</span><a id="line.361">     * Add a new {@link Rlink} item to the underlying collection.</a>
+<span class="sourceLineNo">362</span><a id="line.362">     * @param item the item to add</a>
+<span class="sourceLineNo">363</span><a id="line.363">     * @return {@code true}</a>
+<span class="sourceLineNo">364</span><a id="line.364">     */</a>
+<span class="sourceLineNo">365</span><a id="line.365">    public boolean addRlink(Rlink item) {</a>
+<span class="sourceLineNo">366</span><a id="line.366">      Rlink value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">367</span><a id="line.367">      if (_rlinks == null) {</a>
+<span class="sourceLineNo">368</span><a id="line.368">        _rlinks = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">369</span><a id="line.369">      }</a>
+<span class="sourceLineNo">370</span><a id="line.370">      return _rlinks.add(value);</a>
+<span class="sourceLineNo">371</span><a id="line.371">    }</a>
+<span class="sourceLineNo">372</span><a id="line.372"></a>
+<span class="sourceLineNo">373</span><a id="line.373">    /**</a>
+<span class="sourceLineNo">374</span><a id="line.374">     * Remove the first matching {@link Rlink} item from the underlying collection.</a>
+<span class="sourceLineNo">375</span><a id="line.375">     * @param item the item to remove</a>
+<span class="sourceLineNo">376</span><a id="line.376">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">377</span><a id="line.377">     */</a>
+<span class="sourceLineNo">378</span><a id="line.378">    public boolean removeRlink(Rlink item) {</a>
+<span class="sourceLineNo">379</span><a id="line.379">      Rlink value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">380</span><a id="line.380">      return _rlinks == null ? false : _rlinks.remove(value);</a>
+<span class="sourceLineNo">381</span><a id="line.381">    }</a>
+<span class="sourceLineNo">382</span><a id="line.382"></a>
+<span class="sourceLineNo">383</span><a id="line.383">    public Base64 getBase64() {</a>
+<span class="sourceLineNo">384</span><a id="line.384">      return _base64;</a>
+<span class="sourceLineNo">385</span><a id="line.385">    }</a>
+<span class="sourceLineNo">386</span><a id="line.386"></a>
+<span class="sourceLineNo">387</span><a id="line.387">    public void setBase64(Base64 value) {</a>
+<span class="sourceLineNo">388</span><a id="line.388">      _base64 = value;</a>
+<span class="sourceLineNo">389</span><a id="line.389">    }</a>
+<span class="sourceLineNo">390</span><a id="line.390"></a>
+<span class="sourceLineNo">391</span><a id="line.391">    public MarkupMultiline getRemarks() {</a>
+<span class="sourceLineNo">392</span><a id="line.392">      return _remarks;</a>
+<span class="sourceLineNo">393</span><a id="line.393">    }</a>
+<span class="sourceLineNo">394</span><a id="line.394"></a>
+<span class="sourceLineNo">395</span><a id="line.395">    public void setRemarks(MarkupMultiline value) {</a>
+<span class="sourceLineNo">396</span><a id="line.396">      _remarks = value;</a>
+<span class="sourceLineNo">397</span><a id="line.397">    }</a>
+<span class="sourceLineNo">398</span><a id="line.398"></a>
+<span class="sourceLineNo">399</span><a id="line.399">    @Override</a>
+<span class="sourceLineNo">400</span><a id="line.400">    public String toString() {</a>
+<span class="sourceLineNo">401</span><a id="line.401">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">402</span><a id="line.402">    }</a>
+<span class="sourceLineNo">403</span><a id="line.403"></a>
+<span class="sourceLineNo">404</span><a id="line.404">    /**</a>
+<span class="sourceLineNo">405</span><a id="line.405">     * A URL-based pointer to an external resource with an optional hash for verification and change detection.</a>
+<span class="sourceLineNo">406</span><a id="line.406">     */</a>
+<span class="sourceLineNo">407</span><a id="line.407">    @MetaschemaAssembly(</a>
+<span class="sourceLineNo">408</span><a id="line.408">        formalName = "Resource link",</a>
+<span class="sourceLineNo">409</span><a id="line.409">        description = "A URL-based pointer to an external resource with an optional hash for verification and change detection.",</a>
+<span class="sourceLineNo">410</span><a id="line.410">        name = "rlink",</a>
+<span class="sourceLineNo">411</span><a id="line.411">        metaschema = OscalMetadataMetaschema.class,</a>
+<span class="sourceLineNo">412</span><a id="line.412">        remarks = "Multiple `rlink` objects can be included for a resource. In such a case, all provided `rlink` items are intended to be equivalent in content, but may differ in structure or format.\n"</a>
+<span class="sourceLineNo">413</span><a id="line.413">                + "\n"</a>
+<span class="sourceLineNo">414</span><a id="line.414">                + "A `media-type` is used to identify the format of a given rlink, and can be used to differentiate items in a collection of rlinks. The `media-type` provides a hint to the OSCAL document consumer about the structure of the resource referenced by the `rlink`."</a>
+<span class="sourceLineNo">415</span><a id="line.415">    )</a>
+<span class="sourceLineNo">416</span><a id="line.416">    public static class Rlink {</a>
+<span class="sourceLineNo">417</span><a id="line.417">      @BoundFlag(</a>
+<span class="sourceLineNo">418</span><a id="line.418">          formalName = "Hypertext Reference",</a>
+<span class="sourceLineNo">419</span><a id="line.419">          description = "A resolvable URL pointing to the referenced resource.",</a>
+<span class="sourceLineNo">420</span><a id="line.420">          useName = "href",</a>
+<span class="sourceLineNo">421</span><a id="line.421">          required = true,</a>
+<span class="sourceLineNo">422</span><a id="line.422">          typeAdapter = UriReferenceAdapter.class,</a>
+<span class="sourceLineNo">423</span><a id="line.423">          remarks = "This value may be either:\n"</a>
+<span class="sourceLineNo">424</span><a id="line.424">                  + "\n"</a>
+<span class="sourceLineNo">425</span><a id="line.425">                  + "1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n"</a>
+<span class="sourceLineNo">426</span><a id="line.426">                  + "2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or"</a>
+<span class="sourceLineNo">427</span><a id="line.427">      )</a>
+<span class="sourceLineNo">428</span><a id="line.428">      private URI _href;</a>
+<span class="sourceLineNo">429</span><a id="line.429"></a>
+<span class="sourceLineNo">430</span><a id="line.430">      @BoundFlag(</a>
+<span class="sourceLineNo">431</span><a id="line.431">          formalName = "Media Type",</a>
+<span class="sourceLineNo">432</span><a id="line.432">          description = "A label that indicates the nature of a resource, as a data serialization or format.",</a>
+<span class="sourceLineNo">433</span><a id="line.433">          useName = "media-type",</a>
+<span class="sourceLineNo">434</span><a id="line.434">          typeAdapter = StringAdapter.class</a>
+<span class="sourceLineNo">435</span><a id="line.435">      )</a>
+<span class="sourceLineNo">436</span><a id="line.436">      private String _mediaType;</a>
+<span class="sourceLineNo">437</span><a id="line.437"></a>
+<span class="sourceLineNo">438</span><a id="line.438">      /**</a>
+<span class="sourceLineNo">439</span><a id="line.439">       * "A hash of the resource identified by &lt;code&gt;href&lt;/code&gt;, which can be used to verify the resource was not changed since it was hashed."</a>
+<span class="sourceLineNo">440</span><a id="line.440">       */</a>
+<span class="sourceLineNo">441</span><a id="line.441">      @BoundField(</a>
+<span class="sourceLineNo">442</span><a id="line.442">          formalName = "Hash",</a>
+<span class="sourceLineNo">443</span><a id="line.443">          description = "A hash of the resource identified by `href`, which can be used to verify the resource was not changed since it was hashed.",</a>
+<span class="sourceLineNo">444</span><a id="line.444">          useName = "hash",</a>
+<span class="sourceLineNo">445</span><a id="line.445">          maxOccurs = -1,</a>
+<span class="sourceLineNo">446</span><a id="line.446">          remarks = "The `hash` value can be used to confirm that the resource referenced by the `href` is the same resources that was hashed by retrieving the resource, calculating a hash, and comparing the result to this value."</a>
+<span class="sourceLineNo">447</span><a id="line.447">      )</a>
+<span class="sourceLineNo">448</span><a id="line.448">      @GroupAs(</a>
+<span class="sourceLineNo">449</span><a id="line.449">          name = "hashes",</a>
+<span class="sourceLineNo">450</span><a id="line.450">          inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">451</span><a id="line.451">      )</a>
+<span class="sourceLineNo">452</span><a id="line.452">      private List&lt;Hash&gt; _hashes;</a>
+<span class="sourceLineNo">453</span><a id="line.453"></a>
+<span class="sourceLineNo">454</span><a id="line.454">      public Rlink() {</a>
+<span class="sourceLineNo">455</span><a id="line.455">      }</a>
+<span class="sourceLineNo">456</span><a id="line.456"></a>
+<span class="sourceLineNo">457</span><a id="line.457">      public URI getHref() {</a>
+<span class="sourceLineNo">458</span><a id="line.458">        return _href;</a>
+<span class="sourceLineNo">459</span><a id="line.459">      }</a>
+<span class="sourceLineNo">460</span><a id="line.460"></a>
+<span class="sourceLineNo">461</span><a id="line.461">      public void setHref(URI value) {</a>
+<span class="sourceLineNo">462</span><a id="line.462">        _href = value;</a>
+<span class="sourceLineNo">463</span><a id="line.463">      }</a>
+<span class="sourceLineNo">464</span><a id="line.464"></a>
+<span class="sourceLineNo">465</span><a id="line.465">      public String getMediaType() {</a>
+<span class="sourceLineNo">466</span><a id="line.466">        return _mediaType;</a>
+<span class="sourceLineNo">467</span><a id="line.467">      }</a>
+<span class="sourceLineNo">468</span><a id="line.468"></a>
+<span class="sourceLineNo">469</span><a id="line.469">      public void setMediaType(String value) {</a>
+<span class="sourceLineNo">470</span><a id="line.470">        _mediaType = value;</a>
+<span class="sourceLineNo">471</span><a id="line.471">      }</a>
+<span class="sourceLineNo">472</span><a id="line.472"></a>
+<span class="sourceLineNo">473</span><a id="line.473">      public List&lt;Hash&gt; getHashes() {</a>
+<span class="sourceLineNo">474</span><a id="line.474">        return _hashes;</a>
+<span class="sourceLineNo">475</span><a id="line.475">      }</a>
+<span class="sourceLineNo">476</span><a id="line.476"></a>
+<span class="sourceLineNo">477</span><a id="line.477">      public void setHashes(List&lt;Hash&gt; value) {</a>
+<span class="sourceLineNo">478</span><a id="line.478">        _hashes = value;</a>
+<span class="sourceLineNo">479</span><a id="line.479">      }</a>
+<span class="sourceLineNo">480</span><a id="line.480"></a>
+<span class="sourceLineNo">481</span><a id="line.481">      /**</a>
+<span class="sourceLineNo">482</span><a id="line.482">       * Add a new {@link Hash} item to the underlying collection.</a>
+<span class="sourceLineNo">483</span><a id="line.483">       * @param item the item to add</a>
+<span class="sourceLineNo">484</span><a id="line.484">       * @return {@code true}</a>
+<span class="sourceLineNo">485</span><a id="line.485">       */</a>
+<span class="sourceLineNo">486</span><a id="line.486">      public boolean addHash(Hash item) {</a>
+<span class="sourceLineNo">487</span><a id="line.487">        Hash value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">488</span><a id="line.488">        if (_hashes == null) {</a>
+<span class="sourceLineNo">489</span><a id="line.489">          _hashes = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">490</span><a id="line.490">        }</a>
+<span class="sourceLineNo">491</span><a id="line.491">        return _hashes.add(value);</a>
+<span class="sourceLineNo">492</span><a id="line.492">      }</a>
+<span class="sourceLineNo">493</span><a id="line.493"></a>
+<span class="sourceLineNo">494</span><a id="line.494">      /**</a>
+<span class="sourceLineNo">495</span><a id="line.495">       * Remove the first matching {@link Hash} item from the underlying collection.</a>
+<span class="sourceLineNo">496</span><a id="line.496">       * @param item the item to remove</a>
+<span class="sourceLineNo">497</span><a id="line.497">       * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">498</span><a id="line.498">       */</a>
+<span class="sourceLineNo">499</span><a id="line.499">      public boolean removeHash(Hash item) {</a>
+<span class="sourceLineNo">500</span><a id="line.500">        Hash value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">501</span><a id="line.501">        return _hashes == null ? false : _hashes.remove(value);</a>
+<span class="sourceLineNo">502</span><a id="line.502">      }</a>
+<span class="sourceLineNo">503</span><a id="line.503"></a>
+<span class="sourceLineNo">504</span><a id="line.504">      @Override</a>
+<span class="sourceLineNo">505</span><a id="line.505">      public String toString() {</a>
+<span class="sourceLineNo">506</span><a id="line.506">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">507</span><a id="line.507">      }</a>
+<span class="sourceLineNo">508</span><a id="line.508">    }</a>
+<span class="sourceLineNo">509</span><a id="line.509"></a>
+<span class="sourceLineNo">510</span><a id="line.510">    /**</a>
+<span class="sourceLineNo">511</span><a id="line.511">     * A resource encoded using the Base64 alphabet defined by &lt;a href="https://www.rfc-editor.org/rfc/rfc2045.html"&gt;RFC 2045&lt;/a&gt;.</a>
+<span class="sourceLineNo">512</span><a id="line.512">     */</a>
+<span class="sourceLineNo">513</span><a id="line.513">    @MetaschemaField(</a>
+<span class="sourceLineNo">514</span><a id="line.514">        formalName = "Base64",</a>
+<span class="sourceLineNo">515</span><a id="line.515">        description = "A resource encoded using the Base64 alphabet defined by [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045.html).",</a>
+<span class="sourceLineNo">516</span><a id="line.516">        name = "base64",</a>
+<span class="sourceLineNo">517</span><a id="line.517">        metaschema = OscalMetadataMetaschema.class,</a>
+<span class="sourceLineNo">518</span><a id="line.518">        isCollapsible = false</a>
+<span class="sourceLineNo">519</span><a id="line.519">    )</a>
+<span class="sourceLineNo">520</span><a id="line.520">    public static class Base64 {</a>
+<span class="sourceLineNo">521</span><a id="line.521">      @MetaschemaFieldValue(</a>
+<span class="sourceLineNo">522</span><a id="line.522">          valueKeyName = "value",</a>
+<span class="sourceLineNo">523</span><a id="line.523">          typeAdapter = Base64Adapter.class</a>
+<span class="sourceLineNo">524</span><a id="line.524">      )</a>
+<span class="sourceLineNo">525</span><a id="line.525">      private ByteBuffer _value;</a>
+<span class="sourceLineNo">526</span><a id="line.526"></a>
+<span class="sourceLineNo">527</span><a id="line.527">      @BoundFlag(</a>
+<span class="sourceLineNo">528</span><a id="line.528">          formalName = "File Name",</a>
+<span class="sourceLineNo">529</span><a id="line.529">          description = "Name of the file before it was encoded as Base64 to be embedded in a `resource`. This is the name that will be assigned to the file when the file is decoded.",</a>
+<span class="sourceLineNo">530</span><a id="line.530">          useName = "filename",</a>
+<span class="sourceLineNo">531</span><a id="line.531">          typeAdapter = TokenAdapter.class</a>
+<span class="sourceLineNo">532</span><a id="line.532">      )</a>
+<span class="sourceLineNo">533</span><a id="line.533">      private String _filename;</a>
+<span class="sourceLineNo">534</span><a id="line.534"></a>
+<span class="sourceLineNo">535</span><a id="line.535">      @BoundFlag(</a>
+<span class="sourceLineNo">536</span><a id="line.536">          formalName = "Media Type",</a>
+<span class="sourceLineNo">537</span><a id="line.537">          description = "A label that indicates the nature of a resource, as a data serialization or format.",</a>
+<span class="sourceLineNo">538</span><a id="line.538">          useName = "media-type",</a>
+<span class="sourceLineNo">539</span><a id="line.539">          typeAdapter = StringAdapter.class</a>
+<span class="sourceLineNo">540</span><a id="line.540">      )</a>
+<span class="sourceLineNo">541</span><a id="line.541">      private String _mediaType;</a>
+<span class="sourceLineNo">542</span><a id="line.542"></a>
+<span class="sourceLineNo">543</span><a id="line.543">      public Base64() {</a>
+<span class="sourceLineNo">544</span><a id="line.544">      }</a>
+<span class="sourceLineNo">545</span><a id="line.545"></a>
+<span class="sourceLineNo">546</span><a id="line.546">      public ByteBuffer getValue() {</a>
+<span class="sourceLineNo">547</span><a id="line.547">        return _value;</a>
+<span class="sourceLineNo">548</span><a id="line.548">      }</a>
+<span class="sourceLineNo">549</span><a id="line.549"></a>
+<span class="sourceLineNo">550</span><a id="line.550">      public void setValue(ByteBuffer value) {</a>
+<span class="sourceLineNo">551</span><a id="line.551">        _value = value;</a>
+<span class="sourceLineNo">552</span><a id="line.552">      }</a>
+<span class="sourceLineNo">553</span><a id="line.553"></a>
+<span class="sourceLineNo">554</span><a id="line.554">      public String getFilename() {</a>
+<span class="sourceLineNo">555</span><a id="line.555">        return _filename;</a>
+<span class="sourceLineNo">556</span><a id="line.556">      }</a>
+<span class="sourceLineNo">557</span><a id="line.557"></a>
+<span class="sourceLineNo">558</span><a id="line.558">      public void setFilename(String value) {</a>
+<span class="sourceLineNo">559</span><a id="line.559">        _filename = value;</a>
+<span class="sourceLineNo">560</span><a id="line.560">      }</a>
+<span class="sourceLineNo">561</span><a id="line.561"></a>
+<span class="sourceLineNo">562</span><a id="line.562">      public String getMediaType() {</a>
+<span class="sourceLineNo">563</span><a id="line.563">        return _mediaType;</a>
+<span class="sourceLineNo">564</span><a id="line.564">      }</a>
+<span class="sourceLineNo">565</span><a id="line.565"></a>
+<span class="sourceLineNo">566</span><a id="line.566">      public void setMediaType(String value) {</a>
+<span class="sourceLineNo">567</span><a id="line.567">        _mediaType = value;</a>
+<span class="sourceLineNo">568</span><a id="line.568">      }</a>
+<span class="sourceLineNo">569</span><a id="line.569"></a>
+<span class="sourceLineNo">570</span><a id="line.570">      @Override</a>
+<span class="sourceLineNo">571</span><a id="line.571">      public String toString() {</a>
+<span class="sourceLineNo">572</span><a id="line.572">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">573</span><a id="line.573">      }</a>
+<span class="sourceLineNo">574</span><a id="line.574">    }</a>
+<span class="sourceLineNo">575</span><a id="line.575"></a>
+<span class="sourceLineNo">576</span><a id="line.576">    /**</a>
+<span class="sourceLineNo">577</span><a id="line.577">     * An optional citation consisting of end note text using structured markup.</a>
+<span class="sourceLineNo">578</span><a id="line.578">     */</a>
+<span class="sourceLineNo">579</span><a id="line.579">    @MetaschemaAssembly(</a>
+<span class="sourceLineNo">580</span><a id="line.580">        formalName = "Citation",</a>
+<span class="sourceLineNo">581</span><a id="line.581">        description = "An optional citation consisting of end note text using structured markup.",</a>
+<span class="sourceLineNo">582</span><a id="line.582">        name = "citation",</a>
+<span class="sourceLineNo">583</span><a id="line.583">        metaschema = OscalMetadataMetaschema.class</a>
+<span class="sourceLineNo">584</span><a id="line.584">    )</a>
+<span class="sourceLineNo">585</span><a id="line.585">    public static class Citation {</a>
+<span class="sourceLineNo">586</span><a id="line.586">      /**</a>
+<span class="sourceLineNo">587</span><a id="line.587">       * "A line of citation text."</a>
+<span class="sourceLineNo">588</span><a id="line.588">       */</a>
+<span class="sourceLineNo">589</span><a id="line.589">      @BoundField(</a>
+<span class="sourceLineNo">590</span><a id="line.590">          formalName = "Citation Text",</a>
+<span class="sourceLineNo">591</span><a id="line.591">          description = "A line of citation text.",</a>
+<span class="sourceLineNo">592</span><a id="line.592">          useName = "text",</a>
+<span class="sourceLineNo">593</span><a id="line.593">          minOccurs = 1</a>
+<span class="sourceLineNo">594</span><a id="line.594">      )</a>
+<span class="sourceLineNo">595</span><a id="line.595">      @BoundFieldValue(</a>
+<span class="sourceLineNo">596</span><a id="line.596">          typeAdapter = MarkupLineAdapter.class</a>
+<span class="sourceLineNo">597</span><a id="line.597">      )</a>
+<span class="sourceLineNo">598</span><a id="line.598">      private MarkupLine _text;</a>
+<span class="sourceLineNo">599</span><a id="line.599"></a>
+<span class="sourceLineNo">600</span><a id="line.600">      @BoundAssembly(</a>
+<span class="sourceLineNo">601</span><a id="line.601">          formalName = "Property",</a>
+<span class="sourceLineNo">602</span><a id="line.602">          description = "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",</a>
+<span class="sourceLineNo">603</span><a id="line.603">          useName = "prop",</a>
+<span class="sourceLineNo">604</span><a id="line.604">          maxOccurs = -1</a>
+<span class="sourceLineNo">605</span><a id="line.605">      )</a>
+<span class="sourceLineNo">606</span><a id="line.606">      @GroupAs(</a>
+<span class="sourceLineNo">607</span><a id="line.607">          name = "props",</a>
+<span class="sourceLineNo">608</span><a id="line.608">          inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">609</span><a id="line.609">      )</a>
+<span class="sourceLineNo">610</span><a id="line.610">      private List&lt;Property&gt; _props;</a>
+<span class="sourceLineNo">611</span><a id="line.611"></a>
+<span class="sourceLineNo">612</span><a id="line.612">      @BoundAssembly(</a>
+<span class="sourceLineNo">613</span><a id="line.613">          formalName = "Link",</a>
+<span class="sourceLineNo">614</span><a id="line.614">          description = "A reference to a local or remote resource, that has a specific relation to the containing object.",</a>
+<span class="sourceLineNo">615</span><a id="line.615">          useName = "link",</a>
+<span class="sourceLineNo">616</span><a id="line.616">          maxOccurs = -1</a>
+<span class="sourceLineNo">617</span><a id="line.617">      )</a>
+<span class="sourceLineNo">618</span><a id="line.618">      @GroupAs(</a>
+<span class="sourceLineNo">619</span><a id="line.619">          name = "links",</a>
+<span class="sourceLineNo">620</span><a id="line.620">          inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">621</span><a id="line.621">      )</a>
+<span class="sourceLineNo">622</span><a id="line.622">      private List&lt;Link&gt; _links;</a>
+<span class="sourceLineNo">623</span><a id="line.623"></a>
+<span class="sourceLineNo">624</span><a id="line.624">      public Citation() {</a>
+<span class="sourceLineNo">625</span><a id="line.625">      }</a>
+<span class="sourceLineNo">626</span><a id="line.626"></a>
+<span class="sourceLineNo">627</span><a id="line.627">      public MarkupLine getText() {</a>
+<span class="sourceLineNo">628</span><a id="line.628">        return _text;</a>
+<span class="sourceLineNo">629</span><a id="line.629">      }</a>
+<span class="sourceLineNo">630</span><a id="line.630"></a>
+<span class="sourceLineNo">631</span><a id="line.631">      public void setText(MarkupLine value) {</a>
+<span class="sourceLineNo">632</span><a id="line.632">        _text = value;</a>
+<span class="sourceLineNo">633</span><a id="line.633">      }</a>
+<span class="sourceLineNo">634</span><a id="line.634"></a>
+<span class="sourceLineNo">635</span><a id="line.635">      public List&lt;Property&gt; getProps() {</a>
+<span class="sourceLineNo">636</span><a id="line.636">        return _props;</a>
+<span class="sourceLineNo">637</span><a id="line.637">      }</a>
+<span class="sourceLineNo">638</span><a id="line.638"></a>
+<span class="sourceLineNo">639</span><a id="line.639">      public void setProps(List&lt;Property&gt; value) {</a>
+<span class="sourceLineNo">640</span><a id="line.640">        _props = value;</a>
+<span class="sourceLineNo">641</span><a id="line.641">      }</a>
+<span class="sourceLineNo">642</span><a id="line.642"></a>
+<span class="sourceLineNo">643</span><a id="line.643">      /**</a>
+<span class="sourceLineNo">644</span><a id="line.644">       * Add a new {@link Property} item to the underlying collection.</a>
+<span class="sourceLineNo">645</span><a id="line.645">       * @param item the item to add</a>
+<span class="sourceLineNo">646</span><a id="line.646">       * @return {@code true}</a>
+<span class="sourceLineNo">647</span><a id="line.647">       */</a>
+<span class="sourceLineNo">648</span><a id="line.648">      public boolean addProp(Property item) {</a>
+<span class="sourceLineNo">649</span><a id="line.649">        Property value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">650</span><a id="line.650">        if (_props == null) {</a>
+<span class="sourceLineNo">651</span><a id="line.651">          _props = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">652</span><a id="line.652">        }</a>
+<span class="sourceLineNo">653</span><a id="line.653">        return _props.add(value);</a>
+<span class="sourceLineNo">654</span><a id="line.654">      }</a>
+<span class="sourceLineNo">655</span><a id="line.655"></a>
+<span class="sourceLineNo">656</span><a id="line.656">      /**</a>
+<span class="sourceLineNo">657</span><a id="line.657">       * Remove the first matching {@link Property} item from the underlying collection.</a>
+<span class="sourceLineNo">658</span><a id="line.658">       * @param item the item to remove</a>
+<span class="sourceLineNo">659</span><a id="line.659">       * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">660</span><a id="line.660">       */</a>
+<span class="sourceLineNo">661</span><a id="line.661">      public boolean removeProp(Property item) {</a>
+<span class="sourceLineNo">662</span><a id="line.662">        Property value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">663</span><a id="line.663">        return _props == null ? false : _props.remove(value);</a>
+<span class="sourceLineNo">664</span><a id="line.664">      }</a>
+<span class="sourceLineNo">665</span><a id="line.665"></a>
+<span class="sourceLineNo">666</span><a id="line.666">      public List&lt;Link&gt; getLinks() {</a>
+<span class="sourceLineNo">667</span><a id="line.667">        return _links;</a>
+<span class="sourceLineNo">668</span><a id="line.668">      }</a>
+<span class="sourceLineNo">669</span><a id="line.669"></a>
+<span class="sourceLineNo">670</span><a id="line.670">      public void setLinks(List&lt;Link&gt; value) {</a>
+<span class="sourceLineNo">671</span><a id="line.671">        _links = value;</a>
+<span class="sourceLineNo">672</span><a id="line.672">      }</a>
+<span class="sourceLineNo">673</span><a id="line.673"></a>
+<span class="sourceLineNo">674</span><a id="line.674">      /**</a>
+<span class="sourceLineNo">675</span><a id="line.675">       * Add a new {@link Link} item to the underlying collection.</a>
+<span class="sourceLineNo">676</span><a id="line.676">       * @param item the item to add</a>
+<span class="sourceLineNo">677</span><a id="line.677">       * @return {@code true}</a>
+<span class="sourceLineNo">678</span><a id="line.678">       */</a>
+<span class="sourceLineNo">679</span><a id="line.679">      public boolean addLink(Link item) {</a>
+<span class="sourceLineNo">680</span><a id="line.680">        Link value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">681</span><a id="line.681">        if (_links == null) {</a>
+<span class="sourceLineNo">682</span><a id="line.682">          _links = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">683</span><a id="line.683">        }</a>
+<span class="sourceLineNo">684</span><a id="line.684">        return _links.add(value);</a>
+<span class="sourceLineNo">685</span><a id="line.685">      }</a>
+<span class="sourceLineNo">686</span><a id="line.686"></a>
+<span class="sourceLineNo">687</span><a id="line.687">      /**</a>
+<span class="sourceLineNo">688</span><a id="line.688">       * Remove the first matching {@link Link} item from the underlying collection.</a>
+<span class="sourceLineNo">689</span><a id="line.689">       * @param item the item to remove</a>
+<span class="sourceLineNo">690</span><a id="line.690">       * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">691</span><a id="line.691">       */</a>
+<span class="sourceLineNo">692</span><a id="line.692">      public boolean removeLink(Link item) {</a>
+<span class="sourceLineNo">693</span><a id="line.693">        Link value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">694</span><a id="line.694">        return _links == null ? false : _links.remove(value);</a>
+<span class="sourceLineNo">695</span><a id="line.695">      }</a>
+<span class="sourceLineNo">696</span><a id="line.696"></a>
+<span class="sourceLineNo">697</span><a id="line.697">      @Override</a>
+<span class="sourceLineNo">698</span><a id="line.698">      public String toString() {</a>
+<span class="sourceLineNo">699</span><a id="line.699">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">700</span><a id="line.700">      }</a>
+<span class="sourceLineNo">701</span><a id="line.701">    }</a>
+<span class="sourceLineNo">702</span><a id="line.702">  }</a>
+<span class="sourceLineNo">703</span><a id="line.703">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>
