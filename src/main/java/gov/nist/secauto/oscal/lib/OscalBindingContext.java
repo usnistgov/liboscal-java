@@ -61,7 +61,7 @@ public class OscalBindingContext
 
   /**
    * Construct a new OSCAL-flavored binding context with custom constraints.
-   * 
+   *
    * @param constraintSets
    *          a set of additional constraints to apply
    */
@@ -198,7 +198,7 @@ public class OscalBindingContext
     return newBoundLoader().load(PlanOfActionAndMilestones.class, file);
   }
 
-  private static class Matcher implements IBindingMatcher {
+  private static final class Matcher implements IBindingMatcher {
     @Override
     public Class<?> getBoundClassForXmlQName(QName startElementQName) {
       Class<?> clazz = null;

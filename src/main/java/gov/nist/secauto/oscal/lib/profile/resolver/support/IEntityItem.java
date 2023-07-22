@@ -34,7 +34,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface IEntityItem {
 
-  public enum ItemType {
+  enum ItemType {
     ROLE(false),
     LOCATION(true),
     PARTY(true),
@@ -46,7 +46,7 @@ public interface IEntityItem {
 
     private final boolean uuid;
 
-    private ItemType(boolean isUuid) {
+    ItemType(boolean isUuid) {
       this.uuid = isUuid;
     }
 
@@ -65,7 +65,7 @@ public interface IEntityItem {
    * If the value was not reassigned, the return value of this method will be the same value returned
    * by {@link #getIdentifier()}. In this case, {@link #isIdentifierReassigned()} is expected to
    * return {@code false}.
-   * 
+   *
    * @return the original identifier value before reassignment
    */
   @NonNull
@@ -73,7 +73,7 @@ public interface IEntityItem {
 
   /**
    * Get the entity's current identifier value.
-   * 
+   *
    * @return the identifier value
    */
   @NonNull
@@ -81,7 +81,7 @@ public interface IEntityItem {
 
   /**
    * Determine if the identifier was reassigned.
-   * 
+   *
    * @return {@code true} if the identifier was reassigned, or {@code false} otherwise
    */
   boolean isIdentifierReassigned();

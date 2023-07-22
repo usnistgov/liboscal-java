@@ -23,39 +23,51 @@
  * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
+package gov.nist.secauto.oscal.lib;
 
-package gov.nist.secauto.oscal.lib.profile.resolver;
+import gov.nist.secauto.metaschema.model.common.util.IVersionInfo;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+public final class LibOscalVersion implements IVersionInfo {
+  public static final String NAME = "liboscal-java";
+  public static final String BUILD_VERSION = "${project.version}";
+  public static final String BUILD_TIMESTAMP = "${timestamp}";
+  public static final String COMMIT = "@git.commit.id.abbrev@";
+  public static final String BRANCH = "@git.branch@";
+  public static final String CLOSEST_TAG = "@git.closest.tag.name@";
+  public static final String ORIGIN = "@git.remote.origin.url@";
 
-public class ProfileResolutionException
-    extends Exception {
-
-  /**
-   * the serial version UID.
-   */
-  private static final long serialVersionUID = 1L;
-
-  /**
-   * Create a new profile resolution exception with the provided {@code message}.
-   *
-   * @param message
-   *          a description of the error that occurred
-   */
-  public ProfileResolutionException(String message) {
-    super(message);
+  @Override
+  public String getName() {
+    return NAME;
   }
 
-  /**
-   * Create a new profile resolution exception with the provided {@code message} based on the provided
-   * {@code cause}.
-   *
-   * @param message
-   *          a description of the error that occurred
-   * @param cause
-   *          the initial cause of the exception
-   */
-  public ProfileResolutionException(String message, @NonNull Throwable cause) {
-    super(message, cause);
+  @Override
+  public String getVersion() {
+    return CLOSEST_TAG;
+  }
+
+  @Override
+  public String getBuildTimestamp() {
+    return BUILD_TIMESTAMP;
+  }
+
+  @Override
+  public String getGitOriginUrl() {
+    return ORIGIN;
+  }
+
+  @Override
+  public String getGitCommit() {
+    return COMMIT;
+  }
+
+  @Override
+  public String getGitBranch() {
+    return BRANCH;
+  }
+
+  @Override
+  public String getGitClosestTag() {
+    return CLOSEST_TAG;
   }
 }

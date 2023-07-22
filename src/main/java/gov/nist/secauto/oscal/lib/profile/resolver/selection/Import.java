@@ -158,41 +158,48 @@ public class Import {
         resolvedMetadata = new Metadata();
         resolvedCatalog.setMetadata(resolvedMetadata);
       }
-
-      String importedVersion = importedMetadata.getOscalVersion();
-      if (importedVersion != null) {
-        Version importOscalVersion = VersionUtil.parseVersion(importedVersion, null, null);
-
-        Version resolvedCatalogVersion
-            = VersionUtil.parseVersion(resolvedMetadata.getOscalVersion(), null, null);
-
-        if (importOscalVersion.compareTo(resolvedCatalogVersion) > 0) {
-          resolvedMetadata.setOscalVersion(importOscalVersion.toString());
-        }
-      }
-
-      // copy roles, parties, and locations with prop name:keep and any referenced
-      resolvedMetadata.setRoles(
-          IIndexer.filterDistinct(
-              ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getRoles()).stream()),
-              indexer.getEntitiesByItemType(IEntityItem.ItemType.ROLE),
-              item -> item.getId())
-              .collect(Collectors.toCollection(LinkedList::new)));
-      resolvedMetadata.setParties(
-          IIndexer.filterDistinct(
-              ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getParties()).stream()),
-              indexer.getEntitiesByItemType(IEntityItem.ItemType.PARTY),
-              item -> item.getUuid())
-              .collect(Collectors.toCollection(LinkedList::new)));
-      resolvedMetadata.setLocations(
-          IIndexer.filterDistinct(
-              ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getLocations()).stream()),
-              indexer.getEntitiesByItemType(IEntityItem.ItemType.LOCATION),
-              item -> item.getUuid())
-              .collect(Collectors.toCollection(LinkedList::new)));
+      resolveMetadata(importedMetadata, resolvedMetadata, indexer);
     }
   }
 
+  private static void resolveMetadata(
+      @NonNull Metadata imported,
+      @NonNull Metadata resolved,
+      @NonNull IIndexer indexer) {
+    String importedVersion = imported.getOscalVersion();
+    if (importedVersion != null) {
+      Version importOscalVersion = VersionUtil.parseVersion(importedVersion, null, null);
+
+      Version resolvedCatalogVersion
+          = VersionUtil.parseVersion(resolved.getOscalVersion(), null, null);
+
+      if (importOscalVersion.compareTo(resolvedCatalogVersion) > 0) {
+        resolved.setOscalVersion(importOscalVersion.toString());
+      }
+    }
+
+    // copy roles, parties, and locations with prop name:keep and any referenced
+    resolved.setRoles(
+        IIndexer.filterDistinct(
+            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolved.getRoles()).stream()),
+            indexer.getEntitiesByItemType(IEntityItem.ItemType.ROLE),
+            item -> item.getId())
+            .collect(Collectors.toCollection(LinkedList::new)));
+    resolved.setParties(
+        IIndexer.filterDistinct(
+            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolved.getParties()).stream()),
+            indexer.getEntitiesByItemType(IEntityItem.ItemType.PARTY),
+            item -> item.getUuid())
+            .collect(Collectors.toCollection(LinkedList::new)));
+    resolved.setLocations(
+        IIndexer.filterDistinct(
+            ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolved.getLocations()).stream()),
+            indexer.getEntitiesByItemType(IEntityItem.ItemType.LOCATION),
+            item -> item.getUuid())
+            .collect(Collectors.toCollection(LinkedList::new)));
+  }
+
+  @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts") // not worth a function call
   private static void generateBackMatter(
       @NonNull IDocumentNodeItem importedCatalogDocument,
       @NonNull Catalog resolvedCatalog,

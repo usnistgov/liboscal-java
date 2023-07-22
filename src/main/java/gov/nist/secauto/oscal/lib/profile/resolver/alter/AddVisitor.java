@@ -92,7 +92,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
     /**
      * Get the target type associated with the provided {@code clazz}.
-     * 
+     *
      * @param clazz
      *          the class to identify the target type for
      * @return the associated target type or {@code null} if the class is not associated with a target
@@ -111,7 +111,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
     /**
      * Get the target type associated with the provided field {@code name}.
-     * 
+     *
      * @param name
      *          the field name to identify the target type for
      * @return the associated target type or {@code null} if the name is not associated with a target
@@ -129,7 +129,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
     /**
      * Get the field name associated with the target type.
-     * 
+     *
      * @return the name
      */
     public String fieldName() {
@@ -138,7 +138,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
     /**
      * Get the bound class associated with the target type.
-     * 
+     *
      * @return the class
      */
     public Class<?> getClazz() {
@@ -165,7 +165,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
     /**
      * Get the position associated with the provided {@code name}.
-     * 
+     *
      * @param name
      *          the name to identify the position for
      * @return the associated position or {@code null} if the name is not associated with a position
@@ -193,7 +193,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
   /**
    * Apply the add directive.
-   * 
+   *
    * @param control
    *          the control target
    * @param position
@@ -262,7 +262,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
    * </ul>
    * </li>
    * </ol>
-   * 
+   *
    * @param <T>
    *          the type of the {@code targetItem}
    * @param targetItem
@@ -490,7 +490,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
   /**
    * Visit the control part.
-   * 
+   *
    * @param part
    *          the bound part object
    * @param context
@@ -703,7 +703,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
     /**
      * Determine if the provided {@code obj} is the target of the add.
-     * 
+     *
      * @param obj
      *          the current object
      * @return {@code true} if the current object applies or {@code false} otherwise

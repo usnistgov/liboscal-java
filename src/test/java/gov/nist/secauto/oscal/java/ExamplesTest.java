@@ -37,6 +37,7 @@ import gov.nist.secauto.metaschema.model.common.constraint.FindingCollectingCons
 import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
@@ -62,7 +63,9 @@ class ExamplesTest {
     IBoundLoader loader = bindingContext.newBoundLoader(); // supports loading OSCAL documents
 
     // load an OSCAL catalog
-    Catalog catalog = loader.load(Paths.get("src/test/resources/content/test-catalog.xml")); // load the catalog
+    Catalog catalog = loader.load(ObjectUtils.notNull(Paths.get("src/test/resources/content/test-catalog.xml"))); // load
+                                                                                                                  // the
+                                                                                                                  // catalog
 
     // Create a serializer which can be used to write multiple catalogs
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
@@ -72,7 +75,7 @@ class ExamplesTest {
     Files.createDirectories(outDir);
 
     // serialize the catalog as yaml
-    serializer.serialize(catalog, outDir.resolve("test-catalog.yaml"));
+    serializer.serialize(catalog, ObjectUtils.notNull(outDir.resolve("test-catalog.yaml")));
   }
 
   @Disabled
@@ -102,6 +105,6 @@ class ExamplesTest {
     // Create a serializer which can be used to write multiple catalogs
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
     // serialize the catalog as yaml
-    serializer.serialize((Catalog) resolvedCatalog.getValue(), System.out);
+    serializer.serialize((Catalog) resolvedCatalog.getValue(), ObjectUtils.notNull(System.out));
   }
 }

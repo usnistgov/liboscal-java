@@ -28,8 +28,9 @@ package gov.nist.secauto.oscal.lib.model.control;
 
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorExtension.InsertAnchorNode;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Property;
@@ -50,13 +51,12 @@ public abstract class AbstractPart implements IPart {
   public Stream<InsertAnchorNode> getInserts(@NonNull Predicate<InsertAnchorNode> filter) {
     MarkupMultiline prose = getProse();
 
-    @NonNull
-    Stream<InsertAnchorNode> retval;
+    @NonNull Stream<InsertAnchorNode> retval;
     if (prose == null) {
-      retval = Stream.empty();
+      retval = ObjectUtils.notNull(Stream.empty());
     } else {
       List<InsertAnchorNode> result = prose.getInserts(filter);
-      retval = result.stream();
+      retval = ObjectUtils.notNull(result.stream());
     }
     return retval;
   }
@@ -89,6 +89,7 @@ public abstract class AbstractPart implements IPart {
       this.name = Objects.requireNonNull(name);
     }
 
+    @SuppressWarnings("PMD.ShortMethodName")
     @NonNull
     public Builder id(@NonNull String value) {
       this.id = Objects.requireNonNull(value);

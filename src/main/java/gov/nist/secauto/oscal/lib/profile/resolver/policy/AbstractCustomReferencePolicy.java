@@ -61,7 +61,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * looked up.
    * <p>
    * The {@code reference} object is provided to allow for context sensitive item type tailoring.
-   * 
+   *
    * @param reference
    *          the reference object
    * @return a list of item types to search for
@@ -71,7 +71,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
 
   /**
    * Handle an index hit.
-   * 
+   *
    * @param contextItem
    *          the node containing the identifier reference
    * @param reference
@@ -93,7 +93,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
     if (visitorContext.getIndexer().isSelected(item)) {
       if (!visitorContext.isResolved(item)) {
         // this referenced item will need to be resolved
-        visitorContext.resolveEntity(item, visitorContext);
+        ReferenceCountingVisitor.instance().resolveEntity(item, visitorContext);
       }
       item.incrementReferenceCount();
 
@@ -117,7 +117,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * Handle an index hit against an item related to an unselected control.
    * <p>
    * Subclasses can override this method to perform extra processing.
-   * 
+   *
    * @param contextItem
    *          the node containing the identifier reference
    * @param reference
@@ -141,7 +141,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * Handle an index hit against an item related to an selected control.
    * <p>
    * Subclasses can override this method to perform extra processing.
-   * 
+   *
    * @param contextItem
    *          the node containing the identifier reference
    * @param reference
@@ -166,7 +166,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * index.
    * <p>
    * Subclasses can override this method to perform extra processing.
-   * 
+   *
    * @param contextItem
    *          the node containing the identifier reference
    * @param reference
@@ -196,7 +196,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * occur when the reference is malformed, using an unrecognized syntax.
    * <p>
    * Subclasses can override this method to perform extra processing.
-   * 
+   *
    * @param contextItem
    *          the node containing the identifier reference
    * @param reference
@@ -229,7 +229,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
 
   /**
    * Handle the provided {@code identifier} for a given {@code type} of reference.
-   * 
+   *
    * @param contextItem
    *          the node containing the identifier reference
    * @param type

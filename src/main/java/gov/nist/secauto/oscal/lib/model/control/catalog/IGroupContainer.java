@@ -38,7 +38,7 @@ public interface IGroupContainer extends IControlContainer {
 
   /**
    * Add a new {@link CatalogGroup} item to the end of the underlying collection.
-   * 
+   *
    * @param item
    *          the item to add
    * @return {@code true}
@@ -47,7 +47,7 @@ public interface IGroupContainer extends IControlContainer {
 
   /**
    * Remove the first matching {@link CatalogGroup} item from the underlying collection.
-   * 
+   *
    * @param item
    *          the item to remove
    * @return {@code true} if the item was removed or {@code false} otherwise

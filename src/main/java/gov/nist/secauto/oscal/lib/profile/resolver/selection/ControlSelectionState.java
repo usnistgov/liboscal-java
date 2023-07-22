@@ -121,7 +121,7 @@ public class ControlSelectionState implements IControlSelectionState {
     return retval;
   }
 
-  private static class SelectionState {
+  private static final class SelectionState {
     private final boolean selected;
     private final boolean withChildren;
 

@@ -29,6 +29,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControlContainer;
@@ -61,7 +62,7 @@ class ControlSelectionVisitorTest {
     Set<String> selected = Stream.concat(
         indexer.getEntitiesByItemType(IEntityItem.ItemType.GROUP).stream(),
         indexer.getEntitiesByItemType(IEntityItem.ItemType.CONTROL).stream())
-        .filter(entry -> indexer.isSelected(entry))
+        .filter(entry -> indexer.isSelected(ObjectUtils.notNull(entry)))
         .map(entry -> {
           IControlContainer container = entry.getInstanceValue();
           String id;

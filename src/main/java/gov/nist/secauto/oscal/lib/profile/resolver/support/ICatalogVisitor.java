@@ -32,7 +32,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Used to visit a catalog containing groups and controls.
- * 
+ *
  * @param <T>
  *          the type of the context object used to pass calling context information
  * @param <R>
@@ -45,7 +45,7 @@ public interface ICatalogVisitor<T, R> {
    * <p>
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
-   * 
+   *
    * @param item
    *          the Metapath item for the group
    * @param childResult
@@ -64,7 +64,7 @@ public interface ICatalogVisitor<T, R> {
    * <p>
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
-   * 
+   *
    * @param item
    *          the Metapath item for the control
    * @param childResult

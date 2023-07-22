@@ -68,7 +68,7 @@ public interface IControlSelectionFilter extends Function<IControl, Pair<Boolean
 
       @Override
       public @NonNull Pair<Boolean, Boolean> apply(IControl control) {
-        return Pair.of(keys.contains(control.getId()), false);
+        return ObjectUtils.notNull(Pair.of(keys.contains(control.getId()), false));
       }
 
     };
@@ -78,7 +78,7 @@ public interface IControlSelectionFilter extends Function<IControl, Pair<Boolean
    * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
    * first member of the pair indicates if the control matches, and the second indicates if the match
    * applies to child controls as well.
-   * 
+   *
    * @param control
    *          the control to check for a match
    * @return a pair indicating the status of the match ({@code true} for a match or {@code false}

@@ -51,21 +51,22 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 
 public interface IIndexer {
-  public enum SelectionStatus {
+  enum SelectionStatus {
     SELECTED,
     UNSELECTED,
     UNKNOWN;
   }
 
-  static final MetapathExpression HAS_PROP_KEEP_METAPATH = MetapathExpression
+  MetapathExpression HAS_PROP_KEEP_METAPATH = MetapathExpression
       .compile("prop[@name='keep' and has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@value = 'always'");
 
-  static final Predicate<IEntityItem> KEEP_ENTITY_PREDICATE = new Predicate<>() {
+  Predicate<IEntityItem> KEEP_ENTITY_PREDICATE = new Predicate<>() {
 
     @Override
     public boolean test(IEntityItem entity) {
       return entity.getReferenceCount() > 0
-          || (Boolean) IIndexer.HAS_PROP_KEEP_METAPATH.evaluateAs(entity.getInstance(), ResultType.BOOLEAN);
+          || (Boolean) ObjectUtils
+              .notNull(IIndexer.HAS_PROP_KEEP_METAPATH.evaluateAs(entity.getInstance(), ResultType.BOOLEAN));
     }
 
   };
@@ -77,7 +78,7 @@ public interface IIndexer {
   /**
    * Keep entities that have a reference count greater than zero or are required to be kept based on
    * the "keep"="always property.
-   * 
+   *
    * @param entities
    *          the entity items to filter
    * @return the entities that pass the filter
@@ -89,7 +90,7 @@ public interface IIndexer {
   /**
    * Keep entities that have a reference count of zero or are not required to be kept based on the
    * "keep"="always property.
-   * 
+   *
    * @param entities
    *          the entity items to filter
    * @return the entities that pass the filter
@@ -103,7 +104,7 @@ public interface IIndexer {
    * required to be kept based on the "keep"="always property.
    * <p>
    * Distinct items are determined based on the item's key using the provided {@code keyMapper}.
-   * 
+   *
    * @param <T>
    *          the item type
    * @param <K>
@@ -117,12 +118,11 @@ public interface IIndexer {
    * @return the resulting series of items with duplicate items with the same key removed
    */
   // TODO: Is this the right name for this method?
-  public static <T, K> Stream<T> filterDistinct(
+  static <T, K> Stream<T> filterDistinct(
       @NonNull Stream<T> resolvedItems,
       @NonNull Collection<IEntityItem> importedEntityItems,
       @NonNull Function<? super T, ? extends K> keyMapper) {
-    @SuppressWarnings("unchecked")
-    Stream<T> importedStream = getReferencedEntitiesAsStream(importedEntityItems)
+    @SuppressWarnings("unchecked") Stream<T> importedStream = getReferencedEntitiesAsStream(importedEntityItems)
         .map(entity -> (T) entity.getInstanceValue());
 
     return CustomCollectors.distinctByKey(
@@ -137,6 +137,7 @@ public interface IIndexer {
     Set<INodeItem> indexedItems = new HashSet<>();
     if (logger.isEnabled(logLevel)) {
       for (ItemType itemType : ItemType.values()) {
+        assert itemType != null;
         for (IEntityItem item : indexer.getEntitiesByItemType(itemType)) {
           INodeItem nodeItem = item.getInstance();
           indexedItems.add(nodeItem);
@@ -195,7 +196,7 @@ public interface IIndexer {
    * Lookup an item of the given {@code itemType} having the given {@code identifier}.
    * <p>
    * Will normalize the case of a UUID-based identifier.
-   * 
+   *
    * @param itemType
    *          the type of item to search for
    * @param identifier
@@ -211,7 +212,7 @@ public interface IIndexer {
    * Lookup an item of the given {@code itemType} having the given {@code identifier}.
    * <p>
    * Will normalize the case of a UUID-based the identifier when requested.
-   * 
+   *
    * @param itemType
    *          the type of item to search for
    * @param identifier
@@ -223,7 +224,7 @@ public interface IIndexer {
   @Nullable
   IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier, boolean normalize);
 
-  boolean remove(@NonNull IEntityItem entity);
+  boolean removeItem(@NonNull IEntityItem entity);
 
   boolean isSelected(@NonNull IEntityItem entity);
 
@@ -232,12 +233,17 @@ public interface IIndexer {
   @NonNull
   SelectionStatus getSelectionStatus(@NonNull INodeItem item);
 
-  @NonNull
-  SelectionStatus setSelectionStatus(@NonNull INodeItem item, @NonNull SelectionStatus selectionStatus);
+  void setSelectionStatus(@NonNull INodeItem item, @NonNull SelectionStatus selectionStatus);
 
   void resetSelectionStatus();
 
   void append(@NonNull IIndexer result);
 
+  /**
+   * Get a copy of the entity map.
+   *
+   * @return the copy
+   */
+  @NonNull
   Map<ItemType, Map<String, IEntityItem>> getEntities();
 }

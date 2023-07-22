@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>21</version>
+		<version>26</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
 	<artifactId>liboscal-java</artifactId>
-	<version>1.0.4.4</version>
+	<version>2.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>OSCAL Java Library</name>
@@ -27,8 +27,8 @@
 		<url>https://github.com/usnistgov/liboscal-java</url>
 		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git</connection>
 		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git</developerConnection>
-		<tag>v1.0.4.4</tag>
-	</scm>
+	  <tag>v2.0.0</tag>
+    </scm>
 
 	<distributionManagement>
 		<snapshotRepository>
@@ -97,9 +97,11 @@
 		<site.url>https://pages.nist.gov/liboscal-java/</site.url>
 		<scm.url>https://github.com/usnistgov/liboscal-java</scm.url>
 		<issueManagement.url>https://github.com/usnistgov/liboscal-java/issues</issueManagement.url>
-		<!-- ================================================================================ -->
+		<!--
+		================================================================================ -->
 		<!-- Web dependencies version -->
-		<!-- ================================================================================ -->
+		<!--
+		================================================================================ -->
 		<anchorJsVesrion>3.2.2</anchorJsVesrion>
 		<bootstrapVersion>4.4.1</bootstrapVersion>
 		<bootswatchVersion>4.4.1</bootswatchVersion>
@@ -109,6 +111,9 @@
 		<fontawesomeVersion>5.12.1</fontawesomeVersion>
 		<popperVersion>1.16.0</popperVersion>
 
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.release>11</maven.compiler.release>
@@ -117,26 +122,23 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.10.0</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>0.12.0</dependency.metaschema-framework.version>
 
 		<dependency.auto-service.version>1.0.1</dependency.auto-service.version>
 		<dependency.commons-lang3.version>3.12.0</dependency.commons-lang3.version>
 		<dependency.infinispan.version>13.0.10.Final</dependency.infinispan.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
-		<dependency.junit5.version>5.8.2</dependency.junit5.version>
-		<dependency.junit5-platform-launcher.version>1.8.2</dependency.junit5-platform-launcher.version>
-		<dependency.log4j2.version>2.19.0</dependency.log4j2.version>
-		<dependency.saxon.version>11.4</dependency.saxon.version>
+		<dependency.log4j2.version>2.20.0</dependency.log4j2.version>
+		<dependency.saxon.version>12.3</dependency.saxon.version>
 		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
-		<dependency.xmlresolver.version>4.5.2</dependency.xmlresolver.version>
+		<dependency.xmlresolver.version>4.6.0</dependency.xmlresolver.version>
 
-		<plugin.license.version>4.0.rc1</plugin.license.version>
-		<cyclonedx.schema.version>1.3</cyclonedx.schema.version>
 		<plugin.cyclonedx.version>2.7.3</plugin.cyclonedx.version>
-		<spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
+        <plugin.maven-toolchains.version>3.1.0</plugin.maven-toolchains.version>
 
-		<oscal-content.commit>master</oscal-content.commit>
+		<cyclonedx.schema.version>1.3</cyclonedx.schema.version>
+		<oscal-content.commit>main</oscal-content.commit>
 	</properties>
 
 	<repositories>
@@ -171,32 +173,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>gov.nist.secauto.metaschema</groupId>
-				<artifactId>metaschema-java-binding</artifactId>
-				<version>${dependency.metaschema-framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.auto.service</groupId>
-				<artifactId>auto-service</artifactId>
-				<version>${dependency.auto-service.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${dependency.commons-lang3.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-api</artifactId>
-				<version>${dependency.log4j2.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-core</artifactId>
-				<version>${dependency.log4j2.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.xmlresolver</groupId>
 				<artifactId>xmlresolver</artifactId>
 				<version>${dependency.xmlresolver.version}</version>
@@ -221,13 +197,6 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<dependency>
-				<groupId>com.github.spotbugs</groupId>
-				<artifactId>spotbugs-annotations</artifactId>
-				<version>${dependency.spotbugs-annotations.version}</version>
-				<scope>provided</scope>
-				<optional>true</optional>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -235,32 +204,39 @@
 		<dependency>
 			<groupId>gov.nist.secauto.metaschema</groupId>
 			<artifactId>metaschema-java-binding</artifactId>
+			<version>${dependency.metaschema-framework.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.auto.service</groupId>
 			<artifactId>auto-service</artifactId>
 			<optional>true</optional>
+			<version>${dependency.auto-service.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+			<version>${dependency.commons-lang3.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.github.spotbugs</groupId>
 			<artifactId>spotbugs-annotations</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
+			<version>${dependency.log4j2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<scope>test</scope>
+			<version>${dependency.log4j2.version}</version>
 		</dependency>
 
 		<dependency>
@@ -331,31 +307,26 @@
 		</resources>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>com.mycila</groupId>
-					<artifactId>license-maven-plugin</artifactId>
-					<configuration>
-						<licenseSets>
-							<licenseSet>
-								<header>license/nist/license.txt</header>
-								<includes>
-									<include>src/**/*.java</include>
-								</includes>
-							</licenseSet>
-						</licenseSets>
-						<failIfMissing>true</failIfMissing>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<configuration>
-						<sourceDirectories>
-							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-							<sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-						</sourceDirectories>
-					</configuration>
-				</plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-toolchains-plugin</artifactId>
+                    <version>${plugin.maven-toolchains.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>toolchain</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <toolchains>
+                            <jdk>
+                                <version>11</version>
+                                <vendor>temurin</vendor>
+                            </jdk>
+                        </toolchains>
+                    </configuration>
+                </plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
@@ -387,7 +358,8 @@
 						<includeTestScope>false</includeTestScope>
 						<includeLicenseText>false</includeLicenseText>
 						<outputFormat>all</outputFormat>
-						<outputName>${project.artifactId}-${project.version}-cyclonedx</outputName>
+						<outputName>
+							${project.artifactId}-${project.version}-cyclonedx</outputName>
 					</configuration>
 					<executions>
 						<execution>
@@ -401,6 +373,7 @@
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
 					<artifactId>spotbugs-maven-plugin</artifactId>
+					<version>${plugin.spotbugs.version}</version>
 					<configuration>
 						<excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
 					</configuration>
@@ -408,25 +381,39 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+            </plugin>
 			<plugin>
 				<groupId>io.github.git-commit-id</groupId>
 				<artifactId>git-commit-id-maven-plugin</artifactId>
-				<version>5.0.0</version>
+				<version>6.0.0</version>
 				<configuration>
-					<dotGitDirectory>${project.basedir}/oscal/.git</dotGitDirectory>
-					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>${project.build.directory}/oscal-git.properties</generateGitPropertiesFilename>
-					<verbose>true</verbose>
 					<useNativeGit>false</useNativeGit>
-					<prefix>oscal-git</prefix>
 				</configuration>
 				<executions>
 					<execution>
-						<id>get-the-git-infos</id>
+						<id>oscal-git-info</id>
 						<goals>
 							<goal>revision</goal>
 						</goals>
-						<phase>generate-resources</phase>
+						<phase>initialize</phase>
+						<configuration>
+							<dotGitDirectory>${project.basedir}/oscal/.git</dotGitDirectory>
+							<prefix>oscal-git</prefix>
+						</configuration>
+					</execution>
+					<execution>
+						<id>git-info</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>initialize</phase>
+						<configuration>
+							<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+							<prefix>git</prefix>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -440,10 +427,12 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.basedir}/oscal/xml/schema</directory>
+									<directory>
+										${project.basedir}/oscal/xml/schema</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -455,10 +444,12 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.basedir}/oscal/json/schema</directory>
+									<directory>
+										${project.basedir}/oscal/json/schema</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -494,8 +485,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_catalog.xml</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -505,8 +498,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -516,8 +511,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/yaml/NIST_SP-800-53_rev5_catalog.yaml</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -527,8 +524,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_LOW-baseline_profile.xml</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/xml/NIST_SP-800-53_rev5_LOW-baseline_profile.xml</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -538,8 +537,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json</uri>
-							<outputDirectory>${project.build.directory}/download/content</outputDirectory>
+							<uri>
+								https://raw.githubusercontent.com/usnistgov/oscal-content/${oscal-content.commit}/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json</uri>
+							<outputDirectory>
+								${project.build.directory}/download/content</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -550,17 +551,34 @@
 				<version>${dependency.metaschema-framework.version}</version>
 				<executions>
 					<execution>
-						<id>generate-model-sources</id>
+						<id>default-cli</id>
 						<goals>
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
-							<metaschemaDir>${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<metaschemaDir>
+								${project.basedir}/oscal/src/metaschema</metaschemaDir>
 							<configs>
-								<config>${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
+								<config>
+									${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
 							</configs>
 							<includes>
 								<include>oscal_complete_metaschema.xml</include>
+							</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-schemas</id>
+						<goals>
+							<goal>generate-schemas</goal>
+						</goals>
+						<configuration>
+							<metaschemaDir>
+								${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/metaschema-schema</outputDirectory>
+							<includes>
+								<include>oscal_*_metaschema.xml</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -578,7 +596,8 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/metaschema</source>
+								<source>
+									${project.build.directory}/generated-sources/metaschema</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -591,7 +610,8 @@
 						<configuration>
 							<resources>
 								<resource>
-									<directory>${project.build.directory}/generated-resources/oscal</directory>
+									<directory>
+										${project.build.directory}/generated-resources/oscal</directory>
 									<includes>
 										<include>**/*.xsd</include>
 										<include>**/*.json</include>
@@ -625,60 +645,8 @@
 						<groupId>org.cyclonedx</groupId>
 						<artifactId>cyclonedx-maven-plugin</artifactId>
 					</plugin>
-					<plugin>
-						<groupId>com.github.spotbugs</groupId>
-						<artifactId>spotbugs-maven-plugin</artifactId>
-						<version>${spotbugs-maven-plugin.version}</version>
-						<configuration>
-							<effort>Max</effort>
-							<threshold>Normal</threshold>
-							<xmlOutput>true</xmlOutput>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>check</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
-		</profile>
-
-		<profile>
-			<id>reporting</id>
-			<reporting>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-project-info-reports-plugin</artifactId>
-						<reportSets>
-							<reportSet>
-								<reports>
-									<report>summary</report>
-									<report>licenses</report>
-									<report>modules</report>
-									<report>team</report>
-									<report>mailing-lists</report>
-									<report>scm</report>
-									<report>issue-management</report>
-									<report>dependencies</report>
-									<report>dependency-info</report>
-									<report>dependency-convergence</report>
-									<report>dependency-management</report>
-									<report>plugins</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<groupId>com.github.spotbugs</groupId>
-						<artifactId>spotbugs-maven-plugin</artifactId>
-						<version>${spotbugs-maven-plugin.version}</version>
-					</plugin>
-				</plugins>
-			</reporting>
 		</profile>
 	</profiles>
 </project>

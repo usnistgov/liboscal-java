@@ -50,7 +50,7 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   /**
    * A callback used to handle the case where an identifier could not be parsed from the reference
    * text.
-   * 
+   *
    * @param policy
    *          the reference policy for this reference
    * @param reference
@@ -69,7 +69,7 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   /**
    * A callback used to handle the case where an identifier could be parsed from the reference text,
    * but the index didn't contain a matching entity.
-   * 
+   *
    * @param policy
    *          the reference policy for this reference
    * @param reference
@@ -94,7 +94,7 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   /**
    * A callback used to handle the case where an identifier could be parsed and the index contains a
    * matching entity.
-   * 
+   *
    * @param policy
    *          the reference policy for this reference
    * @param reference

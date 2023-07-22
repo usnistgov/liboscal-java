@@ -28,11 +28,12 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
 import com.vladsch.flexmark.util.sequence.BasedSequence;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorNode;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorExtension.InsertAnchorNode;
 import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
 import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
+import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
 import org.apache.logging.log4j.LogManager;
@@ -71,7 +72,7 @@ public class InsertReferencePolicy
 
   @Override
   public void setReferenceText(@NonNull InsertAnchorNode insert, @NonNull String newReference) {
-    insert.setIdReference(BasedSequence.of(newReference));
+    insert.setIdReference(ObjectUtils.notNull(BasedSequence.of(newReference)));
   }
 
   @Override

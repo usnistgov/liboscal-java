@@ -50,7 +50,7 @@ public interface IIdentifierParser {
 
   /**
    * Parse the {@code referenceText} for the identifier.
-   * 
+   *
    * @param referenceText
    *          the reference text containing the identifier
    * @return the identifier, or {@code null} if the identifier could not be parsed
@@ -60,7 +60,7 @@ public interface IIdentifierParser {
 
   /**
    * Substitute the provided {@code newIdentifier} with the identifier in the {@code referenceText}.
-   * 
+   *
    * @param referenceText
    *          the reference text containing the original identifier
    * @param newIdentifier

@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
-import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
+import gov.nist.secauto.oscal.lib.model.Matching;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
 
@@ -59,9 +59,9 @@ class DefaultControlSelectionFilterTest {
   @Mock
   private IProfileSelectControlById selectControlByIdA;
   @Mock
-  private ProfileSelectControlById.Matching matchingA;
+  private Matching matchingA;
   @Mock
-  private ProfileSelectControlById.Matching matchingB;
+  private Matching matchingB;
   @Mock
   private IProfileSelectControlById selectControlByIdB;
 
