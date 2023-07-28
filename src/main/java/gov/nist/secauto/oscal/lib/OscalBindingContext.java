@@ -33,7 +33,6 @@ import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
-import gov.nist.secauto.oscal.lib.model.MappingCollection;
 import gov.nist.secauto.oscal.lib.model.PlanOfActionAndMilestones;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
@@ -105,21 +104,6 @@ public class OscalBindingContext
   @NonNull
   public Profile loadProfile(@NonNull File file) throws IOException {
     return newBoundLoader().load(Profile.class, file);
-  }
-
-  @NonNull
-  public MappingCollection loadMapping(@NonNull URL url) throws IOException, URISyntaxException {
-    return newBoundLoader().load(MappingCollection.class, url);
-  }
-
-  @NonNull
-  public MappingCollection loadMapping(@NonNull Path path) throws IOException {
-    return newBoundLoader().load(MappingCollection.class, path);
-  }
-
-  @NonNull
-  public MappingCollection loadMapping(@NonNull File file) throws IOException {
-    return newBoundLoader().load(MappingCollection.class, file);
   }
 
   @NonNull
@@ -209,9 +193,6 @@ public class OscalBindingContext
           break;
         case "profile":
           clazz = Profile.class;
-          break;
-        case "mapping-collection":
-          clazz = MappingCollection.class;
           break;
         case "system-security-plan":
           clazz = SystemSecurityPlan.class;

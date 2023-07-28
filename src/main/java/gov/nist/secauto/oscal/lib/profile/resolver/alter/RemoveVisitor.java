@@ -33,7 +33,6 @@ import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Link;
-import gov.nist.secauto.oscal.lib.model.MappingEntry;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.control.catalog.ICatalogVisitor;
@@ -60,9 +59,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     PARAM("param", Parameter.class),
     PROP("prop", Property.class),
     LINK("link", Link.class),
-    PART("part", ControlPart.class),
-    MAPPING("mapping", Control.Mapping.class),
-    MAP("map", MappingEntry.class);
+    PART("part", ControlPart.class);
 
     @NonNull
     private static final Map<Class<?>, TargetType> CLASS_TO_TYPE;
@@ -157,8 +154,6 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     APPLICABLE_TARGETS = new EnumMap<>(TargetType.class);
     APPLICABLE_TARGETS.put(TargetType.PARAM, Set.of(TargetType.PROP, TargetType.LINK));
     APPLICABLE_TARGETS.put(TargetType.PART, Set.of(TargetType.PART, TargetType.PROP, TargetType.LINK));
-    APPLICABLE_TARGETS.put(TargetType.MAPPING, Set.of(TargetType.MAP, TargetType.PROP, TargetType.LINK));
-    APPLICABLE_TARGETS.put(TargetType.MAP, Set.of(TargetType.PROP, TargetType.LINK));
   }
 
   private static Set<TargetType> getApplicableTypes(@NonNull TargetType type) {
@@ -276,11 +271,6 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         child -> visitPart(child, context),
         context);
 
-    // visit mappings
-    Control.Mapping mapping = control.getMapping();
-    if (mapping != null) {
-      retval = retval || visitMapping(mapping, context);
-    }
     return retval;
   }
 
@@ -335,54 +325,6 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         TargetType.PART,
         () -> CollectionUtil.listOrEmpty(part.getParts()),
         child -> visitPart(child, context),
-        context);
-    return retval;
-  }
-
-  /**
-   * Visit the control mapping.
-   *
-   * @param mapping
-   *          the bound mapping object
-   * @param context
-   *          the visitor context
-   * @return {@code true} if the removal was applied or {@code false} otherwise
-   */
-  public boolean visitMapping(Control.Mapping mapping, Context context) {
-    assert context != null;
-
-    // visit maps
-    return handle(
-        TargetType.MAP,
-        () -> CollectionUtil.listOrEmpty(mapping.getMaps()),
-        child -> visitMappingEntry(child, context),
-        context);
-  }
-
-  /**
-   * Visit the mapping entry.
-   *
-   * @param map
-   *          the bound mapping entry object
-   * @param context
-   *          the visitor context
-   * @return {@code true} if the removal was applied or {@code false} otherwise
-   */
-  public boolean visitMappingEntry(MappingEntry map, Context context) {
-    assert context != null;
-
-    // visit props
-    boolean retval = handle(
-        TargetType.PROP,
-        () -> CollectionUtil.listOrEmpty(map.getProps()),
-        null,
-        context);
-
-    // visit links
-    retval = retval || handle(
-        TargetType.LINK,
-        () -> CollectionUtil.listOrEmpty(map.getLinks()),
-        null,
         context);
     return retval;
   }
@@ -543,8 +485,6 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
           break;
         }
         case LINK:
-        case MAPPING:
-        case MAP:
           // do nothing
           break;
         default:
