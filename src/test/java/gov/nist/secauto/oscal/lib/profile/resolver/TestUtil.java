@@ -27,10 +27,10 @@
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
-import gov.nist.secauto.metaschema.model.common.IRootAssemblyDefinition;
-import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItemFactory;
+import gov.nist.secauto.metaschema.core.model.IRootAssemblyDefinition;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.control.AbstractParameter;
@@ -180,11 +180,11 @@ public final class TestUtil {
             .build())
         .build());
 
-    return DefaultNodeItemFactory.instance().newDocumentNodeItem(
+    return INodeItemFactory.instance().newDocumentNodeItem(
         IRootAssemblyDefinition.toRootAssemblyDefinition(
             ObjectUtils.notNull(
                 (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
-        importedCatalog,
-        ObjectUtils.notNull(Paths.get("").toUri()));
+        ObjectUtils.notNull(Paths.get("").toUri()),
+        importedCatalog);
   }
 }

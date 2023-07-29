@@ -29,7 +29,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Matching;
 import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 import gov.nist.secauto.oscal.lib.model.control.profile.IProfileSelectControlById;
@@ -157,7 +157,7 @@ class DefaultControlSelectionFilterTest {
   }
 
   /**
-   * Test the filtering of an empty set of match criteria
+   * Test the filtering of an empty set of match criteria.
    */
   @Test
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")

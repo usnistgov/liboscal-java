@@ -28,7 +28,7 @@ package gov.nist.secauto.oscal.lib;
 
 import gov.nist.secauto.metaschema.binding.DefaultBindingContext;
 import gov.nist.secauto.metaschema.binding.IBindingMatcher;
-import gov.nist.secauto.metaschema.model.common.constraint.IConstraintSet;
+import gov.nist.secauto.metaschema.core.model.constraint.IConstraintSet;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;

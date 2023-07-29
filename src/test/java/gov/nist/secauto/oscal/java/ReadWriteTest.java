@@ -33,7 +33,7 @@ import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 
 import org.apache.logging.log4j.LogManager;

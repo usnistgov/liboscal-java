@@ -26,11 +26,11 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.merge;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
@@ -47,6 +47,7 @@ import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer.SelectionStatus;
 
+import java.net.URI;
 import java.util.EnumSet;
 import java.util.UUID;
 
@@ -91,15 +92,19 @@ public class FlatteningStructuringVisitor
     }
 
     // process references, looking for orphaned links to groups
-    ReferenceCountingVisitor.instance().visitCatalog(catalogItem, index, catalogItem.getDocumentUri());
+    URI catalogUri = ObjectUtils.requireNonNull(catalogItem.getDocumentUri());
+    ReferenceCountingVisitor.instance().visitCatalog(catalogItem, index, catalogUri);
 
     FlatteningFilterNonSelectedVisitor.instance().visitCatalog(catalogItem, index);
     return null;
   }
 
   @Override
-  public Void visitGroup(IRequiredValueModelNodeItem item, Void childResult, IIndexer index) {
-    CatalogGroup group = (CatalogGroup) item.getValue();
+  public Void visitGroup(
+      IAssemblyNodeItem item,
+      Void childResult,
+      IIndexer index) {
+    CatalogGroup group = ObjectUtils.requireNonNull((CatalogGroup) item.getValue());
     String id = group.getId();
     if (id != null) {
       IEntityItem entity = index.getEntity(ItemType.GROUP, id);
@@ -114,8 +119,11 @@ public class FlatteningStructuringVisitor
   }
 
   @Override
-  public Void visitControl(IRequiredValueModelNodeItem item, Void childResult, IIndexer index) {
-    Control control = (Control) item.getValue();
+  public Void visitControl(
+      IAssemblyNodeItem item,
+      Void childResult,
+      IIndexer index) {
+    Control control = ObjectUtils.requireNonNull((Control) item.getValue());
     String id = ObjectUtils.requireNonNull(control.getId());
     IEntityItem entity = index.getEntity(ItemType.CONTROL, id);
     assert entity != null;
@@ -128,9 +136,11 @@ public class FlatteningStructuringVisitor
   }
 
   @Override
-  protected Void visitParameter(IRequiredValueModelNodeItem item,
-      IRequiredValueModelNodeItem catalogOrGroupOrControl, IIndexer index) {
-    Parameter parameter = (Parameter) item.getValue();
+  protected Void visitParameter(
+      IAssemblyNodeItem item,
+      IAssemblyNodeItem catalogOrGroupOrControl,
+      IIndexer index) {
+    Parameter parameter = ObjectUtils.requireNonNull((Parameter) item.getValue());
     String id = ObjectUtils.requireNonNull(parameter.getId());
     IEntityItem entity = index.getEntity(ItemType.PARAMETER, id);
     assert entity != null;
@@ -141,9 +151,11 @@ public class FlatteningStructuringVisitor
   }
 
   @Override
-  protected void visitRole(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
+  protected void visitRole(
+      IAssemblyNodeItem item,
+      IAssemblyNodeItem metadataItem,
       IIndexer index) {
-    Role role = (Role) item.getValue();
+    Role role = ObjectUtils.requireNonNull((Role) item.getValue());
     String id = ObjectUtils.requireNonNull(role.getId());
     IEntityItem entity = index.getEntity(ItemType.ROLE, id);
     assert entity != null;
@@ -152,9 +164,11 @@ public class FlatteningStructuringVisitor
   }
 
   @Override
-  protected void visitLocation(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
+  protected void visitLocation(
+      IAssemblyNodeItem item,
+      IAssemblyNodeItem metadataItem,
       IIndexer index) {
-    Location location = (Location) item.getValue();
+    Location location = ObjectUtils.requireNonNull((Location) item.getValue());
     UUID uuid = ObjectUtils.requireNonNull(location.getUuid());
     IEntityItem entity = index.getEntity(ItemType.LOCATION, uuid);
     assert entity != null;
@@ -163,9 +177,11 @@ public class FlatteningStructuringVisitor
   }
 
   @Override
-  protected void visitParty(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem metadataItem,
+  protected void visitParty(
+      IAssemblyNodeItem item,
+      IAssemblyNodeItem metadataItem,
       IIndexer index) {
-    Party location = (Party) item.getValue();
+    Party location = ObjectUtils.requireNonNull((Party) item.getValue());
     UUID uuid = ObjectUtils.requireNonNull(location.getUuid());
     IEntityItem entity = index.getEntity(ItemType.PARTY, uuid);
     assert entity != null;
@@ -174,9 +190,11 @@ public class FlatteningStructuringVisitor
   }
 
   @Override
-  protected void visitResource(IRequiredValueModelNodeItem item, IRootAssemblyNodeItem rootItem,
+  protected void visitResource(
+      IAssemblyNodeItem item,
+      IRootAssemblyNodeItem rootItem,
       IIndexer index) {
-    Resource location = (Resource) item.getValue();
+    Resource location = ObjectUtils.requireNonNull((Resource) item.getValue());
     UUID uuid = ObjectUtils.requireNonNull(location.getUuid());
     IEntityItem entity = index.getEntity(ItemType.RESOURCE, uuid);
     assert entity != null;
@@ -185,15 +203,15 @@ public class FlatteningStructuringVisitor
   }
 
   private static void handlePartSelection(
-      @NonNull IRequiredValueModelNodeItem groupOrControlItem,
+      @NonNull IAssemblyNodeItem groupOrControlItem,
       @NonNull IIndexer index,
       @NonNull SelectionStatus selectionStatus) {
     CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()
-        .map(item -> (IRequiredValueModelNodeItem) item)
+        .map(item -> (IAssemblyNodeItem) item)
         .forEachOrdered(partItem -> {
           index.setSelectionStatus(ObjectUtils.requireNonNull(partItem), selectionStatus);
 
-          ControlPart part = (ControlPart) partItem.getValue();
+          ControlPart part = ObjectUtils.requireNonNull((ControlPart) partItem.getValue());
           String id = part.getId();
           if (id != null) {
             IEntityItem entity = index.getEntity(ItemType.PART, id);
@@ -213,17 +231,17 @@ public class FlatteningStructuringVisitor
     }
 
     @Override
-    public DefaultResult visitControl(IRequiredValueModelNodeItem item, DefaultResult childResult,
+    public DefaultResult visitControl(IAssemblyNodeItem item, DefaultResult childResult,
         Context context) {
       assert childResult != null;
 
-      Control control = (Control) item.getValue();
+      Control control = ObjectUtils.requireNonNull((Control) item.getValue());
       IIndexer index = context.getIndexer();
       // this control should always be found in the index
       IEntityItem entity = ObjectUtils.requireNonNull(
           index.getEntity(ItemType.CONTROL, ObjectUtils.requireNonNull(control.getId()), false));
 
-      IRequiredValueModelNodeItem parent = ObjectUtils.notNull(item.getParentContentNodeItem());
+      IAssemblyNodeItem parent = ObjectUtils.notNull(item.getParentContentNodeItem());
       DefaultResult retval = new DefaultResult();
       if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {
         // keep this control

@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.model.metadata;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Link;
 
 import java.net.URI;

@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -27,8 +29,8 @@
 		<url>https://github.com/usnistgov/liboscal-java</url>
 		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git</connection>
 		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git</developerConnection>
-	  <tag>HEAD</tag>
-    </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<distributionManagement>
 		<snapshotRepository>
@@ -122,7 +124,7 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.12.2</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>1.0.0-SNAPSHOT</dependency.metaschema-framework.version>
 
 		<dependency.auto-service.version>1.0.1</dependency.auto-service.version>
 		<dependency.commons-lang3.version>3.13.0</dependency.commons-lang3.version>
@@ -135,7 +137,7 @@
 		<dependency.xmlresolver.version>4.6.0</dependency.xmlresolver.version>
 
 		<plugin.cyclonedx.version>2.7.3</plugin.cyclonedx.version>
-        <plugin.maven-toolchains.version>3.1.0</plugin.maven-toolchains.version>
+		<plugin.maven-toolchains.version>3.1.0</plugin.maven-toolchains.version>
 
 		<cyclonedx.schema.version>1.3</cyclonedx.schema.version>
 		<oscal-content.commit>main</oscal-content.commit>
@@ -206,7 +208,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>gov.nist.secauto.metaschema</groupId>
-			<artifactId>metaschema-java-binding</artifactId>
+			<artifactId>metaschema-databind</artifactId>
 			<version>${dependency.metaschema-framework.version}</version>
 		</dependency>
 
@@ -317,26 +319,26 @@
 		</resources>
 		<pluginManagement>
 			<plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-toolchains-plugin</artifactId>
-                    <version>${plugin.maven-toolchains.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>toolchain</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <toolchains>
-                            <jdk>
-                                <version>11</version>
-                                <vendor>temurin</vendor>
-                            </jdk>
-                        </toolchains>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-toolchains-plugin</artifactId>
+					<version>${plugin.maven-toolchains.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>toolchain</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<toolchains>
+							<jdk>
+								<version>11</version>
+								<vendor>temurin</vendor>
+							</jdk>
+						</toolchains>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
@@ -388,13 +390,24 @@
 						<excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<sourceDirectories>
+							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+							<sourceDirectory>
+								${project.build.testSourceDirectory}</sourceDirectory>
+						</sourceDirectories>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-toolchains-plugin</artifactId>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-toolchains-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>io.github.git-commit-id</groupId>
 				<artifactId>git-commit-id-maven-plugin</artifactId>

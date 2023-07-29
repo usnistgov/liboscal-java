@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
@@ -85,7 +85,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *           if there was an error handing the index hit
    */
   protected boolean handleIndexHit(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -130,7 +130,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *           if there was an error handing the index hit
    */
   protected void handleUnselected( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -154,7 +154,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *           if there was an error handing the index hit
    */
   protected void handleSelected( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -182,7 +182,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *           if there was an error handing the index miss
    */
   protected boolean handleIndexMiss(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
@@ -208,7 +208,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *           if there was an error handing the index miss due to a non match
    */
   protected boolean handleIdentifierNonMatch(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // provide no handler by default
@@ -217,7 +217,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
 
   @Override
   public boolean handleReference(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE type,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     String referenceText = getReferenceText(type);
@@ -243,7 +243,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *           if there was an error handing the reference
    */
   protected boolean handleIdentifier(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE type,
       @Nullable String identifier,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {

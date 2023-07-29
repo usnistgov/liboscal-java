@@ -26,10 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
@@ -98,10 +98,12 @@ public class ControlSelectionVisitor
       @NonNull IControlSelectionState state) {
     visit(catalogDocument, state);
 
-    IRootAssemblyNodeItem root = profileDocument.getRootAssemblyNodeItem();
+    profileDocument.modelItems().forEachOrdered(item -> {
+      IRootAssemblyNodeItem root = ObjectUtils.requireNonNull((IRootAssemblyNodeItem) item);
 
-    visitMetadata(root, state);
-    visitBackMatter(root, state);
+      visitMetadata(root, state);
+      visitBackMatter(root, state);
+    });
   }
 
   @Override
@@ -111,11 +113,11 @@ public class ControlSelectionVisitor
   }
 
   @Override
-  public Boolean visitGroup(IRequiredValueModelNodeItem groupItem, Boolean childSelected,
+  public Boolean visitGroup(IAssemblyNodeItem groupItem, Boolean childSelected,
       IControlSelectionState state) {
     super.visitGroup(groupItem, childSelected, state);
     if (LOGGER.isTraceEnabled()) {
-      CatalogGroup group = (CatalogGroup) groupItem.getValue();
+      CatalogGroup group = ObjectUtils.requireNonNull((CatalogGroup) groupItem.getValue());
       LOGGER.atTrace().log("Selecting group '{}'. match={}", group.getId(), childSelected);
     }
 
@@ -133,7 +135,7 @@ public class ControlSelectionVisitor
   }
 
   private void handlePartSelection(
-      @NonNull IRequiredValueModelNodeItem groupOrControlItem,
+      @NonNull IAssemblyNodeItem groupOrControlItem,
       boolean selected,
       IControlSelectionState state) {
     if (isVisitedItemType(IEntityItem.ItemType.PART)) {
@@ -141,7 +143,7 @@ public class ControlSelectionVisitor
 
       IIndexer index = getIndexer(state);
       CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()
-          .map(item -> (IRequiredValueModelNodeItem) item)
+          .map(item -> (IAssemblyNodeItem) item)
           .forEachOrdered(partItem -> {
             index.setSelectionStatus(ObjectUtils.requireNonNull(partItem), selectionStatus);
           });
@@ -150,7 +152,7 @@ public class ControlSelectionVisitor
 
   @Override
   public Boolean visitControl(
-      IRequiredValueModelNodeItem controlItem,
+      IAssemblyNodeItem controlItem,
       Boolean childResult,
       IControlSelectionState state) {
     super.visitControl(controlItem, childResult, state);

@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
 
 import java.net.URI;
 
@@ -87,9 +87,9 @@ public interface IEntityItem {
   boolean isIdentifierReassigned();
 
   @NonNull
-  IRequiredValueModelNodeItem getInstance();
+  IModelNodeItem<?, ?> getInstance();
 
-  void setInstance(@NonNull IRequiredValueModelNodeItem item);
+  void setInstance(@NonNull IModelNodeItem<?, ?> item);
 
   @NonNull
   <T> T getInstanceValue();

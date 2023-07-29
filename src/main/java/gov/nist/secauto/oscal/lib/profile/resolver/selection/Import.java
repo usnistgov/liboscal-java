@@ -29,10 +29,12 @@ package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -58,23 +60,23 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public class Import {
 
   @NonNull
-  private final IDocumentNodeItem profileDocument;
+  private final IRootAssemblyNodeItem profile;
   @NonNull
-  private final IModelNodeItem profileImportItem;
+  private final IAssemblyNodeItem profileImportItem;
 
   public Import(
-      @NonNull IDocumentNodeItem profileDocument,
-      @NonNull IModelNodeItem profileImportItem) {
+      @NonNull IRootAssemblyNodeItem profile,
+      @NonNull IAssemblyNodeItem profileImportItem) {
 
-    this.profileDocument = profileDocument;
+    this.profile = profile;
     this.profileImportItem = profileImportItem;
   }
 
-  protected IDocumentNodeItem getProfileItem() {
-    return profileDocument;
+  protected IRootAssemblyNodeItem getProfileItem() {
+    return profile;
   }
 
-  protected IModelNodeItem getProfileImportItem() {
+  protected IAssemblyNodeItem getProfileImportItem() {
     return profileImportItem;
   }
 
@@ -83,8 +85,8 @@ public class Import {
     return ObjectUtils.requireNonNull((ProfileImport) profileImportItem.getValue());
   }
 
-  private static Catalog toCatalog(IDocumentNodeItem catalogDocument) {
-    return (Catalog) catalogDocument.getValue();
+  private static Catalog toCatalog(@NonNull IDocumentNodeItem catalogDocument) {
+    return (Catalog) INodeItem.toValue(catalogDocument);
   }
 
   @NonNull

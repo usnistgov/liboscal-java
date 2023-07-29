@@ -26,12 +26,12 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
-import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.core.metapath.MetapathExpression.ResultType;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.util.CustomCollectors;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
 import org.apache.logging.log4j.Level;
@@ -161,28 +161,28 @@ public interface IIndexer {
   }
 
   @NonNull
-  IEntityItem addRole(@NonNull IRequiredValueModelNodeItem role);
+  IEntityItem addRole(@NonNull IModelNodeItem<?, ?> role);
 
   @NonNull
-  IEntityItem addLocation(@NonNull IRequiredValueModelNodeItem location);
+  IEntityItem addLocation(@NonNull IModelNodeItem<?, ?> location);
 
   @NonNull
-  IEntityItem addParty(@NonNull IRequiredValueModelNodeItem party);
+  IEntityItem addParty(@NonNull IModelNodeItem<?, ?> party);
 
   @Nullable
-  IEntityItem addGroup(@NonNull IRequiredValueModelNodeItem group);
+  IEntityItem addGroup(@NonNull IModelNodeItem<?, ?> group);
 
   @NonNull
-  IEntityItem addControl(@NonNull IRequiredValueModelNodeItem control);
+  IEntityItem addControl(@NonNull IModelNodeItem<?, ?> control);
 
   @NonNull
-  IEntityItem addParameter(@NonNull IRequiredValueModelNodeItem parameter);
+  IEntityItem addParameter(@NonNull IModelNodeItem<?, ?> parameter);
 
   @Nullable
-  IEntityItem addPart(@NonNull IRequiredValueModelNodeItem part);
+  IEntityItem addPart(@NonNull IModelNodeItem<?, ?> part);
 
   @NonNull
-  IEntityItem addResource(@NonNull IRequiredValueModelNodeItem resource);
+  IEntityItem addResource(@NonNull IModelNodeItem<?, ?> resource);
 
   @NonNull
   Collection<IEntityItem> getEntitiesByItemType(@NonNull IEntityItem.ItemType itemType);

@@ -20,7 +20,7 @@
 			<AppenderRef ref="console" />
 		</Logger>
 
-		<Logger name="gov.nist.secauto.metaschema.model" level="info" additivity="false">
+		<Logger name="gov.nist.secauto.metaschema.core.model.xml" level="info" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>
 

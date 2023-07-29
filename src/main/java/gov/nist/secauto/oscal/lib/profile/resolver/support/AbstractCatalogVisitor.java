@@ -26,9 +26,9 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
@@ -47,7 +47,11 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
   protected abstract R aggregateResults(R first, R second, T state);
 
   protected R visitCatalog(@NonNull IDocumentNodeItem catalogDocument, T state) {
-    return visitGroupContainer(catalogDocument.getRootAssemblyNodeItem(), newDefaultResult(state), state);
+    return catalogDocument.modelItems().reduce(
+        newDefaultResult(state),
+        (result, catalogOrGroup) -> visitGroupContainer(
+            ObjectUtils.requireNonNull((IAssemblyNodeItem) catalogOrGroup), result, state),
+        (result1, result2) -> aggregateResults(result1, result2, state));
   }
 
   /**
@@ -62,12 +66,14 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
    * @return a meaningful result of the given type
    */
   protected R visitGroupContainer(
-      @NonNull IRequiredValueModelNodeItem catalogOrGroup,
+      @NonNull IAssemblyNodeItem catalogOrGroup,
       R initialResult,
       T state) {
     R result = catalogOrGroup.getModelItemsByName("group").stream()
         .map(groupItem -> {
-          return visitGroupItem(ObjectUtils.requireNonNull(groupItem), state);
+          return visitGroupItem(
+              ObjectUtils.requireNonNull((IAssemblyNodeItem) groupItem),
+              state);
         })
         .reduce(initialResult, (first, second) -> aggregateResults(first, second, state));
     return visitControlContainer(catalogOrGroup, result, state);
@@ -78,21 +84,21 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
    * <p>
    * This method will first visit the group's children, then the group itself.
    *
-   * @param item
+   * @param group
    *          the group Metapath item to visit
    * @param state
    *          the current visitor state
    * @return a meaningful result of the given type
    */
-  protected R visitGroupItem(@NonNull IRequiredValueModelNodeItem item, T state) {
-    R childResult = visitGroupContainer(item, newDefaultResult(state), state);
-    return visitGroupInternal(item, childResult, state);
+  protected R visitGroupItem(@NonNull IAssemblyNodeItem group, T state) {
+    R childResult = visitGroupContainer(group, newDefaultResult(state), state);
+    return visitGroupInternal(group, childResult, state);
   }
 
   /**
    * Called when visiting a group after visiting it's children.
    *
-   * @param item
+   * @param group
    *          the group Metapath item currently being visited
    * @param childResult
    *          the result of visiting the group's children
@@ -101,10 +107,10 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
    * @return a meaningful result of the given type
    */
   protected R visitGroupInternal(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IAssemblyNodeItem group,
       R childResult,
       T state) {
-    return visitGroup(item, childResult, state);
+    return visitGroup(group, childResult, state);
   }
 
   /**
@@ -119,12 +125,12 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
    * @return a meaningful result of the given type
    */
   protected R visitControlContainer(
-      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,
+      @NonNull IAssemblyNodeItem catalogOrGroupOrControl,
       R initialResult,
       T state) {
     return catalogOrGroupOrControl.getModelItemsByName("control").stream()
-        .map(controlItem -> {
-          return visitControlItem(ObjectUtils.requireNonNull(controlItem), state);
+        .map(control -> {
+          return visitControlItem(ObjectUtils.requireNonNull((IAssemblyNodeItem) control), state);
         })
         .reduce(initialResult, (first, second) -> aggregateResults(first, second, state));
   }
@@ -134,21 +140,21 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
    * <p>
    * This method will first visit the control's children, then the control itself.
    *
-   * @param item
-   *          the group Metapath item to visit
+   * @param control
+   *          the control Metapath item to visit
    * @param state
    *          the current visitor state
    * @return a meaningful result of the given type
    */
-  protected R visitControlItem(@NonNull IRequiredValueModelNodeItem item, T state) {
-    R childResult = visitControlContainer(item, newDefaultResult(state), state);
-    return visitControlInternal(item, childResult, state);
+  protected R visitControlItem(@NonNull IAssemblyNodeItem control, T state) {
+    R childResult = visitControlContainer(control, newDefaultResult(state), state);
+    return visitControlInternal(control, childResult, state);
   }
 
   /**
    * Called when visiting a control after visiting it's children.
    *
-   * @param controlItem
+   * @param control
    *          the Metapath item for the control currently being visited
    * @param childResult
    *          the result of visiting the control's children
@@ -156,7 +162,7 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
    *          the calling context information
    * @return a meaningful result of the given type
    */
-  protected R visitControlInternal(@NonNull IRequiredValueModelNodeItem controlItem, R childResult, T state) {
-    return visitControl(controlItem, childResult, state);
+  protected R visitControlInternal(@NonNull IAssemblyNodeItem control, R childResult, T state) {
+    return visitControl(control, childResult, state);
   }
 }

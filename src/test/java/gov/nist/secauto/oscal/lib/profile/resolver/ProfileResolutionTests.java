@@ -34,8 +34,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import gov.nist.secauto.metaschema.binding.io.DefaultBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
-import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
-import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
+import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.core.metapath.StaticContext;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.selection.ImportCycleException;
@@ -109,17 +110,17 @@ class ProfileResolutionTests {
 
   private static Catalog resolveProfile(@NonNull Path profileFile)
       throws FileNotFoundException, IOException, ProfileResolutionException {
-    return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
+    return (Catalog) INodeItem.toValue(getProfileResolver().resolve(profileFile));
   }
 
   private static Catalog resolveProfile(@NonNull File profileFile)
       throws FileNotFoundException, IOException, ProfileResolutionException {
-    return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
+    return (Catalog) INodeItem.toValue(getProfileResolver().resolve(profileFile));
   }
 
   private static Catalog resolveProfile(@NonNull URL profileUrl)
       throws IOException, ProfileResolutionException, URISyntaxException {
-    return (Catalog) getProfileResolver().resolveProfile(profileUrl).getValue();
+    return (Catalog) INodeItem.toValue(getProfileResolver().resolve(profileUrl));
   }
 
   /**

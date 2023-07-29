@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
@@ -46,7 +46,7 @@ public interface ICatalogVisitor<T, R> {
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
    *
-   * @param item
+   * @param group
    *          the Metapath item for the group
    * @param childResult
    *          the result of evaluating the group's children
@@ -54,7 +54,7 @@ public interface ICatalogVisitor<T, R> {
    *          the calling context information
    * @return a meaningful result of the given type
    */
-  default R visitGroup(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
+  default R visitGroup(@NonNull IAssemblyNodeItem group, R childResult, T state) {
     // do nothing by default
     return childResult;
   }
@@ -65,7 +65,7 @@ public interface ICatalogVisitor<T, R> {
    * Can be overridden by classes extending this interface to support processing of the visited
    * object.
    *
-   * @param item
+   * @param control
    *          the Metapath item for the control
    * @param childResult
    *          the result of evaluating the control's children
@@ -73,7 +73,7 @@ public interface ICatalogVisitor<T, R> {
    *          the calling context information
    * @return a meaningful result of the given type
    */
-  default R visitControl(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
+  default R visitControl(@NonNull IAssemblyNodeItem control, R childResult, T state) {
     // do nothing by default
     return childResult;
   }

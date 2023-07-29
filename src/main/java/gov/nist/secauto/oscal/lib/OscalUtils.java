@@ -28,7 +28,7 @@ package gov.nist.secauto.oscal.lib;
 
 import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream;
 
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;

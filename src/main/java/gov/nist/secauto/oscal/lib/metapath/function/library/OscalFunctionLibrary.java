@@ -28,8 +28,8 @@ package gov.nist.secauto.oscal.lib.metapath.function.library;
 
 import com.google.auto.service.AutoService;
 
-import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionLibrary;
-import gov.nist.secauto.metaschema.model.common.metapath.function.IFunctionLibrary;
+import gov.nist.secauto.metaschema.core.metapath.function.FunctionLibrary;
+import gov.nist.secauto.metaschema.core.metapath.function.IFunctionLibrary;
 
 @AutoService(IFunctionLibrary.class)
 public class OscalFunctionLibrary

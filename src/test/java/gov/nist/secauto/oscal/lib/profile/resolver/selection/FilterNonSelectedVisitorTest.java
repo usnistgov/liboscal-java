@@ -29,7 +29,8 @@ package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
@@ -95,6 +96,8 @@ class FilterNonSelectedVisitorTest {
         selected);
 
     OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class)
-        .serialize((Catalog) importedCatalogDocumentItem.getValue(), System.out);
+        .serialize(
+            (Catalog) INodeItem.toValue(importedCatalogDocumentItem),
+            System.out);
   }
 }

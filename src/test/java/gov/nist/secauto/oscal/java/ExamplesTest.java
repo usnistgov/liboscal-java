@@ -26,18 +26,20 @@
 
 package gov.nist.secauto.oscal.java;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
-import gov.nist.secauto.metaschema.model.common.constraint.DefaultConstraintValidator;
-import gov.nist.secauto.metaschema.model.common.constraint.FindingCollectingConstraintValidationHandler;
-import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
-import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.core.metapath.StaticContext;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.model.constraint.DefaultConstraintValidator;
+import gov.nist.secauto.metaschema.core.model.constraint.FindingCollectingConstraintValidationHandler;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionException;
@@ -66,6 +68,7 @@ class ExamplesTest {
     Catalog catalog = loader.load(ObjectUtils.notNull(Paths.get("src/test/resources/content/test-catalog.xml"))); // load
                                                                                                                   // the
                                                                                                                   // catalog
+    assertNotNull(catalog);
 
     // Create a serializer which can be used to write multiple catalogs
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
@@ -105,6 +108,8 @@ class ExamplesTest {
     // Create a serializer which can be used to write multiple catalogs
     ISerializer<Catalog> serializer = bindingContext.newSerializer(Format.YAML, Catalog.class);
     // serialize the catalog as yaml
-    serializer.serialize((Catalog) resolvedCatalog.getValue(), ObjectUtils.notNull(System.out));
+    serializer.serialize(
+        (Catalog) INodeItem.toValue(resolvedCatalog),
+        ObjectUtils.notNull(System.out));
   }
 }

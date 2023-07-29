@@ -26,10 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -75,19 +75,23 @@ public class FilterNonSelectedVisitor
     Context context = new Context(indexer);
     IResult result = visitCatalog(catalogItem, context);
 
-    IRootAssemblyNodeItem root = catalogItem.getRootAssemblyNodeItem();
-
-    Catalog catalog = (Catalog) catalogItem.getValue();
+    Catalog catalog = (Catalog) INodeItem.toValue(catalogItem);
     result.applyTo(catalog);
 
-    root.getModelItemsByName("metadata").forEach(child -> {
-      assert child != null;
-      visitMetadata(child, context);
-    });
+    catalogItem.modelItems().forEachOrdered(root -> {
+      root.getModelItemsByName("metadata").stream()
+          .map(child -> (IAssemblyNodeItem) child)
+          .forEachOrdered(child -> {
+            assert child != null;
+            visitMetadata(child, context);
+          });
 
-    root.getModelItemsByName("back-matter").forEach(child -> {
-      assert child != null;
-      visitBackMatter(child, context);
+      root.getModelItemsByName("back-matter").stream()
+          .map(child -> (IAssemblyNodeItem) child)
+          .forEachOrdered(child -> {
+            assert child != null;
+            visitBackMatter(child, context);
+          });
     });
   }
 
@@ -101,8 +105,8 @@ public class FilterNonSelectedVisitor
     return first.append(ObjectUtils.notNull(second));
   }
 
-  protected void visitMetadata(@NonNull IRequiredValueModelNodeItem metadataItem, Context context) {
-    Metadata metadata = (Metadata) metadataItem.getValue();
+  protected void visitMetadata(@NonNull IAssemblyNodeItem metadataItem, Context context) {
+    Metadata metadata = ObjectUtils.requireNonNull((Metadata) metadataItem.getValue());
 
     IIndexer index = context.getIndexer();
     // prune roles, parties, and locations
@@ -139,8 +143,8 @@ public class FilterNonSelectedVisitor
   }
 
   @SuppressWarnings("static-method")
-  private void visitBackMatter(@NonNull IRequiredValueModelNodeItem backMatterItem, Context context) {
-    BackMatter backMatter = (BackMatter) backMatterItem.getValue();
+  private void visitBackMatter(@NonNull IAssemblyNodeItem backMatterItem, Context context) {
+    BackMatter backMatter = ObjectUtils.requireNonNull((BackMatter) backMatterItem.getValue());
 
     IIndexer index = context.getIndexer();
     for (IEntityItem entity : IIndexer.getUnreferencedEntitiesAsStream(index.getEntitiesByItemType(ItemType.RESOURCE))
@@ -156,10 +160,10 @@ public class FilterNonSelectedVisitor
 
   @Override
   public DefaultResult visitGroup(
-      IRequiredValueModelNodeItem item,
+      IAssemblyNodeItem item,
       DefaultResult childResult,
       Context context) {
-    CatalogGroup group = (CatalogGroup) item.getValue();
+    CatalogGroup group = ObjectUtils.requireNonNull((CatalogGroup) item.getValue());
 
     IIndexer index = context.getIndexer();
     String groupId = group.getId();
@@ -190,16 +194,16 @@ public class FilterNonSelectedVisitor
 
   @Override
   public DefaultResult visitControl(
-      IRequiredValueModelNodeItem item,
+      IAssemblyNodeItem item,
       DefaultResult childResult,
       Context context) {
-    Control control = (Control) item.getValue();
+    Control control = ObjectUtils.requireNonNull((Control) item.getValue());
     IIndexer index = context.getIndexer();
     // this control should always be found in the index
     IEntityItem entity = ObjectUtils.requireNonNull(
         index.getEntity(ItemType.CONTROL, ObjectUtils.requireNonNull(control.getId()), false));
 
-    IRequiredValueModelNodeItem parent = ObjectUtils.notNull(item.getParentContentNodeItem());
+    IAssemblyNodeItem parent = ObjectUtils.notNull(item.getParentContentNodeItem());
     DefaultResult retval = new DefaultResult();
     if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {
       // keep this control
@@ -226,12 +230,12 @@ public class FilterNonSelectedVisitor
     return retval;
   }
 
-  protected static void removePartsFromIndex(@NonNull IRequiredValueModelNodeItem groupOrControlItem,
+  protected static void removePartsFromIndex(@NonNull IAssemblyNodeItem groupOrControlItem,
       @NonNull IIndexer index) {
     CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()
-        .map(item -> (IRequiredValueModelNodeItem) item)
+        .map(item -> (IAssemblyNodeItem) item)
         .forEachOrdered(partItem -> {
-          ControlPart part = (ControlPart) partItem.getValue();
+          ControlPart part = ObjectUtils.requireNonNull((ControlPart) partItem.getValue());
           String id = part.getId();
           if (id != null) {
             IEntityItem entity = index.getEntity(IEntityItem.ItemType.PART, id);
@@ -243,9 +247,9 @@ public class FilterNonSelectedVisitor
   }
 
   @Override
-  protected DefaultResult visitParameter(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem parent,
+  protected DefaultResult visitParameter(IAssemblyNodeItem item, IAssemblyNodeItem parent,
       Context context) {
-    Parameter param = (Parameter) item.getValue();
+    Parameter param = ObjectUtils.requireNonNull((Parameter) item.getValue());
     IIndexer index = context.getIndexer();
     // this parameter should always be found in the index
     IEntityItem entity = ObjectUtils.requireNonNull(
