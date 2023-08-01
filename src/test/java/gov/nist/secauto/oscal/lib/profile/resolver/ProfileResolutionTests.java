@@ -73,7 +73,7 @@ import javax.xml.transform.stream.StreamSource;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 class ProfileResolutionTests {
-  private static final String XSLT_PATH = "oscal/src/utils/util/resolver-pipeline/oscal-profile-test-helper.xsl";
+  private static final String XSLT_PATH = "oscal/src/utils/resolver-pipeline/oscal-profile-test-helper.xsl";
   private static final String PROFILE_UNIT_TEST_PATH
       = "oscal/src/specifications/profile-resolution/profile-resolution-examples";
   private static final String JUNIT_TEST_PATH = "src/test/resources";
