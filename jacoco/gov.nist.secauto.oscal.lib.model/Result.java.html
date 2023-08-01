@@ -486,6 +486,115 @@ public class Result {
   }
 
   /**
+   * A set of textual statements, typically written by the assessor.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Attestation Statements&quot;,
+      description = &quot;A set of textual statements, typically written by the assessor.&quot;,
+      name = &quot;attestation&quot;,
+      metaschema = OscalArMetaschema.class
+  )
+  @AssemblyConstraints(
+      isUnique = @IsUnique(id = &quot;unique-ar-attestation-responsible-party&quot;, level = IConstraint.Level.ERROR, target = &quot;responsible-party&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;), remarks = &quot;Since `responsible-party` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.&quot;)
+  )
+  public static class Attestation {
+    @BoundAssembly(
+        formalName = &quot;Responsible Party&quot;,
+        description = &quot;A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.&quot;,
+        useName = &quot;responsible-party&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;responsible-parties&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;ResponsibleParty&gt; _responsibleParties;
+
+    @BoundAssembly(
+        formalName = &quot;Assessment Part&quot;,
+        description = &quot;A partition of an assessment plan or results or a child of another part.&quot;,
+        useName = &quot;part&quot;,
+        minOccurs = 1,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;parts&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;AssessmentPart&gt; _parts;
+
+<span class="nc" id="L526">    public Attestation() {</span>
+<span class="nc" id="L527">    }</span>
+
+    public List&lt;ResponsibleParty&gt; getResponsibleParties() {
+<span class="nc" id="L530">      return _responsibleParties;</span>
+    }
+
+    public void setResponsibleParties(List&lt;ResponsibleParty&gt; value) {
+<span class="nc" id="L534">      _responsibleParties = value;</span>
+<span class="nc" id="L535">    }</span>
+
+    /**
+     * Add a new {@link ResponsibleParty} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addResponsibleParty(ResponsibleParty item) {
+<span class="nc" id="L543">      ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L544" title="All 2 branches missed.">      if (_responsibleParties == null) {</span>
+<span class="nc" id="L545">        _responsibleParties = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L547">      return _responsibleParties.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link ResponsibleParty} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeResponsibleParty(ResponsibleParty item) {
+<span class="nc" id="L556">      ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">      return _responsibleParties == null ? false : _responsibleParties.remove(value);</span>
+    }
+
+    public List&lt;AssessmentPart&gt; getParts() {
+<span class="nc" id="L561">      return _parts;</span>
+    }
+
+    public void setParts(List&lt;AssessmentPart&gt; value) {
+<span class="nc" id="L565">      _parts = value;</span>
+<span class="nc" id="L566">    }</span>
+
+    /**
+     * Add a new {@link AssessmentPart} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addPart(AssessmentPart item) {
+<span class="nc" id="L574">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L575" title="All 2 branches missed.">      if (_parts == null) {</span>
+<span class="nc" id="L576">        _parts = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L578">      return _parts.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link AssessmentPart} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removePart(AssessmentPart item) {
+<span class="nc" id="L587">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L588" title="All 2 branches missed.">      return _parts == null ? false : _parts.remove(value);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L593">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
    * Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
    */
   @MetaschemaAssembly(
@@ -560,16 +669,16 @@ public class Result {
     )
     private List&lt;Task&gt; _tasks;
 
-<span class="nc" id="L563">    public LocalDefinitions() {</span>
-<span class="nc" id="L564">    }</span>
+<span class="nc" id="L672">    public LocalDefinitions() {</span>
+<span class="nc" id="L673">    }</span>
 
     public List&lt;SystemComponent&gt; getComponents() {
-<span class="nc" id="L567">      return _components;</span>
+<span class="nc" id="L676">      return _components;</span>
     }
 
     public void setComponents(List&lt;SystemComponent&gt; value) {
-<span class="nc" id="L571">      _components = value;</span>
-<span class="nc" id="L572">    }</span>
+<span class="nc" id="L680">      _components = value;</span>
+<span class="nc" id="L681">    }</span>
 
     /**
      * Add a new {@link SystemComponent} item to the underlying collection.
@@ -577,11 +686,11 @@ public class Result {
      * @return {@code true}
      */
     public boolean addComponent(SystemComponent item) {
-<span class="nc" id="L580">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L581" title="All 2 branches missed.">      if (_components == null) {</span>
-<span class="nc" id="L582">        _components = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L689">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L690" title="All 2 branches missed.">      if (_components == null) {</span>
+<span class="nc" id="L691">        _components = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L584">      return _components.add(value);</span>
+<span class="nc" id="L693">      return _components.add(value);</span>
     }
 
     /**
@@ -590,17 +699,17 @@ public class Result {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeComponent(SystemComponent item) {
-<span class="nc" id="L593">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L594" title="All 2 branches missed.">      return _components == null ? false : _components.remove(value);</span>
+<span class="nc" id="L702">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L703" title="All 2 branches missed.">      return _components == null ? false : _components.remove(value);</span>
     }
 
     public List&lt;InventoryItem&gt; getInventoryItems() {
-<span class="nc" id="L598">      return _inventoryItems;</span>
+<span class="nc" id="L707">      return _inventoryItems;</span>
     }
 
     public void setInventoryItems(List&lt;InventoryItem&gt; value) {
-<span class="nc" id="L602">      _inventoryItems = value;</span>
-<span class="nc" id="L603">    }</span>
+<span class="nc" id="L711">      _inventoryItems = value;</span>
+<span class="nc" id="L712">    }</span>
 
     /**
      * Add a new {@link InventoryItem} item to the underlying collection.
@@ -608,11 +717,11 @@ public class Result {
      * @return {@code true}
      */
     public boolean addInventoryItem(InventoryItem item) {
-<span class="nc" id="L611">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L612" title="All 2 branches missed.">      if (_inventoryItems == null) {</span>
-<span class="nc" id="L613">        _inventoryItems = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L720">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L721" title="All 2 branches missed.">      if (_inventoryItems == null) {</span>
+<span class="nc" id="L722">        _inventoryItems = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L615">      return _inventoryItems.add(value);</span>
+<span class="nc" id="L724">      return _inventoryItems.add(value);</span>
     }
 
     /**
@@ -621,17 +730,17 @@ public class Result {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeInventoryItem(InventoryItem item) {
-<span class="nc" id="L624">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L625" title="All 2 branches missed.">      return _inventoryItems == null ? false : _inventoryItems.remove(value);</span>
+<span class="nc" id="L733">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L734" title="All 2 branches missed.">      return _inventoryItems == null ? false : _inventoryItems.remove(value);</span>
     }
 
     public List&lt;SystemUser&gt; getUsers() {
-<span class="nc" id="L629">      return _users;</span>
+<span class="nc" id="L738">      return _users;</span>
     }
 
     public void setUsers(List&lt;SystemUser&gt; value) {
-<span class="nc" id="L633">      _users = value;</span>
-<span class="nc" id="L634">    }</span>
+<span class="nc" id="L742">      _users = value;</span>
+<span class="nc" id="L743">    }</span>
 
     /**
      * Add a new {@link SystemUser} item to the underlying collection.
@@ -639,11 +748,11 @@ public class Result {
      * @return {@code true}
      */
     public boolean addUser(SystemUser item) {
-<span class="nc" id="L642">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L643" title="All 2 branches missed.">      if (_users == null) {</span>
-<span class="nc" id="L644">        _users = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L751">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L752" title="All 2 branches missed.">      if (_users == null) {</span>
+<span class="nc" id="L753">        _users = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L646">      return _users.add(value);</span>
+<span class="nc" id="L755">      return _users.add(value);</span>
     }
 
     /**
@@ -652,25 +761,25 @@ public class Result {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeUser(SystemUser item) {
-<span class="nc" id="L655">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L656" title="All 2 branches missed.">      return _users == null ? false : _users.remove(value);</span>
+<span class="nc" id="L764">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L765" title="All 2 branches missed.">      return _users == null ? false : _users.remove(value);</span>
     }
 
     public AssessmentAssets getAssessmentAssets() {
-<span class="nc" id="L660">      return _assessmentAssets;</span>
+<span class="nc" id="L769">      return _assessmentAssets;</span>
     }
 
     public void setAssessmentAssets(AssessmentAssets value) {
-<span class="nc" id="L664">      _assessmentAssets = value;</span>
-<span class="nc" id="L665">    }</span>
+<span class="nc" id="L773">      _assessmentAssets = value;</span>
+<span class="nc" id="L774">    }</span>
 
     public List&lt;Task&gt; getTasks() {
-<span class="nc" id="L668">      return _tasks;</span>
+<span class="nc" id="L777">      return _tasks;</span>
     }
 
     public void setTasks(List&lt;Task&gt; value) {
-<span class="nc" id="L672">      _tasks = value;</span>
-<span class="nc" id="L673">    }</span>
+<span class="nc" id="L781">      _tasks = value;</span>
+<span class="nc" id="L782">    }</span>
 
     /**
      * Add a new {@link Task} item to the underlying collection.
@@ -678,11 +787,11 @@ public class Result {
      * @return {@code true}
      */
     public boolean addAssessmentTask(Task item) {
-<span class="nc" id="L681">      Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L682" title="All 2 branches missed.">      if (_tasks == null) {</span>
-<span class="nc" id="L683">        _tasks = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L790">      Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L791" title="All 2 branches missed.">      if (_tasks == null) {</span>
+<span class="nc" id="L792">        _tasks = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L685">      return _tasks.add(value);</span>
+<span class="nc" id="L794">      return _tasks.add(value);</span>
     }
 
     /**
@@ -691,117 +800,8 @@ public class Result {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeAssessmentTask(Task item) {
-<span class="nc" id="L694">      Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L695" title="All 2 branches missed.">      return _tasks == null ? false : _tasks.remove(value);</span>
-    }
-
-    @Override
-    public String toString() {
-<span class="nc" id="L700">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
-   * A set of textual statements, typically written by the assessor.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Attestation Statements&quot;,
-      description = &quot;A set of textual statements, typically written by the assessor.&quot;,
-      name = &quot;attestation&quot;,
-      metaschema = OscalArMetaschema.class
-  )
-  @AssemblyConstraints(
-      isUnique = @IsUnique(id = &quot;unique-ar-attestation-responsible-party&quot;, level = IConstraint.Level.ERROR, target = &quot;responsible-party&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;), remarks = &quot;Since `responsible-party` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.&quot;)
-  )
-  public static class Attestation {
-    @BoundAssembly(
-        formalName = &quot;Responsible Party&quot;,
-        description = &quot;A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.&quot;,
-        useName = &quot;responsible-party&quot;,
-        maxOccurs = -1
-    )
-    @GroupAs(
-        name = &quot;responsible-parties&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;ResponsibleParty&gt; _responsibleParties;
-
-    @BoundAssembly(
-        formalName = &quot;Assessment Part&quot;,
-        description = &quot;A partition of an assessment plan or results or a child of another part.&quot;,
-        useName = &quot;part&quot;,
-        minOccurs = 1,
-        maxOccurs = -1
-    )
-    @GroupAs(
-        name = &quot;parts&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;AssessmentPart&gt; _parts;
-
-<span class="nc" id="L742">    public Attestation() {</span>
-<span class="nc" id="L743">    }</span>
-
-    public List&lt;ResponsibleParty&gt; getResponsibleParties() {
-<span class="nc" id="L746">      return _responsibleParties;</span>
-    }
-
-    public void setResponsibleParties(List&lt;ResponsibleParty&gt; value) {
-<span class="nc" id="L750">      _responsibleParties = value;</span>
-<span class="nc" id="L751">    }</span>
-
-    /**
-     * Add a new {@link ResponsibleParty} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addResponsibleParty(ResponsibleParty item) {
-<span class="nc" id="L759">      ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L760" title="All 2 branches missed.">      if (_responsibleParties == null) {</span>
-<span class="nc" id="L761">        _responsibleParties = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L763">      return _responsibleParties.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link ResponsibleParty} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeResponsibleParty(ResponsibleParty item) {
-<span class="nc" id="L772">      ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L773" title="All 2 branches missed.">      return _responsibleParties == null ? false : _responsibleParties.remove(value);</span>
-    }
-
-    public List&lt;AssessmentPart&gt; getParts() {
-<span class="nc" id="L777">      return _parts;</span>
-    }
-
-    public void setParts(List&lt;AssessmentPart&gt; value) {
-<span class="nc" id="L781">      _parts = value;</span>
-<span class="nc" id="L782">    }</span>
-
-    /**
-     * Add a new {@link AssessmentPart} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addPart(AssessmentPart item) {
-<span class="nc" id="L790">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L791" title="All 2 branches missed.">      if (_parts == null) {</span>
-<span class="nc" id="L792">        _parts = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L794">      return _parts.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link AssessmentPart} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removePart(AssessmentPart item) {
-<span class="nc" id="L803">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L804" title="All 2 branches missed.">      return _parts == null ? false : _parts.remove(value);</span>
+<span class="nc" id="L803">      Task value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L804" title="All 2 branches missed.">      return _tasks == null ? false : _tasks.remove(value);</span>
     }
 
     @Override

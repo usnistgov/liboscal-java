@@ -274,24 +274,24 @@
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>   }
 <a class="jxr_linenumber" name="L267" href="#L267">267</a> 
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L269" href="#L269">269</a> <em class="jxr_javadoccomment">   * Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.</em>
+<a class="jxr_linenumber" name="L269" href="#L269">269</a> <em class="jxr_javadoccomment">   * Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.</em>
 <a class="jxr_linenumber" name="L270" href="#L270">270</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>   @MetaschemaAssembly(
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>       formalName = <span class="jxr_string">"Referenced Control Objectives"</span>,
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>       description = <span class="jxr_string">"Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan."</span>,
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>       name = <span class="jxr_string">"control-objective-selection"</span>,
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>       formalName = <span class="jxr_string">"Assessed Controls"</span>,
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>       description = <span class="jxr_string">"Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan."</span>,
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>       name = <span class="jxr_string">"control-selection"</span>,
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>       metaschema = OscalAssessmentCommonMetaschema.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>       remarks = <span class="jxr_string">"The `include-all` field, specifies all control objectives for any in-scope control. In-scope controls are defined in the `control-selection`.\n"</span>
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>       remarks = <span class="jxr_string">"The `include-all`, specifies all control identified in the **baseline** are included in the scope if this assessment, as specified by the `include-profile` statement within the linked SSP.\n"</span>
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>               + <span class="jxr_string">"\n"</span>
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>               + <span class="jxr_string">"Any control objective specified within `exclude-controls` must first be within a range of explicitly included control objectives, via `include-objectives` or `include-all`."</span>
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>               + <span class="jxr_string">"Any control specified within `exclude-controls` must first be within a range of explicitly included controls, via `include-controls` or `include-all`."</span>
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>   )
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> ControlObjectiveSelection {
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> ControlSelection {
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L282" href="#L282">282</a> <em class="jxr_javadoccomment">     * "A human-readable description of this collection of control objectives."</em>
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> <em class="jxr_javadoccomment">     * "A human-readable description of in-scope controls specified for assessment."</em>
 <a class="jxr_linenumber" name="L283" href="#L283">283</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>     @BoundField(
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>         formalName = <span class="jxr_string">"Control Objectives Description"</span>,
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>         description = <span class="jxr_string">"A human-readable description of this collection of control objectives."</span>,
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>         formalName = <span class="jxr_string">"Assessed Controls Description"</span>,
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>         description = <span class="jxr_string">"A human-readable description of in-scope controls specified for assessment."</span>,
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>         useName = <span class="jxr_string">"description"</span>
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>     )
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>     @BoundFieldValue(
@@ -332,31 +332,31 @@
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>     <strong class="jxr_keyword">private</strong> <a name="IncludeAll" href="../../../../../../gov/nist/secauto/oscal/lib/model/IncludeAll.html#IncludeAll">IncludeAll</a> _includeAll;
 <a class="jxr_linenumber" name="L325" href="#L325">325</a> 
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>     @BoundAssembly(
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>         formalName = <span class="jxr_string">"Select Objective"</span>,
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>         description = <span class="jxr_string">"Used to select a control objective for inclusion/exclusion based on the control objective's identifier."</span>,
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>         useName = <span class="jxr_string">"include-objective"</span>,
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>         formalName = <span class="jxr_string">"Select Control"</span>,
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>         description = <span class="jxr_string">"Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope."</span>,
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>         useName = <span class="jxr_string">"include-control"</span>,
 <a class="jxr_linenumber" name="L330" href="#L330">330</a>         minOccurs = 1,
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>         maxOccurs = -1,
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>         remarks = <span class="jxr_string">"Used to select a control objective for inclusion by the control objective's identifier."</span>
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>         remarks = <span class="jxr_string">"Used to select a control for inclusion by the control's identifier. Specific control statements can be selected by their statement identifier."</span>
 <a class="jxr_linenumber" name="L333" href="#L333">333</a>     )
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>     @GroupAs(
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>         name = <span class="jxr_string">"include-objectives"</span>,
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>         name = <span class="jxr_string">"include-controls"</span>,
 <a class="jxr_linenumber" name="L336" href="#L336">336</a>         inJson = JsonGroupAsBehavior.LIST
 <a class="jxr_linenumber" name="L337" href="#L337">337</a>     )
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>     <strong class="jxr_keyword">private</strong> List&lt;SelectObjectiveById&gt; _includeObjectives;
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>     <strong class="jxr_keyword">private</strong> List&lt;SelectControlById&gt; _includeControls;
 <a class="jxr_linenumber" name="L339" href="#L339">339</a> 
 <a class="jxr_linenumber" name="L340" href="#L340">340</a>     @BoundAssembly(
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>         formalName = <span class="jxr_string">"Select Objective"</span>,
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>         description = <span class="jxr_string">"Used to select a control objective for inclusion/exclusion based on the control objective's identifier."</span>,
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>         useName = <span class="jxr_string">"exclude-objective"</span>,
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>         formalName = <span class="jxr_string">"Select Control"</span>,
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>         description = <span class="jxr_string">"Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope."</span>,
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>         useName = <span class="jxr_string">"exclude-control"</span>,
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>         maxOccurs = -1,
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>         remarks = <span class="jxr_string">"Used to select a control objective for exclusion by the control objective's identifier."</span>
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>         remarks = <span class="jxr_string">"Used to select a control for exclusion by the control's identifier. Specific control statements can be excluded by their statement identifier."</span>
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>     )
 <a class="jxr_linenumber" name="L347" href="#L347">347</a>     @GroupAs(
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>         name = <span class="jxr_string">"exclude-objectives"</span>,
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>         name = <span class="jxr_string">"exclude-controls"</span>,
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>         inJson = JsonGroupAsBehavior.LIST
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>     )
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>     <strong class="jxr_keyword">private</strong> List&lt;SelectObjectiveById&gt; _excludeObjectives;
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>     <strong class="jxr_keyword">private</strong> List&lt;SelectControlById&gt; _excludeControls;
 <a class="jxr_linenumber" name="L352" href="#L352">352</a> 
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>     @BoundField(
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>         formalName = <span class="jxr_string">"Remarks"</span>,
@@ -368,7 +368,7 @@
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>     )
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>     <strong class="jxr_keyword">private</strong> MarkupMultiline _remarks;
 <a class="jxr_linenumber" name="L362" href="#L362">362</a> 
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>     <strong class="jxr_keyword">public</strong> ControlObjectiveSelection() {
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>     <strong class="jxr_keyword">public</strong> ControlSelection() {
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>     }
 <a class="jxr_linenumber" name="L365" href="#L365">365</a> 
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>     <strong class="jxr_keyword">public</strong> MarkupMultiline getDescription() {
@@ -449,66 +449,66 @@
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>       _includeAll = value;
 <a class="jxr_linenumber" name="L442" href="#L442">442</a>     }
 <a class="jxr_linenumber" name="L443" href="#L443">443</a> 
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>     <strong class="jxr_keyword">public</strong> List&lt;SelectObjectiveById&gt; getIncludeObjectives() {
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>       <strong class="jxr_keyword">return</strong> _includeObjectives;
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>     <strong class="jxr_keyword">public</strong> List&lt;SelectControlById&gt; getIncludeControls() {
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>       <strong class="jxr_keyword">return</strong> _includeControls;
 <a class="jxr_linenumber" name="L446" href="#L446">446</a>     }
 <a class="jxr_linenumber" name="L447" href="#L447">447</a> 
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setIncludeObjectives(List&lt;SelectObjectiveById&gt; value) {
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>       _includeObjectives = value;
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setIncludeControls(List&lt;SelectControlById&gt; value) {
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>       _includeControls = value;
 <a class="jxr_linenumber" name="L450" href="#L450">450</a>     }
 <a class="jxr_linenumber" name="L451" href="#L451">451</a> 
 <a class="jxr_linenumber" name="L452" href="#L452">452</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">     * Add a new {@link SelectObjectiveById} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">     * Add a new {@link SelectControlById} item to the underlying collection.</em>
 <a class="jxr_linenumber" name="L454" href="#L454">454</a> <em class="jxr_javadoccomment">     * @param item the item to add</em>
 <a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">     * @return {@code true}</em>
 <a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addIncludeObjective(<a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> item) {
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>       <a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>       <strong class="jxr_keyword">if</strong> (_includeObjectives == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>         _includeObjectives = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addIncludeControl(<a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> item) {
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>       <a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>       <strong class="jxr_keyword">if</strong> (_includeControls == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>         _includeControls = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>       }
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>       <strong class="jxr_keyword">return</strong> _includeObjectives.add(value);
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>       <strong class="jxr_keyword">return</strong> _includeControls.add(value);
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>     }
 <a class="jxr_linenumber" name="L464" href="#L464">464</a> 
 <a class="jxr_linenumber" name="L465" href="#L465">465</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link SelectObjectiveById} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link SelectControlById} item from the underlying collection.</em>
 <a class="jxr_linenumber" name="L467" href="#L467">467</a> <em class="jxr_javadoccomment">     * @param item the item to remove</em>
 <a class="jxr_linenumber" name="L468" href="#L468">468</a> <em class="jxr_javadoccomment">     * @return {@code true} if the item was removed or {@code false} otherwise</em>
 <a class="jxr_linenumber" name="L469" href="#L469">469</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeIncludeObjective(<a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> item) {
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>       <a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>       <strong class="jxr_keyword">return</strong> _includeObjectives == <strong class="jxr_keyword">null</strong> ? false : _includeObjectives.remove(value);
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeIncludeControl(<a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> item) {
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>       <a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>       <strong class="jxr_keyword">return</strong> _includeControls == <strong class="jxr_keyword">null</strong> ? false : _includeControls.remove(value);
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>     }
 <a class="jxr_linenumber" name="L474" href="#L474">474</a> 
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>     <strong class="jxr_keyword">public</strong> List&lt;SelectObjectiveById&gt; getExcludeObjectives() {
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>       <strong class="jxr_keyword">return</strong> _excludeObjectives;
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>     <strong class="jxr_keyword">public</strong> List&lt;SelectControlById&gt; getExcludeControls() {
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>       <strong class="jxr_keyword">return</strong> _excludeControls;
 <a class="jxr_linenumber" name="L477" href="#L477">477</a>     }
 <a class="jxr_linenumber" name="L478" href="#L478">478</a> 
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setExcludeObjectives(List&lt;SelectObjectiveById&gt; value) {
-<a class="jxr_linenumber" name="L480" href="#L480">480</a>       _excludeObjectives = value;
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setExcludeControls(List&lt;SelectControlById&gt; value) {
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>       _excludeControls = value;
 <a class="jxr_linenumber" name="L481" href="#L481">481</a>     }
 <a class="jxr_linenumber" name="L482" href="#L482">482</a> 
 <a class="jxr_linenumber" name="L483" href="#L483">483</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L484" href="#L484">484</a> <em class="jxr_javadoccomment">     * Add a new {@link SelectObjectiveById} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L484" href="#L484">484</a> <em class="jxr_javadoccomment">     * Add a new {@link SelectControlById} item to the underlying collection.</em>
 <a class="jxr_linenumber" name="L485" href="#L485">485</a> <em class="jxr_javadoccomment">     * @param item the item to add</em>
 <a class="jxr_linenumber" name="L486" href="#L486">486</a> <em class="jxr_javadoccomment">     * @return {@code true}</em>
 <a class="jxr_linenumber" name="L487" href="#L487">487</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L488" href="#L488">488</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addExcludeObjective(<a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> item) {
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>       <a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>       <strong class="jxr_keyword">if</strong> (_excludeObjectives == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>         _excludeObjectives = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addExcludeControl(<a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> item) {
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>       <a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>       <strong class="jxr_keyword">if</strong> (_excludeControls == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>         _excludeControls = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
 <a class="jxr_linenumber" name="L492" href="#L492">492</a>       }
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>       <strong class="jxr_keyword">return</strong> _excludeObjectives.add(value);
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>       <strong class="jxr_keyword">return</strong> _excludeControls.add(value);
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>     }
 <a class="jxr_linenumber" name="L495" href="#L495">495</a> 
 <a class="jxr_linenumber" name="L496" href="#L496">496</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L497" href="#L497">497</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link SelectObjectiveById} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L497" href="#L497">497</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link SelectControlById} item from the underlying collection.</em>
 <a class="jxr_linenumber" name="L498" href="#L498">498</a> <em class="jxr_javadoccomment">     * @param item the item to remove</em>
 <a class="jxr_linenumber" name="L499" href="#L499">499</a> <em class="jxr_javadoccomment">     * @return {@code true} if the item was removed or {@code false} otherwise</em>
 <a class="jxr_linenumber" name="L500" href="#L500">500</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L501" href="#L501">501</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeExcludeObjective(<a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> item) {
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>       <a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>       <strong class="jxr_keyword">return</strong> _excludeObjectives == <strong class="jxr_keyword">null</strong> ? false : _excludeObjectives.remove(value);
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeExcludeControl(<a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> item) {
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>       <a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>       <strong class="jxr_keyword">return</strong> _excludeControls == <strong class="jxr_keyword">null</strong> ? false : _excludeControls.remove(value);
 <a class="jxr_linenumber" name="L504" href="#L504">504</a>     }
 <a class="jxr_linenumber" name="L505" href="#L505">505</a> 
 <a class="jxr_linenumber" name="L506" href="#L506">506</a>     <strong class="jxr_keyword">public</strong> MarkupMultiline getRemarks() {
@@ -526,24 +526,24 @@
 <a class="jxr_linenumber" name="L518" href="#L518">518</a>   }
 <a class="jxr_linenumber" name="L519" href="#L519">519</a> 
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L521" href="#L521">521</a> <em class="jxr_javadoccomment">   * Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.</em>
+<a class="jxr_linenumber" name="L521" href="#L521">521</a> <em class="jxr_javadoccomment">   * Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.</em>
 <a class="jxr_linenumber" name="L522" href="#L522">522</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>   @MetaschemaAssembly(
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>       formalName = <span class="jxr_string">"Assessed Controls"</span>,
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>       description = <span class="jxr_string">"Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan."</span>,
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>       name = <span class="jxr_string">"control-selection"</span>,
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>       formalName = <span class="jxr_string">"Referenced Control Objectives"</span>,
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>       description = <span class="jxr_string">"Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan."</span>,
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>       name = <span class="jxr_string">"control-objective-selection"</span>,
 <a class="jxr_linenumber" name="L527" href="#L527">527</a>       metaschema = OscalAssessmentCommonMetaschema.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>       remarks = <span class="jxr_string">"The `include-all`, specifies all control identified in the **baseline** are included in the scope if this assessment, as specified by the `include-profile` statement within the linked SSP.\n"</span>
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>       remarks = <span class="jxr_string">"The `include-all` field, specifies all control objectives for any in-scope control. In-scope controls are defined in the `control-selection`.\n"</span>
 <a class="jxr_linenumber" name="L529" href="#L529">529</a>               + <span class="jxr_string">"\n"</span>
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>               + <span class="jxr_string">"Any control specified within `exclude-controls` must first be within a range of explicitly included controls, via `include-controls` or `include-all`."</span>
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>               + <span class="jxr_string">"Any control objective specified within `exclude-controls` must first be within a range of explicitly included control objectives, via `include-objectives` or `include-all`."</span>
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>   )
-<a class="jxr_linenumber" name="L532" href="#L532">532</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> ControlSelection {
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> ControlObjectiveSelection {
 <a class="jxr_linenumber" name="L533" href="#L533">533</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L534" href="#L534">534</a> <em class="jxr_javadoccomment">     * "A human-readable description of in-scope controls specified for assessment."</em>
+<a class="jxr_linenumber" name="L534" href="#L534">534</a> <em class="jxr_javadoccomment">     * "A human-readable description of this collection of control objectives."</em>
 <a class="jxr_linenumber" name="L535" href="#L535">535</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>     @BoundField(
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>         formalName = <span class="jxr_string">"Assessed Controls Description"</span>,
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>         description = <span class="jxr_string">"A human-readable description of in-scope controls specified for assessment."</span>,
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>         formalName = <span class="jxr_string">"Control Objectives Description"</span>,
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>         description = <span class="jxr_string">"A human-readable description of this collection of control objectives."</span>,
 <a class="jxr_linenumber" name="L539" href="#L539">539</a>         useName = <span class="jxr_string">"description"</span>
 <a class="jxr_linenumber" name="L540" href="#L540">540</a>     )
 <a class="jxr_linenumber" name="L541" href="#L541">541</a>     @BoundFieldValue(
@@ -584,31 +584,31 @@
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>     <strong class="jxr_keyword">private</strong> <a name="IncludeAll" href="../../../../../../gov/nist/secauto/oscal/lib/model/IncludeAll.html#IncludeAll">IncludeAll</a> _includeAll;
 <a class="jxr_linenumber" name="L577" href="#L577">577</a> 
 <a class="jxr_linenumber" name="L578" href="#L578">578</a>     @BoundAssembly(
-<a class="jxr_linenumber" name="L579" href="#L579">579</a>         formalName = <span class="jxr_string">"Select Control"</span>,
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>         description = <span class="jxr_string">"Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope."</span>,
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>         useName = <span class="jxr_string">"include-control"</span>,
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>         formalName = <span class="jxr_string">"Select Objective"</span>,
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>         description = <span class="jxr_string">"Used to select a control objective for inclusion/exclusion based on the control objective's identifier."</span>,
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>         useName = <span class="jxr_string">"include-objective"</span>,
 <a class="jxr_linenumber" name="L582" href="#L582">582</a>         minOccurs = 1,
 <a class="jxr_linenumber" name="L583" href="#L583">583</a>         maxOccurs = -1,
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>         remarks = <span class="jxr_string">"Used to select a control for inclusion by the control's identifier. Specific control statements can be selected by their statement identifier."</span>
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>         remarks = <span class="jxr_string">"Used to select a control objective for inclusion by the control objective's identifier."</span>
 <a class="jxr_linenumber" name="L585" href="#L585">585</a>     )
 <a class="jxr_linenumber" name="L586" href="#L586">586</a>     @GroupAs(
-<a class="jxr_linenumber" name="L587" href="#L587">587</a>         name = <span class="jxr_string">"include-controls"</span>,
+<a class="jxr_linenumber" name="L587" href="#L587">587</a>         name = <span class="jxr_string">"include-objectives"</span>,
 <a class="jxr_linenumber" name="L588" href="#L588">588</a>         inJson = JsonGroupAsBehavior.LIST
 <a class="jxr_linenumber" name="L589" href="#L589">589</a>     )
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>     <strong class="jxr_keyword">private</strong> List&lt;SelectControlById&gt; _includeControls;
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>     <strong class="jxr_keyword">private</strong> List&lt;SelectObjectiveById&gt; _includeObjectives;
 <a class="jxr_linenumber" name="L591" href="#L591">591</a> 
 <a class="jxr_linenumber" name="L592" href="#L592">592</a>     @BoundAssembly(
-<a class="jxr_linenumber" name="L593" href="#L593">593</a>         formalName = <span class="jxr_string">"Select Control"</span>,
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>         description = <span class="jxr_string">"Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope."</span>,
-<a class="jxr_linenumber" name="L595" href="#L595">595</a>         useName = <span class="jxr_string">"exclude-control"</span>,
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>         formalName = <span class="jxr_string">"Select Objective"</span>,
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>         description = <span class="jxr_string">"Used to select a control objective for inclusion/exclusion based on the control objective's identifier."</span>,
+<a class="jxr_linenumber" name="L595" href="#L595">595</a>         useName = <span class="jxr_string">"exclude-objective"</span>,
 <a class="jxr_linenumber" name="L596" href="#L596">596</a>         maxOccurs = -1,
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>         remarks = <span class="jxr_string">"Used to select a control for exclusion by the control's identifier. Specific control statements can be excluded by their statement identifier."</span>
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>         remarks = <span class="jxr_string">"Used to select a control objective for exclusion by the control objective's identifier."</span>
 <a class="jxr_linenumber" name="L598" href="#L598">598</a>     )
 <a class="jxr_linenumber" name="L599" href="#L599">599</a>     @GroupAs(
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>         name = <span class="jxr_string">"exclude-controls"</span>,
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>         name = <span class="jxr_string">"exclude-objectives"</span>,
 <a class="jxr_linenumber" name="L601" href="#L601">601</a>         inJson = JsonGroupAsBehavior.LIST
 <a class="jxr_linenumber" name="L602" href="#L602">602</a>     )
-<a class="jxr_linenumber" name="L603" href="#L603">603</a>     <strong class="jxr_keyword">private</strong> List&lt;SelectControlById&gt; _excludeControls;
+<a class="jxr_linenumber" name="L603" href="#L603">603</a>     <strong class="jxr_keyword">private</strong> List&lt;SelectObjectiveById&gt; _excludeObjectives;
 <a class="jxr_linenumber" name="L604" href="#L604">604</a> 
 <a class="jxr_linenumber" name="L605" href="#L605">605</a>     @BoundField(
 <a class="jxr_linenumber" name="L606" href="#L606">606</a>         formalName = <span class="jxr_string">"Remarks"</span>,
@@ -620,7 +620,7 @@
 <a class="jxr_linenumber" name="L612" href="#L612">612</a>     )
 <a class="jxr_linenumber" name="L613" href="#L613">613</a>     <strong class="jxr_keyword">private</strong> MarkupMultiline _remarks;
 <a class="jxr_linenumber" name="L614" href="#L614">614</a> 
-<a class="jxr_linenumber" name="L615" href="#L615">615</a>     <strong class="jxr_keyword">public</strong> ControlSelection() {
+<a class="jxr_linenumber" name="L615" href="#L615">615</a>     <strong class="jxr_keyword">public</strong> ControlObjectiveSelection() {
 <a class="jxr_linenumber" name="L616" href="#L616">616</a>     }
 <a class="jxr_linenumber" name="L617" href="#L617">617</a> 
 <a class="jxr_linenumber" name="L618" href="#L618">618</a>     <strong class="jxr_keyword">public</strong> MarkupMultiline getDescription() {
@@ -701,66 +701,66 @@
 <a class="jxr_linenumber" name="L693" href="#L693">693</a>       _includeAll = value;
 <a class="jxr_linenumber" name="L694" href="#L694">694</a>     }
 <a class="jxr_linenumber" name="L695" href="#L695">695</a> 
-<a class="jxr_linenumber" name="L696" href="#L696">696</a>     <strong class="jxr_keyword">public</strong> List&lt;SelectControlById&gt; getIncludeControls() {
-<a class="jxr_linenumber" name="L697" href="#L697">697</a>       <strong class="jxr_keyword">return</strong> _includeControls;
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>     <strong class="jxr_keyword">public</strong> List&lt;SelectObjectiveById&gt; getIncludeObjectives() {
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>       <strong class="jxr_keyword">return</strong> _includeObjectives;
 <a class="jxr_linenumber" name="L698" href="#L698">698</a>     }
 <a class="jxr_linenumber" name="L699" href="#L699">699</a> 
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setIncludeControls(List&lt;SelectControlById&gt; value) {
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>       _includeControls = value;
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setIncludeObjectives(List&lt;SelectObjectiveById&gt; value) {
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>       _includeObjectives = value;
 <a class="jxr_linenumber" name="L702" href="#L702">702</a>     }
 <a class="jxr_linenumber" name="L703" href="#L703">703</a> 
 <a class="jxr_linenumber" name="L704" href="#L704">704</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L705" href="#L705">705</a> <em class="jxr_javadoccomment">     * Add a new {@link SelectControlById} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L705" href="#L705">705</a> <em class="jxr_javadoccomment">     * Add a new {@link SelectObjectiveById} item to the underlying collection.</em>
 <a class="jxr_linenumber" name="L706" href="#L706">706</a> <em class="jxr_javadoccomment">     * @param item the item to add</em>
 <a class="jxr_linenumber" name="L707" href="#L707">707</a> <em class="jxr_javadoccomment">     * @return {@code true}</em>
 <a class="jxr_linenumber" name="L708" href="#L708">708</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addIncludeControl(<a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> item) {
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>       <a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L711" href="#L711">711</a>       <strong class="jxr_keyword">if</strong> (_includeControls == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L712" href="#L712">712</a>         _includeControls = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addIncludeObjective(<a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> item) {
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>       <a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L711" href="#L711">711</a>       <strong class="jxr_keyword">if</strong> (_includeObjectives == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L712" href="#L712">712</a>         _includeObjectives = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
 <a class="jxr_linenumber" name="L713" href="#L713">713</a>       }
-<a class="jxr_linenumber" name="L714" href="#L714">714</a>       <strong class="jxr_keyword">return</strong> _includeControls.add(value);
+<a class="jxr_linenumber" name="L714" href="#L714">714</a>       <strong class="jxr_keyword">return</strong> _includeObjectives.add(value);
 <a class="jxr_linenumber" name="L715" href="#L715">715</a>     }
 <a class="jxr_linenumber" name="L716" href="#L716">716</a> 
 <a class="jxr_linenumber" name="L717" href="#L717">717</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L718" href="#L718">718</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link SelectControlById} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L718" href="#L718">718</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link SelectObjectiveById} item from the underlying collection.</em>
 <a class="jxr_linenumber" name="L719" href="#L719">719</a> <em class="jxr_javadoccomment">     * @param item the item to remove</em>
 <a class="jxr_linenumber" name="L720" href="#L720">720</a> <em class="jxr_javadoccomment">     * @return {@code true} if the item was removed or {@code false} otherwise</em>
 <a class="jxr_linenumber" name="L721" href="#L721">721</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L722" href="#L722">722</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeIncludeControl(<a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> item) {
-<a class="jxr_linenumber" name="L723" href="#L723">723</a>       <a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L724" href="#L724">724</a>       <strong class="jxr_keyword">return</strong> _includeControls == <strong class="jxr_keyword">null</strong> ? false : _includeControls.remove(value);
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeIncludeObjective(<a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> item) {
+<a class="jxr_linenumber" name="L723" href="#L723">723</a>       <a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L724" href="#L724">724</a>       <strong class="jxr_keyword">return</strong> _includeObjectives == <strong class="jxr_keyword">null</strong> ? false : _includeObjectives.remove(value);
 <a class="jxr_linenumber" name="L725" href="#L725">725</a>     }
 <a class="jxr_linenumber" name="L726" href="#L726">726</a> 
-<a class="jxr_linenumber" name="L727" href="#L727">727</a>     <strong class="jxr_keyword">public</strong> List&lt;SelectControlById&gt; getExcludeControls() {
-<a class="jxr_linenumber" name="L728" href="#L728">728</a>       <strong class="jxr_keyword">return</strong> _excludeControls;
+<a class="jxr_linenumber" name="L727" href="#L727">727</a>     <strong class="jxr_keyword">public</strong> List&lt;SelectObjectiveById&gt; getExcludeObjectives() {
+<a class="jxr_linenumber" name="L728" href="#L728">728</a>       <strong class="jxr_keyword">return</strong> _excludeObjectives;
 <a class="jxr_linenumber" name="L729" href="#L729">729</a>     }
 <a class="jxr_linenumber" name="L730" href="#L730">730</a> 
-<a class="jxr_linenumber" name="L731" href="#L731">731</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setExcludeControls(List&lt;SelectControlById&gt; value) {
-<a class="jxr_linenumber" name="L732" href="#L732">732</a>       _excludeControls = value;
+<a class="jxr_linenumber" name="L731" href="#L731">731</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setExcludeObjectives(List&lt;SelectObjectiveById&gt; value) {
+<a class="jxr_linenumber" name="L732" href="#L732">732</a>       _excludeObjectives = value;
 <a class="jxr_linenumber" name="L733" href="#L733">733</a>     }
 <a class="jxr_linenumber" name="L734" href="#L734">734</a> 
 <a class="jxr_linenumber" name="L735" href="#L735">735</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L736" href="#L736">736</a> <em class="jxr_javadoccomment">     * Add a new {@link SelectControlById} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L736" href="#L736">736</a> <em class="jxr_javadoccomment">     * Add a new {@link SelectObjectiveById} item to the underlying collection.</em>
 <a class="jxr_linenumber" name="L737" href="#L737">737</a> <em class="jxr_javadoccomment">     * @param item the item to add</em>
 <a class="jxr_linenumber" name="L738" href="#L738">738</a> <em class="jxr_javadoccomment">     * @return {@code true}</em>
 <a class="jxr_linenumber" name="L739" href="#L739">739</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L740" href="#L740">740</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addExcludeControl(<a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> item) {
-<a class="jxr_linenumber" name="L741" href="#L741">741</a>       <a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L742" href="#L742">742</a>       <strong class="jxr_keyword">if</strong> (_excludeControls == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>         _excludeControls = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addExcludeObjective(<a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> item) {
+<a class="jxr_linenumber" name="L741" href="#L741">741</a>       <a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L742" href="#L742">742</a>       <strong class="jxr_keyword">if</strong> (_excludeObjectives == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>         _excludeObjectives = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
 <a class="jxr_linenumber" name="L744" href="#L744">744</a>       }
-<a class="jxr_linenumber" name="L745" href="#L745">745</a>       <strong class="jxr_keyword">return</strong> _excludeControls.add(value);
+<a class="jxr_linenumber" name="L745" href="#L745">745</a>       <strong class="jxr_keyword">return</strong> _excludeObjectives.add(value);
 <a class="jxr_linenumber" name="L746" href="#L746">746</a>     }
 <a class="jxr_linenumber" name="L747" href="#L747">747</a> 
 <a class="jxr_linenumber" name="L748" href="#L748">748</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L749" href="#L749">749</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link SelectControlById} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L749" href="#L749">749</a> <em class="jxr_javadoccomment">     * Remove the first matching {@link SelectObjectiveById} item from the underlying collection.</em>
 <a class="jxr_linenumber" name="L750" href="#L750">750</a> <em class="jxr_javadoccomment">     * @param item the item to remove</em>
 <a class="jxr_linenumber" name="L751" href="#L751">751</a> <em class="jxr_javadoccomment">     * @return {@code true} if the item was removed or {@code false} otherwise</em>
 <a class="jxr_linenumber" name="L752" href="#L752">752</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeExcludeControl(<a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> item) {
-<a class="jxr_linenumber" name="L754" href="#L754">754</a>       <a name="SelectControlById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectControlById.html#SelectControlById">SelectControlById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L755" href="#L755">755</a>       <strong class="jxr_keyword">return</strong> _excludeControls == <strong class="jxr_keyword">null</strong> ? false : _excludeControls.remove(value);
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeExcludeObjective(<a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> item) {
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>       <a name="SelectObjectiveById" href="../../../../../../gov/nist/secauto/oscal/lib/model/SelectObjectiveById.html#SelectObjectiveById">SelectObjectiveById</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L755" href="#L755">755</a>       <strong class="jxr_keyword">return</strong> _excludeObjectives == <strong class="jxr_keyword">null</strong> ? false : _excludeObjectives.remove(value);
 <a class="jxr_linenumber" name="L756" href="#L756">756</a>     }
 <a class="jxr_linenumber" name="L757" href="#L757">757</a> 
 <a class="jxr_linenumber" name="L758" href="#L758">758</a>     <strong class="jxr_keyword">public</strong> MarkupMultiline getRemarks() {

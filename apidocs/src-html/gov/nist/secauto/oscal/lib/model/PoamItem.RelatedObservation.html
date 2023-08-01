@@ -404,33 +404,33 @@
 <span class="sourceLineNo">395</span><a id="line.395">  }</a>
 <span class="sourceLineNo">396</span><a id="line.396"></a>
 <span class="sourceLineNo">397</span><a id="line.397">  /**</a>
-<span class="sourceLineNo">398</span><a id="line.398">   * Relates the poam-item to a set of referenced observations that were used to determine the finding.</a>
+<span class="sourceLineNo">398</span><a id="line.398">   * Relates the poam-item to referenced finding(s).</a>
 <span class="sourceLineNo">399</span><a id="line.399">   */</a>
 <span class="sourceLineNo">400</span><a id="line.400">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">401</span><a id="line.401">      formalName = "Related Observation",</a>
-<span class="sourceLineNo">402</span><a id="line.402">      description = "Relates the poam-item to a set of referenced observations that were used to determine the finding.",</a>
-<span class="sourceLineNo">403</span><a id="line.403">      name = "related-observation",</a>
+<span class="sourceLineNo">401</span><a id="line.401">      formalName = "Related Finding",</a>
+<span class="sourceLineNo">402</span><a id="line.402">      description = "Relates the poam-item to referenced finding(s).",</a>
+<span class="sourceLineNo">403</span><a id="line.403">      name = "related-finding",</a>
 <span class="sourceLineNo">404</span><a id="line.404">      metaschema = OscalPoamMetaschema.class</a>
 <span class="sourceLineNo">405</span><a id="line.405">  )</a>
-<span class="sourceLineNo">406</span><a id="line.406">  public static class RelatedObservation {</a>
+<span class="sourceLineNo">406</span><a id="line.406">  public static class RelatedFinding {</a>
 <span class="sourceLineNo">407</span><a id="line.407">    @BoundFlag(</a>
-<span class="sourceLineNo">408</span><a id="line.408">        formalName = "Observation Universally Unique Identifier Reference",</a>
-<span class="sourceLineNo">409</span><a id="line.409">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.",</a>
-<span class="sourceLineNo">410</span><a id="line.410">        useName = "observation-uuid",</a>
+<span class="sourceLineNo">408</span><a id="line.408">        formalName = "Finding Universally Unique Identifier Reference",</a>
+<span class="sourceLineNo">409</span><a id="line.409">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings.",</a>
+<span class="sourceLineNo">410</span><a id="line.410">        useName = "finding-uuid",</a>
 <span class="sourceLineNo">411</span><a id="line.411">        required = true,</a>
 <span class="sourceLineNo">412</span><a id="line.412">        typeAdapter = UuidAdapter.class</a>
 <span class="sourceLineNo">413</span><a id="line.413">    )</a>
-<span class="sourceLineNo">414</span><a id="line.414">    private UUID _observationUuid;</a>
+<span class="sourceLineNo">414</span><a id="line.414">    private UUID _findingUuid;</a>
 <span class="sourceLineNo">415</span><a id="line.415"></a>
-<span class="sourceLineNo">416</span><a id="line.416">    public RelatedObservation() {</a>
+<span class="sourceLineNo">416</span><a id="line.416">    public RelatedFinding() {</a>
 <span class="sourceLineNo">417</span><a id="line.417">    }</a>
 <span class="sourceLineNo">418</span><a id="line.418"></a>
-<span class="sourceLineNo">419</span><a id="line.419">    public UUID getObservationUuid() {</a>
-<span class="sourceLineNo">420</span><a id="line.420">      return _observationUuid;</a>
+<span class="sourceLineNo">419</span><a id="line.419">    public UUID getFindingUuid() {</a>
+<span class="sourceLineNo">420</span><a id="line.420">      return _findingUuid;</a>
 <span class="sourceLineNo">421</span><a id="line.421">    }</a>
 <span class="sourceLineNo">422</span><a id="line.422"></a>
-<span class="sourceLineNo">423</span><a id="line.423">    public void setObservationUuid(UUID value) {</a>
-<span class="sourceLineNo">424</span><a id="line.424">      _observationUuid = value;</a>
+<span class="sourceLineNo">423</span><a id="line.423">    public void setFindingUuid(UUID value) {</a>
+<span class="sourceLineNo">424</span><a id="line.424">      _findingUuid = value;</a>
 <span class="sourceLineNo">425</span><a id="line.425">    }</a>
 <span class="sourceLineNo">426</span><a id="line.426"></a>
 <span class="sourceLineNo">427</span><a id="line.427">    @Override</a>
@@ -440,33 +440,33 @@
 <span class="sourceLineNo">431</span><a id="line.431">  }</a>
 <span class="sourceLineNo">432</span><a id="line.432"></a>
 <span class="sourceLineNo">433</span><a id="line.433">  /**</a>
-<span class="sourceLineNo">434</span><a id="line.434">   * Relates the poam-item to referenced finding(s).</a>
+<span class="sourceLineNo">434</span><a id="line.434">   * Relates the finding to a set of referenced risks that were used to determine the finding.</a>
 <span class="sourceLineNo">435</span><a id="line.435">   */</a>
 <span class="sourceLineNo">436</span><a id="line.436">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">437</span><a id="line.437">      formalName = "Related Finding",</a>
-<span class="sourceLineNo">438</span><a id="line.438">      description = "Relates the poam-item to referenced finding(s).",</a>
-<span class="sourceLineNo">439</span><a id="line.439">      name = "related-finding",</a>
+<span class="sourceLineNo">437</span><a id="line.437">      formalName = "Associated Risk",</a>
+<span class="sourceLineNo">438</span><a id="line.438">      description = "Relates the finding to a set of referenced risks that were used to determine the finding.",</a>
+<span class="sourceLineNo">439</span><a id="line.439">      name = "associated-risk",</a>
 <span class="sourceLineNo">440</span><a id="line.440">      metaschema = OscalPoamMetaschema.class</a>
 <span class="sourceLineNo">441</span><a id="line.441">  )</a>
-<span class="sourceLineNo">442</span><a id="line.442">  public static class RelatedFinding {</a>
+<span class="sourceLineNo">442</span><a id="line.442">  public static class AssociatedRisk {</a>
 <span class="sourceLineNo">443</span><a id="line.443">    @BoundFlag(</a>
-<span class="sourceLineNo">444</span><a id="line.444">        formalName = "Finding Universally Unique Identifier Reference",</a>
-<span class="sourceLineNo">445</span><a id="line.445">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings.",</a>
-<span class="sourceLineNo">446</span><a id="line.446">        useName = "finding-uuid",</a>
+<span class="sourceLineNo">444</span><a id="line.444">        formalName = "Risk Universally Unique Identifier Reference",</a>
+<span class="sourceLineNo">445</span><a id="line.445">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks.",</a>
+<span class="sourceLineNo">446</span><a id="line.446">        useName = "risk-uuid",</a>
 <span class="sourceLineNo">447</span><a id="line.447">        required = true,</a>
 <span class="sourceLineNo">448</span><a id="line.448">        typeAdapter = UuidAdapter.class</a>
 <span class="sourceLineNo">449</span><a id="line.449">    )</a>
-<span class="sourceLineNo">450</span><a id="line.450">    private UUID _findingUuid;</a>
+<span class="sourceLineNo">450</span><a id="line.450">    private UUID _riskUuid;</a>
 <span class="sourceLineNo">451</span><a id="line.451"></a>
-<span class="sourceLineNo">452</span><a id="line.452">    public RelatedFinding() {</a>
+<span class="sourceLineNo">452</span><a id="line.452">    public AssociatedRisk() {</a>
 <span class="sourceLineNo">453</span><a id="line.453">    }</a>
 <span class="sourceLineNo">454</span><a id="line.454"></a>
-<span class="sourceLineNo">455</span><a id="line.455">    public UUID getFindingUuid() {</a>
-<span class="sourceLineNo">456</span><a id="line.456">      return _findingUuid;</a>
+<span class="sourceLineNo">455</span><a id="line.455">    public UUID getRiskUuid() {</a>
+<span class="sourceLineNo">456</span><a id="line.456">      return _riskUuid;</a>
 <span class="sourceLineNo">457</span><a id="line.457">    }</a>
 <span class="sourceLineNo">458</span><a id="line.458"></a>
-<span class="sourceLineNo">459</span><a id="line.459">    public void setFindingUuid(UUID value) {</a>
-<span class="sourceLineNo">460</span><a id="line.460">      _findingUuid = value;</a>
+<span class="sourceLineNo">459</span><a id="line.459">    public void setRiskUuid(UUID value) {</a>
+<span class="sourceLineNo">460</span><a id="line.460">      _riskUuid = value;</a>
 <span class="sourceLineNo">461</span><a id="line.461">    }</a>
 <span class="sourceLineNo">462</span><a id="line.462"></a>
 <span class="sourceLineNo">463</span><a id="line.463">    @Override</a>
@@ -540,33 +540,33 @@
 <span class="sourceLineNo">531</span><a id="line.531">  }</a>
 <span class="sourceLineNo">532</span><a id="line.532"></a>
 <span class="sourceLineNo">533</span><a id="line.533">  /**</a>
-<span class="sourceLineNo">534</span><a id="line.534">   * Relates the finding to a set of referenced risks that were used to determine the finding.</a>
+<span class="sourceLineNo">534</span><a id="line.534">   * Relates the poam-item to a set of referenced observations that were used to determine the finding.</a>
 <span class="sourceLineNo">535</span><a id="line.535">   */</a>
 <span class="sourceLineNo">536</span><a id="line.536">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">537</span><a id="line.537">      formalName = "Associated Risk",</a>
-<span class="sourceLineNo">538</span><a id="line.538">      description = "Relates the finding to a set of referenced risks that were used to determine the finding.",</a>
-<span class="sourceLineNo">539</span><a id="line.539">      name = "associated-risk",</a>
+<span class="sourceLineNo">537</span><a id="line.537">      formalName = "Related Observation",</a>
+<span class="sourceLineNo">538</span><a id="line.538">      description = "Relates the poam-item to a set of referenced observations that were used to determine the finding.",</a>
+<span class="sourceLineNo">539</span><a id="line.539">      name = "related-observation",</a>
 <span class="sourceLineNo">540</span><a id="line.540">      metaschema = OscalPoamMetaschema.class</a>
 <span class="sourceLineNo">541</span><a id="line.541">  )</a>
-<span class="sourceLineNo">542</span><a id="line.542">  public static class AssociatedRisk {</a>
+<span class="sourceLineNo">542</span><a id="line.542">  public static class RelatedObservation {</a>
 <span class="sourceLineNo">543</span><a id="line.543">    @BoundFlag(</a>
-<span class="sourceLineNo">544</span><a id="line.544">        formalName = "Risk Universally Unique Identifier Reference",</a>
-<span class="sourceLineNo">545</span><a id="line.545">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks.",</a>
-<span class="sourceLineNo">546</span><a id="line.546">        useName = "risk-uuid",</a>
+<span class="sourceLineNo">544</span><a id="line.544">        formalName = "Observation Universally Unique Identifier Reference",</a>
+<span class="sourceLineNo">545</span><a id="line.545">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.",</a>
+<span class="sourceLineNo">546</span><a id="line.546">        useName = "observation-uuid",</a>
 <span class="sourceLineNo">547</span><a id="line.547">        required = true,</a>
 <span class="sourceLineNo">548</span><a id="line.548">        typeAdapter = UuidAdapter.class</a>
 <span class="sourceLineNo">549</span><a id="line.549">    )</a>
-<span class="sourceLineNo">550</span><a id="line.550">    private UUID _riskUuid;</a>
+<span class="sourceLineNo">550</span><a id="line.550">    private UUID _observationUuid;</a>
 <span class="sourceLineNo">551</span><a id="line.551"></a>
-<span class="sourceLineNo">552</span><a id="line.552">    public AssociatedRisk() {</a>
+<span class="sourceLineNo">552</span><a id="line.552">    public RelatedObservation() {</a>
 <span class="sourceLineNo">553</span><a id="line.553">    }</a>
 <span class="sourceLineNo">554</span><a id="line.554"></a>
-<span class="sourceLineNo">555</span><a id="line.555">    public UUID getRiskUuid() {</a>
-<span class="sourceLineNo">556</span><a id="line.556">      return _riskUuid;</a>
+<span class="sourceLineNo">555</span><a id="line.555">    public UUID getObservationUuid() {</a>
+<span class="sourceLineNo">556</span><a id="line.556">      return _observationUuid;</a>
 <span class="sourceLineNo">557</span><a id="line.557">    }</a>
 <span class="sourceLineNo">558</span><a id="line.558"></a>
-<span class="sourceLineNo">559</span><a id="line.559">    public void setRiskUuid(UUID value) {</a>
-<span class="sourceLineNo">560</span><a id="line.560">      _riskUuid = value;</a>
+<span class="sourceLineNo">559</span><a id="line.559">    public void setObservationUuid(UUID value) {</a>
+<span class="sourceLineNo">560</span><a id="line.560">      _observationUuid = value;</a>
 <span class="sourceLineNo">561</span><a id="line.561">    }</a>
 <span class="sourceLineNo">562</span><a id="line.562"></a>
 <span class="sourceLineNo">563</span><a id="line.563">    @Override</a>

@@ -14,7 +14,6 @@ import java.util.List;
 @Metaschema(
     imports = {
         OscalCatalogMetaschema.class,
-        OscalMappingMetaschema.class,
         OscalProfileMetaschema.class,
         OscalComponentDefinitionMetaschema.class,
         OscalSspMetaschema.class,
@@ -25,51 +24,51 @@ import java.util.List;
     remarks = &quot;This format represents a combination of all of the OSCAL models.&quot;
 )
 public final class OscalCompleteMetaschema extends AbstractBoundMetaschema {
-<span class="nc" id="L28">  private static final MarkupLine NAME = MarkupLine.fromMarkdown(&quot;OSCAL Unified Model of Models&quot;);</span>
+<span class="nc" id="L27">  private static final MarkupLine NAME = MarkupLine.fromMarkdown(&quot;OSCAL Unified Model of Models&quot;);</span>
 
   private static final String SHORT_NAME = &quot;oscal-complete&quot;;
 
-  private static final String VERSION = &quot;1.0.4&quot;;
+  private static final String VERSION = &quot;1.1.0&quot;;
 
-<span class="nc" id="L34">  private static final URI XML_NAMESPACE = URI.create(&quot;http://csrc.nist.gov/ns/oscal/1.0&quot;);</span>
+<span class="nc" id="L33">  private static final URI XML_NAMESPACE = URI.create(&quot;http://csrc.nist.gov/ns/oscal/1.0&quot;);</span>
 
-<span class="nc" id="L36">  private static final URI JSON_BASE_URI = URI.create(&quot;http://csrc.nist.gov/ns/oscal/1.0&quot;);</span>
+<span class="nc" id="L35">  private static final URI JSON_BASE_URI = URI.create(&quot;http://csrc.nist.gov/ns/oscal/1.0&quot;);</span>
 
-<span class="nc" id="L38">  private static final MarkupMultiline REMARKS = MarkupMultiline.fromMarkdown(&quot;This format represents a combination of all of the OSCAL models.&quot;);</span>
+<span class="nc" id="L37">  private static final MarkupMultiline REMARKS = MarkupMultiline.fromMarkdown(&quot;This format represents a combination of all of the OSCAL models.&quot;);</span>
 
   public OscalCompleteMetaschema(List&lt;? extends IMetaschema&gt; importedMetaschema,
       IBindingContext bindingContext) {
-<span class="nc" id="L42">    super(importedMetaschema, bindingContext);</span>
-<span class="nc" id="L43">  }</span>
+<span class="nc" id="L41">    super(importedMetaschema, bindingContext);</span>
+<span class="nc" id="L42">  }</span>
 
   @Override
   public MarkupLine getName() {
-<span class="nc" id="L47">    return NAME;</span>
+<span class="nc" id="L46">    return NAME;</span>
   }
 
   @Override
   public String getShortName() {
-<span class="nc" id="L52">    return SHORT_NAME;</span>
+<span class="nc" id="L51">    return SHORT_NAME;</span>
   }
 
   @Override
   public String getVersion() {
-<span class="nc" id="L57">    return VERSION;</span>
+<span class="nc" id="L56">    return VERSION;</span>
   }
 
   @Override
   public URI getXmlNamespace() {
-<span class="nc" id="L62">    return XML_NAMESPACE;</span>
+<span class="nc" id="L61">    return XML_NAMESPACE;</span>
   }
 
   @Override
   public URI getJsonBaseUri() {
-<span class="nc" id="L67">    return JSON_BASE_URI;</span>
+<span class="nc" id="L66">    return JSON_BASE_URI;</span>
   }
 
   @Override
   public MarkupMultiline getRemarks() {
-<span class="nc" id="L72">    return REMARKS;</span>
+<span class="nc" id="L71">    return REMARKS;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

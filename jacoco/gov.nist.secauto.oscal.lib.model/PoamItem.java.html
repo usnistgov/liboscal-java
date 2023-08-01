@@ -395,42 +395,6 @@ public class PoamItem {
   }
 
   /**
-   * Relates the poam-item to a set of referenced observations that were used to determine the finding.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Related Observation&quot;,
-      description = &quot;Relates the poam-item to a set of referenced observations that were used to determine the finding.&quot;,
-      name = &quot;related-observation&quot;,
-      metaschema = OscalPoamMetaschema.class
-  )
-  public static class RelatedObservation {
-    @BoundFlag(
-        formalName = &quot;Observation Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.&quot;,
-        useName = &quot;observation-uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _observationUuid;
-
-<span class="nc" id="L416">    public RelatedObservation() {</span>
-<span class="nc" id="L417">    }</span>
-
-    public UUID getObservationUuid() {
-<span class="nc" id="L420">      return _observationUuid;</span>
-    }
-
-    public void setObservationUuid(UUID value) {
-<span class="nc" id="L424">      _observationUuid = value;</span>
-<span class="nc" id="L425">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc" id="L429">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
    * Relates the poam-item to referenced finding(s).
    */
   @MetaschemaAssembly(
@@ -449,15 +413,51 @@ public class PoamItem {
     )
     private UUID _findingUuid;
 
-<span class="nc" id="L452">    public RelatedFinding() {</span>
-<span class="nc" id="L453">    }</span>
+<span class="nc" id="L416">    public RelatedFinding() {</span>
+<span class="nc" id="L417">    }</span>
 
     public UUID getFindingUuid() {
-<span class="nc" id="L456">      return _findingUuid;</span>
+<span class="nc" id="L420">      return _findingUuid;</span>
     }
 
     public void setFindingUuid(UUID value) {
-<span class="nc" id="L460">      _findingUuid = value;</span>
+<span class="nc" id="L424">      _findingUuid = value;</span>
+<span class="nc" id="L425">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L429">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
+   * Relates the finding to a set of referenced risks that were used to determine the finding.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Associated Risk&quot;,
+      description = &quot;Relates the finding to a set of referenced risks that were used to determine the finding.&quot;,
+      name = &quot;associated-risk&quot;,
+      metaschema = OscalPoamMetaschema.class
+  )
+  public static class AssociatedRisk {
+    @BoundFlag(
+        formalName = &quot;Risk Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks.&quot;,
+        useName = &quot;risk-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _riskUuid;
+
+<span class="nc" id="L452">    public AssociatedRisk() {</span>
+<span class="nc" id="L453">    }</span>
+
+    public UUID getRiskUuid() {
+<span class="nc" id="L456">      return _riskUuid;</span>
+    }
+
+    public void setRiskUuid(UUID value) {
+<span class="nc" id="L460">      _riskUuid = value;</span>
 <span class="nc" id="L461">    }</span>
 
     @Override
@@ -531,33 +531,33 @@ public class PoamItem {
   }
 
   /**
-   * Relates the finding to a set of referenced risks that were used to determine the finding.
+   * Relates the poam-item to a set of referenced observations that were used to determine the finding.
    */
   @MetaschemaAssembly(
-      formalName = &quot;Associated Risk&quot;,
-      description = &quot;Relates the finding to a set of referenced risks that were used to determine the finding.&quot;,
-      name = &quot;associated-risk&quot;,
+      formalName = &quot;Related Observation&quot;,
+      description = &quot;Relates the poam-item to a set of referenced observations that were used to determine the finding.&quot;,
+      name = &quot;related-observation&quot;,
       metaschema = OscalPoamMetaschema.class
   )
-  public static class AssociatedRisk {
+  public static class RelatedObservation {
     @BoundFlag(
-        formalName = &quot;Risk Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks.&quot;,
-        useName = &quot;risk-uuid&quot;,
+        formalName = &quot;Observation Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.&quot;,
+        useName = &quot;observation-uuid&quot;,
         required = true,
         typeAdapter = UuidAdapter.class
     )
-    private UUID _riskUuid;
+    private UUID _observationUuid;
 
-<span class="nc" id="L552">    public AssociatedRisk() {</span>
+<span class="nc" id="L552">    public RelatedObservation() {</span>
 <span class="nc" id="L553">    }</span>
 
-    public UUID getRiskUuid() {
-<span class="nc" id="L556">      return _riskUuid;</span>
+    public UUID getObservationUuid() {
+<span class="nc" id="L556">      return _observationUuid;</span>
     }
 
-    public void setRiskUuid(UUID value) {
-<span class="nc" id="L560">      _riskUuid = value;</span>
+    public void setObservationUuid(UUID value) {
+<span class="nc" id="L560">      _observationUuid = value;</span>
 <span class="nc" id="L561">    }</span>
 
     @Override

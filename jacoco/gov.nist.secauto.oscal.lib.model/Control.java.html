@@ -15,7 +15,6 @@ import gov.nist.secauto.metaschema.binding.model.annotations.ValueConstraints;
 import gov.nist.secauto.metaschema.model.common.JsonGroupAsBehavior;
 import gov.nist.secauto.metaschema.model.common.constraint.IConstraint;
 import gov.nist.secauto.metaschema.model.common.datatype.adapter.TokenAdapter;
-import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
 import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLineAdapter;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
@@ -24,7 +23,6 @@ import java.lang.Override;
 import java.lang.String;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
@@ -142,16 +140,6 @@ public class Control extends AbstractControl {
   )
   private List&lt;ControlPart&gt; _parts;
 
-  /**
-   * &quot;A mapping between the containing control and another resource.&quot;
-   */
-  @BoundAssembly(
-      formalName = &quot;Mapping&quot;,
-      description = &quot;A mapping between the containing control and another resource.&quot;,
-      useName = &quot;mapping&quot;
-  )
-  private Mapping _mapping;
-
   @BoundAssembly(
       formalName = &quot;Control&quot;,
       description = &quot;A [structured object](https://pages.nist.gov/OSCAL/concepts/terminology/#control) representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.&quot;,
@@ -164,40 +152,40 @@ public class Control extends AbstractControl {
   )
   private List&lt;Control&gt; _controls;
 
-<span class="fc" id="L167">  public Control() {</span>
-<span class="fc" id="L168">  }</span>
+<span class="fc" id="L155">  public Control() {</span>
+<span class="fc" id="L156">  }</span>
 
   public String getId() {
-<span class="fc" id="L171">    return _id;</span>
+<span class="fc" id="L159">    return _id;</span>
   }
 
   public void setId(String value) {
-<span class="fc" id="L175">    _id = value;</span>
-<span class="fc" id="L176">  }</span>
+<span class="fc" id="L163">    _id = value;</span>
+<span class="fc" id="L164">  }</span>
 
   public String getClazz() {
-<span class="nc" id="L179">    return _clazz;</span>
+<span class="nc" id="L167">    return _clazz;</span>
   }
 
   public void setClazz(String value) {
-<span class="nc" id="L183">    _clazz = value;</span>
-<span class="nc" id="L184">  }</span>
+<span class="nc" id="L171">    _clazz = value;</span>
+<span class="nc" id="L172">  }</span>
 
   public MarkupLine getTitle() {
-<span class="nc" id="L187">    return _title;</span>
+<span class="nc" id="L175">    return _title;</span>
   }
 
   public void setTitle(MarkupLine value) {
-<span class="fc" id="L191">    _title = value;</span>
-<span class="fc" id="L192">  }</span>
+<span class="fc" id="L179">    _title = value;</span>
+<span class="fc" id="L180">  }</span>
 
   public List&lt;Parameter&gt; getParams() {
-<span class="fc" id="L195">    return _params;</span>
+<span class="fc" id="L183">    return _params;</span>
   }
 
   public void setParams(List&lt;Parameter&gt; value) {
-<span class="fc" id="L199">    _params = value;</span>
-<span class="fc" id="L200">  }</span>
+<span class="fc" id="L187">    _params = value;</span>
+<span class="fc" id="L188">  }</span>
 
   /**
    * Add a new {@link Parameter} item to the underlying collection.
@@ -205,11 +193,11 @@ public class Control extends AbstractControl {
    * @return {@code true}
    */
   public boolean addParam(Parameter item) {
-<span class="nc" id="L208">    Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L209" title="All 2 branches missed.">    if (_params == null) {</span>
-<span class="nc" id="L210">      _params = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L196">    Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">    if (_params == null) {</span>
+<span class="nc" id="L198">      _params = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L212">    return _params.add(value);</span>
+<span class="nc" id="L200">    return _params.add(value);</span>
   }
 
   /**
@@ -218,17 +206,17 @@ public class Control extends AbstractControl {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removeParam(Parameter item) {
-<span class="nc" id="L221">    Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L222" title="All 2 branches missed.">    return _params == null ? false : _params.remove(value);</span>
+<span class="nc" id="L209">    Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">    return _params == null ? false : _params.remove(value);</span>
   }
 
   public List&lt;Property&gt; getProps() {
-<span class="fc" id="L226">    return _props;</span>
+<span class="fc" id="L214">    return _props;</span>
   }
 
   public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L230">    _props = value;</span>
-<span class="nc" id="L231">  }</span>
+<span class="nc" id="L218">    _props = value;</span>
+<span class="nc" id="L219">  }</span>
 
   /**
    * Add a new {@link Property} item to the underlying collection.
@@ -236,11 +224,11 @@ public class Control extends AbstractControl {
    * @return {@code true}
    */
   public boolean addProp(Property item) {
-<span class="nc" id="L239">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L240" title="All 2 branches missed.">    if (_props == null) {</span>
-<span class="nc" id="L241">      _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L227">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L229">      _props = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L243">    return _props.add(value);</span>
+<span class="nc" id="L231">    return _props.add(value);</span>
   }
 
   /**
@@ -249,17 +237,17 @@ public class Control extends AbstractControl {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removeProp(Property item) {
-<span class="nc" id="L252">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L253" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L240">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
   }
 
   public List&lt;Link&gt; getLinks() {
-<span class="fc" id="L257">    return _links;</span>
+<span class="fc" id="L245">    return _links;</span>
   }
 
   public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L261">    _links = value;</span>
-<span class="nc" id="L262">  }</span>
+<span class="nc" id="L249">    _links = value;</span>
+<span class="nc" id="L250">  }</span>
 
   /**
    * Add a new {@link Link} item to the underlying collection.
@@ -267,11 +255,11 @@ public class Control extends AbstractControl {
    * @return {@code true}
    */
   public boolean addLink(Link item) {
-<span class="nc" id="L270">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">    if (_links == null) {</span>
-<span class="nc" id="L272">      _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L258">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L260">      _links = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L274">    return _links.add(value);</span>
+<span class="nc" id="L262">    return _links.add(value);</span>
   }
 
   /**
@@ -280,17 +268,17 @@ public class Control extends AbstractControl {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removeLink(Link item) {
-<span class="nc" id="L283">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L284" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L271">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
   }
 
   public List&lt;ControlPart&gt; getParts() {
-<span class="fc" id="L288">    return _parts;</span>
+<span class="fc" id="L276">    return _parts;</span>
   }
 
   public void setParts(List&lt;ControlPart&gt; value) {
-<span class="fc" id="L292">    _parts = value;</span>
-<span class="fc" id="L293">  }</span>
+<span class="fc" id="L280">    _parts = value;</span>
+<span class="fc" id="L281">  }</span>
 
   /**
    * Add a new {@link ControlPart} item to the underlying collection.
@@ -298,11 +286,11 @@ public class Control extends AbstractControl {
    * @return {@code true}
    */
   public boolean addPart(ControlPart item) {
-<span class="nc" id="L301">    ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L302" title="All 2 branches missed.">    if (_parts == null) {</span>
-<span class="nc" id="L303">      _parts = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L289">    ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (_parts == null) {</span>
+<span class="nc" id="L291">      _parts = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L305">    return _parts.add(value);</span>
+<span class="nc" id="L293">    return _parts.add(value);</span>
   }
 
   /**
@@ -311,25 +299,17 @@ public class Control extends AbstractControl {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removePart(ControlPart item) {
-<span class="nc" id="L314">    ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L315" title="All 2 branches missed.">    return _parts == null ? false : _parts.remove(value);</span>
+<span class="nc" id="L302">    ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">    return _parts == null ? false : _parts.remove(value);</span>
   }
-
-  public Mapping getMapping() {
-<span class="nc" id="L319">    return _mapping;</span>
-  }
-
-  public void setMapping(Mapping value) {
-<span class="nc" id="L323">    _mapping = value;</span>
-<span class="nc" id="L324">  }</span>
 
   public List&lt;Control&gt; getControls() {
-<span class="fc" id="L327">    return _controls;</span>
+<span class="fc" id="L307">    return _controls;</span>
   }
 
   public void setControls(List&lt;Control&gt; value) {
-<span class="fc" id="L331">    _controls = value;</span>
-<span class="fc" id="L332">  }</span>
+<span class="fc" id="L311">    _controls = value;</span>
+<span class="fc" id="L312">  }</span>
 
   /**
    * Add a new {@link Control} item to the underlying collection.
@@ -337,11 +317,11 @@ public class Control extends AbstractControl {
    * @return {@code true}
    */
   public boolean addControl(Control item) {
-<span class="nc" id="L340">    Control value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L341" title="All 2 branches missed.">    if (_controls == null) {</span>
-<span class="nc" id="L342">      _controls = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L320">    Control value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">    if (_controls == null) {</span>
+<span class="nc" id="L322">      _controls = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L344">    return _controls.add(value);</span>
+<span class="nc" id="L324">    return _controls.add(value);</span>
   }
 
   /**
@@ -350,109 +330,13 @@ public class Control extends AbstractControl {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removeControl(Control item) {
-<span class="nc" id="L353">    Control value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L354" title="All 2 branches missed.">    return _controls == null ? false : _controls.remove(value);</span>
+<span class="nc" id="L333">    Control value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L334" title="All 2 branches missed.">    return _controls == null ? false : _controls.remove(value);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L359">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-  }
-
-  /**
-   * A mapping between the containing control and another resource.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Mapping&quot;,
-      description = &quot;A mapping between the containing control and another resource.&quot;,
-      name = &quot;mapping&quot;,
-      metaschema = OscalCatalogMetaschema.class
-  )
-  public static class Mapping {
-    @BoundFlag(
-        formalName = &quot;Mapping Identifier&quot;,
-        description = &quot;The unique identifier for the mapping.&quot;,
-        useName = &quot;uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _uuid;
-
-    @BoundAssembly(
-        formalName = &quot;Mapped Resource Reference&quot;,
-        description = &quot;A reference to a resource that is either the source or target of a mapping.&quot;,
-        useName = &quot;target-resource&quot;,
-        minOccurs = 1
-    )
-    private MappingResourceReference _targetResource;
-
-    @BoundAssembly(
-        formalName = &quot;Mapping Entry&quot;,
-        description = &quot;A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.&quot;,
-        useName = &quot;map&quot;,
-        minOccurs = 1,
-        maxOccurs = -1
-    )
-    @GroupAs(
-        name = &quot;maps&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;MappingEntry&gt; _maps;
-
-<span class="nc" id="L402">    public Mapping() {</span>
-<span class="nc" id="L403">    }</span>
-
-    public UUID getUuid() {
-<span class="nc" id="L406">      return _uuid;</span>
-    }
-
-    public void setUuid(UUID value) {
-<span class="nc" id="L410">      _uuid = value;</span>
-<span class="nc" id="L411">    }</span>
-
-    public MappingResourceReference getTargetResource() {
-<span class="nc" id="L414">      return _targetResource;</span>
-    }
-
-    public void setTargetResource(MappingResourceReference value) {
-<span class="nc" id="L418">      _targetResource = value;</span>
-<span class="nc" id="L419">    }</span>
-
-    public List&lt;MappingEntry&gt; getMaps() {
-<span class="nc" id="L422">      return _maps;</span>
-    }
-
-    public void setMaps(List&lt;MappingEntry&gt; value) {
-<span class="nc" id="L426">      _maps = value;</span>
-<span class="nc" id="L427">    }</span>
-
-    /**
-     * Add a new {@link MappingEntry} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addMap(MappingEntry item) {
-<span class="nc" id="L435">      MappingEntry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L436" title="All 2 branches missed.">      if (_maps == null) {</span>
-<span class="nc" id="L437">        _maps = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L439">      return _maps.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link MappingEntry} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeMap(MappingEntry item) {
-<span class="nc" id="L448">      MappingEntry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L449" title="All 2 branches missed.">      return _maps == null ? false : _maps.remove(value);</span>
-    }
-
-    @Override
-    public String toString() {
-<span class="nc" id="L454">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
+<span class="nc" id="L339">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

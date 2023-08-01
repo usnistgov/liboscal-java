@@ -403,33 +403,33 @@
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>   }
 <a class="jxr_linenumber" name="L396" href="#L396">396</a> 
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">   * Relates the poam-item to a set of referenced observations that were used to determine the finding.</em>
+<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">   * Relates the poam-item to referenced finding(s).</em>
 <a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>   @MetaschemaAssembly(
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>       formalName = <span class="jxr_string">"Related Observation"</span>,
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>       description = <span class="jxr_string">"Relates the poam-item to a set of referenced observations that were used to determine the finding."</span>,
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>       name = <span class="jxr_string">"related-observation"</span>,
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>       formalName = <span class="jxr_string">"Related Finding"</span>,
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>       description = <span class="jxr_string">"Relates the poam-item to referenced finding(s)."</span>,
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>       name = <span class="jxr_string">"related-finding"</span>,
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>       metaschema = OscalPoamMetaschema.<strong class="jxr_keyword">class</strong>
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>   )
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> RelatedObservation {
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> RelatedFinding {
 <a class="jxr_linenumber" name="L407" href="#L407">407</a>     @BoundFlag(
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>         formalName = <span class="jxr_string">"Observation Universally Unique Identifier Reference"</span>,
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations."</span>,
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>         useName = <span class="jxr_string">"observation-uuid"</span>,
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         formalName = <span class="jxr_string">"Finding Universally Unique Identifier Reference"</span>,
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>         description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings."</span>,
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>         useName = <span class="jxr_string">"finding-uuid"</span>,
 <a class="jxr_linenumber" name="L411" href="#L411">411</a>         required = <strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>         typeAdapter = UuidAdapter.<strong class="jxr_keyword">class</strong>
 <a class="jxr_linenumber" name="L413" href="#L413">413</a>     )
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>     <strong class="jxr_keyword">private</strong> UUID _observationUuid;
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>     <strong class="jxr_keyword">private</strong> UUID _findingUuid;
 <a class="jxr_linenumber" name="L415" href="#L415">415</a> 
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>     <strong class="jxr_keyword">public</strong> RelatedObservation() {
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>     <strong class="jxr_keyword">public</strong> RelatedFinding() {
 <a class="jxr_linenumber" name="L417" href="#L417">417</a>     }
 <a class="jxr_linenumber" name="L418" href="#L418">418</a> 
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>     <strong class="jxr_keyword">public</strong> UUID getObservationUuid() {
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>       <strong class="jxr_keyword">return</strong> _observationUuid;
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>     <strong class="jxr_keyword">public</strong> UUID getFindingUuid() {
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>       <strong class="jxr_keyword">return</strong> _findingUuid;
 <a class="jxr_linenumber" name="L421" href="#L421">421</a>     }
 <a class="jxr_linenumber" name="L422" href="#L422">422</a> 
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setObservationUuid(UUID value) {
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>       _observationUuid = value;
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setFindingUuid(UUID value) {
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>       _findingUuid = value;
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>     }
 <a class="jxr_linenumber" name="L426" href="#L426">426</a> 
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>     @Override
@@ -439,33 +439,33 @@
 <a class="jxr_linenumber" name="L431" href="#L431">431</a>   }
 <a class="jxr_linenumber" name="L432" href="#L432">432</a> 
 <a class="jxr_linenumber" name="L433" href="#L433">433</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L434" href="#L434">434</a> <em class="jxr_javadoccomment">   * Relates the poam-item to referenced finding(s).</em>
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> <em class="jxr_javadoccomment">   * Relates the finding to a set of referenced risks that were used to determine the finding.</em>
 <a class="jxr_linenumber" name="L435" href="#L435">435</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>   @MetaschemaAssembly(
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>       formalName = <span class="jxr_string">"Related Finding"</span>,
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>       description = <span class="jxr_string">"Relates the poam-item to referenced finding(s)."</span>,
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>       name = <span class="jxr_string">"related-finding"</span>,
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>       formalName = <span class="jxr_string">"Associated Risk"</span>,
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>       description = <span class="jxr_string">"Relates the finding to a set of referenced risks that were used to determine the finding."</span>,
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>       name = <span class="jxr_string">"associated-risk"</span>,
 <a class="jxr_linenumber" name="L440" href="#L440">440</a>       metaschema = OscalPoamMetaschema.<strong class="jxr_keyword">class</strong>
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>   )
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> RelatedFinding {
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> AssociatedRisk {
 <a class="jxr_linenumber" name="L443" href="#L443">443</a>     @BoundFlag(
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>         formalName = <span class="jxr_string">"Finding Universally Unique Identifier Reference"</span>,
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>         description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings."</span>,
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>         useName = <span class="jxr_string">"finding-uuid"</span>,
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>         formalName = <span class="jxr_string">"Risk Universally Unique Identifier Reference"</span>,
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>         description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks."</span>,
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>         useName = <span class="jxr_string">"risk-uuid"</span>,
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>         required = <strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L448" href="#L448">448</a>         typeAdapter = UuidAdapter.<strong class="jxr_keyword">class</strong>
 <a class="jxr_linenumber" name="L449" href="#L449">449</a>     )
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>     <strong class="jxr_keyword">private</strong> UUID _findingUuid;
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>     <strong class="jxr_keyword">private</strong> UUID _riskUuid;
 <a class="jxr_linenumber" name="L451" href="#L451">451</a> 
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>     <strong class="jxr_keyword">public</strong> RelatedFinding() {
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>     <strong class="jxr_keyword">public</strong> AssociatedRisk() {
 <a class="jxr_linenumber" name="L453" href="#L453">453</a>     }
 <a class="jxr_linenumber" name="L454" href="#L454">454</a> 
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>     <strong class="jxr_keyword">public</strong> UUID getFindingUuid() {
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>       <strong class="jxr_keyword">return</strong> _findingUuid;
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>     <strong class="jxr_keyword">public</strong> UUID getRiskUuid() {
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>       <strong class="jxr_keyword">return</strong> _riskUuid;
 <a class="jxr_linenumber" name="L457" href="#L457">457</a>     }
 <a class="jxr_linenumber" name="L458" href="#L458">458</a> 
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setFindingUuid(UUID value) {
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>       _findingUuid = value;
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setRiskUuid(UUID value) {
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>       _riskUuid = value;
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>     }
 <a class="jxr_linenumber" name="L462" href="#L462">462</a> 
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>     @Override
@@ -539,33 +539,33 @@
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>   }
 <a class="jxr_linenumber" name="L532" href="#L532">532</a> 
 <a class="jxr_linenumber" name="L533" href="#L533">533</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L534" href="#L534">534</a> <em class="jxr_javadoccomment">   * Relates the finding to a set of referenced risks that were used to determine the finding.</em>
+<a class="jxr_linenumber" name="L534" href="#L534">534</a> <em class="jxr_javadoccomment">   * Relates the poam-item to a set of referenced observations that were used to determine the finding.</em>
 <a class="jxr_linenumber" name="L535" href="#L535">535</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>   @MetaschemaAssembly(
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>       formalName = <span class="jxr_string">"Associated Risk"</span>,
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>       description = <span class="jxr_string">"Relates the finding to a set of referenced risks that were used to determine the finding."</span>,
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>       name = <span class="jxr_string">"associated-risk"</span>,
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>       formalName = <span class="jxr_string">"Related Observation"</span>,
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>       description = <span class="jxr_string">"Relates the poam-item to a set of referenced observations that were used to determine the finding."</span>,
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>       name = <span class="jxr_string">"related-observation"</span>,
 <a class="jxr_linenumber" name="L540" href="#L540">540</a>       metaschema = OscalPoamMetaschema.<strong class="jxr_keyword">class</strong>
 <a class="jxr_linenumber" name="L541" href="#L541">541</a>   )
-<a class="jxr_linenumber" name="L542" href="#L542">542</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> AssociatedRisk {
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> RelatedObservation {
 <a class="jxr_linenumber" name="L543" href="#L543">543</a>     @BoundFlag(
-<a class="jxr_linenumber" name="L544" href="#L544">544</a>         formalName = <span class="jxr_string">"Risk Universally Unique Identifier Reference"</span>,
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>         description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks."</span>,
-<a class="jxr_linenumber" name="L546" href="#L546">546</a>         useName = <span class="jxr_string">"risk-uuid"</span>,
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>         formalName = <span class="jxr_string">"Observation Universally Unique Identifier Reference"</span>,
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>         description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations."</span>,
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>         useName = <span class="jxr_string">"observation-uuid"</span>,
 <a class="jxr_linenumber" name="L547" href="#L547">547</a>         required = <strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L548" href="#L548">548</a>         typeAdapter = UuidAdapter.<strong class="jxr_keyword">class</strong>
 <a class="jxr_linenumber" name="L549" href="#L549">549</a>     )
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>     <strong class="jxr_keyword">private</strong> UUID _riskUuid;
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>     <strong class="jxr_keyword">private</strong> UUID _observationUuid;
 <a class="jxr_linenumber" name="L551" href="#L551">551</a> 
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>     <strong class="jxr_keyword">public</strong> AssociatedRisk() {
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>     <strong class="jxr_keyword">public</strong> RelatedObservation() {
 <a class="jxr_linenumber" name="L553" href="#L553">553</a>     }
 <a class="jxr_linenumber" name="L554" href="#L554">554</a> 
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>     <strong class="jxr_keyword">public</strong> UUID getRiskUuid() {
-<a class="jxr_linenumber" name="L556" href="#L556">556</a>       <strong class="jxr_keyword">return</strong> _riskUuid;
+<a class="jxr_linenumber" name="L555" href="#L555">555</a>     <strong class="jxr_keyword">public</strong> UUID getObservationUuid() {
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>       <strong class="jxr_keyword">return</strong> _observationUuid;
 <a class="jxr_linenumber" name="L557" href="#L557">557</a>     }
 <a class="jxr_linenumber" name="L558" href="#L558">558</a> 
-<a class="jxr_linenumber" name="L559" href="#L559">559</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setRiskUuid(UUID value) {
-<a class="jxr_linenumber" name="L560" href="#L560">560</a>       _riskUuid = value;
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setObservationUuid(UUID value) {
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>       _observationUuid = value;
 <a class="jxr_linenumber" name="L561" href="#L561">561</a>     }
 <a class="jxr_linenumber" name="L562" href="#L562">562</a> 
 <a class="jxr_linenumber" name="L563" href="#L563">563</a>     @Override

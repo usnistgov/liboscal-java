@@ -266,258 +266,6 @@ public class ReviewedControls {
   }
 
   /**
-   * Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Referenced Control Objectives&quot;,
-      description = &quot;Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.&quot;,
-      name = &quot;control-objective-selection&quot;,
-      metaschema = OscalAssessmentCommonMetaschema.class,
-      remarks = &quot;The `include-all` field, specifies all control objectives for any in-scope control. In-scope controls are defined in the `control-selection`.\n&quot;
-              + &quot;\n&quot;
-              + &quot;Any control objective specified within `exclude-controls` must first be within a range of explicitly included control objectives, via `include-objectives` or `include-all`.&quot;
-  )
-  public static class ControlObjectiveSelection {
-    /**
-     * &quot;A human-readable description of this collection of control objectives.&quot;
-     */
-    @BoundField(
-        formalName = &quot;Control Objectives Description&quot;,
-        description = &quot;A human-readable description of this collection of control objectives.&quot;,
-        useName = &quot;description&quot;
-    )
-    @BoundFieldValue(
-        typeAdapter = MarkupMultilineAdapter.class
-    )
-    private MarkupMultiline _description;
-
-    @BoundAssembly(
-        formalName = &quot;Property&quot;,
-        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
-        useName = &quot;prop&quot;,
-        maxOccurs = -1
-    )
-    @GroupAs(
-        name = &quot;props&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;Property&gt; _props;
-
-    @BoundAssembly(
-        formalName = &quot;Link&quot;,
-        description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
-        useName = &quot;link&quot;,
-        maxOccurs = -1
-    )
-    @GroupAs(
-        name = &quot;links&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;Link&gt; _links;
-
-    @BoundAssembly(
-        formalName = &quot;Include All&quot;,
-        description = &quot;Include all controls from the imported catalog or profile resources.&quot;,
-        useName = &quot;include-all&quot;,
-        minOccurs = 1
-    )
-    private IncludeAll _includeAll;
-
-    @BoundAssembly(
-        formalName = &quot;Select Objective&quot;,
-        description = &quot;Used to select a control objective for inclusion/exclusion based on the control objective's identifier.&quot;,
-        useName = &quot;include-objective&quot;,
-        minOccurs = 1,
-        maxOccurs = -1,
-        remarks = &quot;Used to select a control objective for inclusion by the control objective's identifier.&quot;
-    )
-    @GroupAs(
-        name = &quot;include-objectives&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;SelectObjectiveById&gt; _includeObjectives;
-
-    @BoundAssembly(
-        formalName = &quot;Select Objective&quot;,
-        description = &quot;Used to select a control objective for inclusion/exclusion based on the control objective's identifier.&quot;,
-        useName = &quot;exclude-objective&quot;,
-        maxOccurs = -1,
-        remarks = &quot;Used to select a control objective for exclusion by the control objective's identifier.&quot;
-    )
-    @GroupAs(
-        name = &quot;exclude-objectives&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;SelectObjectiveById&gt; _excludeObjectives;
-
-    @BoundField(
-        formalName = &quot;Remarks&quot;,
-        description = &quot;Additional commentary about the containing object.&quot;,
-        useName = &quot;remarks&quot;
-    )
-    @BoundFieldValue(
-        typeAdapter = MarkupMultilineAdapter.class
-    )
-    private MarkupMultiline _remarks;
-
-<span class="nc" id="L363">    public ControlObjectiveSelection() {</span>
-<span class="nc" id="L364">    }</span>
-
-    public MarkupMultiline getDescription() {
-<span class="nc" id="L367">      return _description;</span>
-    }
-
-    public void setDescription(MarkupMultiline value) {
-<span class="nc" id="L371">      _description = value;</span>
-<span class="nc" id="L372">    }</span>
-
-    public List&lt;Property&gt; getProps() {
-<span class="nc" id="L375">      return _props;</span>
-    }
-
-    public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L379">      _props = value;</span>
-<span class="nc" id="L380">    }</span>
-
-    /**
-     * Add a new {@link Property} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addProp(Property item) {
-<span class="nc" id="L388">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L389" title="All 2 branches missed.">      if (_props == null) {</span>
-<span class="nc" id="L390">        _props = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L392">      return _props.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link Property} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeProp(Property item) {
-<span class="nc" id="L401">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L402" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
-    }
-
-    public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L406">      return _links;</span>
-    }
-
-    public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L410">      _links = value;</span>
-<span class="nc" id="L411">    }</span>
-
-    /**
-     * Add a new {@link Link} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addLink(Link item) {
-<span class="nc" id="L419">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L420" title="All 2 branches missed.">      if (_links == null) {</span>
-<span class="nc" id="L421">        _links = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L423">      return _links.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link Link} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeLink(Link item) {
-<span class="nc" id="L432">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L433" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
-    }
-
-    public IncludeAll getIncludeAll() {
-<span class="nc" id="L437">      return _includeAll;</span>
-    }
-
-    public void setIncludeAll(IncludeAll value) {
-<span class="nc" id="L441">      _includeAll = value;</span>
-<span class="nc" id="L442">    }</span>
-
-    public List&lt;SelectObjectiveById&gt; getIncludeObjectives() {
-<span class="nc" id="L445">      return _includeObjectives;</span>
-    }
-
-    public void setIncludeObjectives(List&lt;SelectObjectiveById&gt; value) {
-<span class="nc" id="L449">      _includeObjectives = value;</span>
-<span class="nc" id="L450">    }</span>
-
-    /**
-     * Add a new {@link SelectObjectiveById} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addIncludeObjective(SelectObjectiveById item) {
-<span class="nc" id="L458">      SelectObjectiveById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L459" title="All 2 branches missed.">      if (_includeObjectives == null) {</span>
-<span class="nc" id="L460">        _includeObjectives = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L462">      return _includeObjectives.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link SelectObjectiveById} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeIncludeObjective(SelectObjectiveById item) {
-<span class="nc" id="L471">      SelectObjectiveById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L472" title="All 2 branches missed.">      return _includeObjectives == null ? false : _includeObjectives.remove(value);</span>
-    }
-
-    public List&lt;SelectObjectiveById&gt; getExcludeObjectives() {
-<span class="nc" id="L476">      return _excludeObjectives;</span>
-    }
-
-    public void setExcludeObjectives(List&lt;SelectObjectiveById&gt; value) {
-<span class="nc" id="L480">      _excludeObjectives = value;</span>
-<span class="nc" id="L481">    }</span>
-
-    /**
-     * Add a new {@link SelectObjectiveById} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addExcludeObjective(SelectObjectiveById item) {
-<span class="nc" id="L489">      SelectObjectiveById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L490" title="All 2 branches missed.">      if (_excludeObjectives == null) {</span>
-<span class="nc" id="L491">        _excludeObjectives = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L493">      return _excludeObjectives.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link SelectObjectiveById} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeExcludeObjective(SelectObjectiveById item) {
-<span class="nc" id="L502">      SelectObjectiveById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L503" title="All 2 branches missed.">      return _excludeObjectives == null ? false : _excludeObjectives.remove(value);</span>
-    }
-
-    public MarkupMultiline getRemarks() {
-<span class="nc" id="L507">      return _remarks;</span>
-    }
-
-    public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L511">      _remarks = value;</span>
-<span class="nc" id="L512">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc" id="L516">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
    * Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.
    */
   @MetaschemaAssembly(
@@ -612,7 +360,259 @@ public class ReviewedControls {
     )
     private MarkupMultiline _remarks;
 
-<span class="nc" id="L615">    public ControlSelection() {</span>
+<span class="nc" id="L363">    public ControlSelection() {</span>
+<span class="nc" id="L364">    }</span>
+
+    public MarkupMultiline getDescription() {
+<span class="nc" id="L367">      return _description;</span>
+    }
+
+    public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L371">      _description = value;</span>
+<span class="nc" id="L372">    }</span>
+
+    public List&lt;Property&gt; getProps() {
+<span class="nc" id="L375">      return _props;</span>
+    }
+
+    public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L379">      _props = value;</span>
+<span class="nc" id="L380">    }</span>
+
+    /**
+     * Add a new {@link Property} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addProp(Property item) {
+<span class="nc" id="L388">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L390">        _props = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L392">      return _props.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Property} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeProp(Property item) {
+<span class="nc" id="L401">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+    }
+
+    public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L406">      return _links;</span>
+    }
+
+    public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L410">      _links = value;</span>
+<span class="nc" id="L411">    }</span>
+
+    /**
+     * Add a new {@link Link} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addLink(Link item) {
+<span class="nc" id="L419">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L420" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L421">        _links = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L423">      return _links.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link Link} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeLink(Link item) {
+<span class="nc" id="L432">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+    }
+
+    public IncludeAll getIncludeAll() {
+<span class="nc" id="L437">      return _includeAll;</span>
+    }
+
+    public void setIncludeAll(IncludeAll value) {
+<span class="nc" id="L441">      _includeAll = value;</span>
+<span class="nc" id="L442">    }</span>
+
+    public List&lt;SelectControlById&gt; getIncludeControls() {
+<span class="nc" id="L445">      return _includeControls;</span>
+    }
+
+    public void setIncludeControls(List&lt;SelectControlById&gt; value) {
+<span class="nc" id="L449">      _includeControls = value;</span>
+<span class="nc" id="L450">    }</span>
+
+    /**
+     * Add a new {@link SelectControlById} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addIncludeControl(SelectControlById item) {
+<span class="nc" id="L458">      SelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L459" title="All 2 branches missed.">      if (_includeControls == null) {</span>
+<span class="nc" id="L460">        _includeControls = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L462">      return _includeControls.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link SelectControlById} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeIncludeControl(SelectControlById item) {
+<span class="nc" id="L471">      SelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L472" title="All 2 branches missed.">      return _includeControls == null ? false : _includeControls.remove(value);</span>
+    }
+
+    public List&lt;SelectControlById&gt; getExcludeControls() {
+<span class="nc" id="L476">      return _excludeControls;</span>
+    }
+
+    public void setExcludeControls(List&lt;SelectControlById&gt; value) {
+<span class="nc" id="L480">      _excludeControls = value;</span>
+<span class="nc" id="L481">    }</span>
+
+    /**
+     * Add a new {@link SelectControlById} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addExcludeControl(SelectControlById item) {
+<span class="nc" id="L489">      SelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L490" title="All 2 branches missed.">      if (_excludeControls == null) {</span>
+<span class="nc" id="L491">        _excludeControls = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L493">      return _excludeControls.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link SelectControlById} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeExcludeControl(SelectControlById item) {
+<span class="nc" id="L502">      SelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">      return _excludeControls == null ? false : _excludeControls.remove(value);</span>
+    }
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L507">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L511">      _remarks = value;</span>
+<span class="nc" id="L512">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L516">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
+   * Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Referenced Control Objectives&quot;,
+      description = &quot;Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.&quot;,
+      name = &quot;control-objective-selection&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class,
+      remarks = &quot;The `include-all` field, specifies all control objectives for any in-scope control. In-scope controls are defined in the `control-selection`.\n&quot;
+              + &quot;\n&quot;
+              + &quot;Any control objective specified within `exclude-controls` must first be within a range of explicitly included control objectives, via `include-objectives` or `include-all`.&quot;
+  )
+  public static class ControlObjectiveSelection {
+    /**
+     * &quot;A human-readable description of this collection of control objectives.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Control Objectives Description&quot;,
+        description = &quot;A human-readable description of this collection of control objectives.&quot;,
+        useName = &quot;description&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _description;
+
+    @BoundAssembly(
+        formalName = &quot;Property&quot;,
+        description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+        useName = &quot;prop&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;props&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Property&gt; _props;
+
+    @BoundAssembly(
+        formalName = &quot;Link&quot;,
+        description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+        useName = &quot;link&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;links&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;Link&gt; _links;
+
+    @BoundAssembly(
+        formalName = &quot;Include All&quot;,
+        description = &quot;Include all controls from the imported catalog or profile resources.&quot;,
+        useName = &quot;include-all&quot;,
+        minOccurs = 1
+    )
+    private IncludeAll _includeAll;
+
+    @BoundAssembly(
+        formalName = &quot;Select Objective&quot;,
+        description = &quot;Used to select a control objective for inclusion/exclusion based on the control objective's identifier.&quot;,
+        useName = &quot;include-objective&quot;,
+        minOccurs = 1,
+        maxOccurs = -1,
+        remarks = &quot;Used to select a control objective for inclusion by the control objective's identifier.&quot;
+    )
+    @GroupAs(
+        name = &quot;include-objectives&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;SelectObjectiveById&gt; _includeObjectives;
+
+    @BoundAssembly(
+        formalName = &quot;Select Objective&quot;,
+        description = &quot;Used to select a control objective for inclusion/exclusion based on the control objective's identifier.&quot;,
+        useName = &quot;exclude-objective&quot;,
+        maxOccurs = -1,
+        remarks = &quot;Used to select a control objective for exclusion by the control objective's identifier.&quot;
+    )
+    @GroupAs(
+        name = &quot;exclude-objectives&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;SelectObjectiveById&gt; _excludeObjectives;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L615">    public ControlObjectiveSelection() {</span>
 <span class="nc" id="L616">    }</span>
 
     public MarkupMultiline getDescription() {
@@ -693,66 +693,66 @@ public class ReviewedControls {
 <span class="nc" id="L693">      _includeAll = value;</span>
 <span class="nc" id="L694">    }</span>
 
-    public List&lt;SelectControlById&gt; getIncludeControls() {
-<span class="nc" id="L697">      return _includeControls;</span>
+    public List&lt;SelectObjectiveById&gt; getIncludeObjectives() {
+<span class="nc" id="L697">      return _includeObjectives;</span>
     }
 
-    public void setIncludeControls(List&lt;SelectControlById&gt; value) {
-<span class="nc" id="L701">      _includeControls = value;</span>
+    public void setIncludeObjectives(List&lt;SelectObjectiveById&gt; value) {
+<span class="nc" id="L701">      _includeObjectives = value;</span>
 <span class="nc" id="L702">    }</span>
 
     /**
-     * Add a new {@link SelectControlById} item to the underlying collection.
+     * Add a new {@link SelectObjectiveById} item to the underlying collection.
      * @param item the item to add
      * @return {@code true}
      */
-    public boolean addIncludeControl(SelectControlById item) {
-<span class="nc" id="L710">      SelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L711" title="All 2 branches missed.">      if (_includeControls == null) {</span>
-<span class="nc" id="L712">        _includeControls = new LinkedList&lt;&gt;();</span>
+    public boolean addIncludeObjective(SelectObjectiveById item) {
+<span class="nc" id="L710">      SelectObjectiveById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L711" title="All 2 branches missed.">      if (_includeObjectives == null) {</span>
+<span class="nc" id="L712">        _includeObjectives = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L714">      return _includeControls.add(value);</span>
+<span class="nc" id="L714">      return _includeObjectives.add(value);</span>
     }
 
     /**
-     * Remove the first matching {@link SelectControlById} item from the underlying collection.
+     * Remove the first matching {@link SelectObjectiveById} item from the underlying collection.
      * @param item the item to remove
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
-    public boolean removeIncludeControl(SelectControlById item) {
-<span class="nc" id="L723">      SelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L724" title="All 2 branches missed.">      return _includeControls == null ? false : _includeControls.remove(value);</span>
+    public boolean removeIncludeObjective(SelectObjectiveById item) {
+<span class="nc" id="L723">      SelectObjectiveById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L724" title="All 2 branches missed.">      return _includeObjectives == null ? false : _includeObjectives.remove(value);</span>
     }
 
-    public List&lt;SelectControlById&gt; getExcludeControls() {
-<span class="nc" id="L728">      return _excludeControls;</span>
+    public List&lt;SelectObjectiveById&gt; getExcludeObjectives() {
+<span class="nc" id="L728">      return _excludeObjectives;</span>
     }
 
-    public void setExcludeControls(List&lt;SelectControlById&gt; value) {
-<span class="nc" id="L732">      _excludeControls = value;</span>
+    public void setExcludeObjectives(List&lt;SelectObjectiveById&gt; value) {
+<span class="nc" id="L732">      _excludeObjectives = value;</span>
 <span class="nc" id="L733">    }</span>
 
     /**
-     * Add a new {@link SelectControlById} item to the underlying collection.
+     * Add a new {@link SelectObjectiveById} item to the underlying collection.
      * @param item the item to add
      * @return {@code true}
      */
-    public boolean addExcludeControl(SelectControlById item) {
-<span class="nc" id="L741">      SelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L742" title="All 2 branches missed.">      if (_excludeControls == null) {</span>
-<span class="nc" id="L743">        _excludeControls = new LinkedList&lt;&gt;();</span>
+    public boolean addExcludeObjective(SelectObjectiveById item) {
+<span class="nc" id="L741">      SelectObjectiveById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L742" title="All 2 branches missed.">      if (_excludeObjectives == null) {</span>
+<span class="nc" id="L743">        _excludeObjectives = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L745">      return _excludeControls.add(value);</span>
+<span class="nc" id="L745">      return _excludeObjectives.add(value);</span>
     }
 
     /**
-     * Remove the first matching {@link SelectControlById} item from the underlying collection.
+     * Remove the first matching {@link SelectObjectiveById} item from the underlying collection.
      * @param item the item to remove
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
-    public boolean removeExcludeControl(SelectControlById item) {
-<span class="nc" id="L754">      SelectControlById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L755" title="All 2 branches missed.">      return _excludeControls == null ? false : _excludeControls.remove(value);</span>
+    public boolean removeExcludeObjective(SelectObjectiveById item) {
+<span class="nc" id="L754">      SelectObjectiveById value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L755" title="All 2 branches missed.">      return _excludeObjectives == null ? false : _excludeObjectives.remove(value);</span>
     }
 
     public MarkupMultiline getRemarks() {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="FORMAT" timestamp="1689875021193">
-    <module artifactId="liboscal-java" groupId="gov.nist.secauto.oscal" version="2.0.0"/>
+<licensePluginReport goal="FORMAT" timestamp="1690911500457">
+    <module artifactId="liboscal-java" groupId="gov.nist.secauto.oscal" version="3.0.0"/>
     <files>
         <file path="src/test/java/gov/nist/secauto/oscal/java/ExamplesTest.java" result="NOOP"/>
         <file path="src/test/java/gov/nist/secauto/oscal/java/MetaschemaVisitorTest.java" result="NOOP"/>

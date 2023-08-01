@@ -495,322 +495,322 @@
 <span class="sourceLineNo">486</span><a id="line.486">  }</a>
 <span class="sourceLineNo">487</span><a id="line.487"></a>
 <span class="sourceLineNo">488</span><a id="line.488">  /**</a>
-<span class="sourceLineNo">489</span><a id="line.489">   * Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.</a>
+<span class="sourceLineNo">489</span><a id="line.489">   * A set of textual statements, typically written by the assessor.</a>
 <span class="sourceLineNo">490</span><a id="line.490">   */</a>
 <span class="sourceLineNo">491</span><a id="line.491">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">492</span><a id="line.492">      formalName = "Local Definitions",</a>
-<span class="sourceLineNo">493</span><a id="line.493">      description = "Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.",</a>
-<span class="sourceLineNo">494</span><a id="line.494">      name = "local-definitions",</a>
+<span class="sourceLineNo">492</span><a id="line.492">      formalName = "Attestation Statements",</a>
+<span class="sourceLineNo">493</span><a id="line.493">      description = "A set of textual statements, typically written by the assessor.",</a>
+<span class="sourceLineNo">494</span><a id="line.494">      name = "attestation",</a>
 <span class="sourceLineNo">495</span><a id="line.495">      metaschema = OscalArMetaschema.class</a>
 <span class="sourceLineNo">496</span><a id="line.496">  )</a>
 <span class="sourceLineNo">497</span><a id="line.497">  @AssemblyConstraints(</a>
-<span class="sourceLineNo">498</span><a id="line.498">      isUnique = {</a>
-<span class="sourceLineNo">499</span><a id="line.499">          @IsUnique(id = "unique-ar-local-definitions-component", level = IConstraint.Level.ERROR, target = "component", keyFields = @KeyField(target = "@uuid"), remarks = "Since multiple `component` entries can be provided, each component must have a unique `uuid`."),</a>
-<span class="sourceLineNo">500</span><a id="line.500">          @IsUnique(id = "unique-ar-local-definitions-user", level = IConstraint.Level.ERROR, target = "user", keyFields = @KeyField(target = "@uuid"), remarks = "A given `uuid` must be assigned only once to a user.")</a>
-<span class="sourceLineNo">501</span><a id="line.501">      }</a>
-<span class="sourceLineNo">502</span><a id="line.502">  )</a>
-<span class="sourceLineNo">503</span><a id="line.503">  public static class LocalDefinitions {</a>
-<span class="sourceLineNo">504</span><a id="line.504">    @BoundAssembly(</a>
-<span class="sourceLineNo">505</span><a id="line.505">        formalName = "Component",</a>
-<span class="sourceLineNo">506</span><a id="line.506">        description = "A defined component that can be part of an implemented system.",</a>
-<span class="sourceLineNo">507</span><a id="line.507">        useName = "component",</a>
-<span class="sourceLineNo">508</span><a id="line.508">        maxOccurs = -1,</a>
-<span class="sourceLineNo">509</span><a id="line.509">        remarks = "Used to add any components, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)"</a>
+<span class="sourceLineNo">498</span><a id="line.498">      isUnique = @IsUnique(id = "unique-ar-attestation-responsible-party", level = IConstraint.Level.ERROR, target = "responsible-party", keyFields = @KeyField(target = "@role-id"), remarks = "Since `responsible-party` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.")</a>
+<span class="sourceLineNo">499</span><a id="line.499">  )</a>
+<span class="sourceLineNo">500</span><a id="line.500">  public static class Attestation {</a>
+<span class="sourceLineNo">501</span><a id="line.501">    @BoundAssembly(</a>
+<span class="sourceLineNo">502</span><a id="line.502">        formalName = "Responsible Party",</a>
+<span class="sourceLineNo">503</span><a id="line.503">        description = "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.",</a>
+<span class="sourceLineNo">504</span><a id="line.504">        useName = "responsible-party",</a>
+<span class="sourceLineNo">505</span><a id="line.505">        maxOccurs = -1</a>
+<span class="sourceLineNo">506</span><a id="line.506">    )</a>
+<span class="sourceLineNo">507</span><a id="line.507">    @GroupAs(</a>
+<span class="sourceLineNo">508</span><a id="line.508">        name = "responsible-parties",</a>
+<span class="sourceLineNo">509</span><a id="line.509">        inJson = JsonGroupAsBehavior.LIST</a>
 <span class="sourceLineNo">510</span><a id="line.510">    )</a>
-<span class="sourceLineNo">511</span><a id="line.511">    @GroupAs(</a>
-<span class="sourceLineNo">512</span><a id="line.512">        name = "components",</a>
-<span class="sourceLineNo">513</span><a id="line.513">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">514</span><a id="line.514">    )</a>
-<span class="sourceLineNo">515</span><a id="line.515">    private List&lt;SystemComponent&gt; _components;</a>
-<span class="sourceLineNo">516</span><a id="line.516"></a>
-<span class="sourceLineNo">517</span><a id="line.517">    @BoundAssembly(</a>
-<span class="sourceLineNo">518</span><a id="line.518">        formalName = "Inventory Item",</a>
-<span class="sourceLineNo">519</span><a id="line.519">        description = "A single managed inventory item within the system.",</a>
-<span class="sourceLineNo">520</span><a id="line.520">        useName = "inventory-item",</a>
-<span class="sourceLineNo">521</span><a id="line.521">        maxOccurs = -1,</a>
-<span class="sourceLineNo">522</span><a id="line.522">        remarks = "Used to add any inventory-items, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)"</a>
+<span class="sourceLineNo">511</span><a id="line.511">    private List&lt;ResponsibleParty&gt; _responsibleParties;</a>
+<span class="sourceLineNo">512</span><a id="line.512"></a>
+<span class="sourceLineNo">513</span><a id="line.513">    @BoundAssembly(</a>
+<span class="sourceLineNo">514</span><a id="line.514">        formalName = "Assessment Part",</a>
+<span class="sourceLineNo">515</span><a id="line.515">        description = "A partition of an assessment plan or results or a child of another part.",</a>
+<span class="sourceLineNo">516</span><a id="line.516">        useName = "part",</a>
+<span class="sourceLineNo">517</span><a id="line.517">        minOccurs = 1,</a>
+<span class="sourceLineNo">518</span><a id="line.518">        maxOccurs = -1</a>
+<span class="sourceLineNo">519</span><a id="line.519">    )</a>
+<span class="sourceLineNo">520</span><a id="line.520">    @GroupAs(</a>
+<span class="sourceLineNo">521</span><a id="line.521">        name = "parts",</a>
+<span class="sourceLineNo">522</span><a id="line.522">        inJson = JsonGroupAsBehavior.LIST</a>
 <span class="sourceLineNo">523</span><a id="line.523">    )</a>
-<span class="sourceLineNo">524</span><a id="line.524">    @GroupAs(</a>
-<span class="sourceLineNo">525</span><a id="line.525">        name = "inventory-items",</a>
-<span class="sourceLineNo">526</span><a id="line.526">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">527</span><a id="line.527">    )</a>
-<span class="sourceLineNo">528</span><a id="line.528">    private List&lt;InventoryItem&gt; _inventoryItems;</a>
-<span class="sourceLineNo">529</span><a id="line.529"></a>
-<span class="sourceLineNo">530</span><a id="line.530">    @BoundAssembly(</a>
-<span class="sourceLineNo">531</span><a id="line.531">        formalName = "System User",</a>
-<span class="sourceLineNo">532</span><a id="line.532">        description = "A type of user that interacts with the system based on an associated role.",</a>
-<span class="sourceLineNo">533</span><a id="line.533">        useName = "user",</a>
-<span class="sourceLineNo">534</span><a id="line.534">        maxOccurs = -1,</a>
-<span class="sourceLineNo">535</span><a id="line.535">        remarks = "Used to add any users, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)"</a>
-<span class="sourceLineNo">536</span><a id="line.536">    )</a>
-<span class="sourceLineNo">537</span><a id="line.537">    @GroupAs(</a>
-<span class="sourceLineNo">538</span><a id="line.538">        name = "users",</a>
-<span class="sourceLineNo">539</span><a id="line.539">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">540</span><a id="line.540">    )</a>
-<span class="sourceLineNo">541</span><a id="line.541">    private List&lt;SystemUser&gt; _users;</a>
-<span class="sourceLineNo">542</span><a id="line.542"></a>
-<span class="sourceLineNo">543</span><a id="line.543">    @BoundAssembly(</a>
-<span class="sourceLineNo">544</span><a id="line.544">        formalName = "Assessment Assets",</a>
-<span class="sourceLineNo">545</span><a id="line.545">        description = "Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.",</a>
-<span class="sourceLineNo">546</span><a id="line.546">        useName = "assessment-assets",</a>
-<span class="sourceLineNo">547</span><a id="line.547">        remarks = "This needs to be defined in the results if an assessment platform used is different from the one described in the assessment plan. Else the platform(s) defined in the plan may be referenced within the results."</a>
-<span class="sourceLineNo">548</span><a id="line.548">    )</a>
-<span class="sourceLineNo">549</span><a id="line.549">    private AssessmentAssets _assessmentAssets;</a>
-<span class="sourceLineNo">550</span><a id="line.550"></a>
-<span class="sourceLineNo">551</span><a id="line.551">    @BoundAssembly(</a>
-<span class="sourceLineNo">552</span><a id="line.552">        formalName = "Task",</a>
-<span class="sourceLineNo">553</span><a id="line.553">        description = "Represents a scheduled event or milestone, which may be associated with a series of assessment actions.",</a>
-<span class="sourceLineNo">554</span><a id="line.554">        useName = "assessment-task",</a>
-<span class="sourceLineNo">555</span><a id="line.555">        maxOccurs = -1</a>
-<span class="sourceLineNo">556</span><a id="line.556">    )</a>
-<span class="sourceLineNo">557</span><a id="line.557">    @GroupAs(</a>
-<span class="sourceLineNo">558</span><a id="line.558">        name = "tasks",</a>
-<span class="sourceLineNo">559</span><a id="line.559">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">560</span><a id="line.560">    )</a>
-<span class="sourceLineNo">561</span><a id="line.561">    private List&lt;Task&gt; _tasks;</a>
-<span class="sourceLineNo">562</span><a id="line.562"></a>
-<span class="sourceLineNo">563</span><a id="line.563">    public LocalDefinitions() {</a>
-<span class="sourceLineNo">564</span><a id="line.564">    }</a>
-<span class="sourceLineNo">565</span><a id="line.565"></a>
-<span class="sourceLineNo">566</span><a id="line.566">    public List&lt;SystemComponent&gt; getComponents() {</a>
-<span class="sourceLineNo">567</span><a id="line.567">      return _components;</a>
-<span class="sourceLineNo">568</span><a id="line.568">    }</a>
-<span class="sourceLineNo">569</span><a id="line.569"></a>
-<span class="sourceLineNo">570</span><a id="line.570">    public void setComponents(List&lt;SystemComponent&gt; value) {</a>
-<span class="sourceLineNo">571</span><a id="line.571">      _components = value;</a>
-<span class="sourceLineNo">572</span><a id="line.572">    }</a>
-<span class="sourceLineNo">573</span><a id="line.573"></a>
-<span class="sourceLineNo">574</span><a id="line.574">    /**</a>
-<span class="sourceLineNo">575</span><a id="line.575">     * Add a new {@link SystemComponent} item to the underlying collection.</a>
-<span class="sourceLineNo">576</span><a id="line.576">     * @param item the item to add</a>
-<span class="sourceLineNo">577</span><a id="line.577">     * @return {@code true}</a>
-<span class="sourceLineNo">578</span><a id="line.578">     */</a>
-<span class="sourceLineNo">579</span><a id="line.579">    public boolean addComponent(SystemComponent item) {</a>
-<span class="sourceLineNo">580</span><a id="line.580">      SystemComponent value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">581</span><a id="line.581">      if (_components == null) {</a>
-<span class="sourceLineNo">582</span><a id="line.582">        _components = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">583</span><a id="line.583">      }</a>
-<span class="sourceLineNo">584</span><a id="line.584">      return _components.add(value);</a>
-<span class="sourceLineNo">585</span><a id="line.585">    }</a>
-<span class="sourceLineNo">586</span><a id="line.586"></a>
-<span class="sourceLineNo">587</span><a id="line.587">    /**</a>
-<span class="sourceLineNo">588</span><a id="line.588">     * Remove the first matching {@link SystemComponent} item from the underlying collection.</a>
-<span class="sourceLineNo">589</span><a id="line.589">     * @param item the item to remove</a>
-<span class="sourceLineNo">590</span><a id="line.590">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">591</span><a id="line.591">     */</a>
-<span class="sourceLineNo">592</span><a id="line.592">    public boolean removeComponent(SystemComponent item) {</a>
-<span class="sourceLineNo">593</span><a id="line.593">      SystemComponent value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">594</span><a id="line.594">      return _components == null ? false : _components.remove(value);</a>
-<span class="sourceLineNo">595</span><a id="line.595">    }</a>
+<span class="sourceLineNo">524</span><a id="line.524">    private List&lt;AssessmentPart&gt; _parts;</a>
+<span class="sourceLineNo">525</span><a id="line.525"></a>
+<span class="sourceLineNo">526</span><a id="line.526">    public Attestation() {</a>
+<span class="sourceLineNo">527</span><a id="line.527">    }</a>
+<span class="sourceLineNo">528</span><a id="line.528"></a>
+<span class="sourceLineNo">529</span><a id="line.529">    public List&lt;ResponsibleParty&gt; getResponsibleParties() {</a>
+<span class="sourceLineNo">530</span><a id="line.530">      return _responsibleParties;</a>
+<span class="sourceLineNo">531</span><a id="line.531">    }</a>
+<span class="sourceLineNo">532</span><a id="line.532"></a>
+<span class="sourceLineNo">533</span><a id="line.533">    public void setResponsibleParties(List&lt;ResponsibleParty&gt; value) {</a>
+<span class="sourceLineNo">534</span><a id="line.534">      _responsibleParties = value;</a>
+<span class="sourceLineNo">535</span><a id="line.535">    }</a>
+<span class="sourceLineNo">536</span><a id="line.536"></a>
+<span class="sourceLineNo">537</span><a id="line.537">    /**</a>
+<span class="sourceLineNo">538</span><a id="line.538">     * Add a new {@link ResponsibleParty} item to the underlying collection.</a>
+<span class="sourceLineNo">539</span><a id="line.539">     * @param item the item to add</a>
+<span class="sourceLineNo">540</span><a id="line.540">     * @return {@code true}</a>
+<span class="sourceLineNo">541</span><a id="line.541">     */</a>
+<span class="sourceLineNo">542</span><a id="line.542">    public boolean addResponsibleParty(ResponsibleParty item) {</a>
+<span class="sourceLineNo">543</span><a id="line.543">      ResponsibleParty value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">544</span><a id="line.544">      if (_responsibleParties == null) {</a>
+<span class="sourceLineNo">545</span><a id="line.545">        _responsibleParties = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">546</span><a id="line.546">      }</a>
+<span class="sourceLineNo">547</span><a id="line.547">      return _responsibleParties.add(value);</a>
+<span class="sourceLineNo">548</span><a id="line.548">    }</a>
+<span class="sourceLineNo">549</span><a id="line.549"></a>
+<span class="sourceLineNo">550</span><a id="line.550">    /**</a>
+<span class="sourceLineNo">551</span><a id="line.551">     * Remove the first matching {@link ResponsibleParty} item from the underlying collection.</a>
+<span class="sourceLineNo">552</span><a id="line.552">     * @param item the item to remove</a>
+<span class="sourceLineNo">553</span><a id="line.553">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">554</span><a id="line.554">     */</a>
+<span class="sourceLineNo">555</span><a id="line.555">    public boolean removeResponsibleParty(ResponsibleParty item) {</a>
+<span class="sourceLineNo">556</span><a id="line.556">      ResponsibleParty value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">557</span><a id="line.557">      return _responsibleParties == null ? false : _responsibleParties.remove(value);</a>
+<span class="sourceLineNo">558</span><a id="line.558">    }</a>
+<span class="sourceLineNo">559</span><a id="line.559"></a>
+<span class="sourceLineNo">560</span><a id="line.560">    public List&lt;AssessmentPart&gt; getParts() {</a>
+<span class="sourceLineNo">561</span><a id="line.561">      return _parts;</a>
+<span class="sourceLineNo">562</span><a id="line.562">    }</a>
+<span class="sourceLineNo">563</span><a id="line.563"></a>
+<span class="sourceLineNo">564</span><a id="line.564">    public void setParts(List&lt;AssessmentPart&gt; value) {</a>
+<span class="sourceLineNo">565</span><a id="line.565">      _parts = value;</a>
+<span class="sourceLineNo">566</span><a id="line.566">    }</a>
+<span class="sourceLineNo">567</span><a id="line.567"></a>
+<span class="sourceLineNo">568</span><a id="line.568">    /**</a>
+<span class="sourceLineNo">569</span><a id="line.569">     * Add a new {@link AssessmentPart} item to the underlying collection.</a>
+<span class="sourceLineNo">570</span><a id="line.570">     * @param item the item to add</a>
+<span class="sourceLineNo">571</span><a id="line.571">     * @return {@code true}</a>
+<span class="sourceLineNo">572</span><a id="line.572">     */</a>
+<span class="sourceLineNo">573</span><a id="line.573">    public boolean addPart(AssessmentPart item) {</a>
+<span class="sourceLineNo">574</span><a id="line.574">      AssessmentPart value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">575</span><a id="line.575">      if (_parts == null) {</a>
+<span class="sourceLineNo">576</span><a id="line.576">        _parts = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">577</span><a id="line.577">      }</a>
+<span class="sourceLineNo">578</span><a id="line.578">      return _parts.add(value);</a>
+<span class="sourceLineNo">579</span><a id="line.579">    }</a>
+<span class="sourceLineNo">580</span><a id="line.580"></a>
+<span class="sourceLineNo">581</span><a id="line.581">    /**</a>
+<span class="sourceLineNo">582</span><a id="line.582">     * Remove the first matching {@link AssessmentPart} item from the underlying collection.</a>
+<span class="sourceLineNo">583</span><a id="line.583">     * @param item the item to remove</a>
+<span class="sourceLineNo">584</span><a id="line.584">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">585</span><a id="line.585">     */</a>
+<span class="sourceLineNo">586</span><a id="line.586">    public boolean removePart(AssessmentPart item) {</a>
+<span class="sourceLineNo">587</span><a id="line.587">      AssessmentPart value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">588</span><a id="line.588">      return _parts == null ? false : _parts.remove(value);</a>
+<span class="sourceLineNo">589</span><a id="line.589">    }</a>
+<span class="sourceLineNo">590</span><a id="line.590"></a>
+<span class="sourceLineNo">591</span><a id="line.591">    @Override</a>
+<span class="sourceLineNo">592</span><a id="line.592">    public String toString() {</a>
+<span class="sourceLineNo">593</span><a id="line.593">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">594</span><a id="line.594">    }</a>
+<span class="sourceLineNo">595</span><a id="line.595">  }</a>
 <span class="sourceLineNo">596</span><a id="line.596"></a>
-<span class="sourceLineNo">597</span><a id="line.597">    public List&lt;InventoryItem&gt; getInventoryItems() {</a>
-<span class="sourceLineNo">598</span><a id="line.598">      return _inventoryItems;</a>
-<span class="sourceLineNo">599</span><a id="line.599">    }</a>
-<span class="sourceLineNo">600</span><a id="line.600"></a>
-<span class="sourceLineNo">601</span><a id="line.601">    public void setInventoryItems(List&lt;InventoryItem&gt; value) {</a>
-<span class="sourceLineNo">602</span><a id="line.602">      _inventoryItems = value;</a>
-<span class="sourceLineNo">603</span><a id="line.603">    }</a>
-<span class="sourceLineNo">604</span><a id="line.604"></a>
-<span class="sourceLineNo">605</span><a id="line.605">    /**</a>
-<span class="sourceLineNo">606</span><a id="line.606">     * Add a new {@link InventoryItem} item to the underlying collection.</a>
-<span class="sourceLineNo">607</span><a id="line.607">     * @param item the item to add</a>
-<span class="sourceLineNo">608</span><a id="line.608">     * @return {@code true}</a>
-<span class="sourceLineNo">609</span><a id="line.609">     */</a>
-<span class="sourceLineNo">610</span><a id="line.610">    public boolean addInventoryItem(InventoryItem item) {</a>
-<span class="sourceLineNo">611</span><a id="line.611">      InventoryItem value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">612</span><a id="line.612">      if (_inventoryItems == null) {</a>
-<span class="sourceLineNo">613</span><a id="line.613">        _inventoryItems = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">614</span><a id="line.614">      }</a>
-<span class="sourceLineNo">615</span><a id="line.615">      return _inventoryItems.add(value);</a>
-<span class="sourceLineNo">616</span><a id="line.616">    }</a>
-<span class="sourceLineNo">617</span><a id="line.617"></a>
-<span class="sourceLineNo">618</span><a id="line.618">    /**</a>
-<span class="sourceLineNo">619</span><a id="line.619">     * Remove the first matching {@link InventoryItem} item from the underlying collection.</a>
-<span class="sourceLineNo">620</span><a id="line.620">     * @param item the item to remove</a>
-<span class="sourceLineNo">621</span><a id="line.621">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">622</span><a id="line.622">     */</a>
-<span class="sourceLineNo">623</span><a id="line.623">    public boolean removeInventoryItem(InventoryItem item) {</a>
-<span class="sourceLineNo">624</span><a id="line.624">      InventoryItem value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">625</span><a id="line.625">      return _inventoryItems == null ? false : _inventoryItems.remove(value);</a>
-<span class="sourceLineNo">626</span><a id="line.626">    }</a>
-<span class="sourceLineNo">627</span><a id="line.627"></a>
-<span class="sourceLineNo">628</span><a id="line.628">    public List&lt;SystemUser&gt; getUsers() {</a>
-<span class="sourceLineNo">629</span><a id="line.629">      return _users;</a>
-<span class="sourceLineNo">630</span><a id="line.630">    }</a>
-<span class="sourceLineNo">631</span><a id="line.631"></a>
-<span class="sourceLineNo">632</span><a id="line.632">    public void setUsers(List&lt;SystemUser&gt; value) {</a>
-<span class="sourceLineNo">633</span><a id="line.633">      _users = value;</a>
-<span class="sourceLineNo">634</span><a id="line.634">    }</a>
-<span class="sourceLineNo">635</span><a id="line.635"></a>
-<span class="sourceLineNo">636</span><a id="line.636">    /**</a>
-<span class="sourceLineNo">637</span><a id="line.637">     * Add a new {@link SystemUser} item to the underlying collection.</a>
-<span class="sourceLineNo">638</span><a id="line.638">     * @param item the item to add</a>
-<span class="sourceLineNo">639</span><a id="line.639">     * @return {@code true}</a>
-<span class="sourceLineNo">640</span><a id="line.640">     */</a>
-<span class="sourceLineNo">641</span><a id="line.641">    public boolean addUser(SystemUser item) {</a>
-<span class="sourceLineNo">642</span><a id="line.642">      SystemUser value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">643</span><a id="line.643">      if (_users == null) {</a>
-<span class="sourceLineNo">644</span><a id="line.644">        _users = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">645</span><a id="line.645">      }</a>
-<span class="sourceLineNo">646</span><a id="line.646">      return _users.add(value);</a>
-<span class="sourceLineNo">647</span><a id="line.647">    }</a>
-<span class="sourceLineNo">648</span><a id="line.648"></a>
-<span class="sourceLineNo">649</span><a id="line.649">    /**</a>
-<span class="sourceLineNo">650</span><a id="line.650">     * Remove the first matching {@link SystemUser} item from the underlying collection.</a>
-<span class="sourceLineNo">651</span><a id="line.651">     * @param item the item to remove</a>
-<span class="sourceLineNo">652</span><a id="line.652">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">653</span><a id="line.653">     */</a>
-<span class="sourceLineNo">654</span><a id="line.654">    public boolean removeUser(SystemUser item) {</a>
-<span class="sourceLineNo">655</span><a id="line.655">      SystemUser value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">656</span><a id="line.656">      return _users == null ? false : _users.remove(value);</a>
-<span class="sourceLineNo">657</span><a id="line.657">    }</a>
-<span class="sourceLineNo">658</span><a id="line.658"></a>
-<span class="sourceLineNo">659</span><a id="line.659">    public AssessmentAssets getAssessmentAssets() {</a>
-<span class="sourceLineNo">660</span><a id="line.660">      return _assessmentAssets;</a>
-<span class="sourceLineNo">661</span><a id="line.661">    }</a>
-<span class="sourceLineNo">662</span><a id="line.662"></a>
-<span class="sourceLineNo">663</span><a id="line.663">    public void setAssessmentAssets(AssessmentAssets value) {</a>
-<span class="sourceLineNo">664</span><a id="line.664">      _assessmentAssets = value;</a>
-<span class="sourceLineNo">665</span><a id="line.665">    }</a>
-<span class="sourceLineNo">666</span><a id="line.666"></a>
-<span class="sourceLineNo">667</span><a id="line.667">    public List&lt;Task&gt; getTasks() {</a>
-<span class="sourceLineNo">668</span><a id="line.668">      return _tasks;</a>
-<span class="sourceLineNo">669</span><a id="line.669">    }</a>
-<span class="sourceLineNo">670</span><a id="line.670"></a>
-<span class="sourceLineNo">671</span><a id="line.671">    public void setTasks(List&lt;Task&gt; value) {</a>
-<span class="sourceLineNo">672</span><a id="line.672">      _tasks = value;</a>
+<span class="sourceLineNo">597</span><a id="line.597">  /**</a>
+<span class="sourceLineNo">598</span><a id="line.598">   * Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.</a>
+<span class="sourceLineNo">599</span><a id="line.599">   */</a>
+<span class="sourceLineNo">600</span><a id="line.600">  @MetaschemaAssembly(</a>
+<span class="sourceLineNo">601</span><a id="line.601">      formalName = "Local Definitions",</a>
+<span class="sourceLineNo">602</span><a id="line.602">      description = "Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.",</a>
+<span class="sourceLineNo">603</span><a id="line.603">      name = "local-definitions",</a>
+<span class="sourceLineNo">604</span><a id="line.604">      metaschema = OscalArMetaschema.class</a>
+<span class="sourceLineNo">605</span><a id="line.605">  )</a>
+<span class="sourceLineNo">606</span><a id="line.606">  @AssemblyConstraints(</a>
+<span class="sourceLineNo">607</span><a id="line.607">      isUnique = {</a>
+<span class="sourceLineNo">608</span><a id="line.608">          @IsUnique(id = "unique-ar-local-definitions-component", level = IConstraint.Level.ERROR, target = "component", keyFields = @KeyField(target = "@uuid"), remarks = "Since multiple `component` entries can be provided, each component must have a unique `uuid`."),</a>
+<span class="sourceLineNo">609</span><a id="line.609">          @IsUnique(id = "unique-ar-local-definitions-user", level = IConstraint.Level.ERROR, target = "user", keyFields = @KeyField(target = "@uuid"), remarks = "A given `uuid` must be assigned only once to a user.")</a>
+<span class="sourceLineNo">610</span><a id="line.610">      }</a>
+<span class="sourceLineNo">611</span><a id="line.611">  )</a>
+<span class="sourceLineNo">612</span><a id="line.612">  public static class LocalDefinitions {</a>
+<span class="sourceLineNo">613</span><a id="line.613">    @BoundAssembly(</a>
+<span class="sourceLineNo">614</span><a id="line.614">        formalName = "Component",</a>
+<span class="sourceLineNo">615</span><a id="line.615">        description = "A defined component that can be part of an implemented system.",</a>
+<span class="sourceLineNo">616</span><a id="line.616">        useName = "component",</a>
+<span class="sourceLineNo">617</span><a id="line.617">        maxOccurs = -1,</a>
+<span class="sourceLineNo">618</span><a id="line.618">        remarks = "Used to add any components, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)"</a>
+<span class="sourceLineNo">619</span><a id="line.619">    )</a>
+<span class="sourceLineNo">620</span><a id="line.620">    @GroupAs(</a>
+<span class="sourceLineNo">621</span><a id="line.621">        name = "components",</a>
+<span class="sourceLineNo">622</span><a id="line.622">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">623</span><a id="line.623">    )</a>
+<span class="sourceLineNo">624</span><a id="line.624">    private List&lt;SystemComponent&gt; _components;</a>
+<span class="sourceLineNo">625</span><a id="line.625"></a>
+<span class="sourceLineNo">626</span><a id="line.626">    @BoundAssembly(</a>
+<span class="sourceLineNo">627</span><a id="line.627">        formalName = "Inventory Item",</a>
+<span class="sourceLineNo">628</span><a id="line.628">        description = "A single managed inventory item within the system.",</a>
+<span class="sourceLineNo">629</span><a id="line.629">        useName = "inventory-item",</a>
+<span class="sourceLineNo">630</span><a id="line.630">        maxOccurs = -1,</a>
+<span class="sourceLineNo">631</span><a id="line.631">        remarks = "Used to add any inventory-items, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)"</a>
+<span class="sourceLineNo">632</span><a id="line.632">    )</a>
+<span class="sourceLineNo">633</span><a id="line.633">    @GroupAs(</a>
+<span class="sourceLineNo">634</span><a id="line.634">        name = "inventory-items",</a>
+<span class="sourceLineNo">635</span><a id="line.635">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">636</span><a id="line.636">    )</a>
+<span class="sourceLineNo">637</span><a id="line.637">    private List&lt;InventoryItem&gt; _inventoryItems;</a>
+<span class="sourceLineNo">638</span><a id="line.638"></a>
+<span class="sourceLineNo">639</span><a id="line.639">    @BoundAssembly(</a>
+<span class="sourceLineNo">640</span><a id="line.640">        formalName = "System User",</a>
+<span class="sourceLineNo">641</span><a id="line.641">        description = "A type of user that interacts with the system based on an associated role.",</a>
+<span class="sourceLineNo">642</span><a id="line.642">        useName = "user",</a>
+<span class="sourceLineNo">643</span><a id="line.643">        maxOccurs = -1,</a>
+<span class="sourceLineNo">644</span><a id="line.644">        remarks = "Used to add any users, not defined via the System Security Plan (AR-\\&gt;AP-\\&gt;SSP)"</a>
+<span class="sourceLineNo">645</span><a id="line.645">    )</a>
+<span class="sourceLineNo">646</span><a id="line.646">    @GroupAs(</a>
+<span class="sourceLineNo">647</span><a id="line.647">        name = "users",</a>
+<span class="sourceLineNo">648</span><a id="line.648">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">649</span><a id="line.649">    )</a>
+<span class="sourceLineNo">650</span><a id="line.650">    private List&lt;SystemUser&gt; _users;</a>
+<span class="sourceLineNo">651</span><a id="line.651"></a>
+<span class="sourceLineNo">652</span><a id="line.652">    @BoundAssembly(</a>
+<span class="sourceLineNo">653</span><a id="line.653">        formalName = "Assessment Assets",</a>
+<span class="sourceLineNo">654</span><a id="line.654">        description = "Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.",</a>
+<span class="sourceLineNo">655</span><a id="line.655">        useName = "assessment-assets",</a>
+<span class="sourceLineNo">656</span><a id="line.656">        remarks = "This needs to be defined in the results if an assessment platform used is different from the one described in the assessment plan. Else the platform(s) defined in the plan may be referenced within the results."</a>
+<span class="sourceLineNo">657</span><a id="line.657">    )</a>
+<span class="sourceLineNo">658</span><a id="line.658">    private AssessmentAssets _assessmentAssets;</a>
+<span class="sourceLineNo">659</span><a id="line.659"></a>
+<span class="sourceLineNo">660</span><a id="line.660">    @BoundAssembly(</a>
+<span class="sourceLineNo">661</span><a id="line.661">        formalName = "Task",</a>
+<span class="sourceLineNo">662</span><a id="line.662">        description = "Represents a scheduled event or milestone, which may be associated with a series of assessment actions.",</a>
+<span class="sourceLineNo">663</span><a id="line.663">        useName = "assessment-task",</a>
+<span class="sourceLineNo">664</span><a id="line.664">        maxOccurs = -1</a>
+<span class="sourceLineNo">665</span><a id="line.665">    )</a>
+<span class="sourceLineNo">666</span><a id="line.666">    @GroupAs(</a>
+<span class="sourceLineNo">667</span><a id="line.667">        name = "tasks",</a>
+<span class="sourceLineNo">668</span><a id="line.668">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">669</span><a id="line.669">    )</a>
+<span class="sourceLineNo">670</span><a id="line.670">    private List&lt;Task&gt; _tasks;</a>
+<span class="sourceLineNo">671</span><a id="line.671"></a>
+<span class="sourceLineNo">672</span><a id="line.672">    public LocalDefinitions() {</a>
 <span class="sourceLineNo">673</span><a id="line.673">    }</a>
 <span class="sourceLineNo">674</span><a id="line.674"></a>
-<span class="sourceLineNo">675</span><a id="line.675">    /**</a>
-<span class="sourceLineNo">676</span><a id="line.676">     * Add a new {@link Task} item to the underlying collection.</a>
-<span class="sourceLineNo">677</span><a id="line.677">     * @param item the item to add</a>
-<span class="sourceLineNo">678</span><a id="line.678">     * @return {@code true}</a>
-<span class="sourceLineNo">679</span><a id="line.679">     */</a>
-<span class="sourceLineNo">680</span><a id="line.680">    public boolean addAssessmentTask(Task item) {</a>
-<span class="sourceLineNo">681</span><a id="line.681">      Task value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">682</span><a id="line.682">      if (_tasks == null) {</a>
-<span class="sourceLineNo">683</span><a id="line.683">        _tasks = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">684</span><a id="line.684">      }</a>
-<span class="sourceLineNo">685</span><a id="line.685">      return _tasks.add(value);</a>
-<span class="sourceLineNo">686</span><a id="line.686">    }</a>
-<span class="sourceLineNo">687</span><a id="line.687"></a>
-<span class="sourceLineNo">688</span><a id="line.688">    /**</a>
-<span class="sourceLineNo">689</span><a id="line.689">     * Remove the first matching {@link Task} item from the underlying collection.</a>
-<span class="sourceLineNo">690</span><a id="line.690">     * @param item the item to remove</a>
-<span class="sourceLineNo">691</span><a id="line.691">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">692</span><a id="line.692">     */</a>
-<span class="sourceLineNo">693</span><a id="line.693">    public boolean removeAssessmentTask(Task item) {</a>
-<span class="sourceLineNo">694</span><a id="line.694">      Task value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">695</span><a id="line.695">      return _tasks == null ? false : _tasks.remove(value);</a>
-<span class="sourceLineNo">696</span><a id="line.696">    }</a>
-<span class="sourceLineNo">697</span><a id="line.697"></a>
-<span class="sourceLineNo">698</span><a id="line.698">    @Override</a>
-<span class="sourceLineNo">699</span><a id="line.699">    public String toString() {</a>
-<span class="sourceLineNo">700</span><a id="line.700">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
-<span class="sourceLineNo">701</span><a id="line.701">    }</a>
-<span class="sourceLineNo">702</span><a id="line.702">  }</a>
-<span class="sourceLineNo">703</span><a id="line.703"></a>
-<span class="sourceLineNo">704</span><a id="line.704">  /**</a>
-<span class="sourceLineNo">705</span><a id="line.705">   * A set of textual statements, typically written by the assessor.</a>
-<span class="sourceLineNo">706</span><a id="line.706">   */</a>
-<span class="sourceLineNo">707</span><a id="line.707">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">708</span><a id="line.708">      formalName = "Attestation Statements",</a>
-<span class="sourceLineNo">709</span><a id="line.709">      description = "A set of textual statements, typically written by the assessor.",</a>
-<span class="sourceLineNo">710</span><a id="line.710">      name = "attestation",</a>
-<span class="sourceLineNo">711</span><a id="line.711">      metaschema = OscalArMetaschema.class</a>
-<span class="sourceLineNo">712</span><a id="line.712">  )</a>
-<span class="sourceLineNo">713</span><a id="line.713">  @AssemblyConstraints(</a>
-<span class="sourceLineNo">714</span><a id="line.714">      isUnique = @IsUnique(id = "unique-ar-attestation-responsible-party", level = IConstraint.Level.ERROR, target = "responsible-party", keyFields = @KeyField(target = "@role-id"), remarks = "Since `responsible-party` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.")</a>
-<span class="sourceLineNo">715</span><a id="line.715">  )</a>
-<span class="sourceLineNo">716</span><a id="line.716">  public static class Attestation {</a>
-<span class="sourceLineNo">717</span><a id="line.717">    @BoundAssembly(</a>
-<span class="sourceLineNo">718</span><a id="line.718">        formalName = "Responsible Party",</a>
-<span class="sourceLineNo">719</span><a id="line.719">        description = "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.",</a>
-<span class="sourceLineNo">720</span><a id="line.720">        useName = "responsible-party",</a>
-<span class="sourceLineNo">721</span><a id="line.721">        maxOccurs = -1</a>
-<span class="sourceLineNo">722</span><a id="line.722">    )</a>
-<span class="sourceLineNo">723</span><a id="line.723">    @GroupAs(</a>
-<span class="sourceLineNo">724</span><a id="line.724">        name = "responsible-parties",</a>
-<span class="sourceLineNo">725</span><a id="line.725">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">726</span><a id="line.726">    )</a>
-<span class="sourceLineNo">727</span><a id="line.727">    private List&lt;ResponsibleParty&gt; _responsibleParties;</a>
-<span class="sourceLineNo">728</span><a id="line.728"></a>
-<span class="sourceLineNo">729</span><a id="line.729">    @BoundAssembly(</a>
-<span class="sourceLineNo">730</span><a id="line.730">        formalName = "Assessment Part",</a>
-<span class="sourceLineNo">731</span><a id="line.731">        description = "A partition of an assessment plan or results or a child of another part.",</a>
-<span class="sourceLineNo">732</span><a id="line.732">        useName = "part",</a>
-<span class="sourceLineNo">733</span><a id="line.733">        minOccurs = 1,</a>
-<span class="sourceLineNo">734</span><a id="line.734">        maxOccurs = -1</a>
-<span class="sourceLineNo">735</span><a id="line.735">    )</a>
-<span class="sourceLineNo">736</span><a id="line.736">    @GroupAs(</a>
-<span class="sourceLineNo">737</span><a id="line.737">        name = "parts",</a>
-<span class="sourceLineNo">738</span><a id="line.738">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">739</span><a id="line.739">    )</a>
-<span class="sourceLineNo">740</span><a id="line.740">    private List&lt;AssessmentPart&gt; _parts;</a>
-<span class="sourceLineNo">741</span><a id="line.741"></a>
-<span class="sourceLineNo">742</span><a id="line.742">    public Attestation() {</a>
+<span class="sourceLineNo">675</span><a id="line.675">    public List&lt;SystemComponent&gt; getComponents() {</a>
+<span class="sourceLineNo">676</span><a id="line.676">      return _components;</a>
+<span class="sourceLineNo">677</span><a id="line.677">    }</a>
+<span class="sourceLineNo">678</span><a id="line.678"></a>
+<span class="sourceLineNo">679</span><a id="line.679">    public void setComponents(List&lt;SystemComponent&gt; value) {</a>
+<span class="sourceLineNo">680</span><a id="line.680">      _components = value;</a>
+<span class="sourceLineNo">681</span><a id="line.681">    }</a>
+<span class="sourceLineNo">682</span><a id="line.682"></a>
+<span class="sourceLineNo">683</span><a id="line.683">    /**</a>
+<span class="sourceLineNo">684</span><a id="line.684">     * Add a new {@link SystemComponent} item to the underlying collection.</a>
+<span class="sourceLineNo">685</span><a id="line.685">     * @param item the item to add</a>
+<span class="sourceLineNo">686</span><a id="line.686">     * @return {@code true}</a>
+<span class="sourceLineNo">687</span><a id="line.687">     */</a>
+<span class="sourceLineNo">688</span><a id="line.688">    public boolean addComponent(SystemComponent item) {</a>
+<span class="sourceLineNo">689</span><a id="line.689">      SystemComponent value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">690</span><a id="line.690">      if (_components == null) {</a>
+<span class="sourceLineNo">691</span><a id="line.691">        _components = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">692</span><a id="line.692">      }</a>
+<span class="sourceLineNo">693</span><a id="line.693">      return _components.add(value);</a>
+<span class="sourceLineNo">694</span><a id="line.694">    }</a>
+<span class="sourceLineNo">695</span><a id="line.695"></a>
+<span class="sourceLineNo">696</span><a id="line.696">    /**</a>
+<span class="sourceLineNo">697</span><a id="line.697">     * Remove the first matching {@link SystemComponent} item from the underlying collection.</a>
+<span class="sourceLineNo">698</span><a id="line.698">     * @param item the item to remove</a>
+<span class="sourceLineNo">699</span><a id="line.699">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">700</span><a id="line.700">     */</a>
+<span class="sourceLineNo">701</span><a id="line.701">    public boolean removeComponent(SystemComponent item) {</a>
+<span class="sourceLineNo">702</span><a id="line.702">      SystemComponent value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">703</span><a id="line.703">      return _components == null ? false : _components.remove(value);</a>
+<span class="sourceLineNo">704</span><a id="line.704">    }</a>
+<span class="sourceLineNo">705</span><a id="line.705"></a>
+<span class="sourceLineNo">706</span><a id="line.706">    public List&lt;InventoryItem&gt; getInventoryItems() {</a>
+<span class="sourceLineNo">707</span><a id="line.707">      return _inventoryItems;</a>
+<span class="sourceLineNo">708</span><a id="line.708">    }</a>
+<span class="sourceLineNo">709</span><a id="line.709"></a>
+<span class="sourceLineNo">710</span><a id="line.710">    public void setInventoryItems(List&lt;InventoryItem&gt; value) {</a>
+<span class="sourceLineNo">711</span><a id="line.711">      _inventoryItems = value;</a>
+<span class="sourceLineNo">712</span><a id="line.712">    }</a>
+<span class="sourceLineNo">713</span><a id="line.713"></a>
+<span class="sourceLineNo">714</span><a id="line.714">    /**</a>
+<span class="sourceLineNo">715</span><a id="line.715">     * Add a new {@link InventoryItem} item to the underlying collection.</a>
+<span class="sourceLineNo">716</span><a id="line.716">     * @param item the item to add</a>
+<span class="sourceLineNo">717</span><a id="line.717">     * @return {@code true}</a>
+<span class="sourceLineNo">718</span><a id="line.718">     */</a>
+<span class="sourceLineNo">719</span><a id="line.719">    public boolean addInventoryItem(InventoryItem item) {</a>
+<span class="sourceLineNo">720</span><a id="line.720">      InventoryItem value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">721</span><a id="line.721">      if (_inventoryItems == null) {</a>
+<span class="sourceLineNo">722</span><a id="line.722">        _inventoryItems = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">723</span><a id="line.723">      }</a>
+<span class="sourceLineNo">724</span><a id="line.724">      return _inventoryItems.add(value);</a>
+<span class="sourceLineNo">725</span><a id="line.725">    }</a>
+<span class="sourceLineNo">726</span><a id="line.726"></a>
+<span class="sourceLineNo">727</span><a id="line.727">    /**</a>
+<span class="sourceLineNo">728</span><a id="line.728">     * Remove the first matching {@link InventoryItem} item from the underlying collection.</a>
+<span class="sourceLineNo">729</span><a id="line.729">     * @param item the item to remove</a>
+<span class="sourceLineNo">730</span><a id="line.730">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">731</span><a id="line.731">     */</a>
+<span class="sourceLineNo">732</span><a id="line.732">    public boolean removeInventoryItem(InventoryItem item) {</a>
+<span class="sourceLineNo">733</span><a id="line.733">      InventoryItem value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">734</span><a id="line.734">      return _inventoryItems == null ? false : _inventoryItems.remove(value);</a>
+<span class="sourceLineNo">735</span><a id="line.735">    }</a>
+<span class="sourceLineNo">736</span><a id="line.736"></a>
+<span class="sourceLineNo">737</span><a id="line.737">    public List&lt;SystemUser&gt; getUsers() {</a>
+<span class="sourceLineNo">738</span><a id="line.738">      return _users;</a>
+<span class="sourceLineNo">739</span><a id="line.739">    }</a>
+<span class="sourceLineNo">740</span><a id="line.740"></a>
+<span class="sourceLineNo">741</span><a id="line.741">    public void setUsers(List&lt;SystemUser&gt; value) {</a>
+<span class="sourceLineNo">742</span><a id="line.742">      _users = value;</a>
 <span class="sourceLineNo">743</span><a id="line.743">    }</a>
 <span class="sourceLineNo">744</span><a id="line.744"></a>
-<span class="sourceLineNo">745</span><a id="line.745">    public List&lt;ResponsibleParty&gt; getResponsibleParties() {</a>
-<span class="sourceLineNo">746</span><a id="line.746">      return _responsibleParties;</a>
-<span class="sourceLineNo">747</span><a id="line.747">    }</a>
-<span class="sourceLineNo">748</span><a id="line.748"></a>
-<span class="sourceLineNo">749</span><a id="line.749">    public void setResponsibleParties(List&lt;ResponsibleParty&gt; value) {</a>
-<span class="sourceLineNo">750</span><a id="line.750">      _responsibleParties = value;</a>
-<span class="sourceLineNo">751</span><a id="line.751">    }</a>
-<span class="sourceLineNo">752</span><a id="line.752"></a>
-<span class="sourceLineNo">753</span><a id="line.753">    /**</a>
-<span class="sourceLineNo">754</span><a id="line.754">     * Add a new {@link ResponsibleParty} item to the underlying collection.</a>
-<span class="sourceLineNo">755</span><a id="line.755">     * @param item the item to add</a>
-<span class="sourceLineNo">756</span><a id="line.756">     * @return {@code true}</a>
-<span class="sourceLineNo">757</span><a id="line.757">     */</a>
-<span class="sourceLineNo">758</span><a id="line.758">    public boolean addResponsibleParty(ResponsibleParty item) {</a>
-<span class="sourceLineNo">759</span><a id="line.759">      ResponsibleParty value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">760</span><a id="line.760">      if (_responsibleParties == null) {</a>
-<span class="sourceLineNo">761</span><a id="line.761">        _responsibleParties = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">762</span><a id="line.762">      }</a>
-<span class="sourceLineNo">763</span><a id="line.763">      return _responsibleParties.add(value);</a>
-<span class="sourceLineNo">764</span><a id="line.764">    }</a>
-<span class="sourceLineNo">765</span><a id="line.765"></a>
-<span class="sourceLineNo">766</span><a id="line.766">    /**</a>
-<span class="sourceLineNo">767</span><a id="line.767">     * Remove the first matching {@link ResponsibleParty} item from the underlying collection.</a>
-<span class="sourceLineNo">768</span><a id="line.768">     * @param item the item to remove</a>
-<span class="sourceLineNo">769</span><a id="line.769">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">770</span><a id="line.770">     */</a>
-<span class="sourceLineNo">771</span><a id="line.771">    public boolean removeResponsibleParty(ResponsibleParty item) {</a>
-<span class="sourceLineNo">772</span><a id="line.772">      ResponsibleParty value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">773</span><a id="line.773">      return _responsibleParties == null ? false : _responsibleParties.remove(value);</a>
+<span class="sourceLineNo">745</span><a id="line.745">    /**</a>
+<span class="sourceLineNo">746</span><a id="line.746">     * Add a new {@link SystemUser} item to the underlying collection.</a>
+<span class="sourceLineNo">747</span><a id="line.747">     * @param item the item to add</a>
+<span class="sourceLineNo">748</span><a id="line.748">     * @return {@code true}</a>
+<span class="sourceLineNo">749</span><a id="line.749">     */</a>
+<span class="sourceLineNo">750</span><a id="line.750">    public boolean addUser(SystemUser item) {</a>
+<span class="sourceLineNo">751</span><a id="line.751">      SystemUser value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">752</span><a id="line.752">      if (_users == null) {</a>
+<span class="sourceLineNo">753</span><a id="line.753">        _users = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">754</span><a id="line.754">      }</a>
+<span class="sourceLineNo">755</span><a id="line.755">      return _users.add(value);</a>
+<span class="sourceLineNo">756</span><a id="line.756">    }</a>
+<span class="sourceLineNo">757</span><a id="line.757"></a>
+<span class="sourceLineNo">758</span><a id="line.758">    /**</a>
+<span class="sourceLineNo">759</span><a id="line.759">     * Remove the first matching {@link SystemUser} item from the underlying collection.</a>
+<span class="sourceLineNo">760</span><a id="line.760">     * @param item the item to remove</a>
+<span class="sourceLineNo">761</span><a id="line.761">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">762</span><a id="line.762">     */</a>
+<span class="sourceLineNo">763</span><a id="line.763">    public boolean removeUser(SystemUser item) {</a>
+<span class="sourceLineNo">764</span><a id="line.764">      SystemUser value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">765</span><a id="line.765">      return _users == null ? false : _users.remove(value);</a>
+<span class="sourceLineNo">766</span><a id="line.766">    }</a>
+<span class="sourceLineNo">767</span><a id="line.767"></a>
+<span class="sourceLineNo">768</span><a id="line.768">    public AssessmentAssets getAssessmentAssets() {</a>
+<span class="sourceLineNo">769</span><a id="line.769">      return _assessmentAssets;</a>
+<span class="sourceLineNo">770</span><a id="line.770">    }</a>
+<span class="sourceLineNo">771</span><a id="line.771"></a>
+<span class="sourceLineNo">772</span><a id="line.772">    public void setAssessmentAssets(AssessmentAssets value) {</a>
+<span class="sourceLineNo">773</span><a id="line.773">      _assessmentAssets = value;</a>
 <span class="sourceLineNo">774</span><a id="line.774">    }</a>
 <span class="sourceLineNo">775</span><a id="line.775"></a>
-<span class="sourceLineNo">776</span><a id="line.776">    public List&lt;AssessmentPart&gt; getParts() {</a>
-<span class="sourceLineNo">777</span><a id="line.777">      return _parts;</a>
+<span class="sourceLineNo">776</span><a id="line.776">    public List&lt;Task&gt; getTasks() {</a>
+<span class="sourceLineNo">777</span><a id="line.777">      return _tasks;</a>
 <span class="sourceLineNo">778</span><a id="line.778">    }</a>
 <span class="sourceLineNo">779</span><a id="line.779"></a>
-<span class="sourceLineNo">780</span><a id="line.780">    public void setParts(List&lt;AssessmentPart&gt; value) {</a>
-<span class="sourceLineNo">781</span><a id="line.781">      _parts = value;</a>
+<span class="sourceLineNo">780</span><a id="line.780">    public void setTasks(List&lt;Task&gt; value) {</a>
+<span class="sourceLineNo">781</span><a id="line.781">      _tasks = value;</a>
 <span class="sourceLineNo">782</span><a id="line.782">    }</a>
 <span class="sourceLineNo">783</span><a id="line.783"></a>
 <span class="sourceLineNo">784</span><a id="line.784">    /**</a>
-<span class="sourceLineNo">785</span><a id="line.785">     * Add a new {@link AssessmentPart} item to the underlying collection.</a>
+<span class="sourceLineNo">785</span><a id="line.785">     * Add a new {@link Task} item to the underlying collection.</a>
 <span class="sourceLineNo">786</span><a id="line.786">     * @param item the item to add</a>
 <span class="sourceLineNo">787</span><a id="line.787">     * @return {@code true}</a>
 <span class="sourceLineNo">788</span><a id="line.788">     */</a>
-<span class="sourceLineNo">789</span><a id="line.789">    public boolean addPart(AssessmentPart item) {</a>
-<span class="sourceLineNo">790</span><a id="line.790">      AssessmentPart value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">791</span><a id="line.791">      if (_parts == null) {</a>
-<span class="sourceLineNo">792</span><a id="line.792">        _parts = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">789</span><a id="line.789">    public boolean addAssessmentTask(Task item) {</a>
+<span class="sourceLineNo">790</span><a id="line.790">      Task value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">791</span><a id="line.791">      if (_tasks == null) {</a>
+<span class="sourceLineNo">792</span><a id="line.792">        _tasks = new LinkedList&lt;&gt;();</a>
 <span class="sourceLineNo">793</span><a id="line.793">      }</a>
-<span class="sourceLineNo">794</span><a id="line.794">      return _parts.add(value);</a>
+<span class="sourceLineNo">794</span><a id="line.794">      return _tasks.add(value);</a>
 <span class="sourceLineNo">795</span><a id="line.795">    }</a>
 <span class="sourceLineNo">796</span><a id="line.796"></a>
 <span class="sourceLineNo">797</span><a id="line.797">    /**</a>
-<span class="sourceLineNo">798</span><a id="line.798">     * Remove the first matching {@link AssessmentPart} item from the underlying collection.</a>
+<span class="sourceLineNo">798</span><a id="line.798">     * Remove the first matching {@link Task} item from the underlying collection.</a>
 <span class="sourceLineNo">799</span><a id="line.799">     * @param item the item to remove</a>
 <span class="sourceLineNo">800</span><a id="line.800">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
 <span class="sourceLineNo">801</span><a id="line.801">     */</a>
-<span class="sourceLineNo">802</span><a id="line.802">    public boolean removePart(AssessmentPart item) {</a>
-<span class="sourceLineNo">803</span><a id="line.803">      AssessmentPart value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">804</span><a id="line.804">      return _parts == null ? false : _parts.remove(value);</a>
+<span class="sourceLineNo">802</span><a id="line.802">    public boolean removeAssessmentTask(Task item) {</a>
+<span class="sourceLineNo">803</span><a id="line.803">      Task value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">804</span><a id="line.804">      return _tasks == null ? false : _tasks.remove(value);</a>
 <span class="sourceLineNo">805</span><a id="line.805">    }</a>
 <span class="sourceLineNo">806</span><a id="line.806"></a>
 <span class="sourceLineNo">807</span><a id="line.807">    @Override</a>

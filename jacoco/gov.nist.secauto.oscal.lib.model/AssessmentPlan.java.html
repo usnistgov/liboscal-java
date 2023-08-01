@@ -264,71 +264,6 @@ public class AssessmentPlan extends AbstractOscalInstance {
   }
 
   /**
-   * Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Assessment Plan Terms and Conditions&quot;,
-      description = &quot;Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.&quot;,
-      name = &quot;terms-and-conditions&quot;,
-      metaschema = OscalApMetaschema.class
-  )
-  @ValueConstraints(
-      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;rules-of-engagement&quot;, description = &quot;Defines the circumstances, conditions, degree, and manner in which the use of cyber-attack techniques or actions may be applied to the assessment.&quot;), @AllowedValue(value = &quot;disclosures&quot;, description = &quot;Any information the assessor should make known to the system owner or authorizing official. Has child 'item' parts for each individual disclosure.&quot;), @AllowedValue(value = &quot;assessment-inclusions&quot;, description = &quot;Defines any assessment activities which the system owner or authorizing official wishes to ensure are performed as part of the assessment.&quot;), @AllowedValue(value = &quot;assessment-exclusions&quot;, description = &quot;Defines any assessment activities which the system owner or authorizing official explicitly prohibits from being performed as part of the assessment.&quot;), @AllowedValue(value = &quot;results-delivery&quot;, description = &quot;Defines conditions related to the delivery of the assessment results, such as when to deliver, how, and to whom.&quot;), @AllowedValue(value = &quot;assumptions&quot;, description = &quot;Defines any supposition made by the assessor. Has child 'item' parts for each assumption.&quot;), @AllowedValue(value = &quot;methodology&quot;, description = &quot;An explanation of practices, procedures, and rules used in the course of the assessment.&quot;)})
-  )
-  public static class TermsAndConditions {
-    @BoundAssembly(
-        formalName = &quot;Assessment Part&quot;,
-        description = &quot;A partition of an assessment plan or results or a child of another part.&quot;,
-        useName = &quot;part&quot;,
-        maxOccurs = -1
-    )
-    @GroupAs(
-        name = &quot;parts&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;AssessmentPart&gt; _parts;
-
-<span class="nc" id="L291">    public TermsAndConditions() {</span>
-<span class="nc" id="L292">    }</span>
-
-    public List&lt;AssessmentPart&gt; getParts() {
-<span class="nc" id="L295">      return _parts;</span>
-    }
-
-    public void setParts(List&lt;AssessmentPart&gt; value) {
-<span class="nc" id="L299">      _parts = value;</span>
-<span class="nc" id="L300">    }</span>
-
-    /**
-     * Add a new {@link AssessmentPart} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addPart(AssessmentPart item) {
-<span class="nc" id="L308">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L309" title="All 2 branches missed.">      if (_parts == null) {</span>
-<span class="nc" id="L310">        _parts = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L312">      return _parts.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link AssessmentPart} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removePart(AssessmentPart item) {
-<span class="nc" id="L321">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L322" title="All 2 branches missed.">      return _parts == null ? false : _parts.remove(value);</span>
-    }
-
-    @Override
-    public String toString() {
-<span class="nc" id="L327">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
    * Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
    */
   @MetaschemaAssembly(
@@ -417,16 +352,16 @@ public class AssessmentPlan extends AbstractOscalInstance {
     )
     private MarkupMultiline _remarks;
 
-<span class="nc" id="L420">    public LocalDefinitions() {</span>
-<span class="nc" id="L421">    }</span>
+<span class="nc" id="L355">    public LocalDefinitions() {</span>
+<span class="nc" id="L356">    }</span>
 
     public List&lt;SystemComponent&gt; getComponents() {
-<span class="nc" id="L424">      return _components;</span>
+<span class="nc" id="L359">      return _components;</span>
     }
 
     public void setComponents(List&lt;SystemComponent&gt; value) {
-<span class="nc" id="L428">      _components = value;</span>
-<span class="nc" id="L429">    }</span>
+<span class="nc" id="L363">      _components = value;</span>
+<span class="nc" id="L364">    }</span>
 
     /**
      * Add a new {@link SystemComponent} item to the underlying collection.
@@ -434,11 +369,11 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true}
      */
     public boolean addComponent(SystemComponent item) {
-<span class="nc" id="L437">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L438" title="All 2 branches missed.">      if (_components == null) {</span>
-<span class="nc" id="L439">        _components = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L372">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L373" title="All 2 branches missed.">      if (_components == null) {</span>
+<span class="nc" id="L374">        _components = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L441">      return _components.add(value);</span>
+<span class="nc" id="L376">      return _components.add(value);</span>
     }
 
     /**
@@ -447,17 +382,17 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeComponent(SystemComponent item) {
-<span class="nc" id="L450">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L451" title="All 2 branches missed.">      return _components == null ? false : _components.remove(value);</span>
+<span class="nc" id="L385">      SystemComponent value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L386" title="All 2 branches missed.">      return _components == null ? false : _components.remove(value);</span>
     }
 
     public List&lt;InventoryItem&gt; getInventoryItems() {
-<span class="nc" id="L455">      return _inventoryItems;</span>
+<span class="nc" id="L390">      return _inventoryItems;</span>
     }
 
     public void setInventoryItems(List&lt;InventoryItem&gt; value) {
-<span class="nc" id="L459">      _inventoryItems = value;</span>
-<span class="nc" id="L460">    }</span>
+<span class="nc" id="L394">      _inventoryItems = value;</span>
+<span class="nc" id="L395">    }</span>
 
     /**
      * Add a new {@link InventoryItem} item to the underlying collection.
@@ -465,11 +400,11 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true}
      */
     public boolean addInventoryItem(InventoryItem item) {
-<span class="nc" id="L468">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L469" title="All 2 branches missed.">      if (_inventoryItems == null) {</span>
-<span class="nc" id="L470">        _inventoryItems = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L403">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">      if (_inventoryItems == null) {</span>
+<span class="nc" id="L405">        _inventoryItems = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L472">      return _inventoryItems.add(value);</span>
+<span class="nc" id="L407">      return _inventoryItems.add(value);</span>
     }
 
     /**
@@ -478,17 +413,17 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeInventoryItem(InventoryItem item) {
-<span class="nc" id="L481">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L482" title="All 2 branches missed.">      return _inventoryItems == null ? false : _inventoryItems.remove(value);</span>
+<span class="nc" id="L416">      InventoryItem value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L417" title="All 2 branches missed.">      return _inventoryItems == null ? false : _inventoryItems.remove(value);</span>
     }
 
     public List&lt;SystemUser&gt; getUsers() {
-<span class="nc" id="L486">      return _users;</span>
+<span class="nc" id="L421">      return _users;</span>
     }
 
     public void setUsers(List&lt;SystemUser&gt; value) {
-<span class="nc" id="L490">      _users = value;</span>
-<span class="nc" id="L491">    }</span>
+<span class="nc" id="L425">      _users = value;</span>
+<span class="nc" id="L426">    }</span>
 
     /**
      * Add a new {@link SystemUser} item to the underlying collection.
@@ -496,11 +431,11 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true}
      */
     public boolean addUser(SystemUser item) {
-<span class="nc" id="L499">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L500" title="All 2 branches missed.">      if (_users == null) {</span>
-<span class="nc" id="L501">        _users = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L434">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">      if (_users == null) {</span>
+<span class="nc" id="L436">        _users = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L503">      return _users.add(value);</span>
+<span class="nc" id="L438">      return _users.add(value);</span>
     }
 
     /**
@@ -509,17 +444,17 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeUser(SystemUser item) {
-<span class="nc" id="L512">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L513" title="All 2 branches missed.">      return _users == null ? false : _users.remove(value);</span>
+<span class="nc" id="L447">      SystemUser value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L448" title="All 2 branches missed.">      return _users == null ? false : _users.remove(value);</span>
     }
 
     public List&lt;LocalObjective&gt; getObjectivesAndMethods() {
-<span class="nc" id="L517">      return _objectivesAndMethods;</span>
+<span class="nc" id="L452">      return _objectivesAndMethods;</span>
     }
 
     public void setObjectivesAndMethods(List&lt;LocalObjective&gt; value) {
-<span class="nc" id="L521">      _objectivesAndMethods = value;</span>
-<span class="nc" id="L522">    }</span>
+<span class="nc" id="L456">      _objectivesAndMethods = value;</span>
+<span class="nc" id="L457">    }</span>
 
     /**
      * Add a new {@link LocalObjective} item to the underlying collection.
@@ -527,11 +462,11 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true}
      */
     public boolean addObjectivesAndMethods(LocalObjective item) {
-<span class="nc" id="L530">      LocalObjective value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L531" title="All 2 branches missed.">      if (_objectivesAndMethods == null) {</span>
-<span class="nc" id="L532">        _objectivesAndMethods = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L465">      LocalObjective value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">      if (_objectivesAndMethods == null) {</span>
+<span class="nc" id="L467">        _objectivesAndMethods = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L534">      return _objectivesAndMethods.add(value);</span>
+<span class="nc" id="L469">      return _objectivesAndMethods.add(value);</span>
     }
 
     /**
@@ -540,17 +475,17 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeObjectivesAndMethods(LocalObjective item) {
-<span class="nc" id="L543">      LocalObjective value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L544" title="All 2 branches missed.">      return _objectivesAndMethods == null ? false : _objectivesAndMethods.remove(value);</span>
+<span class="nc" id="L478">      LocalObjective value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L479" title="All 2 branches missed.">      return _objectivesAndMethods == null ? false : _objectivesAndMethods.remove(value);</span>
     }
 
     public List&lt;Activity&gt; getActivities() {
-<span class="nc" id="L548">      return _activities;</span>
+<span class="nc" id="L483">      return _activities;</span>
     }
 
     public void setActivities(List&lt;Activity&gt; value) {
-<span class="nc" id="L552">      _activities = value;</span>
-<span class="nc" id="L553">    }</span>
+<span class="nc" id="L487">      _activities = value;</span>
+<span class="nc" id="L488">    }</span>
 
     /**
      * Add a new {@link Activity} item to the underlying collection.
@@ -558,11 +493,11 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true}
      */
     public boolean addActivity(Activity item) {
-<span class="nc" id="L561">      Activity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L562" title="All 2 branches missed.">      if (_activities == null) {</span>
-<span class="nc" id="L563">        _activities = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L496">      Activity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L497" title="All 2 branches missed.">      if (_activities == null) {</span>
+<span class="nc" id="L498">        _activities = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L565">      return _activities.add(value);</span>
+<span class="nc" id="L500">      return _activities.add(value);</span>
     }
 
     /**
@@ -571,17 +506,82 @@ public class AssessmentPlan extends AbstractOscalInstance {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeActivity(Activity item) {
-<span class="nc" id="L574">      Activity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L575" title="All 2 branches missed.">      return _activities == null ? false : _activities.remove(value);</span>
+<span class="nc" id="L509">      Activity value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L510" title="All 2 branches missed.">      return _activities == null ? false : _activities.remove(value);</span>
     }
 
     public MarkupMultiline getRemarks() {
-<span class="nc" id="L579">      return _remarks;</span>
+<span class="nc" id="L514">      return _remarks;</span>
     }
 
     public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L583">      _remarks = value;</span>
-<span class="nc" id="L584">    }</span>
+<span class="nc" id="L518">      _remarks = value;</span>
+<span class="nc" id="L519">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L523">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
+   * Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Assessment Plan Terms and Conditions&quot;,
+      description = &quot;Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.&quot;,
+      name = &quot;terms-and-conditions&quot;,
+      metaschema = OscalApMetaschema.class
+  )
+  @ValueConstraints(
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;rules-of-engagement&quot;, description = &quot;Defines the circumstances, conditions, degree, and manner in which the use of cyber-attack techniques or actions may be applied to the assessment.&quot;), @AllowedValue(value = &quot;disclosures&quot;, description = &quot;Any information the assessor should make known to the system owner or authorizing official. Has child 'item' parts for each individual disclosure.&quot;), @AllowedValue(value = &quot;assessment-inclusions&quot;, description = &quot;Defines any assessment activities which the system owner or authorizing official wishes to ensure are performed as part of the assessment.&quot;), @AllowedValue(value = &quot;assessment-exclusions&quot;, description = &quot;Defines any assessment activities which the system owner or authorizing official explicitly prohibits from being performed as part of the assessment.&quot;), @AllowedValue(value = &quot;results-delivery&quot;, description = &quot;Defines conditions related to the delivery of the assessment results, such as when to deliver, how, and to whom.&quot;), @AllowedValue(value = &quot;assumptions&quot;, description = &quot;Defines any supposition made by the assessor. Has child 'item' parts for each assumption.&quot;), @AllowedValue(value = &quot;methodology&quot;, description = &quot;An explanation of practices, procedures, and rules used in the course of the assessment.&quot;)})
+  )
+  public static class TermsAndConditions {
+    @BoundAssembly(
+        formalName = &quot;Assessment Part&quot;,
+        description = &quot;A partition of an assessment plan or results or a child of another part.&quot;,
+        useName = &quot;part&quot;,
+        maxOccurs = -1
+    )
+    @GroupAs(
+        name = &quot;parts&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;AssessmentPart&gt; _parts;
+
+<span class="nc" id="L552">    public TermsAndConditions() {</span>
+<span class="nc" id="L553">    }</span>
+
+    public List&lt;AssessmentPart&gt; getParts() {
+<span class="nc" id="L556">      return _parts;</span>
+    }
+
+    public void setParts(List&lt;AssessmentPart&gt; value) {
+<span class="nc" id="L560">      _parts = value;</span>
+<span class="nc" id="L561">    }</span>
+
+    /**
+     * Add a new {@link AssessmentPart} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addPart(AssessmentPart item) {
+<span class="nc" id="L569">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L570" title="All 2 branches missed.">      if (_parts == null) {</span>
+<span class="nc" id="L571">        _parts = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L573">      return _parts.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link AssessmentPart} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removePart(AssessmentPart item) {
+<span class="nc" id="L582">      AssessmentPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L583" title="All 2 branches missed.">      return _parts == null ? false : _parts.remove(value);</span>
+    }
 
     @Override
     public String toString() {

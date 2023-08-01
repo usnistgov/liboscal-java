@@ -138,7 +138,6 @@ public class SystemCharacteristics {
       formalName = &quot;Security Sensitivity Level&quot;,
       description = &quot;The overall information system sensitivity categorization, such as defined by [FIPS-199](https://doi.org/10.6028/NIST.FIPS.199).&quot;,
       useName = &quot;security-sensitivity-level&quot;,
-      minOccurs = 1,
       remarks = &quot;Often, organizations require the security sensitivity level to correspond with the highest confidentiality, integrity, or availability level identified by `security-impact-level`.&quot;
   )
   private String _securitySensitivityLevel;
@@ -154,8 +153,7 @@ public class SystemCharacteristics {
   @BoundAssembly(
       formalName = &quot;Security Impact Level&quot;,
       description = &quot;The overall level of expected impact resulting from unauthorized disclosure, modification, or loss of access to information.&quot;,
-      useName = &quot;security-impact-level&quot;,
-      minOccurs = 1
+      useName = &quot;security-impact-level&quot;
   )
   private SecurityImpactLevel _securityImpactLevel;
 
@@ -211,16 +209,16 @@ public class SystemCharacteristics {
   )
   private MarkupMultiline _remarks;
 
-<span class="nc" id="L214">  public SystemCharacteristics() {</span>
-<span class="nc" id="L215">  }</span>
+<span class="nc" id="L212">  public SystemCharacteristics() {</span>
+<span class="nc" id="L213">  }</span>
 
   public List&lt;SystemId&gt; getSystemIds() {
-<span class="nc" id="L218">    return _systemIds;</span>
+<span class="nc" id="L216">    return _systemIds;</span>
   }
 
   public void setSystemIds(List&lt;SystemId&gt; value) {
-<span class="nc" id="L222">    _systemIds = value;</span>
-<span class="nc" id="L223">  }</span>
+<span class="nc" id="L220">    _systemIds = value;</span>
+<span class="nc" id="L221">  }</span>
 
   /**
    * Add a new {@link SystemId} item to the underlying collection.
@@ -228,11 +226,11 @@ public class SystemCharacteristics {
    * @return {@code true}
    */
   public boolean addSystemId(SystemId item) {
-<span class="nc" id="L231">    SystemId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L232" title="All 2 branches missed.">    if (_systemIds == null) {</span>
-<span class="nc" id="L233">      _systemIds = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L229">    SystemId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">    if (_systemIds == null) {</span>
+<span class="nc" id="L231">      _systemIds = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L235">    return _systemIds.add(value);</span>
+<span class="nc" id="L233">    return _systemIds.add(value);</span>
   }
 
   /**
@@ -241,41 +239,41 @@ public class SystemCharacteristics {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removeSystemId(SystemId item) {
-<span class="nc" id="L244">    SystemId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L245" title="All 2 branches missed.">    return _systemIds == null ? false : _systemIds.remove(value);</span>
+<span class="nc" id="L242">    SystemId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">    return _systemIds == null ? false : _systemIds.remove(value);</span>
   }
 
   public String getSystemName() {
-<span class="nc" id="L249">    return _systemName;</span>
+<span class="nc" id="L247">    return _systemName;</span>
   }
 
   public void setSystemName(String value) {
-<span class="nc" id="L253">    _systemName = value;</span>
-<span class="nc" id="L254">  }</span>
+<span class="nc" id="L251">    _systemName = value;</span>
+<span class="nc" id="L252">  }</span>
 
   public String getSystemNameShort() {
-<span class="nc" id="L257">    return _systemNameShort;</span>
+<span class="nc" id="L255">    return _systemNameShort;</span>
   }
 
   public void setSystemNameShort(String value) {
-<span class="nc" id="L261">    _systemNameShort = value;</span>
-<span class="nc" id="L262">  }</span>
+<span class="nc" id="L259">    _systemNameShort = value;</span>
+<span class="nc" id="L260">  }</span>
 
   public MarkupMultiline getDescription() {
-<span class="nc" id="L265">    return _description;</span>
+<span class="nc" id="L263">    return _description;</span>
   }
 
   public void setDescription(MarkupMultiline value) {
-<span class="nc" id="L269">    _description = value;</span>
-<span class="nc" id="L270">  }</span>
+<span class="nc" id="L267">    _description = value;</span>
+<span class="nc" id="L268">  }</span>
 
   public List&lt;Property&gt; getProps() {
-<span class="nc" id="L273">    return _props;</span>
+<span class="nc" id="L271">    return _props;</span>
   }
 
   public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L277">    _props = value;</span>
-<span class="nc" id="L278">  }</span>
+<span class="nc" id="L275">    _props = value;</span>
+<span class="nc" id="L276">  }</span>
 
   /**
    * Add a new {@link Property} item to the underlying collection.
@@ -283,11 +281,11 @@ public class SystemCharacteristics {
    * @return {@code true}
    */
   public boolean addProp(Property item) {
-<span class="nc" id="L286">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L287" title="All 2 branches missed.">    if (_props == null) {</span>
-<span class="nc" id="L288">      _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L284">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">    if (_props == null) {</span>
+<span class="nc" id="L286">      _props = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L290">    return _props.add(value);</span>
+<span class="nc" id="L288">    return _props.add(value);</span>
   }
 
   /**
@@ -296,17 +294,17 @@ public class SystemCharacteristics {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removeProp(Property item) {
-<span class="nc" id="L299">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L300" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L297">    Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">    return _props == null ? false : _props.remove(value);</span>
   }
 
   public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L304">    return _links;</span>
+<span class="nc" id="L302">    return _links;</span>
   }
 
   public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L308">    _links = value;</span>
-<span class="nc" id="L309">  }</span>
+<span class="nc" id="L306">    _links = value;</span>
+<span class="nc" id="L307">  }</span>
 
   /**
    * Add a new {@link Link} item to the underlying collection.
@@ -314,11 +312,11 @@ public class SystemCharacteristics {
    * @return {@code true}
    */
   public boolean addLink(Link item) {
-<span class="nc" id="L317">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L318" title="All 2 branches missed.">    if (_links == null) {</span>
-<span class="nc" id="L319">      _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L315">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L316" title="All 2 branches missed.">    if (_links == null) {</span>
+<span class="nc" id="L317">      _links = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L321">    return _links.add(value);</span>
+<span class="nc" id="L319">    return _links.add(value);</span>
   }
 
   /**
@@ -327,81 +325,81 @@ public class SystemCharacteristics {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removeLink(Link item) {
-<span class="nc" id="L330">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L331" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L328">    Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">    return _links == null ? false : _links.remove(value);</span>
   }
 
   public Date getDateAuthorized() {
-<span class="nc" id="L335">    return _dateAuthorized;</span>
+<span class="nc" id="L333">    return _dateAuthorized;</span>
   }
 
   public void setDateAuthorized(Date value) {
-<span class="nc" id="L339">    _dateAuthorized = value;</span>
-<span class="nc" id="L340">  }</span>
+<span class="nc" id="L337">    _dateAuthorized = value;</span>
+<span class="nc" id="L338">  }</span>
 
   public String getSecuritySensitivityLevel() {
-<span class="nc" id="L343">    return _securitySensitivityLevel;</span>
+<span class="nc" id="L341">    return _securitySensitivityLevel;</span>
   }
 
   public void setSecuritySensitivityLevel(String value) {
-<span class="nc" id="L347">    _securitySensitivityLevel = value;</span>
-<span class="nc" id="L348">  }</span>
+<span class="nc" id="L345">    _securitySensitivityLevel = value;</span>
+<span class="nc" id="L346">  }</span>
 
   public SystemInformation getSystemInformation() {
-<span class="nc" id="L351">    return _systemInformation;</span>
+<span class="nc" id="L349">    return _systemInformation;</span>
   }
 
   public void setSystemInformation(SystemInformation value) {
-<span class="nc" id="L355">    _systemInformation = value;</span>
-<span class="nc" id="L356">  }</span>
+<span class="nc" id="L353">    _systemInformation = value;</span>
+<span class="nc" id="L354">  }</span>
 
   public SecurityImpactLevel getSecurityImpactLevel() {
-<span class="nc" id="L359">    return _securityImpactLevel;</span>
+<span class="nc" id="L357">    return _securityImpactLevel;</span>
   }
 
   public void setSecurityImpactLevel(SecurityImpactLevel value) {
-<span class="nc" id="L363">    _securityImpactLevel = value;</span>
-<span class="nc" id="L364">  }</span>
+<span class="nc" id="L361">    _securityImpactLevel = value;</span>
+<span class="nc" id="L362">  }</span>
 
   public Status getStatus() {
-<span class="nc" id="L367">    return _status;</span>
+<span class="nc" id="L365">    return _status;</span>
   }
 
   public void setStatus(Status value) {
-<span class="nc" id="L371">    _status = value;</span>
-<span class="nc" id="L372">  }</span>
+<span class="nc" id="L369">    _status = value;</span>
+<span class="nc" id="L370">  }</span>
 
   public AuthorizationBoundary getAuthorizationBoundary() {
-<span class="nc" id="L375">    return _authorizationBoundary;</span>
+<span class="nc" id="L373">    return _authorizationBoundary;</span>
   }
 
   public void setAuthorizationBoundary(AuthorizationBoundary value) {
-<span class="nc" id="L379">    _authorizationBoundary = value;</span>
-<span class="nc" id="L380">  }</span>
+<span class="nc" id="L377">    _authorizationBoundary = value;</span>
+<span class="nc" id="L378">  }</span>
 
   public NetworkArchitecture getNetworkArchitecture() {
-<span class="nc" id="L383">    return _networkArchitecture;</span>
+<span class="nc" id="L381">    return _networkArchitecture;</span>
   }
 
   public void setNetworkArchitecture(NetworkArchitecture value) {
-<span class="nc" id="L387">    _networkArchitecture = value;</span>
-<span class="nc" id="L388">  }</span>
+<span class="nc" id="L385">    _networkArchitecture = value;</span>
+<span class="nc" id="L386">  }</span>
 
   public DataFlow getDataFlow() {
-<span class="nc" id="L391">    return _dataFlow;</span>
+<span class="nc" id="L389">    return _dataFlow;</span>
   }
 
   public void setDataFlow(DataFlow value) {
-<span class="nc" id="L395">    _dataFlow = value;</span>
-<span class="nc" id="L396">  }</span>
+<span class="nc" id="L393">    _dataFlow = value;</span>
+<span class="nc" id="L394">  }</span>
 
   public List&lt;ResponsibleParty&gt; getResponsibleParties() {
-<span class="nc" id="L399">    return _responsibleParties;</span>
+<span class="nc" id="L397">    return _responsibleParties;</span>
   }
 
   public void setResponsibleParties(List&lt;ResponsibleParty&gt; value) {
-<span class="nc" id="L403">    _responsibleParties = value;</span>
-<span class="nc" id="L404">  }</span>
+<span class="nc" id="L401">    _responsibleParties = value;</span>
+<span class="nc" id="L402">  }</span>
 
   /**
    * Add a new {@link ResponsibleParty} item to the underlying collection.
@@ -409,11 +407,11 @@ public class SystemCharacteristics {
    * @return {@code true}
    */
   public boolean addResponsibleParty(ResponsibleParty item) {
-<span class="nc" id="L412">    ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L413" title="All 2 branches missed.">    if (_responsibleParties == null) {</span>
-<span class="nc" id="L414">      _responsibleParties = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L410">    ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L411" title="All 2 branches missed.">    if (_responsibleParties == null) {</span>
+<span class="nc" id="L412">      _responsibleParties = new LinkedList&lt;&gt;();</span>
     }
-<span class="nc" id="L416">    return _responsibleParties.add(value);</span>
+<span class="nc" id="L414">    return _responsibleParties.add(value);</span>
   }
 
   /**
@@ -422,21 +420,21 @@ public class SystemCharacteristics {
    * @return {@code true} if the item was removed or {@code false} otherwise
    */
   public boolean removeResponsibleParty(ResponsibleParty item) {
-<span class="nc" id="L425">    ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L426" title="All 2 branches missed.">    return _responsibleParties == null ? false : _responsibleParties.remove(value);</span>
+<span class="nc" id="L423">    ResponsibleParty value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L424" title="All 2 branches missed.">    return _responsibleParties == null ? false : _responsibleParties.remove(value);</span>
   }
 
   public MarkupMultiline getRemarks() {
-<span class="nc" id="L430">    return _remarks;</span>
+<span class="nc" id="L428">    return _remarks;</span>
   }
 
   public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L434">    _remarks = value;</span>
-<span class="nc" id="L435">  }</span>
+<span class="nc" id="L432">    _remarks = value;</span>
+<span class="nc" id="L433">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L439">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L437">    return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

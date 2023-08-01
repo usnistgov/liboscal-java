@@ -33,7 +33,6 @@ import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
-import gov.nist.secauto.oscal.lib.model.MappingCollection;
 import gov.nist.secauto.oscal.lib.model.PlanOfActionAndMilestones;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
@@ -52,11 +51,11 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public class OscalBindingContext
     extends DefaultBindingContext {
   @NonNull
-<span class="fc" id="L55">  private static final OscalBindingContext SINGLETON = new OscalBindingContext();</span>
+<span class="fc" id="L54">  private static final OscalBindingContext SINGLETON = new OscalBindingContext();</span>
 
   @NonNull
   public static OscalBindingContext instance() {
-<span class="fc" id="L59">    return SINGLETON;</span>
+<span class="fc" id="L58">    return SINGLETON;</span>
   }
 
   /**
@@ -66,204 +65,186 @@ public class OscalBindingContext
    *          a set of additional constraints to apply
    */
   public OscalBindingContext(@NonNull Set&lt;IConstraintSet&gt; constraintSets) {
-<span class="nc" id="L69">    super(constraintSets);</span>
-<span class="nc" id="L70">    registerBindingMatcher(new Matcher());</span>
-<span class="nc" id="L71">  }</span>
+<span class="nc" id="L68">    super(constraintSets);</span>
+<span class="nc" id="L69">    registerBindingMatcher(new Matcher());</span>
+<span class="nc" id="L70">  }</span>
 
   /**
    * Construct a new OSCAL-flavored binding context.
    */
-<span class="fc" id="L76">  protected OscalBindingContext() {</span>
-<span class="fc" id="L77">    registerBindingMatcher(new Matcher());</span>
-<span class="fc" id="L78">  }</span>
+<span class="fc" id="L75">  protected OscalBindingContext() {</span>
+<span class="fc" id="L76">    registerBindingMatcher(new Matcher());</span>
+<span class="fc" id="L77">  }</span>
 
   @NonNull
   public Catalog loadCatalog(@NonNull URL url) throws IOException, URISyntaxException {
-<span class="nc" id="L82">    return newBoundLoader().load(Catalog.class, url);</span>
+<span class="nc" id="L81">    return newBoundLoader().load(Catalog.class, url);</span>
   }
 
   @NonNull
   public Catalog loadCatalog(@NonNull Path path) throws IOException {
-<span class="fc" id="L87">    return newBoundLoader().load(Catalog.class, path);</span>
+<span class="fc" id="L86">    return newBoundLoader().load(Catalog.class, path);</span>
   }
 
   @NonNull
   public Catalog loadCatalog(@NonNull File file) throws IOException {
-<span class="fc" id="L92">    return newBoundLoader().load(Catalog.class, file);</span>
+<span class="fc" id="L91">    return newBoundLoader().load(Catalog.class, file);</span>
   }
 
   @NonNull
   public Profile loadProfile(@NonNull URL url) throws IOException, URISyntaxException {
-<span class="nc" id="L97">    return newBoundLoader().load(Profile.class, url);</span>
+<span class="nc" id="L96">    return newBoundLoader().load(Profile.class, url);</span>
   }
 
   @NonNull
   public Profile loadProfile(@NonNull Path path) throws IOException {
-<span class="nc" id="L102">    return newBoundLoader().load(Profile.class, path);</span>
+<span class="nc" id="L101">    return newBoundLoader().load(Profile.class, path);</span>
   }
 
   @NonNull
   public Profile loadProfile(@NonNull File file) throws IOException {
-<span class="nc" id="L107">    return newBoundLoader().load(Profile.class, file);</span>
-  }
-
-  @NonNull
-  public MappingCollection loadMapping(@NonNull URL url) throws IOException, URISyntaxException {
-<span class="nc" id="L112">    return newBoundLoader().load(MappingCollection.class, url);</span>
-  }
-
-  @NonNull
-  public MappingCollection loadMapping(@NonNull Path path) throws IOException {
-<span class="nc" id="L117">    return newBoundLoader().load(MappingCollection.class, path);</span>
-  }
-
-  @NonNull
-  public MappingCollection loadMapping(@NonNull File file) throws IOException {
-<span class="nc" id="L122">    return newBoundLoader().load(MappingCollection.class, file);</span>
+<span class="nc" id="L106">    return newBoundLoader().load(Profile.class, file);</span>
   }
 
   @NonNull
   public SystemSecurityPlan loadSystemSecurityPlan(@NonNull URL url) throws IOException, URISyntaxException {
-<span class="nc" id="L127">    return newBoundLoader().load(SystemSecurityPlan.class, url);</span>
+<span class="nc" id="L111">    return newBoundLoader().load(SystemSecurityPlan.class, url);</span>
   }
 
   @NonNull
   public SystemSecurityPlan loadSystemSecurityPlan(@NonNull Path path) throws IOException {
-<span class="nc" id="L132">    return newBoundLoader().load(SystemSecurityPlan.class, path);</span>
+<span class="nc" id="L116">    return newBoundLoader().load(SystemSecurityPlan.class, path);</span>
   }
 
   @NonNull
   public SystemSecurityPlan loadSystemSecurityPlan(@NonNull File file) throws IOException {
-<span class="nc" id="L137">    return newBoundLoader().load(SystemSecurityPlan.class, file);</span>
+<span class="nc" id="L121">    return newBoundLoader().load(SystemSecurityPlan.class, file);</span>
   }
 
   @NonNull
   public ComponentDefinition loadComponentDefinition(@NonNull URL url) throws IOException, URISyntaxException {
-<span class="nc" id="L142">    return newBoundLoader().load(ComponentDefinition.class, url);</span>
+<span class="nc" id="L126">    return newBoundLoader().load(ComponentDefinition.class, url);</span>
   }
 
   @NonNull
   public ComponentDefinition loadComponentDefinition(@NonNull Path path) throws IOException {
-<span class="nc" id="L147">    return newBoundLoader().load(ComponentDefinition.class, path);</span>
+<span class="nc" id="L131">    return newBoundLoader().load(ComponentDefinition.class, path);</span>
   }
 
   @NonNull
   public ComponentDefinition loadComponentDefinition(@NonNull File file) throws IOException {
-<span class="nc" id="L152">    return newBoundLoader().load(ComponentDefinition.class, file);</span>
+<span class="nc" id="L136">    return newBoundLoader().load(ComponentDefinition.class, file);</span>
   }
 
   @NonNull
   public AssessmentPlan loadAssessmentPlan(@NonNull URL url) throws IOException, URISyntaxException {
-<span class="nc" id="L157">    return newBoundLoader().load(AssessmentPlan.class, url);</span>
+<span class="nc" id="L141">    return newBoundLoader().load(AssessmentPlan.class, url);</span>
   }
 
   @NonNull
   public AssessmentPlan loadAssessmentPlan(@NonNull Path path) throws IOException {
-<span class="nc" id="L162">    return newBoundLoader().load(AssessmentPlan.class, path);</span>
+<span class="nc" id="L146">    return newBoundLoader().load(AssessmentPlan.class, path);</span>
   }
 
   @NonNull
   public AssessmentPlan loadAssessmentPlan(@NonNull File file) throws IOException {
-<span class="nc" id="L167">    return newBoundLoader().load(AssessmentPlan.class, file);</span>
+<span class="nc" id="L151">    return newBoundLoader().load(AssessmentPlan.class, file);</span>
   }
 
   @NonNull
   public AssessmentResults loadAssessmentResults(@NonNull URL url) throws IOException, URISyntaxException {
-<span class="nc" id="L172">    return newBoundLoader().load(AssessmentResults.class, url);</span>
+<span class="nc" id="L156">    return newBoundLoader().load(AssessmentResults.class, url);</span>
   }
 
   @NonNull
   public AssessmentResults loadAssessmentResults(@NonNull Path path) throws IOException {
-<span class="nc" id="L177">    return newBoundLoader().load(AssessmentResults.class, path);</span>
+<span class="nc" id="L161">    return newBoundLoader().load(AssessmentResults.class, path);</span>
   }
 
   @NonNull
   public AssessmentResults loadAssessmentResults(@NonNull File file) throws IOException {
-<span class="nc" id="L182">    return newBoundLoader().load(AssessmentResults.class, file);</span>
+<span class="nc" id="L166">    return newBoundLoader().load(AssessmentResults.class, file);</span>
   }
 
   @NonNull
   public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull URL url)
       throws IOException, URISyntaxException {
-<span class="nc" id="L188">    return newBoundLoader().load(PlanOfActionAndMilestones.class, url);</span>
+<span class="nc" id="L172">    return newBoundLoader().load(PlanOfActionAndMilestones.class, url);</span>
   }
 
   @NonNull
   public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull Path path) throws IOException {
-<span class="nc" id="L193">    return newBoundLoader().load(PlanOfActionAndMilestones.class, path);</span>
+<span class="nc" id="L177">    return newBoundLoader().load(PlanOfActionAndMilestones.class, path);</span>
   }
 
   @NonNull
   public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull File file) throws IOException {
-<span class="nc" id="L198">    return newBoundLoader().load(PlanOfActionAndMilestones.class, file);</span>
+<span class="nc" id="L182">    return newBoundLoader().load(PlanOfActionAndMilestones.class, file);</span>
   }
 
   private static final class Matcher implements IBindingMatcher {
     @Override
     public Class&lt;?&gt; getBoundClassForXmlQName(QName startElementQName) {
-<span class="fc" id="L204">      Class&lt;?&gt; clazz = null;</span>
-<span class="pc bpc" id="L205" title="1 of 2 branches missed.">      if (&quot;http://csrc.nist.gov/ns/oscal/1.0&quot;.equals(startElementQName.getNamespaceURI())) {</span>
-<span class="pc bpc" id="L206" title="7 of 9 branches missed.">        switch (startElementQName.getLocalPart()) {</span>
+<span class="fc" id="L188">      Class&lt;?&gt; clazz = null;</span>
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">      if (&quot;http://csrc.nist.gov/ns/oscal/1.0&quot;.equals(startElementQName.getNamespaceURI())) {</span>
+<span class="pc bpc" id="L190" title="6 of 8 branches missed.">        switch (startElementQName.getLocalPart()) {</span>
         case &quot;catalog&quot;:
-<span class="fc" id="L208">          clazz = Catalog.class;</span>
-<span class="fc" id="L209">          break;</span>
+<span class="fc" id="L192">          clazz = Catalog.class;</span>
+<span class="fc" id="L193">          break;</span>
         case &quot;profile&quot;:
-<span class="fc" id="L211">          clazz = Profile.class;</span>
-<span class="fc" id="L212">          break;</span>
-        case &quot;mapping-collection&quot;:
-<span class="nc" id="L214">          clazz = MappingCollection.class;</span>
-<span class="nc" id="L215">          break;</span>
+<span class="fc" id="L195">          clazz = Profile.class;</span>
+<span class="fc" id="L196">          break;</span>
         case &quot;system-security-plan&quot;:
-<span class="nc" id="L217">          clazz = SystemSecurityPlan.class;</span>
-<span class="nc" id="L218">          break;</span>
+<span class="nc" id="L198">          clazz = SystemSecurityPlan.class;</span>
+<span class="nc" id="L199">          break;</span>
         case &quot;component-definition&quot;:
-<span class="nc" id="L220">          clazz = ComponentDefinition.class;</span>
-<span class="nc" id="L221">          break;</span>
+<span class="nc" id="L201">          clazz = ComponentDefinition.class;</span>
+<span class="nc" id="L202">          break;</span>
         case &quot;assessment-plan&quot;:
-<span class="nc" id="L223">          clazz = AssessmentPlan.class;</span>
-<span class="nc" id="L224">          break;</span>
+<span class="nc" id="L204">          clazz = AssessmentPlan.class;</span>
+<span class="nc" id="L205">          break;</span>
         case &quot;assessment-results&quot;:
-<span class="nc" id="L226">          clazz = AssessmentResults.class;</span>
-<span class="nc" id="L227">          break;</span>
+<span class="nc" id="L207">          clazz = AssessmentResults.class;</span>
+<span class="nc" id="L208">          break;</span>
         case &quot;plan-of-action-and-milestones&quot;:
-<span class="nc" id="L229">          clazz = PlanOfActionAndMilestones.class;</span>
-<span class="nc" id="L230">          break;</span>
+<span class="nc" id="L210">          clazz = PlanOfActionAndMilestones.class;</span>
+<span class="nc" id="L211">          break;</span>
         default:
-<span class="nc" id="L232">          throw new UnsupportedOperationException(&quot;Unrecognized element name: &quot; + startElementQName.toString());</span>
+<span class="nc" id="L213">          throw new UnsupportedOperationException(&quot;Unrecognized element name: &quot; + startElementQName.toString());</span>
         }
       }
-<span class="fc" id="L235">      return clazz;</span>
+<span class="fc" id="L216">      return clazz;</span>
     }
 
     @Override
     public Class&lt;?&gt; getBoundClassForJsonName(String name) {
       Class&lt;?&gt; retval;
-<span class="pc bpc" id="L241" title="6 of 8 branches missed.">      switch (name) {</span>
+<span class="pc bpc" id="L222" title="6 of 8 branches missed.">      switch (name) {</span>
       case &quot;catalog&quot;:
-<span class="fc" id="L243">        retval = Catalog.class;</span>
-<span class="fc" id="L244">        break;</span>
+<span class="fc" id="L224">        retval = Catalog.class;</span>
+<span class="fc" id="L225">        break;</span>
       case &quot;profile&quot;:
-<span class="fc" id="L246">        retval = Profile.class;</span>
-<span class="fc" id="L247">        break;</span>
+<span class="fc" id="L227">        retval = Profile.class;</span>
+<span class="fc" id="L228">        break;</span>
       case &quot;system-security-plan&quot;:
-<span class="nc" id="L249">        retval = SystemSecurityPlan.class;</span>
-<span class="nc" id="L250">        break;</span>
+<span class="nc" id="L230">        retval = SystemSecurityPlan.class;</span>
+<span class="nc" id="L231">        break;</span>
       case &quot;component-definition&quot;:
-<span class="nc" id="L252">        retval = ComponentDefinition.class;</span>
-<span class="nc" id="L253">        break;</span>
+<span class="nc" id="L233">        retval = ComponentDefinition.class;</span>
+<span class="nc" id="L234">        break;</span>
       case &quot;assessment-plan&quot;:
-<span class="nc" id="L255">        retval = AssessmentPlan.class;</span>
-<span class="nc" id="L256">        break;</span>
+<span class="nc" id="L236">        retval = AssessmentPlan.class;</span>
+<span class="nc" id="L237">        break;</span>
       case &quot;assessment-results&quot;:
-<span class="nc" id="L258">        retval = AssessmentResults.class;</span>
-<span class="nc" id="L259">        break;</span>
+<span class="nc" id="L239">        retval = AssessmentResults.class;</span>
+<span class="nc" id="L240">        break;</span>
       case &quot;plan-of-action-and-milestones&quot;:
-<span class="nc" id="L261">        retval = PlanOfActionAndMilestones.class;</span>
-<span class="nc" id="L262">        break;</span>
+<span class="nc" id="L242">        retval = PlanOfActionAndMilestones.class;</span>
+<span class="nc" id="L243">        break;</span>
       default:
-<span class="nc" id="L264">        throw new UnsupportedOperationException(&quot;Unrecognized field name: &quot; + name);</span>
+<span class="nc" id="L245">        throw new UnsupportedOperationException(&quot;Unrecognized field name: &quot; + name);</span>
       }
-<span class="fc" id="L266">      return retval;</span>
+<span class="fc" id="L247">      return retval;</span>
     }
 
   }
