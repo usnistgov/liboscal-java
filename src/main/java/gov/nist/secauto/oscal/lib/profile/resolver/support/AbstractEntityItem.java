@@ -66,7 +66,8 @@ public abstract class AbstractEntityItem implements IEntityItem {
   // @NonNull
   // public String getIdentifier() {
   // final String checkedReassignedIdentifier = reassignedIdentifier;
-  // return checkedReassignedIdentifier == null ? originalIdentifier : checkedReassignedIdentifier;
+  // return checkedReassignedIdentifier == null ? originalIdentifier :
+  // checkedReassignedIdentifier;
   // }
 
   @Override
@@ -84,7 +85,7 @@ public abstract class AbstractEntityItem implements IEntityItem {
   @NonNull
   @SuppressWarnings("unchecked")
   public <T> T getInstanceValue() {
-    return (T) getInstance().getValue();
+    return ObjectUtils.notNull((T) getInstance().getValue());
   }
 
   @Override

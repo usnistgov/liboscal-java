@@ -93,8 +93,8 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
      *
      * @param clazz
      *          the class to identify the target type for
-     * @return the associated target type or {@code null} if the class is not associated with a target
-     *         type
+     * @return the associated target type or {@code null} if the class is not
+     *         associated with a target type
      */
     @Nullable
     public static TargetType forClass(@NonNull Class<?> clazz) {
@@ -112,8 +112,8 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
      *
      * @param name
      *          the field name to identify the target type for
-     * @return the associated target type or {@code null} if the name is not associated with a target
-     *         type
+     * @return the associated target type or {@code null} if the name is not
+     *         associated with a target type
      */
     @Nullable
     public static TargetType forFieldName(@Nullable String name) {
@@ -184,7 +184,8 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         }
       }
     } else if (handleChildren && handler != null) {
-      // if the child item type is applicable and there is a handler, iterate over children
+      // if the child item type is applicable and there is a handler, iterate over
+      // children
       Iterator<T> iter = supplier.get().iterator();
       while (iter.hasNext()) {
         T item = iter.next();
@@ -394,7 +395,8 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         @Nullable TargetType itemType) {
 
       // determine the set of effective item types to search for
-      // this helps with short-circuit searching for parts of the graph that cannot match
+      // this helps with short-circuit searching for parts of the graph that cannot
+      // match
       @NonNull Set<TargetType> targetItemTypes = ObjectUtils.notNull(EnumSet.allOf(TargetType.class));
       filterTypes(targetItemTypes, "by-name", NAME_TYPES, objectName, itemType);
       filterTypes(targetItemTypes, "by-class", CLASS_TYPES, objectClass, itemType);

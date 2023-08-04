@@ -112,6 +112,7 @@ public abstract class AbstractProperty implements IProperty {
       return this;
     }
 
+    @SuppressWarnings("PMD.NullAssignment") // needed
     @NonNull
     public Builder namespace(@NonNull URI namespace) {
       if (IProperty.OSCAL_NAMESPACE.equals(namespace)) {

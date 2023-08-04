@@ -28,12 +28,12 @@ package gov.nist.secauto.oscal.java;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
-import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.IDeserializer;
-import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.IBindingContext;
+import gov.nist.secauto.metaschema.databind.io.DeserializationFeature;
+import gov.nist.secauto.metaschema.databind.io.Format;
+import gov.nist.secauto.metaschema.databind.io.IDeserializer;
+import gov.nist.secauto.metaschema.databind.io.ISerializer;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,6 +50,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 class ReadWriteTest {
   private static final Logger LOGGER = LogManager.getLogger(ReadWriteTest.class);
 
+  private static final int ITERATIONS = 1;
+
   @NonNull
   private static <CLASS> CLASS measureDeserializer(
       @NonNull String format,
@@ -65,6 +67,7 @@ class ReadWriteTest {
 
     CLASS retval = null;
     long totalTime = 0;
+    int totalIterations = 0;
     for (int i = 0; i < iterations; i++) {
       long startTime = System.nanoTime();
       retval = deserializer.deserialize(file);
@@ -73,10 +76,15 @@ class ReadWriteTest {
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(String.format("%s read in %d milliseconds from %s", format, timeElapsed, file));
       }
-      totalTime += timeElapsed;
+
+      // allow for JVM warmup
+      if (iterations == 1 || i > 1) {
+        totalTime += timeElapsed;
+        ++totalIterations;
+      }
     }
-    long average = totalTime / iterations - 1;
     if (iterations > 1 && LOGGER.isInfoEnabled()) {
+      long average = totalTime / totalIterations;
       LOGGER.info(String.format("%s read in %d milliseconds (on average) from %s", format, average, file));
     }
 
@@ -92,6 +100,7 @@ class ReadWriteTest {
       @NonNull ISerializer<CLASS> serializer,
       int iterations) throws IOException {
     long totalTime = 0;
+    int totalIterations = 0;
     for (int i = 0; i < iterations; i++) {
       long startTime = System.nanoTime();
       serializer.serialize(root, file);
@@ -100,13 +109,16 @@ class ReadWriteTest {
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(String.format("%s written in %d milliseconds to %s", format, timeElapsed, file));
       }
-      if (iterations == 1 || i > 0) {
+
+      // allow for JVM warmup
+      if (iterations == 1 || i > 1) {
         totalTime += timeElapsed;
+        ++totalIterations;
       }
     }
 
-    long average = totalTime / (iterations == 1 ? 1 : iterations - 1);
     if (iterations > 1 && LOGGER.isInfoEnabled()) {
+      long average = totalTime / totalIterations;
       LOGGER.info(String.format("%s written in %d milliseconds (on average) to %s", format, average, file));
     }
   }
@@ -169,6 +181,6 @@ class ReadWriteTest {
     // outDir.mkdirs();
     // Path outPath = outDir.toPath();
     Path outPath = tempDir;
-    chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
+    chainReadWrite(catalogSourceXml, Catalog.class, outPath, ITERATIONS);
   }
 }

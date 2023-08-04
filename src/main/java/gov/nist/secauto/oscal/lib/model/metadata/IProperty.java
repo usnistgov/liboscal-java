@@ -26,6 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.model.metadata;
 
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
+
 import java.net.URI;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -33,7 +35,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public interface IProperty {
   @SuppressWarnings("null")
   @NonNull
-  URI OSCAL_NAMESPACE = URI.create("http://csrc.nist.gov/ns/oscal");
+  URI OSCAL_NAMESPACE = URI.create(OscalBindingContext.NS_OSCAL);
   @SuppressWarnings("null")
   @NonNull
   URI RMF_NAMESPACE = URI.create("http://csrc.nist.gov/ns/rmf");

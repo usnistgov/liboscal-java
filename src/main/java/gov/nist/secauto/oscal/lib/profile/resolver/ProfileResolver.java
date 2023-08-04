@@ -26,12 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
-import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
-import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
-import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
+import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream;
+
 import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.core.metapath.IDocumentLoader;
 import gov.nist.secauto.metaschema.core.metapath.ISequence;
 import gov.nist.secauto.metaschema.core.metapath.MetapathExpression;
 import gov.nist.secauto.metaschema.core.metapath.StaticContext;
@@ -45,10 +43,16 @@ import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItemFactory;
 import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
 import gov.nist.secauto.metaschema.core.util.CollectionUtil;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.io.BindingException;
+import gov.nist.secauto.metaschema.databind.io.DeserializationFeature;
+import gov.nist.secauto.metaschema.databind.io.IBoundLoader;
+import gov.nist.secauto.metaschema.databind.model.IAssemblyClassBinding;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.OscalUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Merge;
@@ -74,15 +78,14 @@ import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -128,7 +131,8 @@ public class ProfileResolver {
   private DynamicContext dynamicContext;
 
   /**
-   * Gets the configured loader or creates a new default loader if no loader was configured.
+   * Gets the configured loader or creates a new default loader if no loader was
+   * configured.
    *
    * @return the bound loader
    */
@@ -155,7 +159,7 @@ public class ProfileResolver {
   public DynamicContext getDynamicContext() {
     synchronized (this) {
       if (dynamicContext == null) {
-        dynamicContext = new StaticContext().newDynamicContext();
+        dynamicContext = StaticContext.builder().build().newDynamicContext();
         dynamicContext.setDocumentLoader(getBoundLoader());
       }
       assert dynamicContext != null;
@@ -168,11 +172,6 @@ public class ProfileResolver {
     synchronized (this) {
       this.dynamicContext = dynamicContext;
     }
-  }
-
-  @NonNull
-  protected EntityResolver getEntityResolver(@NonNull URI documentUri) {
-    return new DocumentEntityResolver(documentUri);
   }
 
   @Nullable
@@ -272,9 +271,8 @@ public class ProfileResolver {
     handleModify(resolvedCatalog, profileItem);
 
     return INodeItemFactory.instance().newDocumentNodeItem(
-        new RootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+        ObjectUtils.requireNonNull(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
   }
@@ -359,25 +357,30 @@ public class ProfileResolver {
       LOGGER.atDebug().log("resolving profile import '{}'", importUri);
     }
 
-    InputSource source = newImportSource(importUri, profileItem);
-    URI sourceUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
+    IDocumentNodeItem importedDocument = getImport(importUri, profileItem);
+    URI importedUri = importedDocument.getDocumentUri();
+    assert importedUri != null; // always non-null
+
+    // Import import = Import.
+    // InputSource source = newImportSource(importUri, profileItem);
+    // URI sourceUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
 
     // check for import cycle
     try {
       requireNonCycle(
-          sourceUri,
+          importedUri,
           importHistory);
     } catch (ImportCycleException ex) {
       throw new IOException(ex);
     }
 
     // track the import in the import history
-    importHistory.push(sourceUri);
+    importHistory.push(importedUri);
     try {
-      IDocumentNodeItem document = getDynamicContext().getDocumentLoader().loadAsNodeItem(source);
-      IDocumentNodeItem importedCatalog = resolve(document, importHistory);
+      IDocumentNodeItem importedCatalog = resolve(importedDocument, importHistory);
 
-      // Create a defensive deep copy of the document and associated values, since we will be making
+      // Create a defensive deep copy of the document and associated values, since we
+      // will be making
       // changes to the data.
       try {
         IRootAssemblyNodeItem importedCatalogRoot = ObjectUtils.requireNonNull(getRoot(importedCatalog, CATALOG));
@@ -397,45 +400,70 @@ public class ProfileResolver {
     } finally {
       // pop the resolved catalog from the import history
       URI poppedUri = ObjectUtils.notNull(importHistory.pop());
-      assert sourceUri.equals(poppedUri);
+      assert importedUri.equals(poppedUri);
     }
   }
 
-  @NonNull
-  protected InputSource newImportSource(
+  private IDocumentNodeItem getImport(
       @NonNull URI importUri,
-      @NonNull IRootAssemblyNodeItem profileItem) throws IOException {
+      @NonNull IRootAssemblyNodeItem importingProfile) throws IOException {
 
-    // Get the entity resolver to resolve relative references in the profile
-    EntityResolver resolver = getEntityResolver(
-        ObjectUtils.requireNonNull(profileItem.getDocumentNodeItem().getDocumentUri()));
+    URI importingDocumentUri = ObjectUtils.requireNonNull(importingProfile.getDocumentNodeItem().getDocumentUri());
 
-    InputSource source;
+    IDocumentNodeItem retval;
     if (OscalUtils.isInternalReference(importUri)) {
       // handle internal reference
       String uuid = OscalUtils.internalReferenceFragmentToId(importUri);
 
-      Profile profile = toProfile(profileItem);
+      Profile profile = INodeItem.toValue(importingProfile);
       Resource resource = profile.getResourceByUuid(ObjectUtils.notNull(UUID.fromString(uuid)));
       if (resource == null) {
         throw new IOException(
             String.format("unable to find the resource identified by '%s' used in profile import", importUri));
       }
 
-      source = OscalUtils.newInputSource(resource, resolver, null);
+      retval = getImport(resource, importingDocumentUri);
     } else {
-      try {
-        source = resolver.resolveEntity(null, importUri.toASCIIString());
-      } catch (SAXException ex) {
-        throw new IOException(ex);
+      URI uri = importingDocumentUri.resolve(importUri);
+      assert uri != null;
+
+      retval = getDynamicContext().getDocumentLoader().loadAsNodeItem(uri);
+    }
+    return retval;
+  }
+
+  @Nullable
+  private IDocumentNodeItem getImport(
+      @NonNull Resource resource,
+      @NonNull URI baseUri) throws IOException {
+
+    IDocumentLoader loader = getDynamicContext().getDocumentLoader();
+
+    IDocumentNodeItem retval = null;
+    // first try base64 data
+    Base64 base64 = resource.getBase64();
+    ByteBuffer buffer = base64 == null ? null : base64.getValue();
+    if (buffer != null) {
+      URI resourceUri = baseUri.resolve("#" + resource.getUuid());
+      assert resourceUri != null;
+      try (InputStream is = new ByteBufferBackedInputStream(buffer)) {
+        retval = loader.loadAsNodeItem(is, resourceUri);
       }
     }
 
-    if (source == null || source.getSystemId() == null) {
-      throw new IOException(String.format("Unable to resolve import '%s'.", importUri.toString()));
-    }
+    if (retval == null) {
+      Rlink rlink = OscalUtils.findMatchingRLink(resource, null);
+      URI uri = rlink == null ? null : rlink.getHref();
 
-    return source;
+      if (uri == null) {
+        throw new IOException(String.format("unable to determine URI for resource '%s'", resource.getUuid()));
+      }
+
+      uri = baseUri.resolve(uri);
+      assert uri != null;
+      retval = loader.loadAsNodeItem(uri);
+    }
+    return retval;
   }
 
   private static void requireNonCycle(@NonNull URI uri, @NonNull Stack<URI> importHistory)
@@ -507,14 +535,17 @@ public class ProfileResolver {
 
     // {
     // // rebuild an index
-    // IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
+    // IDocumentNodeItem resolvedCatalogItem =
+    // DefaultNodeItemFactory.instance().newDocumentNodeItem(
     // new RootAssemblyDefinition(
     // ObjectUtils.notNull(
-    // (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+    // (IAssemblyClassBinding)
+    // OscalBindingContext.instance().getClassBinding(Catalog.class))),
     // resolvedCatalog,
     // profileDocument.getBaseUri());
     //
-    // // FIXME: need to find a better way to create an index that doesn't auto select groups
+    // // FIXME: need to find a better way to create an index that doesn't auto
+    // select groups
     // IIndexer indexer = new BasicIndexer();
     // ControlSelectionVisitor selectionVisitor
     // = new ControlSelectionVisitor(IControlFilter.ALWAYS_MATCH, indexer);
@@ -523,9 +554,8 @@ public class ProfileResolver {
 
     // rebuild the document, since the paths have changed
     IDocumentNodeItem resolvedCatalogItem = INodeItemFactory.instance().newDocumentNodeItem(
-        new RootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+        ObjectUtils.requireNonNull(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
 
@@ -536,9 +566,8 @@ public class ProfileResolver {
   protected void handleModify(@NonNull Catalog resolvedCatalog, @NonNull IRootAssemblyNodeItem profileItem)
       throws ProfileResolutionException {
     IDocumentNodeItem resolvedCatalogDocument = INodeItemFactory.instance().newDocumentNodeItem(
-        new RootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+        ObjectUtils.requireNonNull(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
 
@@ -721,34 +750,4 @@ public class ProfileResolver {
     index.append(profileIndex);
   }
 
-  private class DocumentEntityResolver implements EntityResolver {
-    @NonNull
-    private final URI documentUri;
-
-    public DocumentEntityResolver(@NonNull URI documentUri) {
-      this.documentUri = documentUri;
-    }
-
-    @NonNull
-    protected URI getDocumentUri() {
-      return documentUri;
-    }
-
-    @Override
-    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-
-      URI resolvedUri = getDocumentUri().resolve(systemId);
-
-      EntityResolver resolver = getDynamicContext().getDocumentLoader().getEntityResolver();
-
-      InputSource retval;
-      if (resolver == null) {
-        retval = new InputSource(resolvedUri.toASCIIString());
-      } else {
-        retval = resolver.resolveEntity(publicId, resolvedUri.toASCIIString());
-      }
-      return retval;
-    }
-
-  }
 }

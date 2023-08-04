@@ -36,9 +36,11 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * Used to visit a catalog containing groups and controls.
  *
  * @param <T>
- *          the type of the state object used to pass calling context information
+ *          the type of the state object used to pass calling context
+ *          information
  * @param <R>
- *          the type of the result for visiting a collection of groups and/or controls
+ *          the type of the result for visiting a collection of groups and/or
+ *          controls
  */
 public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T, R> {
 
@@ -55,7 +57,8 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
   }
 
   /**
-   * Visit the child groups and controls (in that order) of a given catalog or group container.
+   * Visit the child groups and controls (in that order) of a given catalog or
+   * group container.
    *
    * @param catalogOrGroup
    *          the catalog or group Metapath item currently being visited
@@ -114,7 +117,8 @@ public abstract class AbstractCatalogVisitor<T, R> implements ICatalogVisitor<T,
   }
 
   /**
-   * Visit the child controls (in that order) of a given catalog, group, or control container.
+   * Visit the child controls (in that order) of a given catalog, group, or
+   * control container.
    *
    * @param catalogOrGroupOrControl
    *          the catalog, group, or control Metapath item currently being visited

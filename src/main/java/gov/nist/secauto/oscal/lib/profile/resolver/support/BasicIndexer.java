@@ -26,7 +26,6 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.metaschema.core.datatype.adapter.UuidAdapter;
 import gov.nist.secauto.metaschema.core.metapath.MetapathExpression;
 import gov.nist.secauto.metaschema.core.metapath.MetapathExpression.ResultType;
@@ -34,6 +33,7 @@ import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
 import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
 import gov.nist.secauto.metaschema.core.util.CollectionUtil;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
@@ -190,11 +190,14 @@ public class BasicIndexer implements IIndexer {
     return entityGroup == null ? CollectionUtil.emptyList() : ObjectUtils.notNull(entityGroup.values());
   }
   //
-  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID identifier) {
-  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);
+  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID
+  // identifier) {
+  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()),
+  // false);
   // }
   //
-  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier) {
+  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String
+  // identifier) {
   // return getEntity(itemType, identifier, itemType.isUuid());
   // }
 
@@ -327,10 +330,11 @@ public class BasicIndexer implements IIndexer {
   /**
    * Create a new builder with the provided info.
    * <p>
-   * This method can be overloaded to support applying additional data to the returned builder.
+   * This method can be overloaded to support applying additional data to the
+   * returned builder.
    * <p>
-   * When working with identifiers that are case insensitve, it is important to ensure that the
-   * identifiers are normalized to lower case.
+   * When working with identifiers that are case insensitve, it is important to
+   * ensure that the identifiers are normalized to lower case.
    *
    * @param item
    *          the Metapath node to associate with the entity

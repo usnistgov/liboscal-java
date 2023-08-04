@@ -26,14 +26,13 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
 import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItemFactory;
 import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
-import gov.nist.secauto.metaschema.core.model.IRootAssemblyDefinition;
 import gov.nist.secauto.metaschema.core.util.CollectionUtil;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.model.IAssemblyClassBinding;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.IncludeAll;
@@ -67,9 +66,8 @@ class ImportTest {
         .build());
 
     return INodeItemFactory.instance().newDocumentNodeItem(
-        IRootAssemblyDefinition.toRootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+        ObjectUtils.requireNonNull(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.notNull(Paths.get("").toUri()),
         importedCatalog);
   }
@@ -82,9 +80,6 @@ class ImportTest {
     // setup the imported catalog
     IDocumentNodeItem importedCatalogDocumentItem = newImportedCatalog();
 
-    // setup the profile
-    Profile profile = new Profile();
-
     ProfileImport profileImport = new ProfileImport();
     profileImport.setIncludeAll(new IncludeAll());
     profileImport.setExcludeControls(Collections.singletonList(
@@ -92,12 +87,15 @@ class ImportTest {
             .withId("control1")
             .build()));
     profileImport.setHref(cwd);
+
+    // setup the profile
+    Profile profile = new Profile();
+
     profile.addImport(profileImport);
 
     IDocumentNodeItem profileDocumentItem = INodeItemFactory.instance().newDocumentNodeItem(
-        IRootAssemblyDefinition.toRootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Profile.class))),
+        ObjectUtils.requireNonNull(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Profile.class)),
         cwd,
         profile);
 

@@ -59,7 +59,8 @@ public interface IIdentifierParser {
   String parse(@NonNull String referenceText);
 
   /**
-   * Substitute the provided {@code newIdentifier} with the identifier in the {@code referenceText}.
+   * Substitute the provided {@code newIdentifier} with the identifier in the
+   * {@code referenceText}.
    *
    * @param referenceText
    *          the reference text containing the original identifier

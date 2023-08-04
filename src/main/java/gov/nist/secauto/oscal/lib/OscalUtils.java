@@ -26,22 +26,12 @@
 
 package gov.nist.secauto.oscal.lib;
 
-import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream;
-
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
-import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;
 
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
 import java.net.URI;
-import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +39,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 
 public final class OscalUtils {
-  public static final String OSCAL_VERSION = "1.0.4";
   private static final Pattern INTERNAL_REFERENCE_FRAGMENT_PATTERN = Pattern.compile("^#(.+)$");
 
   private OscalUtils() {
@@ -103,37 +92,6 @@ public final class OscalUtils {
     return retval;
   }
 
-  public static boolean hasBase64Data(@NonNull Resource resource) {
-    return resource.getBase64() != null;
-  }
-
-  @Nullable
-  public static ByteBuffer getBase64Data(@NonNull Resource resource) {
-    Base64 base64 = resource.getBase64();
-
-    ByteBuffer retval = null;
-    if (base64 != null) {
-      retval = base64.getValue();
-    }
-    return retval;
-  }
-
-  @Nullable
-  public static URI getResourceURI(@NonNull Resource resource, @Nullable String preferredMediaType) {
-    URI retval;
-    if (hasBase64Data(resource)) {
-      UUID uuid = resource.getUuid();
-      if (uuid == null) {
-        throw new IllegalArgumentException("resource has a null UUID");
-      }
-      retval = ObjectUtils.notNull(URI.create("#" + uuid));
-    } else {
-      Rlink rlink = findMatchingRLink(resource, preferredMediaType);
-      retval = rlink == null ? null : rlink.getHref();
-    }
-    return retval;
-  }
-
   @Nullable
   public static Rlink findMatchingRLink(@NonNull Resource resource, @Nullable String preferredMediaType) {
     // find a suitable rlink reference
@@ -150,32 +108,6 @@ public final class OscalUtils {
         // use the first one instead
         retval = rlinks.stream().findFirst().orElse(null);
       }
-    }
-    return retval;
-  }
-
-  @Nullable
-  public static InputSource newInputSource(@NonNull Resource resource, @NonNull EntityResolver resolver,
-      @Nullable String preferredMediaType) throws IOException {
-    URI uri = getResourceURI(resource, preferredMediaType);
-    if (uri == null) {
-      throw new IOException(String.format("unable to determine URI for resource '%s'", resource.getUuid()));
-    }
-
-    InputSource retval;
-    try {
-      retval = resolver.resolveEntity(null, uri.toASCIIString());
-    } catch (SAXException ex) {
-      throw new IOException(ex);
-    }
-
-    if (hasBase64Data(resource)) {
-      // handle base64 encoded data
-      ByteBuffer buffer = getBase64Data(resource);
-      if (buffer == null) {
-        throw new IOException(String.format("null base64 value for resource '%s'", resource.getUuid()));
-      }
-      retval.setByteStream(new ByteBufferBackedInputStream(buffer));
     }
     return retval;
   }

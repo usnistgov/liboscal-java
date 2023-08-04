@@ -43,8 +43,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
 
   /**
-   * Visit the provided {@code item} representing an OSCAL {@link CatalogGroup} and handle any
-   * enclosed references.
+   * Visit the provided {@code item} representing an OSCAL {@link CatalogGroup}
+   * and handle any enclosed references.
    *
    * @param item
    *          the Metapath node item containing reference nodes
@@ -55,8 +55,8 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   Void visitGroup(@NonNull IAssemblyNodeItem item, Void childResult, T context);
 
   /**
-   * Visit the provided {@code item} representing an OSCAL {@link Control} and handle any enclosed
-   * references.
+   * Visit the provided {@code item} representing an OSCAL {@link Control} and
+   * handle any enclosed references.
    *
    * @param item
    *          the Metapath node item containing reference nodes
@@ -67,7 +67,8 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   Void visitControl(@NonNull IAssemblyNodeItem item, Void childResult, T context);
   //
   // /**
-  // * Visit the provided {@code item} representing an OSCAL {@link Parameter} and handle any enclosed
+  // * Visit the provided {@code item} representing an OSCAL {@link Parameter} and
+  // handle any enclosed
   // * references.
   // *
   // * @param item
@@ -78,7 +79,8 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   // void resolveParameter(@NonNull IModelNodeItem item);
   //
   // /**
-  // * Visit the provided {@code item} representing an OSCAL {@link ControlPart} and handle any
+  // * Visit the provided {@code item} representing an OSCAL {@link ControlPart}
+  // and handle any
   // enclosed
   // * references.
   // *
@@ -90,7 +92,8 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   // void resolvePart(@NonNull IModelNodeItem item, T context);
   //
   // /**
-  // * Visit the provided {@code item} representing an OSCAL {@link Role} and handle any enclosed
+  // * Visit the provided {@code item} representing an OSCAL {@link Role} and
+  // handle any enclosed
   // * references.
   // *
   // * @param item
@@ -101,7 +104,8 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   // void resolveRole(@NonNull IModelNodeItem item);
   //
   // /**
-  // * Visit the provided {@code item} representing an OSCAL {@link Party} and handle any enclosed
+  // * Visit the provided {@code item} representing an OSCAL {@link Party} and
+  // handle any enclosed
   // * references.
   // *
   // * @param item
@@ -112,7 +116,8 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   // void resolveParty(@NonNull IModelNodeItem item);
   //
   // /**
-  // * Visit the provided {@code item} representing an OSCAL {@link Location} and handle any enclosed
+  // * Visit the provided {@code item} representing an OSCAL {@link Location} and
+  // handle any enclosed
   // * references.
   // *
   // * @param item
@@ -123,7 +128,8 @@ public interface IReferenceVisitor<T> extends ICatalogVisitor<T, Void> {
   // void resolveLocation(@NonNull IModelNodeItem item);
   //
   // /**
-  // * Visit the provided {@code item} representing an OSCAL {@link Resource} and handle any enclosed
+  // * Visit the provided {@code item} representing an OSCAL {@link Resource} and
+  // handle any enclosed
   // * references.
   // *
   // * @param item

@@ -31,12 +31,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import gov.nist.secauto.metaschema.binding.io.DefaultBoundLoader;
-import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.core.metapath.StaticContext;
 import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.databind.io.DefaultBoundLoader;
+import gov.nist.secauto.metaschema.databind.io.Format;
+import gov.nist.secauto.metaschema.databind.io.ISerializer;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.selection.ImportCycleException;
@@ -74,7 +74,7 @@ import javax.xml.transform.stream.StreamSource;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 class ProfileResolutionTests {
-  private static final String XSLT_PATH = "oscal/src/utils/resolver-pipeline/oscal-profile-test-helper.xsl";
+  private static final String XSLT_PATH = "src/test/resources/profile-test-helper.xsl";
   private static final String PROFILE_UNIT_TEST_PATH
       = "oscal/src/specifications/profile-resolution/profile-resolution-examples";
   private static final String JUNIT_TEST_PATH = "src/test/resources";
@@ -86,7 +86,7 @@ class ProfileResolutionTests {
 
   @BeforeAll
   static void setup() throws SaxonApiException {
-    DynamicContext context = new StaticContext().newDynamicContext();
+    DynamicContext context = StaticContext.builder().build().newDynamicContext();
     context.setDocumentLoader(new DefaultBoundLoader(OscalBindingContext.instance()));
     profileResolver = new ProfileResolver();
     profileResolver.setDynamicContext(context);
@@ -183,7 +183,8 @@ class ProfileResolutionTests {
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
 
-    // OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog,
+    // OscalBindingContext.instance().newSerializer(Format.YAML,
+    // Catalog.class).serialize(catalog,
     // System.out);
 
     // System.out.println("Pre scrub: " + writer.getBuffer().toString());

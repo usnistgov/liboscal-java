@@ -38,6 +38,7 @@ import gov.nist.secauto.metaschema.core.metapath.item.atomic.IBooleanItem;
 import gov.nist.secauto.metaschema.core.metapath.item.atomic.IStringItem;
 import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.AssessmentPart;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Property;
@@ -52,6 +53,7 @@ public final class HasOscalNamespace {
   @NonNull
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("has-oscal-namespace")
+      .namespace(OscalBindingContext.NS_OSCAL)
       .argument(IArgument.newBuilder()
           .name("namespace")
           .type(IStringItem.class)
@@ -69,6 +71,7 @@ public final class HasOscalNamespace {
   @NonNull
   static final IFunction SIGNATURE_TWO_ARGS = IFunction.builder()
       .name("has-oscal-namespace")
+      .namespace(OscalBindingContext.NS_OSCAL)
       .argument(IArgument.newBuilder()
           .name("propOrPart")
           .type(IAssemblyNodeItem.class)

@@ -26,9 +26,9 @@
 
 package gov.nist.secauto.oscal.lib;
 
-import gov.nist.secauto.metaschema.binding.DefaultBindingContext;
-import gov.nist.secauto.metaschema.binding.IBindingMatcher;
 import gov.nist.secauto.metaschema.core.model.constraint.IConstraintSet;
+import gov.nist.secauto.metaschema.databind.DefaultBindingContext;
+import gov.nist.secauto.metaschema.databind.IBindingMatcher;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -50,6 +50,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class OscalBindingContext
     extends DefaultBindingContext {
+  @NonNull
+  public static final String NS_OSCAL = "http://csrc.nist.gov/ns/oscal/1.0";
   @NonNull
   private static final OscalBindingContext SINGLETON = new OscalBindingContext();
 
@@ -186,7 +188,7 @@ public class OscalBindingContext
     @Override
     public Class<?> getBoundClassForXmlQName(QName startElementQName) {
       Class<?> clazz = null;
-      if ("http://csrc.nist.gov/ns/oscal/1.0".equals(startElementQName.getNamespaceURI())) {
+      if (NS_OSCAL.equals(startElementQName.getNamespaceURI())) {
         switch (startElementQName.getLocalPart()) {
         case "catalog":
           clazz = Catalog.class;

@@ -29,10 +29,10 @@ package gov.nist.secauto.oscal.java;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
-import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.io.Format;
+import gov.nist.secauto.metaschema.databind.io.IBoundLoader;
+import gov.nist.secauto.metaschema.databind.io.ISerializer;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Profile;
@@ -66,7 +66,8 @@ class OscalBindingContextTest {
 
   @Test
   void testLoadCatalogYaml(@TempDir Path tempDir) throws IOException {
-    // the YAML catalog is currently malformed, this will create a proper one for this test
+    // the YAML catalog is currently malformed, this will create a proper one for
+    // this test
     Catalog catalog
         = loader.load(ObjectUtils.notNull(
             new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile()));

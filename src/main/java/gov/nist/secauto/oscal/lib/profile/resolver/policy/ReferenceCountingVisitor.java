@@ -136,7 +136,8 @@ public class ReferenceCountingVisitor
   }
 
   public ReferenceCountingVisitor() {
-    // visit everything except parts, roles, locations, parties, parameters, and resources, which are
+    // visit everything except parts, roles, locations, parties, parameters, and
+    // resources, which are
     // handled differently by this visitor
     super(ObjectUtils.notNull(EnumSet.complementOf(
         EnumSet.of(
@@ -170,7 +171,8 @@ public class ReferenceCountingVisitor
   //
   // BackMatter backMatter = profile.getBackMatter();
   // if (backMatter != null) {
-  // for (BackMatter.Resource resource : CollectionUtil.listOrEmpty(backMatter.getResources())) {
+  // for (BackMatter.Resource resource :
+  // CollectionUtil.listOrEmpty(backMatter.getResources())) {
   // visitResource(resource);
   // }
   // }
@@ -211,7 +213,8 @@ public class ReferenceCountingVisitor
       Context context) {
     IIndexer index = context.getIndexer();
     // handle the group if it is selected
-    // a group will only be selected if it contains a descendant control that is selected
+    // a group will only be selected if it contains a descendant control that is
+    // selected
     if (IIndexer.SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {
       CatalogGroup group = ObjectUtils.requireNonNull((CatalogGroup) item.getValue());
       String id = group.getId();
@@ -416,7 +419,8 @@ public class ReferenceCountingVisitor
         .forEach(child -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
     item.getModelItemsByName("prose")
         .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
-    // item.getModelItemsByName("part").forEach(child -> visitor.visitPart(ObjectUtils.notNull(child),
+    // item.getModelItemsByName("part").forEach(child ->
+    // visitor.visitPart(ObjectUtils.notNull(child),
     // context));
   }
 
@@ -432,7 +436,8 @@ public class ReferenceCountingVisitor
       @NonNull IFieldNodeItem contextItem,
       @NonNull IMarkupString<?> text,
       @NonNull Context context) {
-    for (Node node : CollectionUtil.toIterable(text.getNodesAsStream().iterator())) {
+    for (Node node : CollectionUtil.toIterable(
+        ObjectUtils.notNull(text.getNodesAsStream().iterator()))) {
       if (node instanceof InsertAnchorNode) {
         handleInsert(contextItem, (InsertAnchorNode) node, context);
       } else if (node instanceof InlineLinkNode) {
@@ -567,7 +572,8 @@ public class ReferenceCountingVisitor
   // }
   //
   // @Override
-  // protected Void aggregateResults(Object first, Object second, Object context) {
+  // protected Void aggregateResults(Object first, Object second, Object context)
+  // {
   // return null;
   // }
 
