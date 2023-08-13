@@ -139,6 +139,9 @@
 
 		<cyclonedx.schema.version>1.3</cyclonedx.schema.version>
 		<oscal-content.commit>main</oscal-content.commit>
+
+		<resources.jsonschema.path>schema/json</resources.jsonschema.path>
+		<resources.xmlschema.path>schema/xml</resources.xmlschema.path>
 	</properties>
 
 	<repositories>
@@ -300,10 +303,17 @@
 			<resource>
 				<directory>${project.build.directory}/generated-resources/oscal</directory>
 				<includes>
-					<include>**/*.xsd</include>
 					<include>**/*.json</include>
 				</includes>
+				<targetPath>${resources.jsonschema.path}</targetPath>
 			</resource>
+			<resource>
+				<directory>${project.build.directory}/generated-resources/oscal</directory>
+				<includes>
+					<include>**/*.xsd</include>
+				</includes>
+				<targetPath>${resources.xmlschema.path}</targetPath>
+			</resource>			
 		</resources>
 		<pluginManagement>
 			<plugins>
@@ -576,7 +586,7 @@
 							<metaschemaDir>
 								${project.basedir}/oscal/src/metaschema</metaschemaDir>
 							<outputDirectory>
-								${project.build.directory}/generated-resources/metaschema-schema</outputDirectory>
+								${project.build.directory}/generated-resources/oscal</outputDirectory>
 							<includes>
 								<include>oscal_*_metaschema.xml</include>
 							</includes>
