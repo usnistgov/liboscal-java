@@ -378,42 +378,6 @@ public class Finding {
   }
 
   /**
-   * Relates the finding to a set of referenced observations that were used to determine the finding.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Related Observation&quot;,
-      description = &quot;Relates the finding to a set of referenced observations that were used to determine the finding.&quot;,
-      name = &quot;related-observation&quot;,
-      metaschema = OscalAssessmentCommonMetaschema.class
-  )
-  public static class RelatedObservation {
-    @BoundFlag(
-        formalName = &quot;Observation Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.&quot;,
-        useName = &quot;observation-uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _observationUuid;
-
-<span class="nc" id="L399">    public RelatedObservation() {</span>
-<span class="nc" id="L400">    }</span>
-
-    public UUID getObservationUuid() {
-<span class="nc" id="L403">      return _observationUuid;</span>
-    }
-
-    public void setObservationUuid(UUID value) {
-<span class="nc" id="L407">      _observationUuid = value;</span>
-<span class="nc" id="L408">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc" id="L412">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
    * Relates the finding to a set of referenced risks that were used to determine the finding.
    */
   @MetaschemaAssembly(
@@ -432,15 +396,51 @@ public class Finding {
     )
     private UUID _riskUuid;
 
-<span class="nc" id="L435">    public AssociatedRisk() {</span>
-<span class="nc" id="L436">    }</span>
+<span class="nc" id="L399">    public AssociatedRisk() {</span>
+<span class="nc" id="L400">    }</span>
 
     public UUID getRiskUuid() {
-<span class="nc" id="L439">      return _riskUuid;</span>
+<span class="nc" id="L403">      return _riskUuid;</span>
     }
 
     public void setRiskUuid(UUID value) {
-<span class="nc" id="L443">      _riskUuid = value;</span>
+<span class="nc" id="L407">      _riskUuid = value;</span>
+<span class="nc" id="L408">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L412">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
+   * Relates the finding to a set of referenced observations that were used to determine the finding.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Related Observation&quot;,
+      description = &quot;Relates the finding to a set of referenced observations that were used to determine the finding.&quot;,
+      name = &quot;related-observation&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class RelatedObservation {
+    @BoundFlag(
+        formalName = &quot;Observation Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.&quot;,
+        useName = &quot;observation-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _observationUuid;
+
+<span class="nc" id="L435">    public RelatedObservation() {</span>
+<span class="nc" id="L436">    }</span>
+
+    public UUID getObservationUuid() {
+<span class="nc" id="L439">      return _observationUuid;</span>
+    }
+
+    public void setObservationUuid(UUID value) {
+<span class="nc" id="L443">      _observationUuid = value;</span>
 <span class="nc" id="L444">    }</span>
 
     @Override

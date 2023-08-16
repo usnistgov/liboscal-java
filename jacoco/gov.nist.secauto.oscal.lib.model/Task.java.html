@@ -478,6 +478,281 @@ public class Task {
   }
 
   /**
+   * The timing under which the task is intended to occur.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Event Timing&quot;,
+      description = &quot;The timing under which the task is intended to occur.&quot;,
+      name = &quot;timing&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class Timing {
+    /**
+     * &quot;The task is intended to occur on the specified date.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;On Date Condition&quot;,
+        description = &quot;The task is intended to occur on the specified date.&quot;,
+        useName = &quot;on-date&quot;,
+        minOccurs = 1
+    )
+    private OnDate _onDate;
+
+    /**
+     * &quot;The task is intended to occur within the specified date range.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;On Date Range Condition&quot;,
+        description = &quot;The task is intended to occur within the specified date range.&quot;,
+        useName = &quot;within-date-range&quot;,
+        minOccurs = 1
+    )
+    private WithinDateRange _withinDateRange;
+
+    /**
+     * &quot;The task is intended to occur at the specified frequency.&quot;
+     */
+    @BoundAssembly(
+        formalName = &quot;Frequency Condition&quot;,
+        description = &quot;The task is intended to occur at the specified frequency.&quot;,
+        useName = &quot;at-frequency&quot;,
+        minOccurs = 1
+    )
+    private AtFrequency _atFrequency;
+
+<span class="nc" id="L523">    public Timing() {</span>
+<span class="nc" id="L524">    }</span>
+
+    public OnDate getOnDate() {
+<span class="nc" id="L527">      return _onDate;</span>
+    }
+
+    public void setOnDate(OnDate value) {
+<span class="nc" id="L531">      _onDate = value;</span>
+<span class="nc" id="L532">    }</span>
+
+    public WithinDateRange getWithinDateRange() {
+<span class="nc" id="L535">      return _withinDateRange;</span>
+    }
+
+    public void setWithinDateRange(WithinDateRange value) {
+<span class="nc" id="L539">      _withinDateRange = value;</span>
+<span class="nc" id="L540">    }</span>
+
+    public AtFrequency getAtFrequency() {
+<span class="nc" id="L543">      return _atFrequency;</span>
+    }
+
+    public void setAtFrequency(AtFrequency value) {
+<span class="nc" id="L547">      _atFrequency = value;</span>
+<span class="nc" id="L548">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L552">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+
+    /**
+     * The task is intended to occur within the specified date range.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;On Date Range Condition&quot;,
+        description = &quot;The task is intended to occur within the specified date range.&quot;,
+        name = &quot;within-date-range&quot;,
+        metaschema = OscalAssessmentCommonMetaschema.class
+    )
+    public static class WithinDateRange {
+      @BoundFlag(
+          formalName = &quot;Start Date Condition&quot;,
+          description = &quot;The task must occur on or after the specified date.&quot;,
+          useName = &quot;start&quot;,
+          required = true,
+          typeAdapter = DateTimeWithTZAdapter.class
+      )
+      private ZonedDateTime _start;
+
+      @BoundFlag(
+          formalName = &quot;End Date Condition&quot;,
+          description = &quot;The task must occur on or before the specified date.&quot;,
+          useName = &quot;end&quot;,
+          required = true,
+          typeAdapter = DateTimeWithTZAdapter.class
+      )
+      private ZonedDateTime _end;
+
+<span class="nc" id="L583">      public WithinDateRange() {</span>
+<span class="nc" id="L584">      }</span>
+
+      public ZonedDateTime getStart() {
+<span class="nc" id="L587">        return _start;</span>
+      }
+
+      public void setStart(ZonedDateTime value) {
+<span class="nc" id="L591">        _start = value;</span>
+<span class="nc" id="L592">      }</span>
+
+      public ZonedDateTime getEnd() {
+<span class="nc" id="L595">        return _end;</span>
+      }
+
+      public void setEnd(ZonedDateTime value) {
+<span class="nc" id="L599">        _end = value;</span>
+<span class="nc" id="L600">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L604">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
+     * The task is intended to occur on the specified date.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;On Date Condition&quot;,
+        description = &quot;The task is intended to occur on the specified date.&quot;,
+        name = &quot;on-date&quot;,
+        metaschema = OscalAssessmentCommonMetaschema.class
+    )
+    public static class OnDate {
+      @BoundFlag(
+          formalName = &quot;On Date Condition&quot;,
+          description = &quot;The task must occur on the specified date.&quot;,
+          useName = &quot;date&quot;,
+          required = true,
+          typeAdapter = DateTimeWithTZAdapter.class
+      )
+      private ZonedDateTime _date;
+
+<span class="nc" id="L627">      public OnDate() {</span>
+<span class="nc" id="L628">      }</span>
+
+      public ZonedDateTime getDate() {
+<span class="nc" id="L631">        return _date;</span>
+      }
+
+      public void setDate(ZonedDateTime value) {
+<span class="nc" id="L635">        _date = value;</span>
+<span class="nc" id="L636">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L640">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
+     * The task is intended to occur at the specified frequency.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Frequency Condition&quot;,
+        description = &quot;The task is intended to occur at the specified frequency.&quot;,
+        name = &quot;at-frequency&quot;,
+        metaschema = OscalAssessmentCommonMetaschema.class
+    )
+    public static class AtFrequency {
+      @BoundFlag(
+          formalName = &quot;Period&quot;,
+          description = &quot;The task must occur after the specified period has elapsed.&quot;,
+          useName = &quot;period&quot;,
+          required = true,
+          typeAdapter = PositiveIntegerAdapter.class
+      )
+      private BigInteger _period;
+
+      @BoundFlag(
+          formalName = &quot;Time Unit&quot;,
+          description = &quot;The unit of time for the period.&quot;,
+          useName = &quot;unit&quot;,
+          required = true,
+          typeAdapter = StringAdapter.class
+      )
+      @ValueConstraints(
+          allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;seconds&quot;, description = &quot;The period is specified in seconds.&quot;), @AllowedValue(value = &quot;minutes&quot;, description = &quot;The period is specified in minutes.&quot;), @AllowedValue(value = &quot;hours&quot;, description = &quot;The period is specified in hours.&quot;), @AllowedValue(value = &quot;days&quot;, description = &quot;The period is specified in days.&quot;), @AllowedValue(value = &quot;months&quot;, description = &quot;The period is specified in calendar months.&quot;), @AllowedValue(value = &quot;years&quot;, description = &quot;The period is specified in calendar years.&quot;)})
+      )
+      private String _unit;
+
+<span class="nc" id="L675">      public AtFrequency() {</span>
+<span class="nc" id="L676">      }</span>
+
+      public BigInteger getPeriod() {
+<span class="nc" id="L679">        return _period;</span>
+      }
+
+      public void setPeriod(BigInteger value) {
+<span class="nc" id="L683">        _period = value;</span>
+<span class="nc" id="L684">      }</span>
+
+      public String getUnit() {
+<span class="nc" id="L687">        return _unit;</span>
+      }
+
+      public void setUnit(String value) {
+<span class="nc" id="L691">        _unit = value;</span>
+<span class="nc" id="L692">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L696">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+  }
+
+  /**
+   * Used to indicate that a task is dependent on another task.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Task Dependency&quot;,
+      description = &quot;Used to indicate that a task is dependent on another task.&quot;,
+      name = &quot;dependency&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class Dependency {
+    @BoundFlag(
+        formalName = &quot;Task Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a unique task.&quot;,
+        useName = &quot;task-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _taskUuid;
+
+    @BoundField(
+        formalName = &quot;Remarks&quot;,
+        description = &quot;Additional commentary about the containing object.&quot;,
+        useName = &quot;remarks&quot;
+    )
+    @BoundFieldValue(
+        typeAdapter = MarkupMultilineAdapter.class
+    )
+    private MarkupMultiline _remarks;
+
+<span class="nc" id="L730">    public Dependency() {</span>
+<span class="nc" id="L731">    }</span>
+
+    public UUID getTaskUuid() {
+<span class="nc" id="L734">      return _taskUuid;</span>
+    }
+
+    public void setTaskUuid(UUID value) {
+<span class="nc" id="L738">      _taskUuid = value;</span>
+<span class="nc" id="L739">    }</span>
+
+    public MarkupMultiline getRemarks() {
+<span class="nc" id="L742">      return _remarks;</span>
+    }
+
+    public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L746">      _remarks = value;</span>
+<span class="nc" id="L747">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L751">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
    * Identifies an individual activity to be performed as part of a task.
    */
   @MetaschemaAssembly(
@@ -559,24 +834,24 @@ public class Task {
     )
     private MarkupMultiline _remarks;
 
-<span class="nc" id="L562">    public AssociatedActivity() {</span>
-<span class="nc" id="L563">    }</span>
+<span class="nc" id="L837">    public AssociatedActivity() {</span>
+<span class="nc" id="L838">    }</span>
 
     public UUID getActivityUuid() {
-<span class="nc" id="L566">      return _activityUuid;</span>
+<span class="nc" id="L841">      return _activityUuid;</span>
     }
 
     public void setActivityUuid(UUID value) {
-<span class="nc" id="L570">      _activityUuid = value;</span>
-<span class="nc" id="L571">    }</span>
+<span class="nc" id="L845">      _activityUuid = value;</span>
+<span class="nc" id="L846">    }</span>
 
     public List&lt;Property&gt; getProps() {
-<span class="nc" id="L574">      return _props;</span>
+<span class="nc" id="L849">      return _props;</span>
     }
 
     public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L578">      _props = value;</span>
-<span class="nc" id="L579">    }</span>
+<span class="nc" id="L853">      _props = value;</span>
+<span class="nc" id="L854">    }</span>
 
     /**
      * Add a new {@link Property} item to the underlying collection.
@@ -584,11 +859,11 @@ public class Task {
      * @return {@code true}
      */
     public boolean addProp(Property item) {
-<span class="nc" id="L587">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L588" title="All 2 branches missed.">      if (_props == null) {</span>
-<span class="nc" id="L589">        _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L862">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L863" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L864">        _props = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L591">      return _props.add(value);</span>
+<span class="nc" id="L866">      return _props.add(value);</span>
     }
 
     /**
@@ -597,17 +872,17 @@ public class Task {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeProp(Property item) {
-<span class="nc" id="L600">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L601" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L875">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L876" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
     }
 
     public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L605">      return _links;</span>
+<span class="nc" id="L880">      return _links;</span>
     }
 
     public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L609">      _links = value;</span>
-<span class="nc" id="L610">    }</span>
+<span class="nc" id="L884">      _links = value;</span>
+<span class="nc" id="L885">    }</span>
 
     /**
      * Add a new {@link Link} item to the underlying collection.
@@ -615,11 +890,11 @@ public class Task {
      * @return {@code true}
      */
     public boolean addLink(Link item) {
-<span class="nc" id="L618">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L619" title="All 2 branches missed.">      if (_links == null) {</span>
-<span class="nc" id="L620">        _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L893">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L894" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L895">        _links = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L622">      return _links.add(value);</span>
+<span class="nc" id="L897">      return _links.add(value);</span>
     }
 
     /**
@@ -628,17 +903,17 @@ public class Task {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeLink(Link item) {
-<span class="nc" id="L631">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L632" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L906">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L907" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
     }
 
     public List&lt;ResponsibleRole&gt; getResponsibleRoles() {
-<span class="nc" id="L636">      return _responsibleRoles;</span>
+<span class="nc" id="L911">      return _responsibleRoles;</span>
     }
 
     public void setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {
-<span class="nc" id="L640">      _responsibleRoles = value;</span>
-<span class="nc" id="L641">    }</span>
+<span class="nc" id="L915">      _responsibleRoles = value;</span>
+<span class="nc" id="L916">    }</span>
 
     /**
      * Add a new {@link ResponsibleRole} item to the underlying collection.
@@ -646,11 +921,11 @@ public class Task {
      * @return {@code true}
      */
     public boolean addResponsibleRole(ResponsibleRole item) {
-<span class="nc" id="L649">      ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L650" title="All 2 branches missed.">      if (_responsibleRoles == null) {</span>
-<span class="nc" id="L651">        _responsibleRoles = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L924">      ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L925" title="All 2 branches missed.">      if (_responsibleRoles == null) {</span>
+<span class="nc" id="L926">        _responsibleRoles = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L653">      return _responsibleRoles.add(value);</span>
+<span class="nc" id="L928">      return _responsibleRoles.add(value);</span>
     }
 
     /**
@@ -659,17 +934,17 @@ public class Task {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeResponsibleRole(ResponsibleRole item) {
-<span class="nc" id="L662">      ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L663" title="All 2 branches missed.">      return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</span>
+<span class="nc" id="L937">      ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L938" title="All 2 branches missed.">      return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</span>
     }
 
     public List&lt;AssessmentSubject&gt; getSubjects() {
-<span class="nc" id="L667">      return _subjects;</span>
+<span class="nc" id="L942">      return _subjects;</span>
     }
 
     public void setSubjects(List&lt;AssessmentSubject&gt; value) {
-<span class="nc" id="L671">      _subjects = value;</span>
-<span class="nc" id="L672">    }</span>
+<span class="nc" id="L946">      _subjects = value;</span>
+<span class="nc" id="L947">    }</span>
 
     /**
      * Add a new {@link AssessmentSubject} item to the underlying collection.
@@ -677,11 +952,11 @@ public class Task {
      * @return {@code true}
      */
     public boolean addSubject(AssessmentSubject item) {
-<span class="nc" id="L680">      AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L681" title="All 2 branches missed.">      if (_subjects == null) {</span>
-<span class="nc" id="L682">        _subjects = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L955">      AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L956" title="All 2 branches missed.">      if (_subjects == null) {</span>
+<span class="nc" id="L957">        _subjects = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L684">      return _subjects.add(value);</span>
+<span class="nc" id="L959">      return _subjects.add(value);</span>
     }
 
     /**
@@ -690,284 +965,9 @@ public class Task {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeSubject(AssessmentSubject item) {
-<span class="nc" id="L693">      AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L694" title="All 2 branches missed.">      return _subjects == null ? false : _subjects.remove(value);</span>
+<span class="nc" id="L968">      AssessmentSubject value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L969" title="All 2 branches missed.">      return _subjects == null ? false : _subjects.remove(value);</span>
     }
-
-    public MarkupMultiline getRemarks() {
-<span class="nc" id="L698">      return _remarks;</span>
-    }
-
-    public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L702">      _remarks = value;</span>
-<span class="nc" id="L703">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc" id="L707">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
-   * The timing under which the task is intended to occur.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Event Timing&quot;,
-      description = &quot;The timing under which the task is intended to occur.&quot;,
-      name = &quot;timing&quot;,
-      metaschema = OscalAssessmentCommonMetaschema.class
-  )
-  public static class Timing {
-    /**
-     * &quot;The task is intended to occur on the specified date.&quot;
-     */
-    @BoundAssembly(
-        formalName = &quot;On Date Condition&quot;,
-        description = &quot;The task is intended to occur on the specified date.&quot;,
-        useName = &quot;on-date&quot;,
-        minOccurs = 1
-    )
-    private OnDate _onDate;
-
-    /**
-     * &quot;The task is intended to occur within the specified date range.&quot;
-     */
-    @BoundAssembly(
-        formalName = &quot;On Date Range Condition&quot;,
-        description = &quot;The task is intended to occur within the specified date range.&quot;,
-        useName = &quot;within-date-range&quot;,
-        minOccurs = 1
-    )
-    private WithinDateRange _withinDateRange;
-
-    /**
-     * &quot;The task is intended to occur at the specified frequency.&quot;
-     */
-    @BoundAssembly(
-        formalName = &quot;Frequency Condition&quot;,
-        description = &quot;The task is intended to occur at the specified frequency.&quot;,
-        useName = &quot;at-frequency&quot;,
-        minOccurs = 1
-    )
-    private AtFrequency _atFrequency;
-
-<span class="nc" id="L754">    public Timing() {</span>
-<span class="nc" id="L755">    }</span>
-
-    public OnDate getOnDate() {
-<span class="nc" id="L758">      return _onDate;</span>
-    }
-
-    public void setOnDate(OnDate value) {
-<span class="nc" id="L762">      _onDate = value;</span>
-<span class="nc" id="L763">    }</span>
-
-    public WithinDateRange getWithinDateRange() {
-<span class="nc" id="L766">      return _withinDateRange;</span>
-    }
-
-    public void setWithinDateRange(WithinDateRange value) {
-<span class="nc" id="L770">      _withinDateRange = value;</span>
-<span class="nc" id="L771">    }</span>
-
-    public AtFrequency getAtFrequency() {
-<span class="nc" id="L774">      return _atFrequency;</span>
-    }
-
-    public void setAtFrequency(AtFrequency value) {
-<span class="nc" id="L778">      _atFrequency = value;</span>
-<span class="nc" id="L779">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc" id="L783">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-
-    /**
-     * The task is intended to occur on the specified date.
-     */
-    @MetaschemaAssembly(
-        formalName = &quot;On Date Condition&quot;,
-        description = &quot;The task is intended to occur on the specified date.&quot;,
-        name = &quot;on-date&quot;,
-        metaschema = OscalAssessmentCommonMetaschema.class
-    )
-    public static class OnDate {
-      @BoundFlag(
-          formalName = &quot;On Date Condition&quot;,
-          description = &quot;The task must occur on the specified date.&quot;,
-          useName = &quot;date&quot;,
-          required = true,
-          typeAdapter = DateTimeWithTZAdapter.class
-      )
-      private ZonedDateTime _date;
-
-<span class="nc" id="L805">      public OnDate() {</span>
-<span class="nc" id="L806">      }</span>
-
-      public ZonedDateTime getDate() {
-<span class="nc" id="L809">        return _date;</span>
-      }
-
-      public void setDate(ZonedDateTime value) {
-<span class="nc" id="L813">        _date = value;</span>
-<span class="nc" id="L814">      }</span>
-
-      @Override
-      public String toString() {
-<span class="nc" id="L818">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-      }
-    }
-
-    /**
-     * The task is intended to occur within the specified date range.
-     */
-    @MetaschemaAssembly(
-        formalName = &quot;On Date Range Condition&quot;,
-        description = &quot;The task is intended to occur within the specified date range.&quot;,
-        name = &quot;within-date-range&quot;,
-        metaschema = OscalAssessmentCommonMetaschema.class
-    )
-    public static class WithinDateRange {
-      @BoundFlag(
-          formalName = &quot;Start Date Condition&quot;,
-          description = &quot;The task must occur on or after the specified date.&quot;,
-          useName = &quot;start&quot;,
-          required = true,
-          typeAdapter = DateTimeWithTZAdapter.class
-      )
-      private ZonedDateTime _start;
-
-      @BoundFlag(
-          formalName = &quot;End Date Condition&quot;,
-          description = &quot;The task must occur on or before the specified date.&quot;,
-          useName = &quot;end&quot;,
-          required = true,
-          typeAdapter = DateTimeWithTZAdapter.class
-      )
-      private ZonedDateTime _end;
-
-<span class="nc" id="L850">      public WithinDateRange() {</span>
-<span class="nc" id="L851">      }</span>
-
-      public ZonedDateTime getStart() {
-<span class="nc" id="L854">        return _start;</span>
-      }
-
-      public void setStart(ZonedDateTime value) {
-<span class="nc" id="L858">        _start = value;</span>
-<span class="nc" id="L859">      }</span>
-
-      public ZonedDateTime getEnd() {
-<span class="nc" id="L862">        return _end;</span>
-      }
-
-      public void setEnd(ZonedDateTime value) {
-<span class="nc" id="L866">        _end = value;</span>
-<span class="nc" id="L867">      }</span>
-
-      @Override
-      public String toString() {
-<span class="nc" id="L871">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-      }
-    }
-
-    /**
-     * The task is intended to occur at the specified frequency.
-     */
-    @MetaschemaAssembly(
-        formalName = &quot;Frequency Condition&quot;,
-        description = &quot;The task is intended to occur at the specified frequency.&quot;,
-        name = &quot;at-frequency&quot;,
-        metaschema = OscalAssessmentCommonMetaschema.class
-    )
-    public static class AtFrequency {
-      @BoundFlag(
-          formalName = &quot;Period&quot;,
-          description = &quot;The task must occur after the specified period has elapsed.&quot;,
-          useName = &quot;period&quot;,
-          required = true,
-          typeAdapter = PositiveIntegerAdapter.class
-      )
-      private BigInteger _period;
-
-      @BoundFlag(
-          formalName = &quot;Time Unit&quot;,
-          description = &quot;The unit of time for the period.&quot;,
-          useName = &quot;unit&quot;,
-          required = true,
-          typeAdapter = StringAdapter.class
-      )
-      @ValueConstraints(
-          allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;seconds&quot;, description = &quot;The period is specified in seconds.&quot;), @AllowedValue(value = &quot;minutes&quot;, description = &quot;The period is specified in minutes.&quot;), @AllowedValue(value = &quot;hours&quot;, description = &quot;The period is specified in hours.&quot;), @AllowedValue(value = &quot;days&quot;, description = &quot;The period is specified in days.&quot;), @AllowedValue(value = &quot;months&quot;, description = &quot;The period is specified in calendar months.&quot;), @AllowedValue(value = &quot;years&quot;, description = &quot;The period is specified in calendar years.&quot;)})
-      )
-      private String _unit;
-
-<span class="nc" id="L906">      public AtFrequency() {</span>
-<span class="nc" id="L907">      }</span>
-
-      public BigInteger getPeriod() {
-<span class="nc" id="L910">        return _period;</span>
-      }
-
-      public void setPeriod(BigInteger value) {
-<span class="nc" id="L914">        _period = value;</span>
-<span class="nc" id="L915">      }</span>
-
-      public String getUnit() {
-<span class="nc" id="L918">        return _unit;</span>
-      }
-
-      public void setUnit(String value) {
-<span class="nc" id="L922">        _unit = value;</span>
-<span class="nc" id="L923">      }</span>
-
-      @Override
-      public String toString() {
-<span class="nc" id="L927">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-      }
-    }
-  }
-
-  /**
-   * Used to indicate that a task is dependent on another task.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Task Dependency&quot;,
-      description = &quot;Used to indicate that a task is dependent on another task.&quot;,
-      name = &quot;dependency&quot;,
-      metaschema = OscalAssessmentCommonMetaschema.class
-  )
-  public static class Dependency {
-    @BoundFlag(
-        formalName = &quot;Task Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a unique task.&quot;,
-        useName = &quot;task-uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _taskUuid;
-
-    @BoundField(
-        formalName = &quot;Remarks&quot;,
-        description = &quot;Additional commentary about the containing object.&quot;,
-        useName = &quot;remarks&quot;
-    )
-    @BoundFieldValue(
-        typeAdapter = MarkupMultilineAdapter.class
-    )
-    private MarkupMultiline _remarks;
-
-<span class="nc" id="L961">    public Dependency() {</span>
-<span class="nc" id="L962">    }</span>
-
-    public UUID getTaskUuid() {
-<span class="nc" id="L965">      return _taskUuid;</span>
-    }
-
-    public void setTaskUuid(UUID value) {
-<span class="nc" id="L969">      _taskUuid = value;</span>
-<span class="nc" id="L970">    }</span>
 
     public MarkupMultiline getRemarks() {
 <span class="nc" id="L973">      return _remarks;</span>

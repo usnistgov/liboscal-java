@@ -548,6 +548,42 @@ public class Risk {
   }
 
   /**
+   * Relates the finding to a set of referenced observations that were used to determine the finding.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Related Observation&quot;,
+      description = &quot;Relates the finding to a set of referenced observations that were used to determine the finding.&quot;,
+      name = &quot;related-observation&quot;,
+      metaschema = OscalAssessmentCommonMetaschema.class
+  )
+  public static class RelatedObservation {
+    @BoundFlag(
+        formalName = &quot;Observation Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.&quot;,
+        useName = &quot;observation-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _observationUuid;
+
+<span class="nc" id="L569">    public RelatedObservation() {</span>
+<span class="nc" id="L570">    }</span>
+
+    public UUID getObservationUuid() {
+<span class="nc" id="L573">      return _observationUuid;</span>
+    }
+
+    public void setObservationUuid(UUID value) {
+<span class="nc" id="L577">      _observationUuid = value;</span>
+<span class="nc" id="L578">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L582">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
    * Describes an existing mitigating factor that may affect the overall determination of the risk, with an optional link to an implementation statement in the SSP.
    */
   @MetaschemaAssembly(
@@ -625,40 +661,40 @@ public class Risk {
     )
     private List&lt;SubjectReference&gt; _subjects;
 
-<span class="nc" id="L628">    public MitigatingFactor() {</span>
-<span class="nc" id="L629">    }</span>
+<span class="nc" id="L664">    public MitigatingFactor() {</span>
+<span class="nc" id="L665">    }</span>
 
     public UUID getUuid() {
-<span class="nc" id="L632">      return _uuid;</span>
+<span class="nc" id="L668">      return _uuid;</span>
     }
 
     public void setUuid(UUID value) {
-<span class="nc" id="L636">      _uuid = value;</span>
-<span class="nc" id="L637">    }</span>
+<span class="nc" id="L672">      _uuid = value;</span>
+<span class="nc" id="L673">    }</span>
 
     public UUID getImplementationUuid() {
-<span class="nc" id="L640">      return _implementationUuid;</span>
+<span class="nc" id="L676">      return _implementationUuid;</span>
     }
 
     public void setImplementationUuid(UUID value) {
-<span class="nc" id="L644">      _implementationUuid = value;</span>
-<span class="nc" id="L645">    }</span>
+<span class="nc" id="L680">      _implementationUuid = value;</span>
+<span class="nc" id="L681">    }</span>
 
     public MarkupMultiline getDescription() {
-<span class="nc" id="L648">      return _description;</span>
+<span class="nc" id="L684">      return _description;</span>
     }
 
     public void setDescription(MarkupMultiline value) {
-<span class="nc" id="L652">      _description = value;</span>
-<span class="nc" id="L653">    }</span>
+<span class="nc" id="L688">      _description = value;</span>
+<span class="nc" id="L689">    }</span>
 
     public List&lt;Property&gt; getProps() {
-<span class="nc" id="L656">      return _props;</span>
+<span class="nc" id="L692">      return _props;</span>
     }
 
     public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L660">      _props = value;</span>
-<span class="nc" id="L661">    }</span>
+<span class="nc" id="L696">      _props = value;</span>
+<span class="nc" id="L697">    }</span>
 
     /**
      * Add a new {@link Property} item to the underlying collection.
@@ -666,11 +702,11 @@ public class Risk {
      * @return {@code true}
      */
     public boolean addProp(Property item) {
-<span class="nc" id="L669">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L670" title="All 2 branches missed.">      if (_props == null) {</span>
-<span class="nc" id="L671">        _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L705">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L706" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L707">        _props = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L673">      return _props.add(value);</span>
+<span class="nc" id="L709">      return _props.add(value);</span>
     }
 
     /**
@@ -679,17 +715,17 @@ public class Risk {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeProp(Property item) {
-<span class="nc" id="L682">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L683" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L718">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L719" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
     }
 
     public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L687">      return _links;</span>
+<span class="nc" id="L723">      return _links;</span>
     }
 
     public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L691">      _links = value;</span>
-<span class="nc" id="L692">    }</span>
+<span class="nc" id="L727">      _links = value;</span>
+<span class="nc" id="L728">    }</span>
 
     /**
      * Add a new {@link Link} item to the underlying collection.
@@ -697,11 +733,11 @@ public class Risk {
      * @return {@code true}
      */
     public boolean addLink(Link item) {
-<span class="nc" id="L700">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L701" title="All 2 branches missed.">      if (_links == null) {</span>
-<span class="nc" id="L702">        _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L736">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L737" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L738">        _links = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L704">      return _links.add(value);</span>
+<span class="nc" id="L740">      return _links.add(value);</span>
     }
 
     /**
@@ -710,17 +746,17 @@ public class Risk {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeLink(Link item) {
-<span class="nc" id="L713">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L714" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L749">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L750" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
     }
 
     public List&lt;SubjectReference&gt; getSubjects() {
-<span class="nc" id="L718">      return _subjects;</span>
+<span class="nc" id="L754">      return _subjects;</span>
     }
 
     public void setSubjects(List&lt;SubjectReference&gt; value) {
-<span class="nc" id="L722">      _subjects = value;</span>
-<span class="nc" id="L723">    }</span>
+<span class="nc" id="L758">      _subjects = value;</span>
+<span class="nc" id="L759">    }</span>
 
     /**
      * Add a new {@link SubjectReference} item to the underlying collection.
@@ -728,11 +764,11 @@ public class Risk {
      * @return {@code true}
      */
     public boolean addSubject(SubjectReference item) {
-<span class="nc" id="L731">      SubjectReference value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L732" title="All 2 branches missed.">      if (_subjects == null) {</span>
-<span class="nc" id="L733">        _subjects = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L767">      SubjectReference value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L768" title="All 2 branches missed.">      if (_subjects == null) {</span>
+<span class="nc" id="L769">        _subjects = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L735">      return _subjects.add(value);</span>
+<span class="nc" id="L771">      return _subjects.add(value);</span>
     }
 
     /**
@@ -741,13 +777,13 @@ public class Risk {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeSubject(SubjectReference item) {
-<span class="nc" id="L744">      SubjectReference value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L745" title="All 2 branches missed.">      return _subjects == null ? false : _subjects.remove(value);</span>
+<span class="nc" id="L780">      SubjectReference value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L781" title="All 2 branches missed.">      return _subjects == null ? false : _subjects.remove(value);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L750">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L786">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
     }
   }
 
@@ -777,16 +813,16 @@ public class Risk {
     )
     private List&lt;Entry&gt; _entries;
 
-<span class="nc" id="L780">    public RiskLog() {</span>
-<span class="nc" id="L781">    }</span>
+<span class="nc" id="L816">    public RiskLog() {</span>
+<span class="nc" id="L817">    }</span>
 
     public List&lt;Entry&gt; getEntries() {
-<span class="nc" id="L784">      return _entries;</span>
+<span class="nc" id="L820">      return _entries;</span>
     }
 
     public void setEntries(List&lt;Entry&gt; value) {
-<span class="nc" id="L788">      _entries = value;</span>
-<span class="nc" id="L789">    }</span>
+<span class="nc" id="L824">      _entries = value;</span>
+<span class="nc" id="L825">    }</span>
 
     /**
      * Add a new {@link Entry} item to the underlying collection.
@@ -794,11 +830,11 @@ public class Risk {
      * @return {@code true}
      */
     public boolean addEntry(Entry item) {
-<span class="nc" id="L797">      Entry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L798" title="All 2 branches missed.">      if (_entries == null) {</span>
-<span class="nc" id="L799">        _entries = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L833">      Entry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L834" title="All 2 branches missed.">      if (_entries == null) {</span>
+<span class="nc" id="L835">        _entries = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L801">      return _entries.add(value);</span>
+<span class="nc" id="L837">      return _entries.add(value);</span>
     }
 
     /**
@@ -807,13 +843,13 @@ public class Risk {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeEntry(Entry item) {
-<span class="nc" id="L810">      Entry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L811" title="All 2 branches missed.">      return _entries == null ? false : _entries.remove(value);</span>
+<span class="nc" id="L846">      Entry value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L847" title="All 2 branches missed.">      return _entries == null ? false : _entries.remove(value);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L816">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L852">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
     }
 
     /**
@@ -969,56 +1005,56 @@ public class Risk {
       )
       private MarkupMultiline _remarks;
 
-<span class="nc" id="L972">      public Entry() {</span>
-<span class="nc" id="L973">      }</span>
+<span class="nc" id="L1008">      public Entry() {</span>
+<span class="nc" id="L1009">      }</span>
 
       public UUID getUuid() {
-<span class="nc" id="L976">        return _uuid;</span>
+<span class="nc" id="L1012">        return _uuid;</span>
       }
 
       public void setUuid(UUID value) {
-<span class="nc" id="L980">        _uuid = value;</span>
-<span class="nc" id="L981">      }</span>
+<span class="nc" id="L1016">        _uuid = value;</span>
+<span class="nc" id="L1017">      }</span>
 
       public MarkupLine getTitle() {
-<span class="nc" id="L984">        return _title;</span>
+<span class="nc" id="L1020">        return _title;</span>
       }
 
       public void setTitle(MarkupLine value) {
-<span class="nc" id="L988">        _title = value;</span>
-<span class="nc" id="L989">      }</span>
+<span class="nc" id="L1024">        _title = value;</span>
+<span class="nc" id="L1025">      }</span>
 
       public MarkupMultiline getDescription() {
-<span class="nc" id="L992">        return _description;</span>
+<span class="nc" id="L1028">        return _description;</span>
       }
 
       public void setDescription(MarkupMultiline value) {
-<span class="nc" id="L996">        _description = value;</span>
-<span class="nc" id="L997">      }</span>
+<span class="nc" id="L1032">        _description = value;</span>
+<span class="nc" id="L1033">      }</span>
 
       public ZonedDateTime getStart() {
-<span class="nc" id="L1000">        return _start;</span>
+<span class="nc" id="L1036">        return _start;</span>
       }
 
       public void setStart(ZonedDateTime value) {
-<span class="nc" id="L1004">        _start = value;</span>
-<span class="nc" id="L1005">      }</span>
+<span class="nc" id="L1040">        _start = value;</span>
+<span class="nc" id="L1041">      }</span>
 
       public ZonedDateTime getEnd() {
-<span class="nc" id="L1008">        return _end;</span>
+<span class="nc" id="L1044">        return _end;</span>
       }
 
       public void setEnd(ZonedDateTime value) {
-<span class="nc" id="L1012">        _end = value;</span>
-<span class="nc" id="L1013">      }</span>
+<span class="nc" id="L1048">        _end = value;</span>
+<span class="nc" id="L1049">      }</span>
 
       public List&lt;Property&gt; getProps() {
-<span class="nc" id="L1016">        return _props;</span>
+<span class="nc" id="L1052">        return _props;</span>
       }
 
       public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L1020">        _props = value;</span>
-<span class="nc" id="L1021">      }</span>
+<span class="nc" id="L1056">        _props = value;</span>
+<span class="nc" id="L1057">      }</span>
 
       /**
        * Add a new {@link Property} item to the underlying collection.
@@ -1026,11 +1062,11 @@ public class Risk {
        * @return {@code true}
        */
       public boolean addProp(Property item) {
-<span class="nc" id="L1029">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1030" title="All 2 branches missed.">        if (_props == null) {</span>
-<span class="nc" id="L1031">          _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1065">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1066" title="All 2 branches missed.">        if (_props == null) {</span>
+<span class="nc" id="L1067">          _props = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L1033">        return _props.add(value);</span>
+<span class="nc" id="L1069">        return _props.add(value);</span>
       }
 
       /**
@@ -1039,17 +1075,17 @@ public class Risk {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeProp(Property item) {
-<span class="nc" id="L1042">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1043" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L1078">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1079" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
       }
 
       public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L1047">        return _links;</span>
+<span class="nc" id="L1083">        return _links;</span>
       }
 
       public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L1051">        _links = value;</span>
-<span class="nc" id="L1052">      }</span>
+<span class="nc" id="L1087">        _links = value;</span>
+<span class="nc" id="L1088">      }</span>
 
       /**
        * Add a new {@link Link} item to the underlying collection.
@@ -1057,11 +1093,11 @@ public class Risk {
        * @return {@code true}
        */
       public boolean addLink(Link item) {
-<span class="nc" id="L1060">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1061" title="All 2 branches missed.">        if (_links == null) {</span>
-<span class="nc" id="L1062">          _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1096">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1097" title="All 2 branches missed.">        if (_links == null) {</span>
+<span class="nc" id="L1098">          _links = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L1064">        return _links.add(value);</span>
+<span class="nc" id="L1100">        return _links.add(value);</span>
       }
 
       /**
@@ -1070,17 +1106,17 @@ public class Risk {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeLink(Link item) {
-<span class="nc" id="L1073">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1074" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L1109">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1110" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
       }
 
       public List&lt;LoggedBy&gt; getLoggedBy() {
-<span class="nc" id="L1078">        return _loggedBy;</span>
+<span class="nc" id="L1114">        return _loggedBy;</span>
       }
 
       public void setLoggedBy(List&lt;LoggedBy&gt; value) {
-<span class="nc" id="L1082">        _loggedBy = value;</span>
-<span class="nc" id="L1083">      }</span>
+<span class="nc" id="L1118">        _loggedBy = value;</span>
+<span class="nc" id="L1119">      }</span>
 
       /**
        * Add a new {@link LoggedBy} item to the underlying collection.
@@ -1088,11 +1124,11 @@ public class Risk {
        * @return {@code true}
        */
       public boolean addLoggedBy(LoggedBy item) {
-<span class="nc" id="L1091">        LoggedBy value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1092" title="All 2 branches missed.">        if (_loggedBy == null) {</span>
-<span class="nc" id="L1093">          _loggedBy = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1127">        LoggedBy value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1128" title="All 2 branches missed.">        if (_loggedBy == null) {</span>
+<span class="nc" id="L1129">          _loggedBy = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L1095">        return _loggedBy.add(value);</span>
+<span class="nc" id="L1131">        return _loggedBy.add(value);</span>
       }
 
       /**
@@ -1101,25 +1137,25 @@ public class Risk {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeLoggedBy(LoggedBy item) {
-<span class="nc" id="L1104">        LoggedBy value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1105" title="All 2 branches missed.">        return _loggedBy == null ? false : _loggedBy.remove(value);</span>
+<span class="nc" id="L1140">        LoggedBy value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1141" title="All 2 branches missed.">        return _loggedBy == null ? false : _loggedBy.remove(value);</span>
       }
 
       public String getStatusChange() {
-<span class="nc" id="L1109">        return _statusChange;</span>
+<span class="nc" id="L1145">        return _statusChange;</span>
       }
 
       public void setStatusChange(String value) {
-<span class="nc" id="L1113">        _statusChange = value;</span>
-<span class="nc" id="L1114">      }</span>
+<span class="nc" id="L1149">        _statusChange = value;</span>
+<span class="nc" id="L1150">      }</span>
 
       public List&lt;RelatedResponse&gt; getRelatedResponses() {
-<span class="nc" id="L1117">        return _relatedResponses;</span>
+<span class="nc" id="L1153">        return _relatedResponses;</span>
       }
 
       public void setRelatedResponses(List&lt;RelatedResponse&gt; value) {
-<span class="nc" id="L1121">        _relatedResponses = value;</span>
-<span class="nc" id="L1122">      }</span>
+<span class="nc" id="L1157">        _relatedResponses = value;</span>
+<span class="nc" id="L1158">      }</span>
 
       /**
        * Add a new {@link RelatedResponse} item to the underlying collection.
@@ -1127,11 +1163,11 @@ public class Risk {
        * @return {@code true}
        */
       public boolean addRelatedResponse(RelatedResponse item) {
-<span class="nc" id="L1130">        RelatedResponse value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1131" title="All 2 branches missed.">        if (_relatedResponses == null) {</span>
-<span class="nc" id="L1132">          _relatedResponses = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1166">        RelatedResponse value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1167" title="All 2 branches missed.">        if (_relatedResponses == null) {</span>
+<span class="nc" id="L1168">          _relatedResponses = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L1134">        return _relatedResponses.add(value);</span>
+<span class="nc" id="L1170">        return _relatedResponses.add(value);</span>
       }
 
       /**
@@ -1140,21 +1176,21 @@ public class Risk {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeRelatedResponse(RelatedResponse item) {
-<span class="nc" id="L1143">        RelatedResponse value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1144" title="All 2 branches missed.">        return _relatedResponses == null ? false : _relatedResponses.remove(value);</span>
+<span class="nc" id="L1179">        RelatedResponse value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1180" title="All 2 branches missed.">        return _relatedResponses == null ? false : _relatedResponses.remove(value);</span>
       }
 
       public MarkupMultiline getRemarks() {
-<span class="nc" id="L1148">        return _remarks;</span>
+<span class="nc" id="L1184">        return _remarks;</span>
       }
 
       public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L1152">        _remarks = value;</span>
-<span class="nc" id="L1153">      }</span>
+<span class="nc" id="L1188">        _remarks = value;</span>
+<span class="nc" id="L1189">      }</span>
 
       @Override
       public String toString() {
-<span class="nc" id="L1157">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L1193">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
       }
 
       /**
@@ -1223,24 +1259,24 @@ public class Risk {
         )
         private MarkupMultiline _remarks;
 
-<span class="nc" id="L1226">        public RelatedResponse() {</span>
-<span class="nc" id="L1227">        }</span>
+<span class="nc" id="L1262">        public RelatedResponse() {</span>
+<span class="nc" id="L1263">        }</span>
 
         public UUID getResponseUuid() {
-<span class="nc" id="L1230">          return _responseUuid;</span>
+<span class="nc" id="L1266">          return _responseUuid;</span>
         }
 
         public void setResponseUuid(UUID value) {
-<span class="nc" id="L1234">          _responseUuid = value;</span>
-<span class="nc" id="L1235">        }</span>
+<span class="nc" id="L1270">          _responseUuid = value;</span>
+<span class="nc" id="L1271">        }</span>
 
         public List&lt;Property&gt; getProps() {
-<span class="nc" id="L1238">          return _props;</span>
+<span class="nc" id="L1274">          return _props;</span>
         }
 
         public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L1242">          _props = value;</span>
-<span class="nc" id="L1243">        }</span>
+<span class="nc" id="L1278">          _props = value;</span>
+<span class="nc" id="L1279">        }</span>
 
         /**
          * Add a new {@link Property} item to the underlying collection.
@@ -1248,11 +1284,11 @@ public class Risk {
          * @return {@code true}
          */
         public boolean addProp(Property item) {
-<span class="nc" id="L1251">          Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1252" title="All 2 branches missed.">          if (_props == null) {</span>
-<span class="nc" id="L1253">            _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1287">          Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1288" title="All 2 branches missed.">          if (_props == null) {</span>
+<span class="nc" id="L1289">            _props = new LinkedList&lt;&gt;();</span>
           }
-<span class="nc" id="L1255">          return _props.add(value);</span>
+<span class="nc" id="L1291">          return _props.add(value);</span>
         }
 
         /**
@@ -1261,17 +1297,17 @@ public class Risk {
          * @return {@code true} if the item was removed or {@code false} otherwise
          */
         public boolean removeProp(Property item) {
-<span class="nc" id="L1264">          Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1265" title="All 2 branches missed.">          return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L1300">          Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1301" title="All 2 branches missed.">          return _props == null ? false : _props.remove(value);</span>
         }
 
         public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L1269">          return _links;</span>
+<span class="nc" id="L1305">          return _links;</span>
         }
 
         public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L1273">          _links = value;</span>
-<span class="nc" id="L1274">        }</span>
+<span class="nc" id="L1309">          _links = value;</span>
+<span class="nc" id="L1310">        }</span>
 
         /**
          * Add a new {@link Link} item to the underlying collection.
@@ -1279,11 +1315,11 @@ public class Risk {
          * @return {@code true}
          */
         public boolean addLink(Link item) {
-<span class="nc" id="L1282">          Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1283" title="All 2 branches missed.">          if (_links == null) {</span>
-<span class="nc" id="L1284">            _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1318">          Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1319" title="All 2 branches missed.">          if (_links == null) {</span>
+<span class="nc" id="L1320">            _links = new LinkedList&lt;&gt;();</span>
           }
-<span class="nc" id="L1286">          return _links.add(value);</span>
+<span class="nc" id="L1322">          return _links.add(value);</span>
         }
 
         /**
@@ -1292,17 +1328,17 @@ public class Risk {
          * @return {@code true} if the item was removed or {@code false} otherwise
          */
         public boolean removeLink(Link item) {
-<span class="nc" id="L1295">          Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1296" title="All 2 branches missed.">          return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L1331">          Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1332" title="All 2 branches missed.">          return _links == null ? false : _links.remove(value);</span>
         }
 
         public List&lt;RelatedTask&gt; getRelatedTasks() {
-<span class="nc" id="L1300">          return _relatedTasks;</span>
+<span class="nc" id="L1336">          return _relatedTasks;</span>
         }
 
         public void setRelatedTasks(List&lt;RelatedTask&gt; value) {
-<span class="nc" id="L1304">          _relatedTasks = value;</span>
-<span class="nc" id="L1305">        }</span>
+<span class="nc" id="L1340">          _relatedTasks = value;</span>
+<span class="nc" id="L1341">        }</span>
 
         /**
          * Add a new {@link RelatedTask} item to the underlying collection.
@@ -1310,11 +1346,11 @@ public class Risk {
          * @return {@code true}
          */
         public boolean addRelatedTask(RelatedTask item) {
-<span class="nc" id="L1313">          RelatedTask value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1314" title="All 2 branches missed.">          if (_relatedTasks == null) {</span>
-<span class="nc" id="L1315">            _relatedTasks = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1349">          RelatedTask value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1350" title="All 2 branches missed.">          if (_relatedTasks == null) {</span>
+<span class="nc" id="L1351">            _relatedTasks = new LinkedList&lt;&gt;();</span>
           }
-<span class="nc" id="L1317">          return _relatedTasks.add(value);</span>
+<span class="nc" id="L1353">          return _relatedTasks.add(value);</span>
         }
 
         /**
@@ -1323,59 +1359,23 @@ public class Risk {
          * @return {@code true} if the item was removed or {@code false} otherwise
          */
         public boolean removeRelatedTask(RelatedTask item) {
-<span class="nc" id="L1326">          RelatedTask value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1327" title="All 2 branches missed.">          return _relatedTasks == null ? false : _relatedTasks.remove(value);</span>
+<span class="nc" id="L1362">          RelatedTask value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1363" title="All 2 branches missed.">          return _relatedTasks == null ? false : _relatedTasks.remove(value);</span>
         }
 
         public MarkupMultiline getRemarks() {
-<span class="nc" id="L1331">          return _remarks;</span>
+<span class="nc" id="L1367">          return _remarks;</span>
         }
 
         public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L1335">          _remarks = value;</span>
-<span class="nc" id="L1336">        }</span>
+<span class="nc" id="L1371">          _remarks = value;</span>
+<span class="nc" id="L1372">        }</span>
 
         @Override
         public String toString() {
-<span class="nc" id="L1340">          return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L1376">          return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
         }
       }
-    }
-  }
-
-  /**
-   * Relates the finding to a set of referenced observations that were used to determine the finding.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Related Observation&quot;,
-      description = &quot;Relates the finding to a set of referenced observations that were used to determine the finding.&quot;,
-      name = &quot;related-observation&quot;,
-      metaschema = OscalAssessmentCommonMetaschema.class
-  )
-  public static class RelatedObservation {
-    @BoundFlag(
-        formalName = &quot;Observation Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.&quot;,
-        useName = &quot;observation-uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _observationUuid;
-
-<span class="nc" id="L1365">    public RelatedObservation() {</span>
-<span class="nc" id="L1366">    }</span>
-
-    public UUID getObservationUuid() {
-<span class="nc" id="L1369">      return _observationUuid;</span>
-    }
-
-    public void setObservationUuid(UUID value) {
-<span class="nc" id="L1373">      _observationUuid = value;</span>
-<span class="nc" id="L1374">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc" id="L1378">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
     }
   }
 }

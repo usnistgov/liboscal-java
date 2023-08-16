@@ -402,6 +402,112 @@ public class BackMatter extends AbstractBackMatter {
     }
 
     /**
+     * A URL-based pointer to an external resource with an optional hash for verification and change detection.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Resource link&quot;,
+        description = &quot;A URL-based pointer to an external resource with an optional hash for verification and change detection.&quot;,
+        name = &quot;rlink&quot;,
+        metaschema = OscalMetadataMetaschema.class,
+        remarks = &quot;Multiple `rlink` objects can be included for a resource. In such a case, all provided `rlink` items are intended to be equivalent in content, but may differ in structure or format.\n&quot;
+                + &quot;\n&quot;
+                + &quot;A `media-type` is used to identify the format of a given rlink, and can be used to differentiate items in a collection of rlinks. The `media-type` provides a hint to the OSCAL document consumer about the structure of the resource referenced by the `rlink`.&quot;
+    )
+    public static class Rlink {
+      @BoundFlag(
+          formalName = &quot;Hypertext Reference&quot;,
+          description = &quot;A resolvable URL pointing to the referenced resource.&quot;,
+          useName = &quot;href&quot;,
+          required = true,
+          typeAdapter = UriReferenceAdapter.class,
+          remarks = &quot;This value may be either:\n&quot;
+                  + &quot;\n&quot;
+                  + &quot;1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n&quot;
+                  + &quot;2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or&quot;
+      )
+      private URI _href;
+
+      @BoundFlag(
+          formalName = &quot;Media Type&quot;,
+          description = &quot;A label that indicates the nature of a resource, as a data serialization or format.&quot;,
+          useName = &quot;media-type&quot;,
+          typeAdapter = StringAdapter.class
+      )
+      private String _mediaType;
+
+      /**
+       * &quot;A hash of the resource identified by &lt;code&gt;href&lt;/code&gt;, which can be used to verify the resource was not changed since it was hashed.&quot;
+       */
+      @BoundField(
+          formalName = &quot;Hash&quot;,
+          description = &quot;A hash of the resource identified by `href`, which can be used to verify the resource was not changed since it was hashed.&quot;,
+          useName = &quot;hash&quot;,
+          maxOccurs = -1,
+          remarks = &quot;The `hash` value can be used to confirm that the resource referenced by the `href` is the same resources that was hashed by retrieving the resource, calculating a hash, and comparing the result to this value.&quot;
+      )
+      @GroupAs(
+          name = &quot;hashes&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Hash&gt; _hashes;
+
+<span class="fc" id="L454">      public Rlink() {</span>
+<span class="fc" id="L455">      }</span>
+
+      public URI getHref() {
+<span class="fc" id="L458">        return _href;</span>
+      }
+
+      public void setHref(URI value) {
+<span class="nc" id="L462">        _href = value;</span>
+<span class="nc" id="L463">      }</span>
+
+      public String getMediaType() {
+<span class="nc" id="L466">        return _mediaType;</span>
+      }
+
+      public void setMediaType(String value) {
+<span class="nc" id="L470">        _mediaType = value;</span>
+<span class="nc" id="L471">      }</span>
+
+      public List&lt;Hash&gt; getHashes() {
+<span class="nc" id="L474">        return _hashes;</span>
+      }
+
+      public void setHashes(List&lt;Hash&gt; value) {
+<span class="nc" id="L478">        _hashes = value;</span>
+<span class="nc" id="L479">      }</span>
+
+      /**
+       * Add a new {@link Hash} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addHash(Hash item) {
+<span class="nc" id="L487">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">        if (_hashes == null) {</span>
+<span class="nc" id="L489">          _hashes = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L491">        return _hashes.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Hash} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeHash(Hash item) {
+<span class="nc" id="L500">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L501" title="All 2 branches missed.">        return _hashes == null ? false : _hashes.remove(value);</span>
+      }
+
+      @Override
+      public String toString() {
+<span class="nc" id="L506">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
      * A resource encoded using the Base64 alphabet defined by &lt;a href=&quot;https://www.rfc-editor.org/rfc/rfc2045.html&quot;&gt;RFC 2045&lt;/a&gt;.
      */
     @MetaschemaField(
@@ -434,36 +540,36 @@ public class BackMatter extends AbstractBackMatter {
       )
       private String _mediaType;
 
-<span class="nc" id="L437">      public Base64() {</span>
-<span class="nc" id="L438">      }</span>
+<span class="nc" id="L543">      public Base64() {</span>
+<span class="nc" id="L544">      }</span>
 
       public ByteBuffer getValue() {
-<span class="nc" id="L441">        return _value;</span>
+<span class="nc" id="L547">        return _value;</span>
       }
 
       public void setValue(ByteBuffer value) {
-<span class="nc" id="L445">        _value = value;</span>
-<span class="nc" id="L446">      }</span>
+<span class="nc" id="L551">        _value = value;</span>
+<span class="nc" id="L552">      }</span>
 
       public String getFilename() {
-<span class="nc" id="L449">        return _filename;</span>
+<span class="nc" id="L555">        return _filename;</span>
       }
 
       public void setFilename(String value) {
-<span class="nc" id="L453">        _filename = value;</span>
-<span class="nc" id="L454">      }</span>
+<span class="nc" id="L559">        _filename = value;</span>
+<span class="nc" id="L560">      }</span>
 
       public String getMediaType() {
-<span class="nc" id="L457">        return _mediaType;</span>
+<span class="nc" id="L563">        return _mediaType;</span>
       }
 
       public void setMediaType(String value) {
-<span class="nc" id="L461">        _mediaType = value;</span>
-<span class="nc" id="L462">      }</span>
+<span class="nc" id="L567">        _mediaType = value;</span>
+<span class="nc" id="L568">      }</span>
 
       @Override
       public String toString() {
-<span class="nc" id="L466">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L572">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
       }
     }
 
@@ -515,24 +621,24 @@ public class BackMatter extends AbstractBackMatter {
       )
       private List&lt;Link&gt; _links;
 
-<span class="fc" id="L518">      public Citation() {</span>
-<span class="fc" id="L519">      }</span>
+<span class="fc" id="L624">      public Citation() {</span>
+<span class="fc" id="L625">      }</span>
 
       public MarkupLine getText() {
-<span class="nc" id="L522">        return _text;</span>
+<span class="nc" id="L628">        return _text;</span>
       }
 
       public void setText(MarkupLine value) {
-<span class="nc" id="L526">        _text = value;</span>
-<span class="nc" id="L527">      }</span>
+<span class="nc" id="L632">        _text = value;</span>
+<span class="nc" id="L633">      }</span>
 
       public List&lt;Property&gt; getProps() {
-<span class="nc" id="L530">        return _props;</span>
+<span class="nc" id="L636">        return _props;</span>
       }
 
       public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L534">        _props = value;</span>
-<span class="nc" id="L535">      }</span>
+<span class="nc" id="L640">        _props = value;</span>
+<span class="nc" id="L641">      }</span>
 
       /**
        * Add a new {@link Property} item to the underlying collection.
@@ -540,11 +646,11 @@ public class BackMatter extends AbstractBackMatter {
        * @return {@code true}
        */
       public boolean addProp(Property item) {
-<span class="nc" id="L543">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L544" title="All 2 branches missed.">        if (_props == null) {</span>
-<span class="nc" id="L545">          _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L649">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L650" title="All 2 branches missed.">        if (_props == null) {</span>
+<span class="nc" id="L651">          _props = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L547">        return _props.add(value);</span>
+<span class="nc" id="L653">        return _props.add(value);</span>
       }
 
       /**
@@ -553,17 +659,17 @@ public class BackMatter extends AbstractBackMatter {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeProp(Property item) {
-<span class="nc" id="L556">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L557" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L662">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L663" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
       }
 
       public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L561">        return _links;</span>
+<span class="nc" id="L667">        return _links;</span>
       }
 
       public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L565">        _links = value;</span>
-<span class="nc" id="L566">      }</span>
+<span class="nc" id="L671">        _links = value;</span>
+<span class="nc" id="L672">      }</span>
 
       /**
        * Add a new {@link Link} item to the underlying collection.
@@ -571,11 +677,11 @@ public class BackMatter extends AbstractBackMatter {
        * @return {@code true}
        */
       public boolean addLink(Link item) {
-<span class="nc" id="L574">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L575" title="All 2 branches missed.">        if (_links == null) {</span>
-<span class="nc" id="L576">          _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L680">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L681" title="All 2 branches missed.">        if (_links == null) {</span>
+<span class="nc" id="L682">          _links = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L578">        return _links.add(value);</span>
+<span class="nc" id="L684">        return _links.add(value);</span>
       }
 
       /**
@@ -584,114 +690,8 @@ public class BackMatter extends AbstractBackMatter {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeLink(Link item) {
-<span class="nc" id="L587">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L588" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
-      }
-
-      @Override
-      public String toString() {
-<span class="nc" id="L593">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-      }
-    }
-
-    /**
-     * A URL-based pointer to an external resource with an optional hash for verification and change detection.
-     */
-    @MetaschemaAssembly(
-        formalName = &quot;Resource link&quot;,
-        description = &quot;A URL-based pointer to an external resource with an optional hash for verification and change detection.&quot;,
-        name = &quot;rlink&quot;,
-        metaschema = OscalMetadataMetaschema.class,
-        remarks = &quot;Multiple `rlink` objects can be included for a resource. In such a case, all provided `rlink` items are intended to be equivalent in content, but may differ in structure or format.\n&quot;
-                + &quot;\n&quot;
-                + &quot;A `media-type` is used to identify the format of a given rlink, and can be used to differentiate items in a collection of rlinks. The `media-type` provides a hint to the OSCAL document consumer about the structure of the resource referenced by the `rlink`.&quot;
-    )
-    public static class Rlink {
-      @BoundFlag(
-          formalName = &quot;Hypertext Reference&quot;,
-          description = &quot;A resolvable URL pointing to the referenced resource.&quot;,
-          useName = &quot;href&quot;,
-          required = true,
-          typeAdapter = UriReferenceAdapter.class,
-          remarks = &quot;This value may be either:\n&quot;
-                  + &quot;\n&quot;
-                  + &quot;1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n&quot;
-                  + &quot;2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or&quot;
-      )
-      private URI _href;
-
-      @BoundFlag(
-          formalName = &quot;Media Type&quot;,
-          description = &quot;A label that indicates the nature of a resource, as a data serialization or format.&quot;,
-          useName = &quot;media-type&quot;,
-          typeAdapter = StringAdapter.class
-      )
-      private String _mediaType;
-
-      /**
-       * &quot;A hash of the resource identified by &lt;code&gt;href&lt;/code&gt;, which can be used to verify the resource was not changed since it was hashed.&quot;
-       */
-      @BoundField(
-          formalName = &quot;Hash&quot;,
-          description = &quot;A hash of the resource identified by `href`, which can be used to verify the resource was not changed since it was hashed.&quot;,
-          useName = &quot;hash&quot;,
-          maxOccurs = -1,
-          remarks = &quot;The `hash` value can be used to confirm that the resource referenced by the `href` is the same resources that was hashed by retrieving the resource, calculating a hash, and comparing the result to this value.&quot;
-      )
-      @GroupAs(
-          name = &quot;hashes&quot;,
-          inJson = JsonGroupAsBehavior.LIST
-      )
-      private List&lt;Hash&gt; _hashes;
-
-<span class="fc" id="L647">      public Rlink() {</span>
-<span class="fc" id="L648">      }</span>
-
-      public URI getHref() {
-<span class="fc" id="L651">        return _href;</span>
-      }
-
-      public void setHref(URI value) {
-<span class="nc" id="L655">        _href = value;</span>
-<span class="nc" id="L656">      }</span>
-
-      public String getMediaType() {
-<span class="nc" id="L659">        return _mediaType;</span>
-      }
-
-      public void setMediaType(String value) {
-<span class="nc" id="L663">        _mediaType = value;</span>
-<span class="nc" id="L664">      }</span>
-
-      public List&lt;Hash&gt; getHashes() {
-<span class="nc" id="L667">        return _hashes;</span>
-      }
-
-      public void setHashes(List&lt;Hash&gt; value) {
-<span class="nc" id="L671">        _hashes = value;</span>
-<span class="nc" id="L672">      }</span>
-
-      /**
-       * Add a new {@link Hash} item to the underlying collection.
-       * @param item the item to add
-       * @return {@code true}
-       */
-      public boolean addHash(Hash item) {
-<span class="nc" id="L680">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L681" title="All 2 branches missed.">        if (_hashes == null) {</span>
-<span class="nc" id="L682">          _hashes = new LinkedList&lt;&gt;();</span>
-        }
-<span class="nc" id="L684">        return _hashes.add(value);</span>
-      }
-
-      /**
-       * Remove the first matching {@link Hash} item from the underlying collection.
-       * @param item the item to remove
-       * @return {@code true} if the item was removed or {@code false} otherwise
-       */
-      public boolean removeHash(Hash item) {
-<span class="nc" id="L693">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L694" title="All 2 branches missed.">        return _hashes == null ? false : _hashes.remove(value);</span>
+<span class="nc" id="L693">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L694" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
       }
 
       @Override
