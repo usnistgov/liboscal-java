@@ -25,9 +25,11 @@ This project is in the worldwide [public domain](LICENSE.md). As stated in [CONT
 
 ## Using as a Maven dependency
 
-This project's modules are published to [Maven Central](https://search.maven.org/search?q=g:gov.nist.secauto.oscal.liboscal-java).
+This project's modules are published to [Maven Central](https://search.maven.org/search?q=g:gov.nist.secauto.oscal.liboscal-java). We recommend you use [the latest stable release on the Maven Central repository](https://repo1.maven.org/maven2/gov/nist/secauto/oscal/liboscal-java/). You may also download [development snapshots](https://oss.sonatype.org/content/repositories/snapshots/gov/nist/secauto/oscal/liboscal-java/) to evaluate new features or bug fixes merged into develop before they are finalized in a published release.
 
 You can include these artifacts in your Maven POM as a dependency.
+
+We digitally sign these releases with [the NIST OSCAL Team's Release Engineering Key](https://pgp.mit.edu/pks/lookup?op=get&search=0x6387E83B4828A504).
 
 ## Building
 
