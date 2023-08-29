@@ -287,25 +287,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>${project.build.directory}/generated-resources/oscal</directory>
-				<includes>
-					<include>**/*.json</include>
-				</includes>
-				<targetPath>${resources.jsonschema.path}</targetPath>
-			</resource>
-			<resource>
-				<directory>${project.build.directory}/generated-resources/oscal</directory>
-				<includes>
-					<include>**/*.xsd</include>
-				</includes>
-				<targetPath>${resources.xmlschema.path}</targetPath>
-			</resource>			
-		</resources>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -430,45 +411,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-oscal-xml-schema</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
-							<resources>
-								<resource>
-									<directory>
-										${project.basedir}/oscal/xml/schema</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-oscal-json-schema</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
-							<resources>
-								<resource>
-									<directory>
-										${project.basedir}/oscal/json/schema</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>templating-maven-plugin</artifactId>
 				<version>1.0.0</version>
@@ -484,7 +426,7 @@
 			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
-				<version>1.6.8</version>
+				<version>1.7.1</version>
 				<configuration>
 					<skipCache>true</skipCache>
 					<overwrite>false</overwrite>
@@ -563,13 +505,15 @@
 				<version>${dependency.metaschema-framework.version}</version>
 				<executions>
 					<execution>
-						<id>default-cli</id>
+						<id>oscal-codegen</id>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
 							<metaschemaDir>
 								${project.basedir}/oscal/src/metaschema</metaschemaDir>
+								<outputDirectory>${project.build.directory}/generated-sources/metaschema</outputDirectory>
 							<configs>
 								<config>
 									${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
@@ -580,7 +524,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>generate-schemas</id>
+						<id>generate-xml-schemas</id>
 						<goals>
 							<goal>generate-schemas</goal>
 						</goals>
@@ -588,10 +532,31 @@
 							<metaschemaDir>
 								${project.basedir}/oscal/src/metaschema</metaschemaDir>
 							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal</outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
 							<includes>
 								<include>oscal_*_metaschema.xml</include>
 							</includes>
+							<formats>
+								<format>xsd</format>
+							</formats>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-json-schemas</id>
+						<goals>
+							<goal>generate-schemas</goal>
+						</goals>
+						<configuration>
+							<metaschemaDir>
+								${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
+							<includes>
+								<include>oscal_*_metaschema.xml</include>
+							</includes>
+							<formats>
+								<format>json</format>
+							</formats>
 						</configuration>
 					</execution>
 				</executions>
@@ -615,7 +580,7 @@
 					</execution>
 					<execution>
 						<id>add-oscal-resources</id>
-						<phase>process-resources</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>add-resource</goal>
 						</goals>
