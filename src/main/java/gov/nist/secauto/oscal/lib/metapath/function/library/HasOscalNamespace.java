@@ -33,15 +33,17 @@ import gov.nist.secauto.metaschema.core.metapath.function.FunctionUtils;
 import gov.nist.secauto.metaschema.core.metapath.function.IArgument;
 import gov.nist.secauto.metaschema.core.metapath.function.IFunction;
 import gov.nist.secauto.metaschema.core.metapath.function.InvalidTypeFunctionException;
+import gov.nist.secauto.metaschema.core.metapath.function.library.FnData;
 import gov.nist.secauto.metaschema.core.metapath.item.IItem;
+import gov.nist.secauto.metaschema.core.metapath.item.atomic.IAnyUriItem;
 import gov.nist.secauto.metaschema.core.metapath.item.atomic.IBooleanItem;
 import gov.nist.secauto.metaschema.core.metapath.item.atomic.IStringItem;
 import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IFlagNodeItem;
+import gov.nist.secauto.metaschema.core.model.IAssemblyDefinition;
+import gov.nist.secauto.metaschema.core.model.IFlagInstance;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
-import gov.nist.secauto.oscal.lib.model.AssessmentPart;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
-import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
 
 import java.net.URI;
@@ -152,16 +154,29 @@ public final class HasOscalNamespace {
       throw new InvalidTypeFunctionException(InvalidTypeFunctionException.NODE_HAS_NO_TYPED_VALUE, propOrPart);
     }
 
-    URI nodeNamespace;
-    if (propOrPartObject instanceof Property) {
-      nodeNamespace = ((Property) propOrPartObject).getNs();
-    } else if (propOrPartObject instanceof ControlPart) {
-      nodeNamespace = ((ControlPart) propOrPartObject).getNs();
-    } else if (propOrPartObject instanceof AssessmentPart) {
-      nodeNamespace = ((AssessmentPart) propOrPartObject).getNs();
+    URI nodeNamespace = null;
+    // get the "ns" flag value
+    IFlagNodeItem ns = propOrPart.getFlagByName("ns");
+    if (ns == null) {
+      // check if the node actually has a "ns" flag
+      IAssemblyDefinition definition = propOrPart.getDefinition();
+      IFlagInstance flag = definition.getFlagInstanceByName("ns");
+      if (flag == null) {
+        throw new MetapathException(
+            String.format(
+                "Node at path '%s' bound to '%s' based on the assembly definition '%s' has no OSCAL namespace",
+                propOrPart.getMetapath(),
+                propOrPart.getClass().getName(),
+                propOrPart.getDefinition().getName()));
+
+      }
+
+      Object defaultValue = flag.getDefinition().getDefaultValue();
+      if (defaultValue != null) {
+        nodeNamespace = IAnyUriItem.valueOf(ObjectUtils.notNull(defaultValue.toString())).getValue();
+      }
     } else {
-      throw new MetapathException(
-          String.format("Node of definition type '%s' has no OSCAL namespace", propOrPart.getDefinition().getName()));
+      nodeNamespace = IAnyUriItem.cast(FnData.fnDataItem(ns)).getValue();
     }
 
     String nodeNamespaceString = AbstractProperty.normalizeNamespace(nodeNamespace).toString();
