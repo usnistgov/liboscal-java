@@ -402,6 +402,133 @@ public class BackMatter extends AbstractBackMatter {
     }
 
     /**
+     * An optional citation consisting of end note text using structured markup.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Citation&quot;,
+        description = &quot;An optional citation consisting of end note text using structured markup.&quot;,
+        name = &quot;citation&quot;,
+        metaschema = OscalMetadataMetaschema.class
+    )
+    public static class Citation {
+      /**
+       * &quot;A line of citation text.&quot;
+       */
+      @BoundField(
+          formalName = &quot;Citation Text&quot;,
+          description = &quot;A line of citation text.&quot;,
+          useName = &quot;text&quot;,
+          minOccurs = 1
+      )
+      @BoundFieldValue(
+          typeAdapter = MarkupLineAdapter.class
+      )
+      private MarkupLine _text;
+
+      @BoundAssembly(
+          formalName = &quot;Property&quot;,
+          description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+          useName = &quot;prop&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;props&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Property&gt; _props;
+
+      @BoundAssembly(
+          formalName = &quot;Link&quot;,
+          description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+          useName = &quot;link&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;links&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Link&gt; _links;
+
+<span class="fc" id="L452">      public Citation() {</span>
+<span class="fc" id="L453">      }</span>
+
+      public MarkupLine getText() {
+<span class="nc" id="L456">        return _text;</span>
+      }
+
+      public void setText(MarkupLine value) {
+<span class="nc" id="L460">        _text = value;</span>
+<span class="nc" id="L461">      }</span>
+
+      public List&lt;Property&gt; getProps() {
+<span class="nc" id="L464">        return _props;</span>
+      }
+
+      public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L468">        _props = value;</span>
+<span class="nc" id="L469">      }</span>
+
+      /**
+       * Add a new {@link Property} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addProp(Property item) {
+<span class="nc" id="L477">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L478" title="All 2 branches missed.">        if (_props == null) {</span>
+<span class="nc" id="L479">          _props = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L481">        return _props.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Property} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeProp(Property item) {
+<span class="nc" id="L490">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L491" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
+      }
+
+      public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L495">        return _links;</span>
+      }
+
+      public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L499">        _links = value;</span>
+<span class="nc" id="L500">      }</span>
+
+      /**
+       * Add a new {@link Link} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addLink(Link item) {
+<span class="nc" id="L508">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L509" title="All 2 branches missed.">        if (_links == null) {</span>
+<span class="nc" id="L510">          _links = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L512">        return _links.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Link} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeLink(Link item) {
+<span class="nc" id="L521">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L522" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
+      }
+
+      @Override
+      public String toString() {
+<span class="nc" id="L527">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
      * A URL-based pointer to an external resource with an optional hash for verification and change detection.
      */
     @MetaschemaAssembly(
@@ -451,32 +578,32 @@ public class BackMatter extends AbstractBackMatter {
       )
       private List&lt;Hash&gt; _hashes;
 
-<span class="fc" id="L454">      public Rlink() {</span>
-<span class="fc" id="L455">      }</span>
+<span class="fc" id="L581">      public Rlink() {</span>
+<span class="fc" id="L582">      }</span>
 
       public URI getHref() {
-<span class="fc" id="L458">        return _href;</span>
+<span class="fc" id="L585">        return _href;</span>
       }
 
       public void setHref(URI value) {
-<span class="nc" id="L462">        _href = value;</span>
-<span class="nc" id="L463">      }</span>
+<span class="nc" id="L589">        _href = value;</span>
+<span class="nc" id="L590">      }</span>
 
       public String getMediaType() {
-<span class="nc" id="L466">        return _mediaType;</span>
+<span class="nc" id="L593">        return _mediaType;</span>
       }
 
       public void setMediaType(String value) {
-<span class="nc" id="L470">        _mediaType = value;</span>
-<span class="nc" id="L471">      }</span>
+<span class="nc" id="L597">        _mediaType = value;</span>
+<span class="nc" id="L598">      }</span>
 
       public List&lt;Hash&gt; getHashes() {
-<span class="nc" id="L474">        return _hashes;</span>
+<span class="nc" id="L601">        return _hashes;</span>
       }
 
       public void setHashes(List&lt;Hash&gt; value) {
-<span class="nc" id="L478">        _hashes = value;</span>
-<span class="nc" id="L479">      }</span>
+<span class="nc" id="L605">        _hashes = value;</span>
+<span class="nc" id="L606">      }</span>
 
       /**
        * Add a new {@link Hash} item to the underlying collection.
@@ -484,11 +611,11 @@ public class BackMatter extends AbstractBackMatter {
        * @return {@code true}
        */
       public boolean addHash(Hash item) {
-<span class="nc" id="L487">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L488" title="All 2 branches missed.">        if (_hashes == null) {</span>
-<span class="nc" id="L489">          _hashes = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L614">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L615" title="All 2 branches missed.">        if (_hashes == null) {</span>
+<span class="nc" id="L616">          _hashes = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L491">        return _hashes.add(value);</span>
+<span class="nc" id="L618">        return _hashes.add(value);</span>
       }
 
       /**
@@ -497,13 +624,13 @@ public class BackMatter extends AbstractBackMatter {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeHash(Hash item) {
-<span class="nc" id="L500">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L501" title="All 2 branches missed.">        return _hashes == null ? false : _hashes.remove(value);</span>
+<span class="nc" id="L627">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L628" title="All 2 branches missed.">        return _hashes == null ? false : _hashes.remove(value);</span>
       }
 
       @Override
       public String toString() {
-<span class="nc" id="L506">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L633">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
       }
     }
 
@@ -540,159 +667,32 @@ public class BackMatter extends AbstractBackMatter {
       )
       private String _mediaType;
 
-<span class="nc" id="L543">      public Base64() {</span>
-<span class="nc" id="L544">      }</span>
+<span class="nc" id="L670">      public Base64() {</span>
+<span class="nc" id="L671">      }</span>
 
       public ByteBuffer getValue() {
-<span class="nc" id="L547">        return _value;</span>
+<span class="nc" id="L674">        return _value;</span>
       }
 
       public void setValue(ByteBuffer value) {
-<span class="nc" id="L551">        _value = value;</span>
-<span class="nc" id="L552">      }</span>
+<span class="nc" id="L678">        _value = value;</span>
+<span class="nc" id="L679">      }</span>
 
       public String getFilename() {
-<span class="nc" id="L555">        return _filename;</span>
+<span class="nc" id="L682">        return _filename;</span>
       }
 
       public void setFilename(String value) {
-<span class="nc" id="L559">        _filename = value;</span>
-<span class="nc" id="L560">      }</span>
+<span class="nc" id="L686">        _filename = value;</span>
+<span class="nc" id="L687">      }</span>
 
       public String getMediaType() {
-<span class="nc" id="L563">        return _mediaType;</span>
+<span class="nc" id="L690">        return _mediaType;</span>
       }
 
       public void setMediaType(String value) {
-<span class="nc" id="L567">        _mediaType = value;</span>
-<span class="nc" id="L568">      }</span>
-
-      @Override
-      public String toString() {
-<span class="nc" id="L572">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-      }
-    }
-
-    /**
-     * An optional citation consisting of end note text using structured markup.
-     */
-    @MetaschemaAssembly(
-        formalName = &quot;Citation&quot;,
-        description = &quot;An optional citation consisting of end note text using structured markup.&quot;,
-        name = &quot;citation&quot;,
-        metaschema = OscalMetadataMetaschema.class
-    )
-    public static class Citation {
-      /**
-       * &quot;A line of citation text.&quot;
-       */
-      @BoundField(
-          formalName = &quot;Citation Text&quot;,
-          description = &quot;A line of citation text.&quot;,
-          useName = &quot;text&quot;,
-          minOccurs = 1
-      )
-      @BoundFieldValue(
-          typeAdapter = MarkupLineAdapter.class
-      )
-      private MarkupLine _text;
-
-      @BoundAssembly(
-          formalName = &quot;Property&quot;,
-          description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
-          useName = &quot;prop&quot;,
-          maxOccurs = -1
-      )
-      @GroupAs(
-          name = &quot;props&quot;,
-          inJson = JsonGroupAsBehavior.LIST
-      )
-      private List&lt;Property&gt; _props;
-
-      @BoundAssembly(
-          formalName = &quot;Link&quot;,
-          description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
-          useName = &quot;link&quot;,
-          maxOccurs = -1
-      )
-      @GroupAs(
-          name = &quot;links&quot;,
-          inJson = JsonGroupAsBehavior.LIST
-      )
-      private List&lt;Link&gt; _links;
-
-<span class="fc" id="L624">      public Citation() {</span>
-<span class="fc" id="L625">      }</span>
-
-      public MarkupLine getText() {
-<span class="nc" id="L628">        return _text;</span>
-      }
-
-      public void setText(MarkupLine value) {
-<span class="nc" id="L632">        _text = value;</span>
-<span class="nc" id="L633">      }</span>
-
-      public List&lt;Property&gt; getProps() {
-<span class="nc" id="L636">        return _props;</span>
-      }
-
-      public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L640">        _props = value;</span>
-<span class="nc" id="L641">      }</span>
-
-      /**
-       * Add a new {@link Property} item to the underlying collection.
-       * @param item the item to add
-       * @return {@code true}
-       */
-      public boolean addProp(Property item) {
-<span class="nc" id="L649">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L650" title="All 2 branches missed.">        if (_props == null) {</span>
-<span class="nc" id="L651">          _props = new LinkedList&lt;&gt;();</span>
-        }
-<span class="nc" id="L653">        return _props.add(value);</span>
-      }
-
-      /**
-       * Remove the first matching {@link Property} item from the underlying collection.
-       * @param item the item to remove
-       * @return {@code true} if the item was removed or {@code false} otherwise
-       */
-      public boolean removeProp(Property item) {
-<span class="nc" id="L662">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L663" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
-      }
-
-      public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L667">        return _links;</span>
-      }
-
-      public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L671">        _links = value;</span>
-<span class="nc" id="L672">      }</span>
-
-      /**
-       * Add a new {@link Link} item to the underlying collection.
-       * @param item the item to add
-       * @return {@code true}
-       */
-      public boolean addLink(Link item) {
-<span class="nc" id="L680">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L681" title="All 2 branches missed.">        if (_links == null) {</span>
-<span class="nc" id="L682">          _links = new LinkedList&lt;&gt;();</span>
-        }
-<span class="nc" id="L684">        return _links.add(value);</span>
-      }
-
-      /**
-       * Remove the first matching {@link Link} item from the underlying collection.
-       * @param item the item to remove
-       * @return {@code true} if the item was removed or {@code false} otherwise
-       */
-      public boolean removeLink(Link item) {
-<span class="nc" id="L693">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L694" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
-      }
+<span class="nc" id="L694">        _mediaType = value;</span>
+<span class="nc" id="L695">      }</span>
 
       @Override
       public String toString() {

@@ -121,6 +121,47 @@ public class Merge {
   }
 
   /**
+   * A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Combination Rule&quot;,
+      description = &quot;A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).&quot;,
+      name = &quot;combine&quot;,
+      metaschema = OscalProfileMetaschema.class
+  )
+  @ValueConstraints(
+      expect = @Expect(id = &quot;req-merge-combine&quot;, level = IConstraint.Level.ERROR, test = &quot;not(@method='merge')&quot;)
+  )
+  public static class Combine {
+    @BoundFlag(
+        formalName = &quot;Combination Method&quot;,
+        description = &quot;Declare how clashing controls should be handled.&quot;,
+        useName = &quot;method&quot;,
+        typeAdapter = StringAdapter.class
+    )
+    @ValueConstraints(
+        allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;use-first&quot;, description = &quot;Use the first definition - the first control with a given ID is used; subsequent ones are discarded&quot;), @AllowedValue(value = &quot;merge&quot;, description = &quot;\\*\\*(*deprecated* )\\*\\* \\*\\*(*unspecified*)\\*\\* Merge - controls with the same ID are combined&quot;), @AllowedValue(value = &quot;keep&quot;, description = &quot;Keep - controls with the same ID are kept, retaining the clash&quot;)})
+    )
+    private String _method;
+
+<span class="fc" id="L147">    public Combine() {</span>
+<span class="fc" id="L148">    }</span>
+
+    public String getMethod() {
+<span class="nc" id="L151">      return _method;</span>
+    }
+
+    public void setMethod(String value) {
+<span class="nc" id="L155">      _method = value;</span>
+<span class="nc" id="L156">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L160">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
    * Provides an alternate grouping structure that selected controls will be placed in.
    */
   @MetaschemaAssembly(
@@ -155,16 +196,16 @@ public class Merge {
     )
     private List&lt;InsertControls&gt; _insertControls;
 
-<span class="nc" id="L158">    public Custom() {</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L199">    public Custom() {</span>
+<span class="nc" id="L200">    }</span>
 
     public List&lt;ProfileGroup&gt; getGroups() {
-<span class="nc" id="L162">      return _groups;</span>
+<span class="nc" id="L203">      return _groups;</span>
     }
 
     public void setGroups(List&lt;ProfileGroup&gt; value) {
-<span class="nc" id="L166">      _groups = value;</span>
-<span class="nc" id="L167">    }</span>
+<span class="nc" id="L207">      _groups = value;</span>
+<span class="nc" id="L208">    }</span>
 
     /**
      * Add a new {@link ProfileGroup} item to the underlying collection.
@@ -172,11 +213,11 @@ public class Merge {
      * @return {@code true}
      */
     public boolean addGroup(ProfileGroup item) {
-<span class="nc" id="L175">      ProfileGroup value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L176" title="All 2 branches missed.">      if (_groups == null) {</span>
-<span class="nc" id="L177">        _groups = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L216">      ProfileGroup value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">      if (_groups == null) {</span>
+<span class="nc" id="L218">        _groups = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L179">      return _groups.add(value);</span>
+<span class="nc" id="L220">      return _groups.add(value);</span>
     }
 
     /**
@@ -185,17 +226,17 @@ public class Merge {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeGroup(ProfileGroup item) {
-<span class="nc" id="L188">      ProfileGroup value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L189" title="All 2 branches missed.">      return _groups == null ? false : _groups.remove(value);</span>
+<span class="nc" id="L229">      ProfileGroup value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">      return _groups == null ? false : _groups.remove(value);</span>
     }
 
     public List&lt;InsertControls&gt; getInsertControls() {
-<span class="nc" id="L193">      return _insertControls;</span>
+<span class="nc" id="L234">      return _insertControls;</span>
     }
 
     public void setInsertControls(List&lt;InsertControls&gt; value) {
-<span class="nc" id="L197">      _insertControls = value;</span>
-<span class="nc" id="L198">    }</span>
+<span class="nc" id="L238">      _insertControls = value;</span>
+<span class="nc" id="L239">    }</span>
 
     /**
      * Add a new {@link InsertControls} item to the underlying collection.
@@ -203,11 +244,11 @@ public class Merge {
      * @return {@code true}
      */
     public boolean addInsertControls(InsertControls item) {
-<span class="nc" id="L206">      InsertControls value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">      if (_insertControls == null) {</span>
-<span class="nc" id="L208">        _insertControls = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L247">      InsertControls value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">      if (_insertControls == null) {</span>
+<span class="nc" id="L249">        _insertControls = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L210">      return _insertControls.add(value);</span>
+<span class="nc" id="L251">      return _insertControls.add(value);</span>
     }
 
     /**
@@ -216,50 +257,9 @@ public class Merge {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeInsertControls(InsertControls item) {
-<span class="nc" id="L219">      InsertControls value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L220" title="All 2 branches missed.">      return _insertControls == null ? false : _insertControls.remove(value);</span>
+<span class="nc" id="L260">      InsertControls value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">      return _insertControls == null ? false : _insertControls.remove(value);</span>
     }
-
-    @Override
-    public String toString() {
-<span class="nc" id="L225">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
-   * A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Combination Rule&quot;,
-      description = &quot;A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).&quot;,
-      name = &quot;combine&quot;,
-      metaschema = OscalProfileMetaschema.class
-  )
-  @ValueConstraints(
-      expect = @Expect(id = &quot;req-merge-combine&quot;, level = IConstraint.Level.ERROR, test = &quot;not(@method='merge')&quot;)
-  )
-  public static class Combine {
-    @BoundFlag(
-        formalName = &quot;Combination Method&quot;,
-        description = &quot;Declare how clashing controls should be handled.&quot;,
-        useName = &quot;method&quot;,
-        typeAdapter = StringAdapter.class
-    )
-    @ValueConstraints(
-        allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;use-first&quot;, description = &quot;Use the first definition - the first control with a given ID is used; subsequent ones are discarded&quot;), @AllowedValue(value = &quot;merge&quot;, description = &quot;\\*\\*(*deprecated* )\\*\\* \\*\\*(*unspecified*)\\*\\* Merge - controls with the same ID are combined&quot;), @AllowedValue(value = &quot;keep&quot;, description = &quot;Keep - controls with the same ID are kept, retaining the clash&quot;)})
-    )
-    private String _method;
-
-<span class="fc" id="L253">    public Combine() {</span>
-<span class="fc" id="L254">    }</span>
-
-    public String getMethod() {
-<span class="nc" id="L257">      return _method;</span>
-    }
-
-    public void setMethod(String value) {
-<span class="nc" id="L261">      _method = value;</span>
-<span class="nc" id="L262">    }</span>
 
     @Override
     public String toString() {

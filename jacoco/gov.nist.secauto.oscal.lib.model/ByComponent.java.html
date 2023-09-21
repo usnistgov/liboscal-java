@@ -896,6 +896,214 @@ public class ByComponent {
     }
 
     /**
+     * Describes a capability which may be inherited by a leveraging system.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Provided Control Implementation&quot;,
+        description = &quot;Describes a capability which may be inherited by a leveraging system.&quot;,
+        name = &quot;provided&quot;,
+        metaschema = OscalSspMetaschema.class
+    )
+    @AssemblyConstraints(
+        isUnique = @IsUnique(id = &quot;unique-provided-responsible-role&quot;, level = IConstraint.Level.ERROR, target = &quot;responsible-role&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;), remarks = &quot;Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.&quot;)
+    )
+    public static class Provided {
+      @BoundFlag(
+          formalName = &quot;Provided Universally Unique Identifier&quot;,
+          description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this provided entry elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `provided` entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
+          useName = &quot;uuid&quot;,
+          required = true,
+          typeAdapter = UuidAdapter.class
+      )
+      private UUID _uuid;
+
+      /**
+       * &quot;An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system.&quot;
+       */
+      @BoundField(
+          formalName = &quot;Provided Control Implementation Description&quot;,
+          description = &quot;An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system.&quot;,
+          useName = &quot;description&quot;,
+          minOccurs = 1
+      )
+      @BoundFieldValue(
+          typeAdapter = MarkupMultilineAdapter.class
+      )
+      private MarkupMultiline _description;
+
+      @BoundAssembly(
+          formalName = &quot;Property&quot;,
+          description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
+          useName = &quot;prop&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;props&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Property&gt; _props;
+
+      @BoundAssembly(
+          formalName = &quot;Link&quot;,
+          description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
+          useName = &quot;link&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;links&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;Link&gt; _links;
+
+      @BoundAssembly(
+          formalName = &quot;Responsible Role&quot;,
+          description = &quot;A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.&quot;,
+          useName = &quot;responsible-role&quot;,
+          maxOccurs = -1
+      )
+      @GroupAs(
+          name = &quot;responsible-roles&quot;,
+          inJson = JsonGroupAsBehavior.LIST
+      )
+      private List&lt;ResponsibleRole&gt; _responsibleRoles;
+
+      @BoundField(
+          formalName = &quot;Remarks&quot;,
+          description = &quot;Additional commentary about the containing object.&quot;,
+          useName = &quot;remarks&quot;
+      )
+      @BoundFieldValue(
+          typeAdapter = MarkupMultilineAdapter.class
+      )
+      private MarkupMultiline _remarks;
+
+<span class="nc" id="L980">      public Provided() {</span>
+<span class="nc" id="L981">      }</span>
+
+      public UUID getUuid() {
+<span class="nc" id="L984">        return _uuid;</span>
+      }
+
+      public void setUuid(UUID value) {
+<span class="nc" id="L988">        _uuid = value;</span>
+<span class="nc" id="L989">      }</span>
+
+      public MarkupMultiline getDescription() {
+<span class="nc" id="L992">        return _description;</span>
+      }
+
+      public void setDescription(MarkupMultiline value) {
+<span class="nc" id="L996">        _description = value;</span>
+<span class="nc" id="L997">      }</span>
+
+      public List&lt;Property&gt; getProps() {
+<span class="nc" id="L1000">        return _props;</span>
+      }
+
+      public void setProps(List&lt;Property&gt; value) {
+<span class="nc" id="L1004">        _props = value;</span>
+<span class="nc" id="L1005">      }</span>
+
+      /**
+       * Add a new {@link Property} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addProp(Property item) {
+<span class="nc" id="L1013">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1014" title="All 2 branches missed.">        if (_props == null) {</span>
+<span class="nc" id="L1015">          _props = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L1017">        return _props.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Property} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeProp(Property item) {
+<span class="nc" id="L1026">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1027" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
+      }
+
+      public List&lt;Link&gt; getLinks() {
+<span class="nc" id="L1031">        return _links;</span>
+      }
+
+      public void setLinks(List&lt;Link&gt; value) {
+<span class="nc" id="L1035">        _links = value;</span>
+<span class="nc" id="L1036">      }</span>
+
+      /**
+       * Add a new {@link Link} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addLink(Link item) {
+<span class="nc" id="L1044">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1045" title="All 2 branches missed.">        if (_links == null) {</span>
+<span class="nc" id="L1046">          _links = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L1048">        return _links.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link Link} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeLink(Link item) {
+<span class="nc" id="L1057">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1058" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
+      }
+
+      public List&lt;ResponsibleRole&gt; getResponsibleRoles() {
+<span class="nc" id="L1062">        return _responsibleRoles;</span>
+      }
+
+      public void setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {
+<span class="nc" id="L1066">        _responsibleRoles = value;</span>
+<span class="nc" id="L1067">      }</span>
+
+      /**
+       * Add a new {@link ResponsibleRole} item to the underlying collection.
+       * @param item the item to add
+       * @return {@code true}
+       */
+      public boolean addResponsibleRole(ResponsibleRole item) {
+<span class="nc" id="L1075">        ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1076" title="All 2 branches missed.">        if (_responsibleRoles == null) {</span>
+<span class="nc" id="L1077">          _responsibleRoles = new LinkedList&lt;&gt;();</span>
+        }
+<span class="nc" id="L1079">        return _responsibleRoles.add(value);</span>
+      }
+
+      /**
+       * Remove the first matching {@link ResponsibleRole} item from the underlying collection.
+       * @param item the item to remove
+       * @return {@code true} if the item was removed or {@code false} otherwise
+       */
+      public boolean removeResponsibleRole(ResponsibleRole item) {
+<span class="nc" id="L1088">        ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1089" title="All 2 branches missed.">        return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</span>
+      }
+
+      public MarkupMultiline getRemarks() {
+<span class="nc" id="L1093">        return _remarks;</span>
+      }
+
+      public void setRemarks(MarkupMultiline value) {
+<span class="nc" id="L1097">        _remarks = value;</span>
+<span class="nc" id="L1098">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L1102">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
      * Describes a control implementation responsibility imposed on a leveraging system.
      */
     @MetaschemaAssembly(
@@ -986,231 +1194,23 @@ public class ByComponent {
       )
       private MarkupMultiline _remarks;
 
-<span class="nc" id="L989">      public Responsibility() {</span>
-<span class="nc" id="L990">      }</span>
+<span class="nc" id="L1197">      public Responsibility() {</span>
+<span class="nc" id="L1198">      }</span>
 
       public UUID getUuid() {
-<span class="nc" id="L993">        return _uuid;</span>
+<span class="nc" id="L1201">        return _uuid;</span>
       }
 
       public void setUuid(UUID value) {
-<span class="nc" id="L997">        _uuid = value;</span>
-<span class="nc" id="L998">      }</span>
+<span class="nc" id="L1205">        _uuid = value;</span>
+<span class="nc" id="L1206">      }</span>
 
       public UUID getProvidedUuid() {
-<span class="nc" id="L1001">        return _providedUuid;</span>
+<span class="nc" id="L1209">        return _providedUuid;</span>
       }
 
       public void setProvidedUuid(UUID value) {
-<span class="nc" id="L1005">        _providedUuid = value;</span>
-<span class="nc" id="L1006">      }</span>
-
-      public MarkupMultiline getDescription() {
-<span class="nc" id="L1009">        return _description;</span>
-      }
-
-      public void setDescription(MarkupMultiline value) {
-<span class="nc" id="L1013">        _description = value;</span>
-<span class="nc" id="L1014">      }</span>
-
-      public List&lt;Property&gt; getProps() {
-<span class="nc" id="L1017">        return _props;</span>
-      }
-
-      public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L1021">        _props = value;</span>
-<span class="nc" id="L1022">      }</span>
-
-      /**
-       * Add a new {@link Property} item to the underlying collection.
-       * @param item the item to add
-       * @return {@code true}
-       */
-      public boolean addProp(Property item) {
-<span class="nc" id="L1030">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1031" title="All 2 branches missed.">        if (_props == null) {</span>
-<span class="nc" id="L1032">          _props = new LinkedList&lt;&gt;();</span>
-        }
-<span class="nc" id="L1034">        return _props.add(value);</span>
-      }
-
-      /**
-       * Remove the first matching {@link Property} item from the underlying collection.
-       * @param item the item to remove
-       * @return {@code true} if the item was removed or {@code false} otherwise
-       */
-      public boolean removeProp(Property item) {
-<span class="nc" id="L1043">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1044" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
-      }
-
-      public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L1048">        return _links;</span>
-      }
-
-      public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L1052">        _links = value;</span>
-<span class="nc" id="L1053">      }</span>
-
-      /**
-       * Add a new {@link Link} item to the underlying collection.
-       * @param item the item to add
-       * @return {@code true}
-       */
-      public boolean addLink(Link item) {
-<span class="nc" id="L1061">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1062" title="All 2 branches missed.">        if (_links == null) {</span>
-<span class="nc" id="L1063">          _links = new LinkedList&lt;&gt;();</span>
-        }
-<span class="nc" id="L1065">        return _links.add(value);</span>
-      }
-
-      /**
-       * Remove the first matching {@link Link} item from the underlying collection.
-       * @param item the item to remove
-       * @return {@code true} if the item was removed or {@code false} otherwise
-       */
-      public boolean removeLink(Link item) {
-<span class="nc" id="L1074">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1075" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
-      }
-
-      public List&lt;ResponsibleRole&gt; getResponsibleRoles() {
-<span class="nc" id="L1079">        return _responsibleRoles;</span>
-      }
-
-      public void setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {
-<span class="nc" id="L1083">        _responsibleRoles = value;</span>
-<span class="nc" id="L1084">      }</span>
-
-      /**
-       * Add a new {@link ResponsibleRole} item to the underlying collection.
-       * @param item the item to add
-       * @return {@code true}
-       */
-      public boolean addResponsibleRole(ResponsibleRole item) {
-<span class="nc" id="L1092">        ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1093" title="All 2 branches missed.">        if (_responsibleRoles == null) {</span>
-<span class="nc" id="L1094">          _responsibleRoles = new LinkedList&lt;&gt;();</span>
-        }
-<span class="nc" id="L1096">        return _responsibleRoles.add(value);</span>
-      }
-
-      /**
-       * Remove the first matching {@link ResponsibleRole} item from the underlying collection.
-       * @param item the item to remove
-       * @return {@code true} if the item was removed or {@code false} otherwise
-       */
-      public boolean removeResponsibleRole(ResponsibleRole item) {
-<span class="nc" id="L1105">        ResponsibleRole value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1106" title="All 2 branches missed.">        return _responsibleRoles == null ? false : _responsibleRoles.remove(value);</span>
-      }
-
-      public MarkupMultiline getRemarks() {
-<span class="nc" id="L1110">        return _remarks;</span>
-      }
-
-      public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L1114">        _remarks = value;</span>
-<span class="nc" id="L1115">      }</span>
-
-      @Override
-      public String toString() {
-<span class="nc" id="L1119">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-      }
-    }
-
-    /**
-     * Describes a capability which may be inherited by a leveraging system.
-     */
-    @MetaschemaAssembly(
-        formalName = &quot;Provided Control Implementation&quot;,
-        description = &quot;Describes a capability which may be inherited by a leveraging system.&quot;,
-        name = &quot;provided&quot;,
-        metaschema = OscalSspMetaschema.class
-    )
-    @AssemblyConstraints(
-        isUnique = @IsUnique(id = &quot;unique-provided-responsible-role&quot;, level = IConstraint.Level.ERROR, target = &quot;responsible-role&quot;, keyFields = @KeyField(target = &quot;@role-id&quot;), remarks = &quot;Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once.&quot;)
-    )
-    public static class Provided {
-      @BoundFlag(
-          formalName = &quot;Provided Universally Unique Identifier&quot;,
-          description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this provided entry elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `provided` entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.&quot;,
-          useName = &quot;uuid&quot;,
-          required = true,
-          typeAdapter = UuidAdapter.class
-      )
-      private UUID _uuid;
-
-      /**
-       * &quot;An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system.&quot;
-       */
-      @BoundField(
-          formalName = &quot;Provided Control Implementation Description&quot;,
-          description = &quot;An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system.&quot;,
-          useName = &quot;description&quot;,
-          minOccurs = 1
-      )
-      @BoundFieldValue(
-          typeAdapter = MarkupMultilineAdapter.class
-      )
-      private MarkupMultiline _description;
-
-      @BoundAssembly(
-          formalName = &quot;Property&quot;,
-          description = &quot;An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.&quot;,
-          useName = &quot;prop&quot;,
-          maxOccurs = -1
-      )
-      @GroupAs(
-          name = &quot;props&quot;,
-          inJson = JsonGroupAsBehavior.LIST
-      )
-      private List&lt;Property&gt; _props;
-
-      @BoundAssembly(
-          formalName = &quot;Link&quot;,
-          description = &quot;A reference to a local or remote resource, that has a specific relation to the containing object.&quot;,
-          useName = &quot;link&quot;,
-          maxOccurs = -1
-      )
-      @GroupAs(
-          name = &quot;links&quot;,
-          inJson = JsonGroupAsBehavior.LIST
-      )
-      private List&lt;Link&gt; _links;
-
-      @BoundAssembly(
-          formalName = &quot;Responsible Role&quot;,
-          description = &quot;A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.&quot;,
-          useName = &quot;responsible-role&quot;,
-          maxOccurs = -1
-      )
-      @GroupAs(
-          name = &quot;responsible-roles&quot;,
-          inJson = JsonGroupAsBehavior.LIST
-      )
-      private List&lt;ResponsibleRole&gt; _responsibleRoles;
-
-      @BoundField(
-          formalName = &quot;Remarks&quot;,
-          description = &quot;Additional commentary about the containing object.&quot;,
-          useName = &quot;remarks&quot;
-      )
-      @BoundFieldValue(
-          typeAdapter = MarkupMultilineAdapter.class
-      )
-      private MarkupMultiline _remarks;
-
-<span class="nc" id="L1205">      public Provided() {</span>
-<span class="nc" id="L1206">      }</span>
-
-      public UUID getUuid() {
-<span class="nc" id="L1209">        return _uuid;</span>
-      }
-
-      public void setUuid(UUID value) {
-<span class="nc" id="L1213">        _uuid = value;</span>
+<span class="nc" id="L1213">        _providedUuid = value;</span>
 <span class="nc" id="L1214">      }</span>
 
       public MarkupMultiline getDescription() {

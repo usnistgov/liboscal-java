@@ -904,321 +904,321 @@
 <a class="jxr_linenumber" name="L896" href="#L896">896</a>     }
 <a class="jxr_linenumber" name="L897" href="#L897">897</a> 
 <a class="jxr_linenumber" name="L898" href="#L898">898</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L899" href="#L899">899</a> <em class="jxr_javadoccomment">     * Describes a control implementation responsibility imposed on a leveraging system.</em>
+<a class="jxr_linenumber" name="L899" href="#L899">899</a> <em class="jxr_javadoccomment">     * Describes a capability which may be inherited by a leveraging system.</em>
 <a class="jxr_linenumber" name="L900" href="#L900">900</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L901" href="#L901">901</a>     @MetaschemaAssembly(
-<a class="jxr_linenumber" name="L902" href="#L902">902</a>         formalName = <span class="jxr_string">"Control Implementation Responsibility"</span>,
-<a class="jxr_linenumber" name="L903" href="#L903">903</a>         description = <span class="jxr_string">"Describes a control implementation responsibility imposed on a leveraging system."</span>,
-<a class="jxr_linenumber" name="L904" href="#L904">904</a>         name = <span class="jxr_string">"responsibility"</span>,
+<a class="jxr_linenumber" name="L902" href="#L902">902</a>         formalName = <span class="jxr_string">"Provided Control Implementation"</span>,
+<a class="jxr_linenumber" name="L903" href="#L903">903</a>         description = <span class="jxr_string">"Describes a capability which may be inherited by a leveraging system."</span>,
+<a class="jxr_linenumber" name="L904" href="#L904">904</a>         name = <span class="jxr_string">"provided"</span>,
 <a class="jxr_linenumber" name="L905" href="#L905">905</a>         metaschema = OscalSspMetaschema.<strong class="jxr_keyword">class</strong>
 <a class="jxr_linenumber" name="L906" href="#L906">906</a>     )
 <a class="jxr_linenumber" name="L907" href="#L907">907</a>     @AssemblyConstraints(
-<a class="jxr_linenumber" name="L908" href="#L908">908</a>         isUnique = @IsUnique(id = <span class="jxr_string">"unique-responsibility-responsible-role"</span>, level = IConstraint.Level.ERROR, target = <span class="jxr_string">"responsible-role"</span>, keyFields = @KeyField(target = <span class="jxr_string">"@role-id"</span>), remarks = <span class="jxr_string">"Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once."</span>)
+<a class="jxr_linenumber" name="L908" href="#L908">908</a>         isUnique = @IsUnique(id = <span class="jxr_string">"unique-provided-responsible-role"</span>, level = IConstraint.Level.ERROR, target = <span class="jxr_string">"responsible-role"</span>, keyFields = @KeyField(target = <span class="jxr_string">"@role-id"</span>), remarks = <span class="jxr_string">"Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once."</span>)
 <a class="jxr_linenumber" name="L909" href="#L909">909</a>     )
-<a class="jxr_linenumber" name="L910" href="#L910">910</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Responsibility {
+<a class="jxr_linenumber" name="L910" href="#L910">910</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Provided {
 <a class="jxr_linenumber" name="L911" href="#L911">911</a>       @BoundFlag(
-<a class="jxr_linenumber" name="L912" href="#L912">912</a>           formalName = <span class="jxr_string">"Responsibility Universally Unique Identifier"</span>,
-<a class="jxr_linenumber" name="L913" href="#L913">913</a>           description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this responsibility elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `responsibility` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document."</span>,
+<a class="jxr_linenumber" name="L912" href="#L912">912</a>           formalName = <span class="jxr_string">"Provided Universally Unique Identifier"</span>,
+<a class="jxr_linenumber" name="L913" href="#L913">913</a>           description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this provided entry elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `provided` entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document."</span>,
 <a class="jxr_linenumber" name="L914" href="#L914">914</a>           useName = <span class="jxr_string">"uuid"</span>,
 <a class="jxr_linenumber" name="L915" href="#L915">915</a>           required = <strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L916" href="#L916">916</a>           typeAdapter = UuidAdapter.<strong class="jxr_keyword">class</strong>
 <a class="jxr_linenumber" name="L917" href="#L917">917</a>       )
 <a class="jxr_linenumber" name="L918" href="#L918">918</a>       <strong class="jxr_keyword">private</strong> UUID _uuid;
 <a class="jxr_linenumber" name="L919" href="#L919">919</a> 
-<a class="jxr_linenumber" name="L920" href="#L920">920</a>       @BoundFlag(
-<a class="jxr_linenumber" name="L921" href="#L921">921</a>           formalName = <span class="jxr_string">"Provided UUID"</span>,
-<a class="jxr_linenumber" name="L922" href="#L922">922</a>           description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an inherited control implementation that a leveraging system is inheriting from a leveraged system."</span>,
-<a class="jxr_linenumber" name="L923" href="#L923">923</a>           useName = <span class="jxr_string">"provided-uuid"</span>,
-<a class="jxr_linenumber" name="L924" href="#L924">924</a>           typeAdapter = UuidAdapter.<strong class="jxr_keyword">class</strong>
-<a class="jxr_linenumber" name="L925" href="#L925">925</a>       )
-<a class="jxr_linenumber" name="L926" href="#L926">926</a>       <strong class="jxr_keyword">private</strong> UUID _providedUuid;
-<a class="jxr_linenumber" name="L927" href="#L927">927</a> 
-<a class="jxr_linenumber" name="L928" href="#L928">928</a>       <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L929" href="#L929">929</a> <em class="jxr_javadoccomment">       * "An implementation statement that describes the aspects of the control or control statement implementation that a leveraging system must implement to satisfy the control provided by a leveraged system."</em>
-<a class="jxr_linenumber" name="L930" href="#L930">930</a> <em class="jxr_javadoccomment">       */</em>
-<a class="jxr_linenumber" name="L931" href="#L931">931</a>       @BoundField(
-<a class="jxr_linenumber" name="L932" href="#L932">932</a>           formalName = <span class="jxr_string">"Control Implementation Responsibility Description"</span>,
-<a class="jxr_linenumber" name="L933" href="#L933">933</a>           description = <span class="jxr_string">"An implementation statement that describes the aspects of the control or control statement implementation that a leveraging system must implement to satisfy the control provided by a leveraged system."</span>,
-<a class="jxr_linenumber" name="L934" href="#L934">934</a>           useName = <span class="jxr_string">"description"</span>,
-<a class="jxr_linenumber" name="L935" href="#L935">935</a>           minOccurs = 1
-<a class="jxr_linenumber" name="L936" href="#L936">936</a>       )
-<a class="jxr_linenumber" name="L937" href="#L937">937</a>       @BoundFieldValue(
-<a class="jxr_linenumber" name="L938" href="#L938">938</a>           typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L920" href="#L920">920</a>       <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L921" href="#L921">921</a> <em class="jxr_javadoccomment">       * "An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system."</em>
+<a class="jxr_linenumber" name="L922" href="#L922">922</a> <em class="jxr_javadoccomment">       */</em>
+<a class="jxr_linenumber" name="L923" href="#L923">923</a>       @BoundField(
+<a class="jxr_linenumber" name="L924" href="#L924">924</a>           formalName = <span class="jxr_string">"Provided Control Implementation Description"</span>,
+<a class="jxr_linenumber" name="L925" href="#L925">925</a>           description = <span class="jxr_string">"An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system."</span>,
+<a class="jxr_linenumber" name="L926" href="#L926">926</a>           useName = <span class="jxr_string">"description"</span>,
+<a class="jxr_linenumber" name="L927" href="#L927">927</a>           minOccurs = 1
+<a class="jxr_linenumber" name="L928" href="#L928">928</a>       )
+<a class="jxr_linenumber" name="L929" href="#L929">929</a>       @BoundFieldValue(
+<a class="jxr_linenumber" name="L930" href="#L930">930</a>           typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L931" href="#L931">931</a>       )
+<a class="jxr_linenumber" name="L932" href="#L932">932</a>       <strong class="jxr_keyword">private</strong> MarkupMultiline _description;
+<a class="jxr_linenumber" name="L933" href="#L933">933</a> 
+<a class="jxr_linenumber" name="L934" href="#L934">934</a>       @BoundAssembly(
+<a class="jxr_linenumber" name="L935" href="#L935">935</a>           formalName = <span class="jxr_string">"Property"</span>,
+<a class="jxr_linenumber" name="L936" href="#L936">936</a>           description = <span class="jxr_string">"An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."</span>,
+<a class="jxr_linenumber" name="L937" href="#L937">937</a>           useName = <span class="jxr_string">"prop"</span>,
+<a class="jxr_linenumber" name="L938" href="#L938">938</a>           maxOccurs = -1
 <a class="jxr_linenumber" name="L939" href="#L939">939</a>       )
-<a class="jxr_linenumber" name="L940" href="#L940">940</a>       <strong class="jxr_keyword">private</strong> MarkupMultiline _description;
-<a class="jxr_linenumber" name="L941" href="#L941">941</a> 
-<a class="jxr_linenumber" name="L942" href="#L942">942</a>       @BoundAssembly(
-<a class="jxr_linenumber" name="L943" href="#L943">943</a>           formalName = <span class="jxr_string">"Property"</span>,
-<a class="jxr_linenumber" name="L944" href="#L944">944</a>           description = <span class="jxr_string">"An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."</span>,
-<a class="jxr_linenumber" name="L945" href="#L945">945</a>           useName = <span class="jxr_string">"prop"</span>,
-<a class="jxr_linenumber" name="L946" href="#L946">946</a>           maxOccurs = -1
-<a class="jxr_linenumber" name="L947" href="#L947">947</a>       )
-<a class="jxr_linenumber" name="L948" href="#L948">948</a>       @GroupAs(
-<a class="jxr_linenumber" name="L949" href="#L949">949</a>           name = <span class="jxr_string">"props"</span>,
-<a class="jxr_linenumber" name="L950" href="#L950">950</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L940" href="#L940">940</a>       @GroupAs(
+<a class="jxr_linenumber" name="L941" href="#L941">941</a>           name = <span class="jxr_string">"props"</span>,
+<a class="jxr_linenumber" name="L942" href="#L942">942</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L943" href="#L943">943</a>       )
+<a class="jxr_linenumber" name="L944" href="#L944">944</a>       <strong class="jxr_keyword">private</strong> List&lt;Property&gt; _props;
+<a class="jxr_linenumber" name="L945" href="#L945">945</a> 
+<a class="jxr_linenumber" name="L946" href="#L946">946</a>       @BoundAssembly(
+<a class="jxr_linenumber" name="L947" href="#L947">947</a>           formalName = <span class="jxr_string">"Link"</span>,
+<a class="jxr_linenumber" name="L948" href="#L948">948</a>           description = <span class="jxr_string">"A reference to a local or remote resource, that has a specific relation to the containing object."</span>,
+<a class="jxr_linenumber" name="L949" href="#L949">949</a>           useName = <span class="jxr_string">"link"</span>,
+<a class="jxr_linenumber" name="L950" href="#L950">950</a>           maxOccurs = -1
 <a class="jxr_linenumber" name="L951" href="#L951">951</a>       )
-<a class="jxr_linenumber" name="L952" href="#L952">952</a>       <strong class="jxr_keyword">private</strong> List&lt;Property&gt; _props;
-<a class="jxr_linenumber" name="L953" href="#L953">953</a> 
-<a class="jxr_linenumber" name="L954" href="#L954">954</a>       @BoundAssembly(
-<a class="jxr_linenumber" name="L955" href="#L955">955</a>           formalName = <span class="jxr_string">"Link"</span>,
-<a class="jxr_linenumber" name="L956" href="#L956">956</a>           description = <span class="jxr_string">"A reference to a local or remote resource, that has a specific relation to the containing object."</span>,
-<a class="jxr_linenumber" name="L957" href="#L957">957</a>           useName = <span class="jxr_string">"link"</span>,
-<a class="jxr_linenumber" name="L958" href="#L958">958</a>           maxOccurs = -1
-<a class="jxr_linenumber" name="L959" href="#L959">959</a>       )
-<a class="jxr_linenumber" name="L960" href="#L960">960</a>       @GroupAs(
-<a class="jxr_linenumber" name="L961" href="#L961">961</a>           name = <span class="jxr_string">"links"</span>,
-<a class="jxr_linenumber" name="L962" href="#L962">962</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L952" href="#L952">952</a>       @GroupAs(
+<a class="jxr_linenumber" name="L953" href="#L953">953</a>           name = <span class="jxr_string">"links"</span>,
+<a class="jxr_linenumber" name="L954" href="#L954">954</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L955" href="#L955">955</a>       )
+<a class="jxr_linenumber" name="L956" href="#L956">956</a>       <strong class="jxr_keyword">private</strong> List&lt;Link&gt; _links;
+<a class="jxr_linenumber" name="L957" href="#L957">957</a> 
+<a class="jxr_linenumber" name="L958" href="#L958">958</a>       @BoundAssembly(
+<a class="jxr_linenumber" name="L959" href="#L959">959</a>           formalName = <span class="jxr_string">"Responsible Role"</span>,
+<a class="jxr_linenumber" name="L960" href="#L960">960</a>           description = <span class="jxr_string">"A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."</span>,
+<a class="jxr_linenumber" name="L961" href="#L961">961</a>           useName = <span class="jxr_string">"responsible-role"</span>,
+<a class="jxr_linenumber" name="L962" href="#L962">962</a>           maxOccurs = -1
 <a class="jxr_linenumber" name="L963" href="#L963">963</a>       )
-<a class="jxr_linenumber" name="L964" href="#L964">964</a>       <strong class="jxr_keyword">private</strong> List&lt;Link&gt; _links;
-<a class="jxr_linenumber" name="L965" href="#L965">965</a> 
-<a class="jxr_linenumber" name="L966" href="#L966">966</a>       @BoundAssembly(
-<a class="jxr_linenumber" name="L967" href="#L967">967</a>           formalName = <span class="jxr_string">"Responsible Role"</span>,
-<a class="jxr_linenumber" name="L968" href="#L968">968</a>           description = <span class="jxr_string">"A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."</span>,
-<a class="jxr_linenumber" name="L969" href="#L969">969</a>           useName = <span class="jxr_string">"responsible-role"</span>,
-<a class="jxr_linenumber" name="L970" href="#L970">970</a>           maxOccurs = -1,
-<a class="jxr_linenumber" name="L971" href="#L971">971</a>           remarks = <span class="jxr_string">"A role defined at the by-component level takes precedence over the same role defined on the parent implemented-requirement or on the referenced component."</span>
-<a class="jxr_linenumber" name="L972" href="#L972">972</a>       )
-<a class="jxr_linenumber" name="L973" href="#L973">973</a>       @GroupAs(
-<a class="jxr_linenumber" name="L974" href="#L974">974</a>           name = <span class="jxr_string">"responsible-roles"</span>,
-<a class="jxr_linenumber" name="L975" href="#L975">975</a>           inJson = JsonGroupAsBehavior.LIST
-<a class="jxr_linenumber" name="L976" href="#L976">976</a>       )
-<a class="jxr_linenumber" name="L977" href="#L977">977</a>       <strong class="jxr_keyword">private</strong> List&lt;ResponsibleRole&gt; _responsibleRoles;
-<a class="jxr_linenumber" name="L978" href="#L978">978</a> 
-<a class="jxr_linenumber" name="L979" href="#L979">979</a>       @BoundField(
-<a class="jxr_linenumber" name="L980" href="#L980">980</a>           formalName = <span class="jxr_string">"Remarks"</span>,
-<a class="jxr_linenumber" name="L981" href="#L981">981</a>           description = <span class="jxr_string">"Additional commentary about the containing object."</span>,
-<a class="jxr_linenumber" name="L982" href="#L982">982</a>           useName = <span class="jxr_string">"remarks"</span>
-<a class="jxr_linenumber" name="L983" href="#L983">983</a>       )
-<a class="jxr_linenumber" name="L984" href="#L984">984</a>       @BoundFieldValue(
-<a class="jxr_linenumber" name="L985" href="#L985">985</a>           typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
-<a class="jxr_linenumber" name="L986" href="#L986">986</a>       )
-<a class="jxr_linenumber" name="L987" href="#L987">987</a>       <strong class="jxr_keyword">private</strong> MarkupMultiline _remarks;
-<a class="jxr_linenumber" name="L988" href="#L988">988</a> 
-<a class="jxr_linenumber" name="L989" href="#L989">989</a>       <strong class="jxr_keyword">public</strong> Responsibility() {
-<a class="jxr_linenumber" name="L990" href="#L990">990</a>       }
-<a class="jxr_linenumber" name="L991" href="#L991">991</a> 
-<a class="jxr_linenumber" name="L992" href="#L992">992</a>       <strong class="jxr_keyword">public</strong> UUID getUuid() {
-<a class="jxr_linenumber" name="L993" href="#L993">993</a>         <strong class="jxr_keyword">return</strong> _uuid;
-<a class="jxr_linenumber" name="L994" href="#L994">994</a>       }
-<a class="jxr_linenumber" name="L995" href="#L995">995</a> 
-<a class="jxr_linenumber" name="L996" href="#L996">996</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setUuid(UUID value) {
-<a class="jxr_linenumber" name="L997" href="#L997">997</a>         _uuid = value;
-<a class="jxr_linenumber" name="L998" href="#L998">998</a>       }
-<a class="jxr_linenumber" name="L999" href="#L999">999</a> 
-<a class="jxr_linenumber" name="L1000" href="#L1000">1000</a>       <strong class="jxr_keyword">public</strong> UUID getProvidedUuid() {
-<a class="jxr_linenumber" name="L1001" href="#L1001">1001</a>         <strong class="jxr_keyword">return</strong> _providedUuid;
-<a class="jxr_linenumber" name="L1002" href="#L1002">1002</a>       }
-<a class="jxr_linenumber" name="L1003" href="#L1003">1003</a> 
-<a class="jxr_linenumber" name="L1004" href="#L1004">1004</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setProvidedUuid(UUID value) {
-<a class="jxr_linenumber" name="L1005" href="#L1005">1005</a>         _providedUuid = value;
-<a class="jxr_linenumber" name="L1006" href="#L1006">1006</a>       }
-<a class="jxr_linenumber" name="L1007" href="#L1007">1007</a> 
-<a class="jxr_linenumber" name="L1008" href="#L1008">1008</a>       <strong class="jxr_keyword">public</strong> MarkupMultiline getDescription() {
-<a class="jxr_linenumber" name="L1009" href="#L1009">1009</a>         <strong class="jxr_keyword">return</strong> _description;
-<a class="jxr_linenumber" name="L1010" href="#L1010">1010</a>       }
-<a class="jxr_linenumber" name="L1011" href="#L1011">1011</a> 
-<a class="jxr_linenumber" name="L1012" href="#L1012">1012</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setDescription(MarkupMultiline value) {
-<a class="jxr_linenumber" name="L1013" href="#L1013">1013</a>         _description = value;
-<a class="jxr_linenumber" name="L1014" href="#L1014">1014</a>       }
-<a class="jxr_linenumber" name="L1015" href="#L1015">1015</a> 
-<a class="jxr_linenumber" name="L1016" href="#L1016">1016</a>       <strong class="jxr_keyword">public</strong> List&lt;Property&gt; getProps() {
-<a class="jxr_linenumber" name="L1017" href="#L1017">1017</a>         <strong class="jxr_keyword">return</strong> _props;
+<a class="jxr_linenumber" name="L964" href="#L964">964</a>       @GroupAs(
+<a class="jxr_linenumber" name="L965" href="#L965">965</a>           name = <span class="jxr_string">"responsible-roles"</span>,
+<a class="jxr_linenumber" name="L966" href="#L966">966</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L967" href="#L967">967</a>       )
+<a class="jxr_linenumber" name="L968" href="#L968">968</a>       <strong class="jxr_keyword">private</strong> List&lt;ResponsibleRole&gt; _responsibleRoles;
+<a class="jxr_linenumber" name="L969" href="#L969">969</a> 
+<a class="jxr_linenumber" name="L970" href="#L970">970</a>       @BoundField(
+<a class="jxr_linenumber" name="L971" href="#L971">971</a>           formalName = <span class="jxr_string">"Remarks"</span>,
+<a class="jxr_linenumber" name="L972" href="#L972">972</a>           description = <span class="jxr_string">"Additional commentary about the containing object."</span>,
+<a class="jxr_linenumber" name="L973" href="#L973">973</a>           useName = <span class="jxr_string">"remarks"</span>
+<a class="jxr_linenumber" name="L974" href="#L974">974</a>       )
+<a class="jxr_linenumber" name="L975" href="#L975">975</a>       @BoundFieldValue(
+<a class="jxr_linenumber" name="L976" href="#L976">976</a>           typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L977" href="#L977">977</a>       )
+<a class="jxr_linenumber" name="L978" href="#L978">978</a>       <strong class="jxr_keyword">private</strong> MarkupMultiline _remarks;
+<a class="jxr_linenumber" name="L979" href="#L979">979</a> 
+<a class="jxr_linenumber" name="L980" href="#L980">980</a>       <strong class="jxr_keyword">public</strong> Provided() {
+<a class="jxr_linenumber" name="L981" href="#L981">981</a>       }
+<a class="jxr_linenumber" name="L982" href="#L982">982</a> 
+<a class="jxr_linenumber" name="L983" href="#L983">983</a>       <strong class="jxr_keyword">public</strong> UUID getUuid() {
+<a class="jxr_linenumber" name="L984" href="#L984">984</a>         <strong class="jxr_keyword">return</strong> _uuid;
+<a class="jxr_linenumber" name="L985" href="#L985">985</a>       }
+<a class="jxr_linenumber" name="L986" href="#L986">986</a> 
+<a class="jxr_linenumber" name="L987" href="#L987">987</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setUuid(UUID value) {
+<a class="jxr_linenumber" name="L988" href="#L988">988</a>         _uuid = value;
+<a class="jxr_linenumber" name="L989" href="#L989">989</a>       }
+<a class="jxr_linenumber" name="L990" href="#L990">990</a> 
+<a class="jxr_linenumber" name="L991" href="#L991">991</a>       <strong class="jxr_keyword">public</strong> MarkupMultiline getDescription() {
+<a class="jxr_linenumber" name="L992" href="#L992">992</a>         <strong class="jxr_keyword">return</strong> _description;
+<a class="jxr_linenumber" name="L993" href="#L993">993</a>       }
+<a class="jxr_linenumber" name="L994" href="#L994">994</a> 
+<a class="jxr_linenumber" name="L995" href="#L995">995</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setDescription(MarkupMultiline value) {
+<a class="jxr_linenumber" name="L996" href="#L996">996</a>         _description = value;
+<a class="jxr_linenumber" name="L997" href="#L997">997</a>       }
+<a class="jxr_linenumber" name="L998" href="#L998">998</a> 
+<a class="jxr_linenumber" name="L999" href="#L999">999</a>       <strong class="jxr_keyword">public</strong> List&lt;Property&gt; getProps() {
+<a class="jxr_linenumber" name="L1000" href="#L1000">1000</a>         <strong class="jxr_keyword">return</strong> _props;
+<a class="jxr_linenumber" name="L1001" href="#L1001">1001</a>       }
+<a class="jxr_linenumber" name="L1002" href="#L1002">1002</a> 
+<a class="jxr_linenumber" name="L1003" href="#L1003">1003</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setProps(List&lt;Property&gt; value) {
+<a class="jxr_linenumber" name="L1004" href="#L1004">1004</a>         _props = value;
+<a class="jxr_linenumber" name="L1005" href="#L1005">1005</a>       }
+<a class="jxr_linenumber" name="L1006" href="#L1006">1006</a> 
+<a class="jxr_linenumber" name="L1007" href="#L1007">1007</a>       <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1008" href="#L1008">1008</a> <em class="jxr_javadoccomment">       * Add a new {@link Property} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L1009" href="#L1009">1009</a> <em class="jxr_javadoccomment">       * @param item the item to add</em>
+<a class="jxr_linenumber" name="L1010" href="#L1010">1010</a> <em class="jxr_javadoccomment">       * @return {@code true}</em>
+<a class="jxr_linenumber" name="L1011" href="#L1011">1011</a> <em class="jxr_javadoccomment">       */</em>
+<a class="jxr_linenumber" name="L1012" href="#L1012">1012</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addProp(<a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> item) {
+<a class="jxr_linenumber" name="L1013" href="#L1013">1013</a>         <a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L1014" href="#L1014">1014</a>         <strong class="jxr_keyword">if</strong> (_props == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L1015" href="#L1015">1015</a>           _props = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L1016" href="#L1016">1016</a>         }
+<a class="jxr_linenumber" name="L1017" href="#L1017">1017</a>         <strong class="jxr_keyword">return</strong> _props.add(value);
 <a class="jxr_linenumber" name="L1018" href="#L1018">1018</a>       }
 <a class="jxr_linenumber" name="L1019" href="#L1019">1019</a> 
-<a class="jxr_linenumber" name="L1020" href="#L1020">1020</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setProps(List&lt;Property&gt; value) {
-<a class="jxr_linenumber" name="L1021" href="#L1021">1021</a>         _props = value;
-<a class="jxr_linenumber" name="L1022" href="#L1022">1022</a>       }
-<a class="jxr_linenumber" name="L1023" href="#L1023">1023</a> 
-<a class="jxr_linenumber" name="L1024" href="#L1024">1024</a>       <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1025" href="#L1025">1025</a> <em class="jxr_javadoccomment">       * Add a new {@link Property} item to the underlying collection.</em>
-<a class="jxr_linenumber" name="L1026" href="#L1026">1026</a> <em class="jxr_javadoccomment">       * @param item the item to add</em>
-<a class="jxr_linenumber" name="L1027" href="#L1027">1027</a> <em class="jxr_javadoccomment">       * @return {@code true}</em>
-<a class="jxr_linenumber" name="L1028" href="#L1028">1028</a> <em class="jxr_javadoccomment">       */</em>
-<a class="jxr_linenumber" name="L1029" href="#L1029">1029</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addProp(<a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> item) {
-<a class="jxr_linenumber" name="L1030" href="#L1030">1030</a>         <a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L1031" href="#L1031">1031</a>         <strong class="jxr_keyword">if</strong> (_props == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L1032" href="#L1032">1032</a>           _props = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
-<a class="jxr_linenumber" name="L1033" href="#L1033">1033</a>         }
-<a class="jxr_linenumber" name="L1034" href="#L1034">1034</a>         <strong class="jxr_keyword">return</strong> _props.add(value);
-<a class="jxr_linenumber" name="L1035" href="#L1035">1035</a>       }
-<a class="jxr_linenumber" name="L1036" href="#L1036">1036</a> 
-<a class="jxr_linenumber" name="L1037" href="#L1037">1037</a>       <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1038" href="#L1038">1038</a> <em class="jxr_javadoccomment">       * Remove the first matching {@link Property} item from the underlying collection.</em>
-<a class="jxr_linenumber" name="L1039" href="#L1039">1039</a> <em class="jxr_javadoccomment">       * @param item the item to remove</em>
-<a class="jxr_linenumber" name="L1040" href="#L1040">1040</a> <em class="jxr_javadoccomment">       * @return {@code true} if the item was removed or {@code false} otherwise</em>
-<a class="jxr_linenumber" name="L1041" href="#L1041">1041</a> <em class="jxr_javadoccomment">       */</em>
-<a class="jxr_linenumber" name="L1042" href="#L1042">1042</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeProp(<a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> item) {
-<a class="jxr_linenumber" name="L1043" href="#L1043">1043</a>         <a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L1044" href="#L1044">1044</a>         <strong class="jxr_keyword">return</strong> _props == <strong class="jxr_keyword">null</strong> ? false : _props.remove(value);
-<a class="jxr_linenumber" name="L1045" href="#L1045">1045</a>       }
-<a class="jxr_linenumber" name="L1046" href="#L1046">1046</a> 
-<a class="jxr_linenumber" name="L1047" href="#L1047">1047</a>       <strong class="jxr_keyword">public</strong> List&lt;Link&gt; getLinks() {
-<a class="jxr_linenumber" name="L1048" href="#L1048">1048</a>         <strong class="jxr_keyword">return</strong> _links;
+<a class="jxr_linenumber" name="L1020" href="#L1020">1020</a>       <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1021" href="#L1021">1021</a> <em class="jxr_javadoccomment">       * Remove the first matching {@link Property} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L1022" href="#L1022">1022</a> <em class="jxr_javadoccomment">       * @param item the item to remove</em>
+<a class="jxr_linenumber" name="L1023" href="#L1023">1023</a> <em class="jxr_javadoccomment">       * @return {@code true} if the item was removed or {@code false} otherwise</em>
+<a class="jxr_linenumber" name="L1024" href="#L1024">1024</a> <em class="jxr_javadoccomment">       */</em>
+<a class="jxr_linenumber" name="L1025" href="#L1025">1025</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeProp(<a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> item) {
+<a class="jxr_linenumber" name="L1026" href="#L1026">1026</a>         <a name="Property" href="../../../../../../gov/nist/secauto/oscal/lib/model/Property.html#Property">Property</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L1027" href="#L1027">1027</a>         <strong class="jxr_keyword">return</strong> _props == <strong class="jxr_keyword">null</strong> ? false : _props.remove(value);
+<a class="jxr_linenumber" name="L1028" href="#L1028">1028</a>       }
+<a class="jxr_linenumber" name="L1029" href="#L1029">1029</a> 
+<a class="jxr_linenumber" name="L1030" href="#L1030">1030</a>       <strong class="jxr_keyword">public</strong> List&lt;Link&gt; getLinks() {
+<a class="jxr_linenumber" name="L1031" href="#L1031">1031</a>         <strong class="jxr_keyword">return</strong> _links;
+<a class="jxr_linenumber" name="L1032" href="#L1032">1032</a>       }
+<a class="jxr_linenumber" name="L1033" href="#L1033">1033</a> 
+<a class="jxr_linenumber" name="L1034" href="#L1034">1034</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setLinks(List&lt;Link&gt; value) {
+<a class="jxr_linenumber" name="L1035" href="#L1035">1035</a>         _links = value;
+<a class="jxr_linenumber" name="L1036" href="#L1036">1036</a>       }
+<a class="jxr_linenumber" name="L1037" href="#L1037">1037</a> 
+<a class="jxr_linenumber" name="L1038" href="#L1038">1038</a>       <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1039" href="#L1039">1039</a> <em class="jxr_javadoccomment">       * Add a new {@link Link} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L1040" href="#L1040">1040</a> <em class="jxr_javadoccomment">       * @param item the item to add</em>
+<a class="jxr_linenumber" name="L1041" href="#L1041">1041</a> <em class="jxr_javadoccomment">       * @return {@code true}</em>
+<a class="jxr_linenumber" name="L1042" href="#L1042">1042</a> <em class="jxr_javadoccomment">       */</em>
+<a class="jxr_linenumber" name="L1043" href="#L1043">1043</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addLink(Link item) {
+<a class="jxr_linenumber" name="L1044" href="#L1044">1044</a>         Link value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L1045" href="#L1045">1045</a>         <strong class="jxr_keyword">if</strong> (_links == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L1046" href="#L1046">1046</a>           _links = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L1047" href="#L1047">1047</a>         }
+<a class="jxr_linenumber" name="L1048" href="#L1048">1048</a>         <strong class="jxr_keyword">return</strong> _links.add(value);
 <a class="jxr_linenumber" name="L1049" href="#L1049">1049</a>       }
 <a class="jxr_linenumber" name="L1050" href="#L1050">1050</a> 
-<a class="jxr_linenumber" name="L1051" href="#L1051">1051</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setLinks(List&lt;Link&gt; value) {
-<a class="jxr_linenumber" name="L1052" href="#L1052">1052</a>         _links = value;
-<a class="jxr_linenumber" name="L1053" href="#L1053">1053</a>       }
-<a class="jxr_linenumber" name="L1054" href="#L1054">1054</a> 
-<a class="jxr_linenumber" name="L1055" href="#L1055">1055</a>       <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1056" href="#L1056">1056</a> <em class="jxr_javadoccomment">       * Add a new {@link Link} item to the underlying collection.</em>
-<a class="jxr_linenumber" name="L1057" href="#L1057">1057</a> <em class="jxr_javadoccomment">       * @param item the item to add</em>
-<a class="jxr_linenumber" name="L1058" href="#L1058">1058</a> <em class="jxr_javadoccomment">       * @return {@code true}</em>
-<a class="jxr_linenumber" name="L1059" href="#L1059">1059</a> <em class="jxr_javadoccomment">       */</em>
-<a class="jxr_linenumber" name="L1060" href="#L1060">1060</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addLink(Link item) {
-<a class="jxr_linenumber" name="L1061" href="#L1061">1061</a>         Link value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L1062" href="#L1062">1062</a>         <strong class="jxr_keyword">if</strong> (_links == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L1063" href="#L1063">1063</a>           _links = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
-<a class="jxr_linenumber" name="L1064" href="#L1064">1064</a>         }
-<a class="jxr_linenumber" name="L1065" href="#L1065">1065</a>         <strong class="jxr_keyword">return</strong> _links.add(value);
-<a class="jxr_linenumber" name="L1066" href="#L1066">1066</a>       }
-<a class="jxr_linenumber" name="L1067" href="#L1067">1067</a> 
-<a class="jxr_linenumber" name="L1068" href="#L1068">1068</a>       <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1069" href="#L1069">1069</a> <em class="jxr_javadoccomment">       * Remove the first matching {@link Link} item from the underlying collection.</em>
-<a class="jxr_linenumber" name="L1070" href="#L1070">1070</a> <em class="jxr_javadoccomment">       * @param item the item to remove</em>
-<a class="jxr_linenumber" name="L1071" href="#L1071">1071</a> <em class="jxr_javadoccomment">       * @return {@code true} if the item was removed or {@code false} otherwise</em>
-<a class="jxr_linenumber" name="L1072" href="#L1072">1072</a> <em class="jxr_javadoccomment">       */</em>
-<a class="jxr_linenumber" name="L1073" href="#L1073">1073</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeLink(Link item) {
-<a class="jxr_linenumber" name="L1074" href="#L1074">1074</a>         Link value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L1075" href="#L1075">1075</a>         <strong class="jxr_keyword">return</strong> _links == <strong class="jxr_keyword">null</strong> ? false : _links.remove(value);
-<a class="jxr_linenumber" name="L1076" href="#L1076">1076</a>       }
-<a class="jxr_linenumber" name="L1077" href="#L1077">1077</a> 
-<a class="jxr_linenumber" name="L1078" href="#L1078">1078</a>       <strong class="jxr_keyword">public</strong> List&lt;ResponsibleRole&gt; getResponsibleRoles() {
-<a class="jxr_linenumber" name="L1079" href="#L1079">1079</a>         <strong class="jxr_keyword">return</strong> _responsibleRoles;
+<a class="jxr_linenumber" name="L1051" href="#L1051">1051</a>       <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1052" href="#L1052">1052</a> <em class="jxr_javadoccomment">       * Remove the first matching {@link Link} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L1053" href="#L1053">1053</a> <em class="jxr_javadoccomment">       * @param item the item to remove</em>
+<a class="jxr_linenumber" name="L1054" href="#L1054">1054</a> <em class="jxr_javadoccomment">       * @return {@code true} if the item was removed or {@code false} otherwise</em>
+<a class="jxr_linenumber" name="L1055" href="#L1055">1055</a> <em class="jxr_javadoccomment">       */</em>
+<a class="jxr_linenumber" name="L1056" href="#L1056">1056</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeLink(Link item) {
+<a class="jxr_linenumber" name="L1057" href="#L1057">1057</a>         Link value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L1058" href="#L1058">1058</a>         <strong class="jxr_keyword">return</strong> _links == <strong class="jxr_keyword">null</strong> ? false : _links.remove(value);
+<a class="jxr_linenumber" name="L1059" href="#L1059">1059</a>       }
+<a class="jxr_linenumber" name="L1060" href="#L1060">1060</a> 
+<a class="jxr_linenumber" name="L1061" href="#L1061">1061</a>       <strong class="jxr_keyword">public</strong> List&lt;ResponsibleRole&gt; getResponsibleRoles() {
+<a class="jxr_linenumber" name="L1062" href="#L1062">1062</a>         <strong class="jxr_keyword">return</strong> _responsibleRoles;
+<a class="jxr_linenumber" name="L1063" href="#L1063">1063</a>       }
+<a class="jxr_linenumber" name="L1064" href="#L1064">1064</a> 
+<a class="jxr_linenumber" name="L1065" href="#L1065">1065</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {
+<a class="jxr_linenumber" name="L1066" href="#L1066">1066</a>         _responsibleRoles = value;
+<a class="jxr_linenumber" name="L1067" href="#L1067">1067</a>       }
+<a class="jxr_linenumber" name="L1068" href="#L1068">1068</a> 
+<a class="jxr_linenumber" name="L1069" href="#L1069">1069</a>       <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1070" href="#L1070">1070</a> <em class="jxr_javadoccomment">       * Add a new {@link ResponsibleRole} item to the underlying collection.</em>
+<a class="jxr_linenumber" name="L1071" href="#L1071">1071</a> <em class="jxr_javadoccomment">       * @param item the item to add</em>
+<a class="jxr_linenumber" name="L1072" href="#L1072">1072</a> <em class="jxr_javadoccomment">       * @return {@code true}</em>
+<a class="jxr_linenumber" name="L1073" href="#L1073">1073</a> <em class="jxr_javadoccomment">       */</em>
+<a class="jxr_linenumber" name="L1074" href="#L1074">1074</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addResponsibleRole(<a name="ResponsibleRole" href="../../../../../../gov/nist/secauto/oscal/lib/model/ResponsibleRole.html#ResponsibleRole">ResponsibleRole</a> item) {
+<a class="jxr_linenumber" name="L1075" href="#L1075">1075</a>         <a name="ResponsibleRole" href="../../../../../../gov/nist/secauto/oscal/lib/model/ResponsibleRole.html#ResponsibleRole">ResponsibleRole</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L1076" href="#L1076">1076</a>         <strong class="jxr_keyword">if</strong> (_responsibleRoles == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L1077" href="#L1077">1077</a>           _responsibleRoles = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
+<a class="jxr_linenumber" name="L1078" href="#L1078">1078</a>         }
+<a class="jxr_linenumber" name="L1079" href="#L1079">1079</a>         <strong class="jxr_keyword">return</strong> _responsibleRoles.add(value);
 <a class="jxr_linenumber" name="L1080" href="#L1080">1080</a>       }
 <a class="jxr_linenumber" name="L1081" href="#L1081">1081</a> 
-<a class="jxr_linenumber" name="L1082" href="#L1082">1082</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setResponsibleRoles(List&lt;ResponsibleRole&gt; value) {
-<a class="jxr_linenumber" name="L1083" href="#L1083">1083</a>         _responsibleRoles = value;
-<a class="jxr_linenumber" name="L1084" href="#L1084">1084</a>       }
-<a class="jxr_linenumber" name="L1085" href="#L1085">1085</a> 
-<a class="jxr_linenumber" name="L1086" href="#L1086">1086</a>       <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1087" href="#L1087">1087</a> <em class="jxr_javadoccomment">       * Add a new {@link ResponsibleRole} item to the underlying collection.</em>
-<a class="jxr_linenumber" name="L1088" href="#L1088">1088</a> <em class="jxr_javadoccomment">       * @param item the item to add</em>
-<a class="jxr_linenumber" name="L1089" href="#L1089">1089</a> <em class="jxr_javadoccomment">       * @return {@code true}</em>
-<a class="jxr_linenumber" name="L1090" href="#L1090">1090</a> <em class="jxr_javadoccomment">       */</em>
-<a class="jxr_linenumber" name="L1091" href="#L1091">1091</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addResponsibleRole(<a name="ResponsibleRole" href="../../../../../../gov/nist/secauto/oscal/lib/model/ResponsibleRole.html#ResponsibleRole">ResponsibleRole</a> item) {
-<a class="jxr_linenumber" name="L1092" href="#L1092">1092</a>         <a name="ResponsibleRole" href="../../../../../../gov/nist/secauto/oscal/lib/model/ResponsibleRole.html#ResponsibleRole">ResponsibleRole</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L1093" href="#L1093">1093</a>         <strong class="jxr_keyword">if</strong> (_responsibleRoles == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L1094" href="#L1094">1094</a>           _responsibleRoles = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
-<a class="jxr_linenumber" name="L1095" href="#L1095">1095</a>         }
-<a class="jxr_linenumber" name="L1096" href="#L1096">1096</a>         <strong class="jxr_keyword">return</strong> _responsibleRoles.add(value);
-<a class="jxr_linenumber" name="L1097" href="#L1097">1097</a>       }
-<a class="jxr_linenumber" name="L1098" href="#L1098">1098</a> 
-<a class="jxr_linenumber" name="L1099" href="#L1099">1099</a>       <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1100" href="#L1100">1100</a> <em class="jxr_javadoccomment">       * Remove the first matching {@link ResponsibleRole} item from the underlying collection.</em>
-<a class="jxr_linenumber" name="L1101" href="#L1101">1101</a> <em class="jxr_javadoccomment">       * @param item the item to remove</em>
-<a class="jxr_linenumber" name="L1102" href="#L1102">1102</a> <em class="jxr_javadoccomment">       * @return {@code true} if the item was removed or {@code false} otherwise</em>
-<a class="jxr_linenumber" name="L1103" href="#L1103">1103</a> <em class="jxr_javadoccomment">       */</em>
-<a class="jxr_linenumber" name="L1104" href="#L1104">1104</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeResponsibleRole(<a name="ResponsibleRole" href="../../../../../../gov/nist/secauto/oscal/lib/model/ResponsibleRole.html#ResponsibleRole">ResponsibleRole</a> item) {
-<a class="jxr_linenumber" name="L1105" href="#L1105">1105</a>         <a name="ResponsibleRole" href="../../../../../../gov/nist/secauto/oscal/lib/model/ResponsibleRole.html#ResponsibleRole">ResponsibleRole</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
-<a class="jxr_linenumber" name="L1106" href="#L1106">1106</a>         <strong class="jxr_keyword">return</strong> _responsibleRoles == <strong class="jxr_keyword">null</strong> ? false : _responsibleRoles.remove(value);
-<a class="jxr_linenumber" name="L1107" href="#L1107">1107</a>       }
-<a class="jxr_linenumber" name="L1108" href="#L1108">1108</a> 
-<a class="jxr_linenumber" name="L1109" href="#L1109">1109</a>       <strong class="jxr_keyword">public</strong> MarkupMultiline getRemarks() {
-<a class="jxr_linenumber" name="L1110" href="#L1110">1110</a>         <strong class="jxr_keyword">return</strong> _remarks;
-<a class="jxr_linenumber" name="L1111" href="#L1111">1111</a>       }
-<a class="jxr_linenumber" name="L1112" href="#L1112">1112</a> 
-<a class="jxr_linenumber" name="L1113" href="#L1113">1113</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setRemarks(MarkupMultiline value) {
-<a class="jxr_linenumber" name="L1114" href="#L1114">1114</a>         _remarks = value;
-<a class="jxr_linenumber" name="L1115" href="#L1115">1115</a>       }
-<a class="jxr_linenumber" name="L1116" href="#L1116">1116</a> 
-<a class="jxr_linenumber" name="L1117" href="#L1117">1117</a>       @Override
-<a class="jxr_linenumber" name="L1118" href="#L1118">1118</a>       <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L1119" href="#L1119">1119</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ReflectionToStringBuilder(<strong class="jxr_keyword">this</strong>, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();
-<a class="jxr_linenumber" name="L1120" href="#L1120">1120</a>       }
-<a class="jxr_linenumber" name="L1121" href="#L1121">1121</a>     }
-<a class="jxr_linenumber" name="L1122" href="#L1122">1122</a> 
-<a class="jxr_linenumber" name="L1123" href="#L1123">1123</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1124" href="#L1124">1124</a> <em class="jxr_javadoccomment">     * Describes a capability which may be inherited by a leveraging system.</em>
-<a class="jxr_linenumber" name="L1125" href="#L1125">1125</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L1126" href="#L1126">1126</a>     @MetaschemaAssembly(
-<a class="jxr_linenumber" name="L1127" href="#L1127">1127</a>         formalName = <span class="jxr_string">"Provided Control Implementation"</span>,
-<a class="jxr_linenumber" name="L1128" href="#L1128">1128</a>         description = <span class="jxr_string">"Describes a capability which may be inherited by a leveraging system."</span>,
-<a class="jxr_linenumber" name="L1129" href="#L1129">1129</a>         name = <span class="jxr_string">"provided"</span>,
-<a class="jxr_linenumber" name="L1130" href="#L1130">1130</a>         metaschema = OscalSspMetaschema.<strong class="jxr_keyword">class</strong>
-<a class="jxr_linenumber" name="L1131" href="#L1131">1131</a>     )
-<a class="jxr_linenumber" name="L1132" href="#L1132">1132</a>     @AssemblyConstraints(
-<a class="jxr_linenumber" name="L1133" href="#L1133">1133</a>         isUnique = @IsUnique(id = <span class="jxr_string">"unique-provided-responsible-role"</span>, level = IConstraint.Level.ERROR, target = <span class="jxr_string">"responsible-role"</span>, keyFields = @KeyField(target = <span class="jxr_string">"@role-id"</span>), remarks = <span class="jxr_string">"Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once."</span>)
-<a class="jxr_linenumber" name="L1134" href="#L1134">1134</a>     )
-<a class="jxr_linenumber" name="L1135" href="#L1135">1135</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Provided {
-<a class="jxr_linenumber" name="L1136" href="#L1136">1136</a>       @BoundFlag(
-<a class="jxr_linenumber" name="L1137" href="#L1137">1137</a>           formalName = <span class="jxr_string">"Provided Universally Unique Identifier"</span>,
-<a class="jxr_linenumber" name="L1138" href="#L1138">1138</a>           description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this provided entry elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `provided` entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document."</span>,
-<a class="jxr_linenumber" name="L1139" href="#L1139">1139</a>           useName = <span class="jxr_string">"uuid"</span>,
-<a class="jxr_linenumber" name="L1140" href="#L1140">1140</a>           required = <strong class="jxr_keyword">true</strong>,
-<a class="jxr_linenumber" name="L1141" href="#L1141">1141</a>           typeAdapter = UuidAdapter.<strong class="jxr_keyword">class</strong>
-<a class="jxr_linenumber" name="L1142" href="#L1142">1142</a>       )
-<a class="jxr_linenumber" name="L1143" href="#L1143">1143</a>       <strong class="jxr_keyword">private</strong> UUID _uuid;
-<a class="jxr_linenumber" name="L1144" href="#L1144">1144</a> 
-<a class="jxr_linenumber" name="L1145" href="#L1145">1145</a>       <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1146" href="#L1146">1146</a> <em class="jxr_javadoccomment">       * "An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system."</em>
-<a class="jxr_linenumber" name="L1147" href="#L1147">1147</a> <em class="jxr_javadoccomment">       */</em>
-<a class="jxr_linenumber" name="L1148" href="#L1148">1148</a>       @BoundField(
-<a class="jxr_linenumber" name="L1149" href="#L1149">1149</a>           formalName = <span class="jxr_string">"Provided Control Implementation Description"</span>,
-<a class="jxr_linenumber" name="L1150" href="#L1150">1150</a>           description = <span class="jxr_string">"An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system."</span>,
-<a class="jxr_linenumber" name="L1151" href="#L1151">1151</a>           useName = <span class="jxr_string">"description"</span>,
-<a class="jxr_linenumber" name="L1152" href="#L1152">1152</a>           minOccurs = 1
-<a class="jxr_linenumber" name="L1153" href="#L1153">1153</a>       )
-<a class="jxr_linenumber" name="L1154" href="#L1154">1154</a>       @BoundFieldValue(
-<a class="jxr_linenumber" name="L1155" href="#L1155">1155</a>           typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
-<a class="jxr_linenumber" name="L1156" href="#L1156">1156</a>       )
-<a class="jxr_linenumber" name="L1157" href="#L1157">1157</a>       <strong class="jxr_keyword">private</strong> MarkupMultiline _description;
-<a class="jxr_linenumber" name="L1158" href="#L1158">1158</a> 
-<a class="jxr_linenumber" name="L1159" href="#L1159">1159</a>       @BoundAssembly(
-<a class="jxr_linenumber" name="L1160" href="#L1160">1160</a>           formalName = <span class="jxr_string">"Property"</span>,
-<a class="jxr_linenumber" name="L1161" href="#L1161">1161</a>           description = <span class="jxr_string">"An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."</span>,
-<a class="jxr_linenumber" name="L1162" href="#L1162">1162</a>           useName = <span class="jxr_string">"prop"</span>,
-<a class="jxr_linenumber" name="L1163" href="#L1163">1163</a>           maxOccurs = -1
-<a class="jxr_linenumber" name="L1164" href="#L1164">1164</a>       )
-<a class="jxr_linenumber" name="L1165" href="#L1165">1165</a>       @GroupAs(
-<a class="jxr_linenumber" name="L1166" href="#L1166">1166</a>           name = <span class="jxr_string">"props"</span>,
-<a class="jxr_linenumber" name="L1167" href="#L1167">1167</a>           inJson = JsonGroupAsBehavior.LIST
-<a class="jxr_linenumber" name="L1168" href="#L1168">1168</a>       )
-<a class="jxr_linenumber" name="L1169" href="#L1169">1169</a>       <strong class="jxr_keyword">private</strong> List&lt;Property&gt; _props;
-<a class="jxr_linenumber" name="L1170" href="#L1170">1170</a> 
-<a class="jxr_linenumber" name="L1171" href="#L1171">1171</a>       @BoundAssembly(
-<a class="jxr_linenumber" name="L1172" href="#L1172">1172</a>           formalName = <span class="jxr_string">"Link"</span>,
-<a class="jxr_linenumber" name="L1173" href="#L1173">1173</a>           description = <span class="jxr_string">"A reference to a local or remote resource, that has a specific relation to the containing object."</span>,
-<a class="jxr_linenumber" name="L1174" href="#L1174">1174</a>           useName = <span class="jxr_string">"link"</span>,
-<a class="jxr_linenumber" name="L1175" href="#L1175">1175</a>           maxOccurs = -1
-<a class="jxr_linenumber" name="L1176" href="#L1176">1176</a>       )
-<a class="jxr_linenumber" name="L1177" href="#L1177">1177</a>       @GroupAs(
-<a class="jxr_linenumber" name="L1178" href="#L1178">1178</a>           name = <span class="jxr_string">"links"</span>,
-<a class="jxr_linenumber" name="L1179" href="#L1179">1179</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L1082" href="#L1082">1082</a>       <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1083" href="#L1083">1083</a> <em class="jxr_javadoccomment">       * Remove the first matching {@link ResponsibleRole} item from the underlying collection.</em>
+<a class="jxr_linenumber" name="L1084" href="#L1084">1084</a> <em class="jxr_javadoccomment">       * @param item the item to remove</em>
+<a class="jxr_linenumber" name="L1085" href="#L1085">1085</a> <em class="jxr_javadoccomment">       * @return {@code true} if the item was removed or {@code false} otherwise</em>
+<a class="jxr_linenumber" name="L1086" href="#L1086">1086</a> <em class="jxr_javadoccomment">       */</em>
+<a class="jxr_linenumber" name="L1087" href="#L1087">1087</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> removeResponsibleRole(<a name="ResponsibleRole" href="../../../../../../gov/nist/secauto/oscal/lib/model/ResponsibleRole.html#ResponsibleRole">ResponsibleRole</a> item) {
+<a class="jxr_linenumber" name="L1088" href="#L1088">1088</a>         <a name="ResponsibleRole" href="../../../../../../gov/nist/secauto/oscal/lib/model/ResponsibleRole.html#ResponsibleRole">ResponsibleRole</a> value = ObjectUtils.requireNonNull(item,<span class="jxr_string">"item cannot be null"</span>);
+<a class="jxr_linenumber" name="L1089" href="#L1089">1089</a>         <strong class="jxr_keyword">return</strong> _responsibleRoles == <strong class="jxr_keyword">null</strong> ? false : _responsibleRoles.remove(value);
+<a class="jxr_linenumber" name="L1090" href="#L1090">1090</a>       }
+<a class="jxr_linenumber" name="L1091" href="#L1091">1091</a> 
+<a class="jxr_linenumber" name="L1092" href="#L1092">1092</a>       <strong class="jxr_keyword">public</strong> MarkupMultiline getRemarks() {
+<a class="jxr_linenumber" name="L1093" href="#L1093">1093</a>         <strong class="jxr_keyword">return</strong> _remarks;
+<a class="jxr_linenumber" name="L1094" href="#L1094">1094</a>       }
+<a class="jxr_linenumber" name="L1095" href="#L1095">1095</a> 
+<a class="jxr_linenumber" name="L1096" href="#L1096">1096</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setRemarks(MarkupMultiline value) {
+<a class="jxr_linenumber" name="L1097" href="#L1097">1097</a>         _remarks = value;
+<a class="jxr_linenumber" name="L1098" href="#L1098">1098</a>       }
+<a class="jxr_linenumber" name="L1099" href="#L1099">1099</a> 
+<a class="jxr_linenumber" name="L1100" href="#L1100">1100</a>       @Override
+<a class="jxr_linenumber" name="L1101" href="#L1101">1101</a>       <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L1102" href="#L1102">1102</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ReflectionToStringBuilder(<strong class="jxr_keyword">this</strong>, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();
+<a class="jxr_linenumber" name="L1103" href="#L1103">1103</a>       }
+<a class="jxr_linenumber" name="L1104" href="#L1104">1104</a>     }
+<a class="jxr_linenumber" name="L1105" href="#L1105">1105</a> 
+<a class="jxr_linenumber" name="L1106" href="#L1106">1106</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1107" href="#L1107">1107</a> <em class="jxr_javadoccomment">     * Describes a control implementation responsibility imposed on a leveraging system.</em>
+<a class="jxr_linenumber" name="L1108" href="#L1108">1108</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L1109" href="#L1109">1109</a>     @MetaschemaAssembly(
+<a class="jxr_linenumber" name="L1110" href="#L1110">1110</a>         formalName = <span class="jxr_string">"Control Implementation Responsibility"</span>,
+<a class="jxr_linenumber" name="L1111" href="#L1111">1111</a>         description = <span class="jxr_string">"Describes a control implementation responsibility imposed on a leveraging system."</span>,
+<a class="jxr_linenumber" name="L1112" href="#L1112">1112</a>         name = <span class="jxr_string">"responsibility"</span>,
+<a class="jxr_linenumber" name="L1113" href="#L1113">1113</a>         metaschema = OscalSspMetaschema.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L1114" href="#L1114">1114</a>     )
+<a class="jxr_linenumber" name="L1115" href="#L1115">1115</a>     @AssemblyConstraints(
+<a class="jxr_linenumber" name="L1116" href="#L1116">1116</a>         isUnique = @IsUnique(id = <span class="jxr_string">"unique-responsibility-responsible-role"</span>, level = IConstraint.Level.ERROR, target = <span class="jxr_string">"responsible-role"</span>, keyFields = @KeyField(target = <span class="jxr_string">"@role-id"</span>), remarks = <span class="jxr_string">"Since `responsible-role` associates multiple `party-uuid` entries with a single `role-id`, each role-id must be referenced only once."</span>)
+<a class="jxr_linenumber" name="L1117" href="#L1117">1117</a>     )
+<a class="jxr_linenumber" name="L1118" href="#L1118">1118</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Responsibility {
+<a class="jxr_linenumber" name="L1119" href="#L1119">1119</a>       @BoundFlag(
+<a class="jxr_linenumber" name="L1120" href="#L1120">1120</a>           formalName = <span class="jxr_string">"Responsibility Universally Unique Identifier"</span>,
+<a class="jxr_linenumber" name="L1121" href="#L1121">1121</a>           description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this responsibility elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `responsibility` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document."</span>,
+<a class="jxr_linenumber" name="L1122" href="#L1122">1122</a>           useName = <span class="jxr_string">"uuid"</span>,
+<a class="jxr_linenumber" name="L1123" href="#L1123">1123</a>           required = <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L1124" href="#L1124">1124</a>           typeAdapter = UuidAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L1125" href="#L1125">1125</a>       )
+<a class="jxr_linenumber" name="L1126" href="#L1126">1126</a>       <strong class="jxr_keyword">private</strong> UUID _uuid;
+<a class="jxr_linenumber" name="L1127" href="#L1127">1127</a> 
+<a class="jxr_linenumber" name="L1128" href="#L1128">1128</a>       @BoundFlag(
+<a class="jxr_linenumber" name="L1129" href="#L1129">1129</a>           formalName = <span class="jxr_string">"Provided UUID"</span>,
+<a class="jxr_linenumber" name="L1130" href="#L1130">1130</a>           description = <span class="jxr_string">"A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an inherited control implementation that a leveraging system is inheriting from a leveraged system."</span>,
+<a class="jxr_linenumber" name="L1131" href="#L1131">1131</a>           useName = <span class="jxr_string">"provided-uuid"</span>,
+<a class="jxr_linenumber" name="L1132" href="#L1132">1132</a>           typeAdapter = UuidAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L1133" href="#L1133">1133</a>       )
+<a class="jxr_linenumber" name="L1134" href="#L1134">1134</a>       <strong class="jxr_keyword">private</strong> UUID _providedUuid;
+<a class="jxr_linenumber" name="L1135" href="#L1135">1135</a> 
+<a class="jxr_linenumber" name="L1136" href="#L1136">1136</a>       <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1137" href="#L1137">1137</a> <em class="jxr_javadoccomment">       * "An implementation statement that describes the aspects of the control or control statement implementation that a leveraging system must implement to satisfy the control provided by a leveraged system."</em>
+<a class="jxr_linenumber" name="L1138" href="#L1138">1138</a> <em class="jxr_javadoccomment">       */</em>
+<a class="jxr_linenumber" name="L1139" href="#L1139">1139</a>       @BoundField(
+<a class="jxr_linenumber" name="L1140" href="#L1140">1140</a>           formalName = <span class="jxr_string">"Control Implementation Responsibility Description"</span>,
+<a class="jxr_linenumber" name="L1141" href="#L1141">1141</a>           description = <span class="jxr_string">"An implementation statement that describes the aspects of the control or control statement implementation that a leveraging system must implement to satisfy the control provided by a leveraged system."</span>,
+<a class="jxr_linenumber" name="L1142" href="#L1142">1142</a>           useName = <span class="jxr_string">"description"</span>,
+<a class="jxr_linenumber" name="L1143" href="#L1143">1143</a>           minOccurs = 1
+<a class="jxr_linenumber" name="L1144" href="#L1144">1144</a>       )
+<a class="jxr_linenumber" name="L1145" href="#L1145">1145</a>       @BoundFieldValue(
+<a class="jxr_linenumber" name="L1146" href="#L1146">1146</a>           typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L1147" href="#L1147">1147</a>       )
+<a class="jxr_linenumber" name="L1148" href="#L1148">1148</a>       <strong class="jxr_keyword">private</strong> MarkupMultiline _description;
+<a class="jxr_linenumber" name="L1149" href="#L1149">1149</a> 
+<a class="jxr_linenumber" name="L1150" href="#L1150">1150</a>       @BoundAssembly(
+<a class="jxr_linenumber" name="L1151" href="#L1151">1151</a>           formalName = <span class="jxr_string">"Property"</span>,
+<a class="jxr_linenumber" name="L1152" href="#L1152">1152</a>           description = <span class="jxr_string">"An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."</span>,
+<a class="jxr_linenumber" name="L1153" href="#L1153">1153</a>           useName = <span class="jxr_string">"prop"</span>,
+<a class="jxr_linenumber" name="L1154" href="#L1154">1154</a>           maxOccurs = -1
+<a class="jxr_linenumber" name="L1155" href="#L1155">1155</a>       )
+<a class="jxr_linenumber" name="L1156" href="#L1156">1156</a>       @GroupAs(
+<a class="jxr_linenumber" name="L1157" href="#L1157">1157</a>           name = <span class="jxr_string">"props"</span>,
+<a class="jxr_linenumber" name="L1158" href="#L1158">1158</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L1159" href="#L1159">1159</a>       )
+<a class="jxr_linenumber" name="L1160" href="#L1160">1160</a>       <strong class="jxr_keyword">private</strong> List&lt;Property&gt; _props;
+<a class="jxr_linenumber" name="L1161" href="#L1161">1161</a> 
+<a class="jxr_linenumber" name="L1162" href="#L1162">1162</a>       @BoundAssembly(
+<a class="jxr_linenumber" name="L1163" href="#L1163">1163</a>           formalName = <span class="jxr_string">"Link"</span>,
+<a class="jxr_linenumber" name="L1164" href="#L1164">1164</a>           description = <span class="jxr_string">"A reference to a local or remote resource, that has a specific relation to the containing object."</span>,
+<a class="jxr_linenumber" name="L1165" href="#L1165">1165</a>           useName = <span class="jxr_string">"link"</span>,
+<a class="jxr_linenumber" name="L1166" href="#L1166">1166</a>           maxOccurs = -1
+<a class="jxr_linenumber" name="L1167" href="#L1167">1167</a>       )
+<a class="jxr_linenumber" name="L1168" href="#L1168">1168</a>       @GroupAs(
+<a class="jxr_linenumber" name="L1169" href="#L1169">1169</a>           name = <span class="jxr_string">"links"</span>,
+<a class="jxr_linenumber" name="L1170" href="#L1170">1170</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L1171" href="#L1171">1171</a>       )
+<a class="jxr_linenumber" name="L1172" href="#L1172">1172</a>       <strong class="jxr_keyword">private</strong> List&lt;Link&gt; _links;
+<a class="jxr_linenumber" name="L1173" href="#L1173">1173</a> 
+<a class="jxr_linenumber" name="L1174" href="#L1174">1174</a>       @BoundAssembly(
+<a class="jxr_linenumber" name="L1175" href="#L1175">1175</a>           formalName = <span class="jxr_string">"Responsible Role"</span>,
+<a class="jxr_linenumber" name="L1176" href="#L1176">1176</a>           description = <span class="jxr_string">"A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."</span>,
+<a class="jxr_linenumber" name="L1177" href="#L1177">1177</a>           useName = <span class="jxr_string">"responsible-role"</span>,
+<a class="jxr_linenumber" name="L1178" href="#L1178">1178</a>           maxOccurs = -1,
+<a class="jxr_linenumber" name="L1179" href="#L1179">1179</a>           remarks = <span class="jxr_string">"A role defined at the by-component level takes precedence over the same role defined on the parent implemented-requirement or on the referenced component."</span>
 <a class="jxr_linenumber" name="L1180" href="#L1180">1180</a>       )
-<a class="jxr_linenumber" name="L1181" href="#L1181">1181</a>       <strong class="jxr_keyword">private</strong> List&lt;Link&gt; _links;
-<a class="jxr_linenumber" name="L1182" href="#L1182">1182</a> 
-<a class="jxr_linenumber" name="L1183" href="#L1183">1183</a>       @BoundAssembly(
-<a class="jxr_linenumber" name="L1184" href="#L1184">1184</a>           formalName = <span class="jxr_string">"Responsible Role"</span>,
-<a class="jxr_linenumber" name="L1185" href="#L1185">1185</a>           description = <span class="jxr_string">"A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."</span>,
-<a class="jxr_linenumber" name="L1186" href="#L1186">1186</a>           useName = <span class="jxr_string">"responsible-role"</span>,
-<a class="jxr_linenumber" name="L1187" href="#L1187">1187</a>           maxOccurs = -1
-<a class="jxr_linenumber" name="L1188" href="#L1188">1188</a>       )
-<a class="jxr_linenumber" name="L1189" href="#L1189">1189</a>       @GroupAs(
-<a class="jxr_linenumber" name="L1190" href="#L1190">1190</a>           name = <span class="jxr_string">"responsible-roles"</span>,
-<a class="jxr_linenumber" name="L1191" href="#L1191">1191</a>           inJson = JsonGroupAsBehavior.LIST
-<a class="jxr_linenumber" name="L1192" href="#L1192">1192</a>       )
-<a class="jxr_linenumber" name="L1193" href="#L1193">1193</a>       <strong class="jxr_keyword">private</strong> List&lt;ResponsibleRole&gt; _responsibleRoles;
-<a class="jxr_linenumber" name="L1194" href="#L1194">1194</a> 
-<a class="jxr_linenumber" name="L1195" href="#L1195">1195</a>       @BoundField(
-<a class="jxr_linenumber" name="L1196" href="#L1196">1196</a>           formalName = <span class="jxr_string">"Remarks"</span>,
-<a class="jxr_linenumber" name="L1197" href="#L1197">1197</a>           description = <span class="jxr_string">"Additional commentary about the containing object."</span>,
-<a class="jxr_linenumber" name="L1198" href="#L1198">1198</a>           useName = <span class="jxr_string">"remarks"</span>
-<a class="jxr_linenumber" name="L1199" href="#L1199">1199</a>       )
-<a class="jxr_linenumber" name="L1200" href="#L1200">1200</a>       @BoundFieldValue(
-<a class="jxr_linenumber" name="L1201" href="#L1201">1201</a>           typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
-<a class="jxr_linenumber" name="L1202" href="#L1202">1202</a>       )
-<a class="jxr_linenumber" name="L1203" href="#L1203">1203</a>       <strong class="jxr_keyword">private</strong> MarkupMultiline _remarks;
-<a class="jxr_linenumber" name="L1204" href="#L1204">1204</a> 
-<a class="jxr_linenumber" name="L1205" href="#L1205">1205</a>       <strong class="jxr_keyword">public</strong> Provided() {
+<a class="jxr_linenumber" name="L1181" href="#L1181">1181</a>       @GroupAs(
+<a class="jxr_linenumber" name="L1182" href="#L1182">1182</a>           name = <span class="jxr_string">"responsible-roles"</span>,
+<a class="jxr_linenumber" name="L1183" href="#L1183">1183</a>           inJson = JsonGroupAsBehavior.LIST
+<a class="jxr_linenumber" name="L1184" href="#L1184">1184</a>       )
+<a class="jxr_linenumber" name="L1185" href="#L1185">1185</a>       <strong class="jxr_keyword">private</strong> List&lt;ResponsibleRole&gt; _responsibleRoles;
+<a class="jxr_linenumber" name="L1186" href="#L1186">1186</a> 
+<a class="jxr_linenumber" name="L1187" href="#L1187">1187</a>       @BoundField(
+<a class="jxr_linenumber" name="L1188" href="#L1188">1188</a>           formalName = <span class="jxr_string">"Remarks"</span>,
+<a class="jxr_linenumber" name="L1189" href="#L1189">1189</a>           description = <span class="jxr_string">"Additional commentary about the containing object."</span>,
+<a class="jxr_linenumber" name="L1190" href="#L1190">1190</a>           useName = <span class="jxr_string">"remarks"</span>
+<a class="jxr_linenumber" name="L1191" href="#L1191">1191</a>       )
+<a class="jxr_linenumber" name="L1192" href="#L1192">1192</a>       @BoundFieldValue(
+<a class="jxr_linenumber" name="L1193" href="#L1193">1193</a>           typeAdapter = MarkupMultilineAdapter.<strong class="jxr_keyword">class</strong>
+<a class="jxr_linenumber" name="L1194" href="#L1194">1194</a>       )
+<a class="jxr_linenumber" name="L1195" href="#L1195">1195</a>       <strong class="jxr_keyword">private</strong> MarkupMultiline _remarks;
+<a class="jxr_linenumber" name="L1196" href="#L1196">1196</a> 
+<a class="jxr_linenumber" name="L1197" href="#L1197">1197</a>       <strong class="jxr_keyword">public</strong> Responsibility() {
+<a class="jxr_linenumber" name="L1198" href="#L1198">1198</a>       }
+<a class="jxr_linenumber" name="L1199" href="#L1199">1199</a> 
+<a class="jxr_linenumber" name="L1200" href="#L1200">1200</a>       <strong class="jxr_keyword">public</strong> UUID getUuid() {
+<a class="jxr_linenumber" name="L1201" href="#L1201">1201</a>         <strong class="jxr_keyword">return</strong> _uuid;
+<a class="jxr_linenumber" name="L1202" href="#L1202">1202</a>       }
+<a class="jxr_linenumber" name="L1203" href="#L1203">1203</a> 
+<a class="jxr_linenumber" name="L1204" href="#L1204">1204</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setUuid(UUID value) {
+<a class="jxr_linenumber" name="L1205" href="#L1205">1205</a>         _uuid = value;
 <a class="jxr_linenumber" name="L1206" href="#L1206">1206</a>       }
 <a class="jxr_linenumber" name="L1207" href="#L1207">1207</a> 
-<a class="jxr_linenumber" name="L1208" href="#L1208">1208</a>       <strong class="jxr_keyword">public</strong> UUID getUuid() {
-<a class="jxr_linenumber" name="L1209" href="#L1209">1209</a>         <strong class="jxr_keyword">return</strong> _uuid;
+<a class="jxr_linenumber" name="L1208" href="#L1208">1208</a>       <strong class="jxr_keyword">public</strong> UUID getProvidedUuid() {
+<a class="jxr_linenumber" name="L1209" href="#L1209">1209</a>         <strong class="jxr_keyword">return</strong> _providedUuid;
 <a class="jxr_linenumber" name="L1210" href="#L1210">1210</a>       }
 <a class="jxr_linenumber" name="L1211" href="#L1211">1211</a> 
-<a class="jxr_linenumber" name="L1212" href="#L1212">1212</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setUuid(UUID value) {
-<a class="jxr_linenumber" name="L1213" href="#L1213">1213</a>         _uuid = value;
+<a class="jxr_linenumber" name="L1212" href="#L1212">1212</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setProvidedUuid(UUID value) {
+<a class="jxr_linenumber" name="L1213" href="#L1213">1213</a>         _providedUuid = value;
 <a class="jxr_linenumber" name="L1214" href="#L1214">1214</a>       }
 <a class="jxr_linenumber" name="L1215" href="#L1215">1215</a> 
 <a class="jxr_linenumber" name="L1216" href="#L1216">1216</a>       <strong class="jxr_keyword">public</strong> MarkupMultiline getDescription() {

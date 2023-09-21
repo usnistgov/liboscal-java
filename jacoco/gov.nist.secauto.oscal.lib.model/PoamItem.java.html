@@ -395,33 +395,33 @@ public class PoamItem {
   }
 
   /**
-   * Relates the poam-item to referenced finding(s).
+   * Relates the poam-item to a set of referenced observations that were used to determine the finding.
    */
   @MetaschemaAssembly(
-      formalName = &quot;Related Finding&quot;,
-      description = &quot;Relates the poam-item to referenced finding(s).&quot;,
-      name = &quot;related-finding&quot;,
+      formalName = &quot;Related Observation&quot;,
+      description = &quot;Relates the poam-item to a set of referenced observations that were used to determine the finding.&quot;,
+      name = &quot;related-observation&quot;,
       metaschema = OscalPoamMetaschema.class
   )
-  public static class RelatedFinding {
+  public static class RelatedObservation {
     @BoundFlag(
-        formalName = &quot;Finding Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings.&quot;,
-        useName = &quot;finding-uuid&quot;,
+        formalName = &quot;Observation Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.&quot;,
+        useName = &quot;observation-uuid&quot;,
         required = true,
         typeAdapter = UuidAdapter.class
     )
-    private UUID _findingUuid;
+    private UUID _observationUuid;
 
-<span class="nc" id="L416">    public RelatedFinding() {</span>
+<span class="nc" id="L416">    public RelatedObservation() {</span>
 <span class="nc" id="L417">    }</span>
 
-    public UUID getFindingUuid() {
-<span class="nc" id="L420">      return _findingUuid;</span>
+    public UUID getObservationUuid() {
+<span class="nc" id="L420">      return _observationUuid;</span>
     }
 
-    public void setFindingUuid(UUID value) {
-<span class="nc" id="L424">      _findingUuid = value;</span>
+    public void setObservationUuid(UUID value) {
+<span class="nc" id="L424">      _observationUuid = value;</span>
 <span class="nc" id="L425">    }</span>
 
     @Override
@@ -467,6 +467,42 @@ public class PoamItem {
   }
 
   /**
+   * Relates the poam-item to referenced finding(s).
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Related Finding&quot;,
+      description = &quot;Relates the poam-item to referenced finding(s).&quot;,
+      name = &quot;related-finding&quot;,
+      metaschema = OscalPoamMetaschema.class
+  )
+  public static class RelatedFinding {
+    @BoundFlag(
+        formalName = &quot;Finding Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings.&quot;,
+        useName = &quot;finding-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _findingUuid;
+
+<span class="nc" id="L488">    public RelatedFinding() {</span>
+<span class="nc" id="L489">    }</span>
+
+    public UUID getFindingUuid() {
+<span class="nc" id="L492">      return _findingUuid;</span>
+    }
+
+    public void setFindingUuid(UUID value) {
+<span class="nc" id="L496">      _findingUuid = value;</span>
+<span class="nc" id="L497">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L501">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
    * Identifies the source of the finding, such as a tool or person.
    */
   @MetaschemaAssembly(
@@ -490,16 +526,16 @@ public class PoamItem {
     )
     private List&lt;OriginActor&gt; _actors;
 
-<span class="nc" id="L493">    public Origin() {</span>
-<span class="nc" id="L494">    }</span>
+<span class="nc" id="L529">    public Origin() {</span>
+<span class="nc" id="L530">    }</span>
 
     public List&lt;OriginActor&gt; getActors() {
-<span class="nc" id="L497">      return _actors;</span>
+<span class="nc" id="L533">      return _actors;</span>
     }
 
     public void setActors(List&lt;OriginActor&gt; value) {
-<span class="nc" id="L501">      _actors = value;</span>
-<span class="nc" id="L502">    }</span>
+<span class="nc" id="L537">      _actors = value;</span>
+<span class="nc" id="L538">    }</span>
 
     /**
      * Add a new {@link OriginActor} item to the underlying collection.
@@ -507,11 +543,11 @@ public class PoamItem {
      * @return {@code true}
      */
     public boolean addActor(OriginActor item) {
-<span class="nc" id="L510">      OriginActor value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L511" title="All 2 branches missed.">      if (_actors == null) {</span>
-<span class="nc" id="L512">        _actors = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L546">      OriginActor value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L547" title="All 2 branches missed.">      if (_actors == null) {</span>
+<span class="nc" id="L548">        _actors = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L514">      return _actors.add(value);</span>
+<span class="nc" id="L550">      return _actors.add(value);</span>
     }
 
     /**
@@ -520,45 +556,9 @@ public class PoamItem {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeActor(OriginActor item) {
-<span class="nc" id="L523">      OriginActor value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L524" title="All 2 branches missed.">      return _actors == null ? false : _actors.remove(value);</span>
+<span class="nc" id="L559">      OriginActor value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L560" title="All 2 branches missed.">      return _actors == null ? false : _actors.remove(value);</span>
     }
-
-    @Override
-    public String toString() {
-<span class="nc" id="L529">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
-   * Relates the poam-item to a set of referenced observations that were used to determine the finding.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Related Observation&quot;,
-      description = &quot;Relates the poam-item to a set of referenced observations that were used to determine the finding.&quot;,
-      name = &quot;related-observation&quot;,
-      metaschema = OscalPoamMetaschema.class
-  )
-  public static class RelatedObservation {
-    @BoundFlag(
-        formalName = &quot;Observation Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to an observation defined in the list of observations.&quot;,
-        useName = &quot;observation-uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _observationUuid;
-
-<span class="nc" id="L552">    public RelatedObservation() {</span>
-<span class="nc" id="L553">    }</span>
-
-    public UUID getObservationUuid() {
-<span class="nc" id="L556">      return _observationUuid;</span>
-    }
-
-    public void setObservationUuid(UUID value) {
-<span class="nc" id="L560">      _observationUuid = value;</span>
-<span class="nc" id="L561">    }</span>
 
     @Override
     public String toString() {
