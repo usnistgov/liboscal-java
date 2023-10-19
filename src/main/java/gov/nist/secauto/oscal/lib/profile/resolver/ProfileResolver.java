@@ -26,8 +26,6 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream;
-
 import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.core.metapath.IDocumentLoader;
 import gov.nist.secauto.metaschema.core.metapath.ISequence;
@@ -81,7 +79,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -159,7 +156,7 @@ public class ProfileResolver {
   public DynamicContext getDynamicContext() {
     synchronized (this) {
       if (dynamicContext == null) {
-        dynamicContext = StaticContext.builder().build().newDynamicContext();
+        dynamicContext = StaticContext.builder().build().dynamicContext();
         dynamicContext.setDocumentLoader(getBoundLoader());
       }
       assert dynamicContext != null;
@@ -446,9 +443,7 @@ public class ProfileResolver {
     if (buffer != null) {
       URI resourceUri = baseUri.resolve("#" + resource.getUuid());
       assert resourceUri != null;
-      try (InputStream is = new ByteBufferBackedInputStream(buffer)) {
-        retval = loader.loadAsNodeItem(is, resourceUri);
-      }
+      retval = loader.loadAsNodeItem(resourceUri);
     }
 
     if (retval == null) {

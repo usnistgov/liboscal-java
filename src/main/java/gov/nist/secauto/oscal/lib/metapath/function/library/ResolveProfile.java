@@ -64,7 +64,7 @@ public final class ResolveProfile {
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("resolve-profile")
       .namespace(OscalBindingContext.NS_OSCAL)
-      .argument(IArgument.newBuilder()
+      .argument(IArgument.builder()
           .name("profile")
           .type(INodeItem.class)
           .zeroOrOne()

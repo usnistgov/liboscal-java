@@ -93,7 +93,7 @@ class ExamplesTest {
     IDocumentNodeItem nodeItem = loader.loadAsNodeItem(new URL(
         "https://raw.githubusercontent.com/Rene2mt/fedramp-automation/a692b9385d8fbcacbb1d3e3d0b0d7e3c45a205d0/src/content/baselines/rev5/xml/FedRAMP_rev5_HIGH-baseline_profile.xml"));
 
-    DynamicContext dynamicContext = StaticContext.builder().build().newDynamicContext();
+    DynamicContext dynamicContext = StaticContext.instance().dynamicContext();
     dynamicContext.setDocumentLoader(loader);
     FindingCollectingConstraintValidationHandler handler = new FindingCollectingConstraintValidationHandler();
     DefaultConstraintValidator validator = new DefaultConstraintValidator(dynamicContext, handler);

@@ -428,7 +428,7 @@ public class ReferenceCountingVisitor
       @NonNull IFieldNodeItem item,
       @NonNull Context context) {
     IMarkupItem markupItem = (IMarkupItem) FnData.fnDataItem(item);
-    IMarkupString<?> markup = markupItem.getValue();
+    IMarkupString<?> markup = markupItem.asMarkup();
     handleMarkup(item, markup, context);
   }
 

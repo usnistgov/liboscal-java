@@ -62,7 +62,7 @@ class MetaschemaVisitorTest {
     StaticContext staticContext = StaticContext.builder()
         .baseUri(baseUri)
         .build();
-    DynamicContext dynamicContext = staticContext.newDynamicContext();
+    DynamicContext dynamicContext = staticContext.dynamicContext();
     dynamicContext.setDocumentLoader(loader);
 
     // File file = new

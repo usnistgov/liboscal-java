@@ -56,7 +56,7 @@ public final class HasOscalNamespace {
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("has-oscal-namespace")
       .namespace(OscalBindingContext.NS_OSCAL)
-      .argument(IArgument.newBuilder()
+      .argument(IArgument.builder()
           .name("namespace")
           .type(IStringItem.class)
           .oneOrMore()
@@ -74,12 +74,12 @@ public final class HasOscalNamespace {
   static final IFunction SIGNATURE_TWO_ARGS = IFunction.builder()
       .name("has-oscal-namespace")
       .namespace(OscalBindingContext.NS_OSCAL)
-      .argument(IArgument.newBuilder()
+      .argument(IArgument.builder()
           .name("propOrPart")
           .type(IAssemblyNodeItem.class)
           .one()
           .build())
-      .argument(IArgument.newBuilder()
+      .argument(IArgument.builder()
           .name("namespace")
           .type(IStringItem.class)
           .oneOrMore()
@@ -173,10 +173,10 @@ public final class HasOscalNamespace {
 
       Object defaultValue = flag.getDefinition().getDefaultValue();
       if (defaultValue != null) {
-        nodeNamespace = IAnyUriItem.valueOf(ObjectUtils.notNull(defaultValue.toString())).getValue();
+        nodeNamespace = IAnyUriItem.valueOf(ObjectUtils.notNull(defaultValue.toString())).asUri();
       }
     } else {
-      nodeNamespace = IAnyUriItem.cast(FnData.fnDataItem(ns)).getValue();
+      nodeNamespace = IAnyUriItem.cast(FnData.fnDataItem(ns)).asUri();
     }
 
     String nodeNamespaceString = AbstractProperty.normalizeNamespace(nodeNamespace).toString();
