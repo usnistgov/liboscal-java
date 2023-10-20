@@ -131,7 +131,7 @@
 		<dependency.infinispan.version>13.0.10.Final</dependency.infinispan.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
-		<dependency.log4j2.version>2.20.0</dependency.log4j2.version>
+		<dependency.log4j2.version>2.21.0</dependency.log4j2.version>
 		<dependency.saxon.version>12.3</dependency.saxon.version>
 		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
 		<dependency.xmlresolver.version>4.6.0</dependency.xmlresolver.version>
