@@ -26,10 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
@@ -47,21 +47,24 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 /**
  * Walks a {@link Catalog} indexing all nodes that can be referenced.
  * <p>
- * For each {@link CatalogGroup}, {@link Control}, and {@link ControlPart}, determine if that object
- * is {@link SelectionStatus#SELECTED} or {@link SelectionStatus#UNSELECTED}.
+ * For each {@link CatalogGroup}, {@link Control}, and {@link ControlPart},
+ * determine if that object is {@link SelectionStatus#SELECTED} or
+ * {@link SelectionStatus#UNSELECTED}.
  * <p>
- * A {@link Control} is {@link SelectionStatus#SELECTED} if it matches the configured
- * {@link IControlFilter}, otherwise it is {@link SelectionStatus#UNSELECTED}.
+ * A {@link Control} is {@link SelectionStatus#SELECTED} if it matches the
+ * configured {@link IControlFilter}, otherwise it is
+ * {@link SelectionStatus#UNSELECTED}.
  * <p>
  * A {@link CatalogGroup} is {@link SelectionStatus#SELECTED} if it contains a
  * {@link SelectionStatus#SELECTED} descendant {@link Control}, otherwise it is
  * {@link SelectionStatus#UNSELECTED}.
  * <p>
- * A {@link ControlPart} is {@link SelectionStatus#SELECTED} if its containing control is
- * {@link SelectionStatus#SELECTED}.
+ * A {@link ControlPart} is {@link SelectionStatus#SELECTED} if its containing
+ * control is {@link SelectionStatus#SELECTED}.
  * <p>
- * All other indexed nodes will have the {@link SelectionStatus#UNKNOWN}, since these nodes require
- * reference counting to determine if they are to be kept or not.
+ * All other indexed nodes will have the {@link SelectionStatus#UNKNOWN}, since
+ * these nodes require reference counting to determine if they are to be kept or
+ * not.
  */
 public class ControlSelectionVisitor
     extends AbstractIndexingVisitor<IControlSelectionState, Boolean> {
@@ -98,10 +101,12 @@ public class ControlSelectionVisitor
       @NonNull IControlSelectionState state) {
     visit(catalogDocument, state);
 
-    IRootAssemblyNodeItem root = profileDocument.getRootAssemblyNodeItem();
+    profileDocument.modelItems().forEachOrdered(item -> {
+      IRootAssemblyNodeItem root = ObjectUtils.requireNonNull((IRootAssemblyNodeItem) item);
 
-    visitMetadata(root, state);
-    visitBackMatter(root, state);
+      visitMetadata(root, state);
+      visitBackMatter(root, state);
+    });
   }
 
   @Override
@@ -111,11 +116,11 @@ public class ControlSelectionVisitor
   }
 
   @Override
-  public Boolean visitGroup(IRequiredValueModelNodeItem groupItem, Boolean childSelected,
+  public Boolean visitGroup(IAssemblyNodeItem groupItem, Boolean childSelected,
       IControlSelectionState state) {
     super.visitGroup(groupItem, childSelected, state);
     if (LOGGER.isTraceEnabled()) {
-      CatalogGroup group = (CatalogGroup) groupItem.getValue();
+      CatalogGroup group = ObjectUtils.requireNonNull((CatalogGroup) groupItem.getValue());
       LOGGER.atTrace().log("Selecting group '{}'. match={}", group.getId(), childSelected);
     }
 
@@ -133,7 +138,7 @@ public class ControlSelectionVisitor
   }
 
   private void handlePartSelection(
-      @NonNull IRequiredValueModelNodeItem groupOrControlItem,
+      @NonNull IAssemblyNodeItem groupOrControlItem,
       boolean selected,
       IControlSelectionState state) {
     if (isVisitedItemType(IEntityItem.ItemType.PART)) {
@@ -141,7 +146,7 @@ public class ControlSelectionVisitor
 
       IIndexer index = getIndexer(state);
       CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()
-          .map(item -> (IRequiredValueModelNodeItem) item)
+          .map(item -> (IAssemblyNodeItem) item)
           .forEachOrdered(partItem -> {
             index.setSelectionStatus(ObjectUtils.requireNonNull(partItem), selectionStatus);
           });
@@ -150,7 +155,7 @@ public class ControlSelectionVisitor
 
   @Override
   public Boolean visitControl(
-      IRequiredValueModelNodeItem controlItem,
+      IAssemblyNodeItem controlItem,
       Boolean childResult,
       IControlSelectionState state) {
     super.visitControl(controlItem, childResult, state);

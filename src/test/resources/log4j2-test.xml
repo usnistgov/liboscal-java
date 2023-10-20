@@ -13,14 +13,14 @@
 		<Logger name="gov.nist.secauto.metaschema" level="info" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>
-		<Logger name="gov.nist.secauto.metaschema.binding" level="debug" additivity="false">
+		<Logger name="gov.nist.secauto.metaschema.databind" level="debug" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>
-		<Logger name="gov.nist.secauto.metaschema.binding.datatypes" level="info" additivity="false">
+		<Logger name="gov.nist.secauto.metaschema.databind.datatypes" level="info" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>
 
-		<Logger name="gov.nist.secauto.metaschema.model" level="info" additivity="false">
+		<Logger name="gov.nist.secauto.metaschema.core.model.xml" level="info" additivity="false">
 			<AppenderRef ref="console" />
 		</Logger>
 

@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.model.metadata;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
 import gov.nist.secauto.oscal.lib.model.Property;
 
 import java.net.URI;
@@ -112,6 +112,7 @@ public abstract class AbstractProperty implements IProperty {
       return this;
     }
 
+    @SuppressWarnings("PMD.NullAssignment") // needed
     @NonNull
     public Builder namespace(@NonNull URI namespace) {
       if (IProperty.OSCAL_NAMESPACE.equals(namespace)) {

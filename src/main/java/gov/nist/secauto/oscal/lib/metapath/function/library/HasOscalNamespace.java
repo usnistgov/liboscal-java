@@ -26,22 +26,24 @@
 
 package gov.nist.secauto.oscal.lib.metapath.function.library;
 
-import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
-import gov.nist.secauto.metaschema.model.common.metapath.ISequence;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathException;
-import gov.nist.secauto.metaschema.model.common.metapath.function.FunctionUtils;
-import gov.nist.secauto.metaschema.model.common.metapath.function.IArgument;
-import gov.nist.secauto.metaschema.model.common.metapath.function.IFunction;
-import gov.nist.secauto.metaschema.model.common.metapath.function.InvalidTypeFunctionException;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IBooleanItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDefinitionNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IStringItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
-import gov.nist.secauto.oscal.lib.model.AssessmentPart;
-import gov.nist.secauto.oscal.lib.model.ControlPart;
-import gov.nist.secauto.oscal.lib.model.Property;
+import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.core.metapath.ISequence;
+import gov.nist.secauto.metaschema.core.metapath.MetapathException;
+import gov.nist.secauto.metaschema.core.metapath.function.FunctionUtils;
+import gov.nist.secauto.metaschema.core.metapath.function.IArgument;
+import gov.nist.secauto.metaschema.core.metapath.function.IFunction;
+import gov.nist.secauto.metaschema.core.metapath.function.InvalidTypeFunctionException;
+import gov.nist.secauto.metaschema.core.metapath.function.library.FnData;
+import gov.nist.secauto.metaschema.core.metapath.item.IItem;
+import gov.nist.secauto.metaschema.core.metapath.item.atomic.IAnyUriItem;
+import gov.nist.secauto.metaschema.core.metapath.item.atomic.IBooleanItem;
+import gov.nist.secauto.metaschema.core.metapath.item.atomic.IStringItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IFlagNodeItem;
+import gov.nist.secauto.metaschema.core.model.IAssemblyDefinition;
+import gov.nist.secauto.metaschema.core.model.IFlagInstance;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
 
 import java.net.URI;
@@ -53,7 +55,8 @@ public final class HasOscalNamespace {
   @NonNull
   static final IFunction SIGNATURE_ONE_ARG = IFunction.builder()
       .name("has-oscal-namespace")
-      .argument(IArgument.newBuilder()
+      .namespace(OscalBindingContext.NS_OSCAL)
+      .argument(IArgument.builder()
           .name("namespace")
           .type(IStringItem.class)
           .oneOrMore()
@@ -70,12 +73,13 @@ public final class HasOscalNamespace {
   @NonNull
   static final IFunction SIGNATURE_TWO_ARGS = IFunction.builder()
       .name("has-oscal-namespace")
-      .argument(IArgument.newBuilder()
+      .namespace(OscalBindingContext.NS_OSCAL)
+      .argument(IArgument.builder()
           .name("propOrPart")
-          .type(IDefinitionNodeItem.class)
+          .type(IAssemblyNodeItem.class)
           .one()
           .build())
-      .argument(IArgument.newBuilder()
+      .argument(IArgument.builder()
           .name("namespace")
           .type(IStringItem.class)
           .oneOrMore()
@@ -101,19 +105,16 @@ public final class HasOscalNamespace {
       @NonNull IFunction function,
       @NonNull List<ISequence<?>> arguments,
       @NonNull DynamicContext dynamicContext,
-      INodeItem focus) {
-    INodeItem node = focus;
-    if (node == null) {
-      return ISequence.empty();
-    }
-
+      IItem focus) {
     assert arguments.size() == 1;
     ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(
         ObjectUtils.notNull(arguments.get(0)));
+
     if (namespaceArgs.isEmpty()) {
       return ISequence.empty();
     }
 
+    IAssemblyNodeItem node = FunctionUtils.requireType(IAssemblyNodeItem.class, focus);
     return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));
   }
 
@@ -125,29 +126,27 @@ public final class HasOscalNamespace {
       @NonNull IFunction function,
       @NonNull List<ISequence<?>> arguments,
       @NonNull DynamicContext dynamicContext,
-      INodeItem focus) {
-    ISequence<? extends IDefinitionNodeItem> nodeSequence = FunctionUtils.asType(
-        ObjectUtils.notNull(arguments.get(0)));
-
-    IItem node = FunctionUtils.getFirstItem(nodeSequence, true);
-    if (node == null) {
-      return ISequence.empty();
-    }
-
+      IItem focus) {
     assert arguments.size() == 2;
+
     ISequence<? extends IStringItem> namespaceArgs = FunctionUtils.asType(
         ObjectUtils.notNull(arguments.get(1)));
     if (namespaceArgs.isEmpty()) {
       return ISequence.empty();
     }
 
-    return ISequence.of(hasNamespace(FunctionUtils.asType(node), namespaceArgs));
+    ISequence<? extends IAssemblyNodeItem> nodeSequence = FunctionUtils.asType(
+        ObjectUtils.notNull(arguments.get(0)));
+
+    // always not null, since the first item is required
+    IAssemblyNodeItem node = FunctionUtils.requireFirstItem(nodeSequence, true);
+    return ISequence.of(hasNamespace(node, namespaceArgs));
   }
 
   @SuppressWarnings("PMD.LinguisticNaming") // false positive
   @NonNull
   public static IBooleanItem hasNamespace(
-      @NonNull IDefinitionNodeItem propOrPart,
+      @NonNull IAssemblyNodeItem propOrPart,
       @NonNull ISequence<? extends IStringItem> namespaces)
       throws MetapathException {
     Object propOrPartObject = propOrPart.getValue();
@@ -155,16 +154,29 @@ public final class HasOscalNamespace {
       throw new InvalidTypeFunctionException(InvalidTypeFunctionException.NODE_HAS_NO_TYPED_VALUE, propOrPart);
     }
 
-    URI nodeNamespace;
-    if (propOrPartObject instanceof Property) {
-      nodeNamespace = ((Property) propOrPartObject).getNs();
-    } else if (propOrPartObject instanceof ControlPart) {
-      nodeNamespace = ((ControlPart) propOrPartObject).getNs();
-    } else if (propOrPartObject instanceof AssessmentPart) {
-      nodeNamespace = ((AssessmentPart) propOrPartObject).getNs();
+    URI nodeNamespace = null;
+    // get the "ns" flag value
+    IFlagNodeItem ns = propOrPart.getFlagByName("ns");
+    if (ns == null) {
+      // check if the node actually has a "ns" flag
+      IAssemblyDefinition definition = propOrPart.getDefinition();
+      IFlagInstance flag = definition.getFlagInstanceByName("ns");
+      if (flag == null) {
+        throw new MetapathException(
+            String.format(
+                "Node at path '%s' bound to '%s' based on the assembly definition '%s' has no OSCAL namespace",
+                propOrPart.getMetapath(),
+                propOrPart.getClass().getName(),
+                propOrPart.getDefinition().getName()));
+
+      }
+
+      Object defaultValue = flag.getDefinition().getDefaultValue();
+      if (defaultValue != null) {
+        nodeNamespace = IAnyUriItem.valueOf(ObjectUtils.notNull(defaultValue.toString())).asUri();
+      }
     } else {
-      throw new MetapathException(
-          String.format("Node of definition type '%s' has no OSCAL namespace", propOrPart.getDefinition().getName()));
+      nodeNamespace = IAnyUriItem.cast(FnData.fnDataItem(ns)).asUri();
     }
 
     String nodeNamespaceString = AbstractProperty.normalizeNamespace(nodeNamespace).toString();

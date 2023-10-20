@@ -26,12 +26,12 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -42,7 +42,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 /**
  * Visits a catalog document and its children as designated.
  * <p>
- * This implementation is stateless. The {@code T} parameter can be used to convey state as needed.
+ * This implementation is stateless. The {@code T} parameter can be used to
+ * convey state as needed.
  *
  * @param <T>
  *          the state type
@@ -74,7 +75,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   private final Set<IEntityItem.ItemType> itemTypesToVisit;
 
   /**
-   * Create a new visitor that will visit the item types identified by {@code itemTypesToVisit}.
+   * Create a new visitor that will visit the item types identified by
+   * {@code itemTypesToVisit}.
    *
    * @param itemTypesToVisit
    *          the item type the visitor will visit
@@ -95,14 +97,16 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   public R visitCatalog(IDocumentNodeItem catalogDocument, T state) {
     R result = super.visitCatalog(catalogDocument, state);
 
-    IRootAssemblyNodeItem root = catalogDocument.getRootAssemblyNodeItem();
-    visitMetadata(root, state);
-    visitBackMatter(root, state);
+    catalogDocument.modelItems().forEachOrdered(item -> {
+      IRootAssemblyNodeItem root = ObjectUtils.requireNonNull((IRootAssemblyNodeItem) item);
+      visitMetadata(root, state);
+      visitBackMatter(root, state);
+    });
     return result;
   }
 
   @Override
-  protected R visitGroupContainer(IRequiredValueModelNodeItem catalogOrGroup, R initialResult, T state) {
+  protected R visitGroupContainer(IAssemblyNodeItem catalogOrGroup, R initialResult, T state) {
     R retval;
     if (Collections.disjoint(getItemTypesToVisit(), GROUP_CONTAINER_TYPES)) {
       retval = initialResult;
@@ -113,7 +117,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   }
 
   @Override
-  protected R visitControlContainer(IRequiredValueModelNodeItem catalogOrGroupOrControl, R initialResult, T state) {
+  protected R visitControlContainer(IAssemblyNodeItem catalogOrGroupOrControl, R initialResult, T state) {
     R retval;
     if (Collections.disjoint(getItemTypesToVisit(), CONTROL_CONTAINER_TYPES)) {
       retval = initialResult;
@@ -125,7 +129,10 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
       if (isVisitedItemType(IEntityItem.ItemType.PARAMETER)) {
         retval = catalogOrGroupOrControl.getModelItemsByName("param").stream()
             .map(paramItem -> {
-              return visitParameter(ObjectUtils.requireNonNull(paramItem), catalogOrGroupOrControl, state);
+              return visitParameter(
+                  ObjectUtils.requireNonNull((IAssemblyNodeItem) paramItem),
+                  catalogOrGroupOrControl,
+                  state);
             })
             .reduce(retval, (first, second) -> aggregateResults(first, second, state));
       } // TODO Auto-generated method stub
@@ -133,11 +140,11 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
     return retval;
   }
 
-  protected void visitParts(@NonNull IRequiredValueModelNodeItem groupOrControlItem, T state) {
+  protected void visitParts(@NonNull IAssemblyNodeItem groupOrControlItem, T state) {
     // handle parts
     if (isVisitedItemType(IEntityItem.ItemType.PART)) {
       CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()
-          .map(item -> (IRequiredValueModelNodeItem) item)
+          .map(item -> (IAssemblyNodeItem) item)
           .forEachOrdered(partItem -> {
             visitPart(ObjectUtils.requireNonNull(partItem), groupOrControlItem, state);
           });
@@ -145,7 +152,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   }
 
   @Override
-  protected R visitGroupInternal(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
+  protected R visitGroupInternal(@NonNull IAssemblyNodeItem item, R childResult, T state) {
     if (isVisitedItemType(IEntityItem.ItemType.PART)) {
       visitParts(item, state);
     }
@@ -158,7 +165,7 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   }
 
   @Override
-  protected R visitControlInternal(IRequiredValueModelNodeItem item, R childResult, T state) {
+  protected R visitControlInternal(IAssemblyNodeItem item, R childResult, T state) {
     if (isVisitedItemType(IEntityItem.ItemType.PART)) {
       visitParts(item, state);
     }
@@ -173,8 +180,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a parameter.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
    *          the Metapath item for the parameter
@@ -185,8 +192,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * @return a meaningful result of the given type
    */
   protected R visitParameter(
-      @NonNull IRequiredValueModelNodeItem item,
-      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,
+      @NonNull IAssemblyNodeItem item,
+      @NonNull IAssemblyNodeItem catalogOrGroupOrControl,
       T state) {
     // do nothing
     return newDefaultResult(state);
@@ -195,8 +202,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a part.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
    *          the Metapath item for the part
@@ -206,8 +213,8 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    *          the calling context information
    */
   protected void visitPart( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem item,
-      @NonNull IRequiredValueModelNodeItem groupOrControl,
+      @NonNull IAssemblyNodeItem item,
+      @NonNull IAssemblyNodeItem groupOrControl,
       T state) {
     // do nothing
   }
@@ -218,68 +225,78 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * Visits each contained role, location, and party.
    *
    * @param rootItem
-   *          the root Metaschema node item containing the "metadata" node
+   *          the root Module node item containing the "metadata" node
    * @param state
    *          the calling context information
    */
   protected void visitMetadata(@NonNull IRootAssemblyNodeItem rootItem, T state) {
-    rootItem.getModelItemsByName("metadata").forEach(metadataItem -> {
-      if (isVisitedItemType(IEntityItem.ItemType.ROLE)) {
-        metadataItem.getModelItemsByName("role").forEach(roleItem -> {
-          visitRole(ObjectUtils.requireNonNull(roleItem), metadataItem, state);
-        });
-      }
+    rootItem.getModelItemsByName("metadata").stream()
+        .map(metadataItem -> (IAssemblyNodeItem) metadataItem)
+        .forEach(metadataItem -> {
+          if (isVisitedItemType(IEntityItem.ItemType.ROLE)) {
+            metadataItem.getModelItemsByName("role").stream()
+                .map(roleItem -> (IAssemblyNodeItem) roleItem)
+                .forEachOrdered(roleItem -> {
+                  visitRole(ObjectUtils.requireNonNull(roleItem), metadataItem, state);
+                });
+          }
 
-      if (isVisitedItemType(IEntityItem.ItemType.LOCATION)) {
-        metadataItem.getModelItemsByName("location").forEach(locationItem -> {
-          visitLocation(ObjectUtils.requireNonNull(locationItem), metadataItem, state);
-        });
-      }
+          if (isVisitedItemType(IEntityItem.ItemType.LOCATION)) {
+            metadataItem.getModelItemsByName("location").stream()
+                .map(locationItem -> (IAssemblyNodeItem) locationItem)
+                .forEachOrdered(locationItem -> {
+                  visitLocation(ObjectUtils.requireNonNull(locationItem), metadataItem, state);
+                });
+          }
 
-      if (isVisitedItemType(IEntityItem.ItemType.PARTY)) {
-        metadataItem.getModelItemsByName("party").forEach(partyItem -> {
-          visitParty(ObjectUtils.requireNonNull(partyItem), metadataItem, state);
+          if (isVisitedItemType(IEntityItem.ItemType.PARTY)) {
+            metadataItem.getModelItemsByName("party").stream()
+                .map(partyItem -> (IAssemblyNodeItem) partyItem)
+                .forEachOrdered(partyItem -> {
+                  visitParty(ObjectUtils.requireNonNull(partyItem), metadataItem, state);
+                });
+          }
         });
-      }
-    });
   }
 
   /**
    * Called when visiting a role in the "metadata" section of an OSCAL document.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
-   *          the role Metaschema node item which is a child of the "metadata" node
+   *          the role Module node item which is a child of the "metadata" node
    * @param metadataItem
-   *          the "metadata" Metaschema node item containing the role
+   *          the "metadata" Module node item containing the role
    * @param state
    *          the calling context information
    */
   protected void visitRole( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem item,
-      @NonNull IRequiredValueModelNodeItem metadataItem,
+      @NonNull IAssemblyNodeItem item,
+      @NonNull IAssemblyNodeItem metadataItem,
       T state) {
     // do nothing
   }
 
   /**
-   * Called when visiting a location in the "metadata" section of an OSCAL document.
+   * Called when visiting a location in the "metadata" section of an OSCAL
+   * document.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
-   *          the location Metaschema node item which is a child of the "metadata" node
+   *          the location Module node item which is a child of the "metadata"
+   *          node
    * @param metadataItem
-   *          the "metadata" Metaschema node item containing the location
+   *          the "metadata" Module node item containing the location
    * @param state
    *          the calling context information
    */
   protected void visitLocation( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem item,
-      @NonNull IRequiredValueModelNodeItem metadataItem,
+      @NonNull IAssemblyNodeItem item,
+      @NonNull IAssemblyNodeItem metadataItem,
       T state) {
     // do nothing
   }
@@ -287,19 +304,19 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   /**
    * Called when visiting a party in the "metadata" section of an OSCAL document.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
-   *          the party Metaschema node item which is a child of the "metadata" node
+   *          the party Module node item which is a child of the "metadata" node
    * @param metadataItem
-   *          the "metadata" Metaschema node item containing the party
+   *          the "metadata" Module node item containing the party
    * @param state
    *          the calling context information
    */
   protected void visitParty( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem item,
-      @NonNull IRequiredValueModelNodeItem metadataItem,
+      @NonNull IAssemblyNodeItem item,
+      @NonNull IAssemblyNodeItem metadataItem,
       T state) {
     // do nothing
   }
@@ -310,14 +327,14 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
    * Visits each contained resource.
    *
    * @param rootItem
-   *          the root Metaschema node item containing the "back-matter" node
+   *          the root Module node item containing the "back-matter" node
    * @param state
    *          the calling context information
    */
   protected void visitBackMatter(@NonNull IRootAssemblyNodeItem rootItem, T state) {
     if (isVisitedItemType(IEntityItem.ItemType.RESOURCE)) {
       BACK_MATTER_RESOURCES_METAPATH.evaluate(rootItem).asStream()
-          .map(item -> (IRequiredValueModelNodeItem) item)
+          .map(item -> (IAssemblyNodeItem) item)
           .forEachOrdered(resourceItem -> {
             visitResource(ObjectUtils.requireNonNull(resourceItem), rootItem, state);
           });
@@ -325,21 +342,23 @@ public abstract class AbstractCatalogEntityVisitor<T, R>
   }
 
   /**
-   * Called when visiting a resource in the "back-matter" section of an OSCAL document.
+   * Called when visiting a resource in the "back-matter" section of an OSCAL
+   * document.
    * <p>
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
-   * @param item
-   *          the resource Metaschema node item which is a child of the "metadata" node
-   * @param backMatterItem
-   *          the resource Metaschema node item containing the party
+   * @param resource
+   *          the resource Module node item which is a child of the "metadata"
+   *          node
+   * @param backMatter
+   *          the resource Module node item containing the party
    * @param state
    *          the calling context information
    */
   protected void visitResource( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem item,
-      @NonNull IRootAssemblyNodeItem backMatterItem,
+      @NonNull IAssemblyNodeItem resource,
+      @NonNull IRootAssemblyNodeItem backMatter,
       T state) {
     // do nothing
   }

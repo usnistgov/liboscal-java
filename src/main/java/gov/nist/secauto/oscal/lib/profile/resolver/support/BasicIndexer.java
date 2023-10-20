@@ -26,13 +26,13 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.datatype.adapter.UuidAdapter;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
-import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.datatype.adapter.UuidAdapter;
+import gov.nist.secauto.metaschema.core.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.core.metapath.MetapathExpression.ResultType;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
@@ -126,11 +126,11 @@ public class BasicIndexer implements IIndexer {
       retval = IIndexer.SelectionStatus.SELECTED.equals(getSelectionStatus(entity.getInstance()));
       break;
     case PART: {
-      IRequiredValueModelNodeItem instance = entity.getInstance();
+      IModelNodeItem<?, ?> instance = entity.getInstance();
       IIndexer.SelectionStatus status = getSelectionStatus(instance);
       if (IIndexer.SelectionStatus.UNKNOWN.equals(status)) {
         // lookup the status if not known
-        IRequiredValueModelNodeItem containerItem = CONTAINER_METAPATH.evaluateAs(instance, ResultType.NODE);
+        IModelNodeItem<?, ?> containerItem = CONTAINER_METAPATH.evaluateAs(instance, ResultType.NODE);
         assert containerItem != null;
         status = getSelectionStatus(containerItem);
 
@@ -190,11 +190,14 @@ public class BasicIndexer implements IIndexer {
     return entityGroup == null ? CollectionUtil.emptyList() : ObjectUtils.notNull(entityGroup.values());
   }
   //
-  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID identifier) {
-  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);
+  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID
+  // identifier) {
+  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()),
+  // false);
   // }
   //
-  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier) {
+  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String
+  // identifier) {
   // return getEntity(itemType, identifier, itemType.isUuid());
   // }
 
@@ -255,62 +258,62 @@ public class BasicIndexer implements IIndexer {
   }
 
   @Override
-  public IEntityItem addRole(IRequiredValueModelNodeItem item) {
-    Role role = (Role) item.getValue();
+  public IEntityItem addRole(IModelNodeItem<?, ?> item) {
+    Role role = ObjectUtils.requireNonNull((Role) item.getValue());
     String identifier = ObjectUtils.requireNonNull(role.getId());
 
     return addItem(newBuilder(item, ItemType.ROLE, identifier));
   }
 
   @Override
-  public IEntityItem addLocation(IRequiredValueModelNodeItem item) {
-    Location location = (Location) item.getValue();
+  public IEntityItem addLocation(IModelNodeItem<?, ?> item) {
+    Location location = ObjectUtils.requireNonNull((Location) item.getValue());
     UUID identifier = ObjectUtils.requireNonNull(location.getUuid());
 
     return addItem(newBuilder(item, ItemType.LOCATION, identifier));
   }
 
   @Override
-  public IEntityItem addParty(IRequiredValueModelNodeItem item) {
-    Party party = (Party) item.getValue();
+  public IEntityItem addParty(IModelNodeItem<?, ?> item) {
+    Party party = ObjectUtils.requireNonNull((Party) item.getValue());
     UUID identifier = ObjectUtils.requireNonNull(party.getUuid());
 
     return addItem(newBuilder(item, ItemType.PARTY, identifier));
   }
 
   @Override
-  public IEntityItem addGroup(IRequiredValueModelNodeItem item) {
-    CatalogGroup group = (CatalogGroup) item.getValue();
+  public IEntityItem addGroup(IModelNodeItem<?, ?> item) {
+    CatalogGroup group = ObjectUtils.requireNonNull((CatalogGroup) item.getValue());
     String identifier = group.getId();
     return identifier == null ? null : addItem(newBuilder(item, ItemType.GROUP, identifier));
   }
 
   @Override
-  public IEntityItem addControl(IRequiredValueModelNodeItem item) {
-    Control control = (Control) item.getValue();
+  public IEntityItem addControl(IModelNodeItem<?, ?> item) {
+    Control control = ObjectUtils.requireNonNull((Control) item.getValue());
     String identifier = ObjectUtils.requireNonNull(control.getId());
     return addItem(newBuilder(item, ItemType.CONTROL, identifier));
   }
 
   @Override
-  public IEntityItem addParameter(IRequiredValueModelNodeItem item) {
-    Parameter parameter = (Parameter) item.getValue();
+  public IEntityItem addParameter(IModelNodeItem<?, ?> item) {
+    Parameter parameter = ObjectUtils.requireNonNull((Parameter) item.getValue());
     String identifier = ObjectUtils.requireNonNull(parameter.getId());
 
     return addItem(newBuilder(item, ItemType.PARAMETER, identifier));
   }
 
   @Override
-  public IEntityItem addPart(IRequiredValueModelNodeItem item) {
-    ControlPart part = (ControlPart) item.getValue();
+  public IEntityItem addPart(IModelNodeItem<?, ?> item) {
+    ControlPart part = ObjectUtils.requireNonNull((ControlPart) item.getValue());
     String identifier = part.getId();
 
     return identifier == null ? null : addItem(newBuilder(item, ItemType.PART, identifier));
   }
 
   @Override
-  public IEntityItem addResource(IRequiredValueModelNodeItem item) {
-    Resource resource = (Resource) item.getValue();
+  public IEntityItem addResource(IModelNodeItem<?, ?> item) {
+    Resource resource = ObjectUtils.requireNonNull((Resource) item.getValue());
     UUID identifier = ObjectUtils.requireNonNull(resource.getUuid());
 
     return addItem(newBuilder(item, ItemType.RESOURCE, identifier));
@@ -318,7 +321,7 @@ public class BasicIndexer implements IIndexer {
 
   @NonNull
   protected final AbstractEntityItem.Builder newBuilder(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IModelNodeItem<?, ?> item,
       @NonNull ItemType itemType,
       @NonNull UUID identifier) {
     return newBuilder(item, itemType, ObjectUtils.notNull(identifier.toString()));
@@ -327,10 +330,11 @@ public class BasicIndexer implements IIndexer {
   /**
    * Create a new builder with the provided info.
    * <p>
-   * This method can be overloaded to support applying additional data to the returned builder.
+   * This method can be overloaded to support applying additional data to the
+   * returned builder.
    * <p>
-   * When working with identifiers that are case insensitve, it is important to ensure that the
-   * identifiers are normalized to lower case.
+   * When working with identifiers that are case insensitve, it is important to
+   * ensure that the identifiers are normalized to lower case.
    *
    * @param item
    *          the Metapath node to associate with the entity
@@ -342,7 +346,7 @@ public class BasicIndexer implements IIndexer {
    */
   @NonNull
   protected AbstractEntityItem.Builder newBuilder(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IModelNodeItem<?, ?> item,
       @NonNull ItemType itemType,
       @NonNull String identifier) {
     return new AbstractEntityItem.Builder()

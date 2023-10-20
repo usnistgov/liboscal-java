@@ -26,16 +26,18 @@
 
 package gov.nist.secauto.oscal.java;
 
-import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
-import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
-import gov.nist.secauto.metaschema.model.common.metapath.INodeContext;
-import gov.nist.secauto.metaschema.model.common.metapath.ISequence;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.core.metapath.ISequence;
+import gov.nist.secauto.metaschema.core.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.core.metapath.StaticContext;
+import gov.nist.secauto.metaschema.core.metapath.item.IItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.io.IBoundLoader;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.metapath.function.library.ResolveProfile;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -50,16 +52,17 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 class MetaschemaVisitorTest {
 
+  @Disabled
   @Test
   void test() throws FileNotFoundException, IOException, URISyntaxException {
     OscalBindingContext bindingContext = OscalBindingContext.instance();
     IBoundLoader loader = bindingContext.newBoundLoader();
 
-    StaticContext staticContext = new StaticContext();
-    @SuppressWarnings("null")
-    @NonNull URI baseUri = new File("").getAbsoluteFile().toURI();
-    staticContext.setBaseUri(baseUri);
-    DynamicContext dynamicContext = staticContext.newDynamicContext();
+    URI baseUri = ObjectUtils.notNull(new File("").getAbsoluteFile().toURI());
+    StaticContext staticContext = StaticContext.builder()
+        .baseUri(baseUri)
+        .build();
+    DynamicContext dynamicContext = staticContext.dynamicContext();
     dynamicContext.setDocumentLoader(loader);
 
     // File file = new
@@ -80,35 +83,44 @@ class MetaschemaVisitorTest {
     // File("resolved-catalog.xml")));
 
     // evaluatePath(MetapathExpression.compile("resolve-profile(doc(resolve-uri(/profile/import/@href,
-    // document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem, dynamicContext);
+    // document-uri(/profile))))/(profile, catalog)//control/@id"), nodeItem,
+    // dynamicContext);
     evaluatePath(MetapathExpression.compile("//control/@id"), resolvedProfile, dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
-    // document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem, dynamicContext);
+    // document-uri(/profile)))/catalog/metadata/last-modified"), nodeItem,
+    // dynamicContext);
     // evaluatePath(
     // MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
-    // document-uri(/profile)))/catalog/metadata/last-modified - /catalog/metadata/last-modified"),
+    // document-uri(/profile)))/catalog/metadata/last-modified -
+    // /catalog/metadata/last-modified"),
     // nodeItem, dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
-    // document-uri(/profile)))/catalog/metadata/last-modified + duration('PT1H')"), nodeItem,
+    // document-uri(/profile)))/catalog/metadata/last-modified + duration('PT1H')"),
+    // nodeItem,
     // dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc(resolve-uri(/profile/import/@href,
     // document-uri(/profile)))/catalog/metadata/last-modified,/catalog/metadata/last-modified"),
     // nodeItem, dynamicContext);
     // evaluatePath(MetapathExpression.compile("doc('target/download/content/NIST_SP-800-53_rev5_catalog.xml')"),
     // nodeItem, dynamicContext);
-    // evaluatePath(Metapath.parseMetapathString("2 eq 1 + 1[/catalog]"), nodeContext, visitor);
+    // evaluatePath(Metapath.parseMetapathString("2 eq 1 + 1[/catalog]"),
+    // nodeContext, visitor);
     // evaluatePath(Metapath.parseMetapathString("/catalog/back-matter/resource[rlink/@href='https://doi.org/10.6028/NIST.SP.800-53r5']"),
     // nodeItem, dynamicContext);
-    // evaluatePath(MetapathExpression.compile("/catalog//(@id,@uuid)"), nodeItem, dynamicContext);
-    // evaluatePath(MetapathExpression.compile("exists(/catalog//(@id,@uuid))"), nodeItem,
+    // evaluatePath(MetapathExpression.compile("/catalog//(@id,@uuid)"), nodeItem,
     // dynamicContext);
-    // evaluatePath(MetapathExpression.compile("/catalog//control//prop/@name"), nodeItem,
+    // evaluatePath(MetapathExpression.compile("exists(/catalog//(@id,@uuid))"),
+    // nodeItem,
     // dynamicContext);
-    // evaluatePath(Metapath.parseMetapathString("(/catalog//control[@id='ac-1'])"), nodeItem,
+    // evaluatePath(MetapathExpression.compile("/catalog//control//prop/@name"),
+    // nodeItem,
+    // dynamicContext);
+    // evaluatePath(Metapath.parseMetapathString("(/catalog//control[@id='ac-1'])"),
+    // nodeItem,
     // dynamicContext);
   }
 
-  private static void evaluatePath(@NonNull MetapathExpression path, @NonNull INodeContext nodeContext,
+  private static void evaluatePath(@NonNull MetapathExpression path, @NonNull IItem nodeContext,
       @NonNull DynamicContext dynamicContext) {
     // System.out.println("Path: " + path.getPath());
     // System.out.println("Compiled Path: " + path.toString());

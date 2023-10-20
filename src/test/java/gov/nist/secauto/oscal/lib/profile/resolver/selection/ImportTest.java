@@ -26,13 +26,13 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
-import gov.nist.secauto.metaschema.model.common.IRootAssemblyDefinition;
-import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItemFactory;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.model.IAssemblyClassBinding;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.IncludeAll;
@@ -65,12 +65,11 @@ class ImportTest {
         .title("Control 2")
         .build());
 
-    return DefaultNodeItemFactory.instance().newDocumentNodeItem(
-        IRootAssemblyDefinition.toRootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
-        importedCatalog,
-        ObjectUtils.notNull(Paths.get("").toUri()));
+    return INodeItemFactory.instance().newDocumentNodeItem(
+        ObjectUtils.requireNonNull(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
+        ObjectUtils.notNull(Paths.get("").toUri()),
+        importedCatalog);
   }
 
   @SuppressWarnings("null")
@@ -81,9 +80,6 @@ class ImportTest {
     // setup the imported catalog
     IDocumentNodeItem importedCatalogDocumentItem = newImportedCatalog();
 
-    // setup the profile
-    Profile profile = new Profile();
-
     ProfileImport profileImport = new ProfileImport();
     profileImport.setIncludeAll(new IncludeAll());
     profileImport.setExcludeControls(Collections.singletonList(
@@ -91,25 +87,32 @@ class ImportTest {
             .withId("control1")
             .build()));
     profileImport.setHref(cwd);
+
+    // setup the profile
+    Profile profile = new Profile();
+
     profile.addImport(profileImport);
 
-    IDocumentNodeItem profileDocumentItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
-        IRootAssemblyDefinition.toRootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Profile.class))),
-        profile,
-        cwd);
+    IDocumentNodeItem profileDocumentItem = INodeItemFactory.instance().newDocumentNodeItem(
+        ObjectUtils.requireNonNull(
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Profile.class)),
+        cwd,
+        profile);
 
     // setup the resolved catalog
     Catalog resolvedCatalog = new Catalog();
+    for (IRootAssemblyNodeItem profileRootItem : CollectionUtil
+        .toIterable(profileDocumentItem.getModelItemsByName("profile").stream()
+            .map(rootItem -> (IRootAssemblyNodeItem) rootItem))) {
+      for (IAssemblyNodeItem importItem : CollectionUtil.toIterable(
+          profileRootItem.getModelItemsByName("import").stream()
+              .map(item -> (IAssemblyNodeItem) item))) {
 
-    for (IRequiredValueModelNodeItem importItem : CollectionUtil.toIterable(
-        profileDocumentItem.getModelItemsByName("profile").stream()
-            .flatMap(root -> root.getModelItemsByName("import").stream()))) {
+        Import catalogImport = new Import(profileRootItem, importItem);
+        catalogImport.resolve(importedCatalogDocumentItem, resolvedCatalog);
+      }
 
-      Import catalogImport = new Import(profileDocumentItem, importItem);
-      catalogImport.resolve(importedCatalogDocumentItem, resolvedCatalog);
     }
-  }
 
+  }
 }

@@ -26,9 +26,9 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -50,48 +50,48 @@ public abstract class AbstractIndexingVisitor<T, R>
   protected abstract IIndexer getIndexer(T state);
 
   @Override
-  public R visitGroup(IRequiredValueModelNodeItem item, R childResult, T state) {
+  public R visitGroup(IAssemblyNodeItem item, R childResult, T state) {
     getIndexer(state).addGroup(item);
     return childResult;
   }
 
   @Override
-  public R visitControl(IRequiredValueModelNodeItem item, R childResult, T state) {
+  public R visitControl(IAssemblyNodeItem item, R childResult, T state) {
     getIndexer(state).addControl(item);
     return childResult;
   }
 
   @Override
-  protected R visitParameter(@NonNull IRequiredValueModelNodeItem parameterItem,
-      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl, T state) {
+  protected R visitParameter(@NonNull IAssemblyNodeItem parameterItem,
+      @NonNull IAssemblyNodeItem catalogOrGroupOrControl, T state) {
     getIndexer(state).addParameter(parameterItem);
     return newDefaultResult(state);
   }
 
   @Override
-  protected void visitPart(@NonNull IRequiredValueModelNodeItem partItem,
-      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl, T state) {
+  protected void visitPart(@NonNull IAssemblyNodeItem partItem,
+      @NonNull IAssemblyNodeItem catalogOrGroupOrControl, T state) {
     getIndexer(state).addPart(partItem);
   }
 
   @Override
-  protected void visitRole(IRequiredValueModelNodeItem roleItem, IRequiredValueModelNodeItem metadataItem, T state) {
+  protected void visitRole(IAssemblyNodeItem roleItem, IAssemblyNodeItem metadataItem, T state) {
     getIndexer(state).addRole(roleItem);
   }
 
   @Override
-  protected void visitLocation(IRequiredValueModelNodeItem locationItem, IRequiredValueModelNodeItem metadataItem,
+  protected void visitLocation(IAssemblyNodeItem locationItem, IAssemblyNodeItem metadataItem,
       T state) {
     getIndexer(state).addLocation(locationItem);
   }
 
   @Override
-  protected void visitParty(IRequiredValueModelNodeItem partyItem, IRequiredValueModelNodeItem metadataItem, T state) {
+  protected void visitParty(IAssemblyNodeItem partyItem, IAssemblyNodeItem metadataItem, T state) {
     getIndexer(state).addParty(partyItem);
   }
 
   @Override
-  protected void visitResource(IRequiredValueModelNodeItem resourceItem, IRootAssemblyNodeItem rootItem, T state) {
+  protected void visitResource(IAssemblyNodeItem resourceItem, IRootAssemblyNodeItem rootItem, T state) {
     getIndexer(state).addResource(resourceItem);
   }
 }

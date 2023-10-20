@@ -46,7 +46,8 @@ public interface IGroupContainer extends IControlContainer {
   boolean addGroup(@NonNull CatalogGroup item);
 
   /**
-   * Remove the first matching {@link CatalogGroup} item from the underlying collection.
+   * Remove the first matching {@link CatalogGroup} item from the underlying
+   * collection.
    *
    * @param item
    *          the item to remove
