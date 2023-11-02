@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib;
 
-import gov.nist.secauto.metaschema.core.model.constraint.IConstraintSet;
+import gov.nist.secauto.metaschema.core.model.xml.IModulePostProcessor;
 import gov.nist.secauto.metaschema.databind.DefaultBindingContext;
 import gov.nist.secauto.metaschema.databind.IBindingMatcher;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Set;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -63,11 +63,11 @@ public class OscalBindingContext
   /**
    * Construct a new OSCAL-flavored binding context with custom constraints.
    *
-   * @param constraintSets
-   *          a set of additional constraints to apply
+   * @param modulePostProcessors
+   *          a list of module post processors to call after loading a module
    */
-  public OscalBindingContext(@NonNull Set<IConstraintSet> constraintSets) {
-    super(constraintSets);
+  public OscalBindingContext(@NonNull List<IModulePostProcessor> modulePostProcessors) {
+    super(modulePostProcessors);
     registerBindingMatcher(new Matcher());
   }
 

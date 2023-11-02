@@ -96,10 +96,10 @@ class ExamplesTest {
     DynamicContext dynamicContext = StaticContext.instance().dynamicContext();
     dynamicContext.setDocumentLoader(loader);
     FindingCollectingConstraintValidationHandler handler = new FindingCollectingConstraintValidationHandler();
-    DefaultConstraintValidator validator = new DefaultConstraintValidator(dynamicContext, handler);
+    DefaultConstraintValidator validator = new DefaultConstraintValidator(handler);
 
-    validator.validate(nodeItem);
-    validator.finalizeValidation();
+    validator.validate(nodeItem, dynamicContext);
+    validator.finalizeValidation(dynamicContext);
 
     assertTrue(handler.isPassing());
 
