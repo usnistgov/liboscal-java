@@ -57,6 +57,8 @@
         <xsl:attribute name="href">...</xsl:attribute>
     </xsl:template>
 
+    <xsl:template mode="scrubbing" match="@ns[.='http://csrc.nist.gov/ns/oscal']"/>
+
     <xsl:template mode="scrubbing" match="last-modified">
         <xsl:copy>...</xsl:copy>
     </xsl:template>

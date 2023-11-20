@@ -28,7 +28,6 @@ package gov.nist.secauto.oscal.lib;
 
 import gov.nist.secauto.metaschema.core.model.xml.IModulePostProcessor;
 import gov.nist.secauto.metaschema.databind.DefaultBindingContext;
-import gov.nist.secauto.metaschema.databind.IBindingMatcher;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -43,8 +42,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
@@ -68,14 +65,26 @@ public class OscalBindingContext
    */
   public OscalBindingContext(@NonNull List<IModulePostProcessor> modulePostProcessors) {
     super(modulePostProcessors);
-    registerBindingMatcher(new Matcher());
+    registerBindingMatcher(Catalog.class);
+    registerBindingMatcher(Profile.class);
+    registerBindingMatcher(SystemSecurityPlan.class);
+    registerBindingMatcher(ComponentDefinition.class);
+    registerBindingMatcher(AssessmentPlan.class);
+    registerBindingMatcher(AssessmentResults.class);
+    registerBindingMatcher(PlanOfActionAndMilestones.class);
   }
 
   /**
    * Construct a new OSCAL-flavored binding context.
    */
   protected OscalBindingContext() {
-    registerBindingMatcher(new Matcher());
+    registerBindingMatcher(Catalog.class);
+    registerBindingMatcher(Profile.class);
+    registerBindingMatcher(SystemSecurityPlan.class);
+    registerBindingMatcher(ComponentDefinition.class);
+    registerBindingMatcher(AssessmentPlan.class);
+    registerBindingMatcher(AssessmentResults.class);
+    registerBindingMatcher(PlanOfActionAndMilestones.class);
   }
 
   @NonNull
@@ -182,72 +191,5 @@ public class OscalBindingContext
   @NonNull
   public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull File file) throws IOException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, file);
-  }
-
-  private static final class Matcher implements IBindingMatcher {
-    @Override
-    public Class<?> getBoundClassForXmlQName(QName startElementQName) {
-      Class<?> clazz = null;
-      if (NS_OSCAL.equals(startElementQName.getNamespaceURI())) {
-        switch (startElementQName.getLocalPart()) {
-        case "catalog":
-          clazz = Catalog.class;
-          break;
-        case "profile":
-          clazz = Profile.class;
-          break;
-        case "system-security-plan":
-          clazz = SystemSecurityPlan.class;
-          break;
-        case "component-definition":
-          clazz = ComponentDefinition.class;
-          break;
-        case "assessment-plan":
-          clazz = AssessmentPlan.class;
-          break;
-        case "assessment-results":
-          clazz = AssessmentResults.class;
-          break;
-        case "plan-of-action-and-milestones":
-          clazz = PlanOfActionAndMilestones.class;
-          break;
-        default:
-          throw new UnsupportedOperationException("Unrecognized element name: " + startElementQName.toString());
-        }
-      }
-      return clazz;
-    }
-
-    @Override
-    public Class<?> getBoundClassForJsonName(String name) {
-      Class<?> retval;
-      switch (name) {
-      case "catalog":
-        retval = Catalog.class;
-        break;
-      case "profile":
-        retval = Profile.class;
-        break;
-      case "system-security-plan":
-        retval = SystemSecurityPlan.class;
-        break;
-      case "component-definition":
-        retval = ComponentDefinition.class;
-        break;
-      case "assessment-plan":
-        retval = AssessmentPlan.class;
-        break;
-      case "assessment-results":
-        retval = AssessmentResults.class;
-        break;
-      case "plan-of-action-and-milestones":
-        retval = PlanOfActionAndMilestones.class;
-        break;
-      default:
-        throw new UnsupportedOperationException("Unrecognized field name: " + name);
-      }
-      return retval;
-    }
-
   }
 }

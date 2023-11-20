@@ -67,7 +67,7 @@ class ImportTest {
 
     return INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBindingStrategy(Catalog.class)),
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.notNull(Paths.get("").toUri()),
         importedCatalog);
   }
@@ -95,7 +95,7 @@ class ImportTest {
 
     IDocumentNodeItem profileDocumentItem = INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBindingStrategy(Profile.class)),
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Profile.class)),
         cwd,
         profile);
 

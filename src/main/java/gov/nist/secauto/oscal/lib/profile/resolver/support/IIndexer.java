@@ -32,7 +32,7 @@ import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
 import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
 import gov.nist.secauto.metaschema.core.util.CustomCollectors;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
-import gov.nist.secauto.oscal.lib.OscalBindingContext;
+import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
 import org.apache.logging.log4j.Level;
@@ -59,7 +59,7 @@ public interface IIndexer {
   }
 
   MetapathExpression HAS_PROP_KEEP_METAPATH = MetapathExpression
-      .compile("prop[@name='keep' and has-oscal-namespace('" + OscalBindingContext.NS_OSCAL + "')]/@value = 'always'");
+      .compile("prop[@name='keep' and has-oscal-namespace('" + IProperty.OSCAL_NAMESPACE + "')]/@value = 'always'");
 
   Predicate<IEntityItem> KEEP_ENTITY_PREDICATE = new Predicate<>() {
 

@@ -269,7 +269,7 @@ public class ProfileResolver {
 
     return INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBindingStrategy(Catalog.class)),
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
   }
@@ -550,7 +550,7 @@ public class ProfileResolver {
     // rebuild the document, since the paths have changed
     IDocumentNodeItem resolvedCatalogItem = INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBindingStrategy(Catalog.class)),
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
 
@@ -562,7 +562,7 @@ public class ProfileResolver {
       throws ProfileResolutionException {
     IDocumentNodeItem resolvedCatalogDocument = INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBindingStrategy(Catalog.class)),
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
 

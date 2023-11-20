@@ -181,7 +181,7 @@ public final class TestUtil {
 
     return INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBindingStrategy(Catalog.class)),
+            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
         ObjectUtils.notNull(Paths.get("").toUri()),
         importedCatalog);
   }
