@@ -132,7 +132,7 @@
 		<dependency.log4j2.version>2.22.0</dependency.log4j2.version>
 		<dependency.saxon.version>12.4</dependency.saxon.version>
 		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
-		<dependency.xmlresolver.version>4.6.0</dependency.xmlresolver.version>
+		<dependency.xmlresolver.version>5.2.2</dependency.xmlresolver.version>
 
 		<plugin.cyclonedx.version>2.7.3</plugin.cyclonedx.version>
         <plugin.maven-toolchains.version>3.1.0</plugin.maven-toolchains.version>
