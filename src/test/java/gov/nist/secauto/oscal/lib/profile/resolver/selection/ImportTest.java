@@ -32,7 +32,7 @@ import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItemFactory;
 import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
 import gov.nist.secauto.metaschema.core.util.CollectionUtil;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
-import gov.nist.secauto.metaschema.databind.model.IAssemblyClassBinding;
+import gov.nist.secauto.metaschema.databind.model.IBoundDefinitionAssembly;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.IncludeAll;
@@ -67,7 +67,7 @@ class ImportTest {
 
     return INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
+            (IBoundDefinitionAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
         ObjectUtils.notNull(Paths.get("").toUri()),
         importedCatalog);
   }
@@ -95,7 +95,7 @@ class ImportTest {
 
     IDocumentNodeItem profileDocumentItem = INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Profile.class)),
+            (IBoundDefinitionAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Profile.class)),
         cwd,
         profile);
 

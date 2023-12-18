@@ -29,7 +29,7 @@ package gov.nist.secauto.oscal.lib.profile.resolver;
 import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
 import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItemFactory;
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
-import gov.nist.secauto.metaschema.databind.model.IAssemblyClassBinding;
+import gov.nist.secauto.metaschema.databind.model.IBoundDefinitionAssembly;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.control.AbstractParameter;
@@ -181,7 +181,7 @@ public final class TestUtil {
 
     return INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class)),
+            (IBoundDefinitionAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
         ObjectUtils.notNull(Paths.get("").toUri()),
         importedCatalog);
   }

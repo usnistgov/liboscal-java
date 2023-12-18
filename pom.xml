@@ -127,13 +127,14 @@
 		<dependency.metaschema-framework.version>1.0.0-M2-SNAPSHOT</dependency.metaschema-framework.version>
 
 		<dependency.auto-service.version>1.0.1</dependency.auto-service.version>
-		<dependency.commons-lang3.version>3.13.0</dependency.commons-lang3.version>
+		<dependency.commons-lang3.version>3.14.0</dependency.commons-lang3.version>
 		<dependency.infinispan.version>13.0.10.Final</dependency.infinispan.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
-		<dependency.log4j2.version>2.21.1</dependency.log4j2.version>
+		<dependency.log4j2.version>2.22.0</dependency.log4j2.version>
 		<dependency.saxon.version>12.3</dependency.saxon.version>
 		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
+		<dependency.xmlbeans.version>5.2.0</dependency.xmlbeans.version>
 		<dependency.xmlresolver.version>4.6.0</dependency.xmlresolver.version>
 
 		<plugin.cyclonedx.version>2.7.3</plugin.cyclonedx.version>
@@ -202,6 +203,11 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+            <dependency>
+                <groupId>org.apache.xmlbeans</groupId>
+                <artifactId>xmlbeans</artifactId>
+                <version>${dependency.xmlbeans.version}</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 

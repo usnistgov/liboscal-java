@@ -29,6 +29,7 @@ package gov.nist.secauto.oscal.java;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.DefaultBindingContext;
 import gov.nist.secauto.metaschema.databind.IBindingContext;
 import gov.nist.secauto.metaschema.databind.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.databind.io.Format;
@@ -50,7 +51,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 class ReadWriteTest {
   private static final Logger LOGGER = LogManager.getLogger(ReadWriteTest.class);
 
-  private static final int ITERATIONS = 1;
+  private static final int ITERATIONS = 10;
 
   @NonNull
   private static <CLASS> CLASS measureDeserializer(
@@ -129,16 +130,18 @@ class ReadWriteTest {
       @NonNull Path tempDir,
       int iterations)
       throws IOException {
-    IBindingContext context = IBindingContext.instance();
 
     CLASS obj;
 
     // XML
     {
+      IBindingContext context = new DefaultBindingContext();
       IDeserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz);
       deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
-
+    }
+    {
+      IBindingContext context = new DefaultBindingContext();
       Path out = ObjectUtils.notNull(tempDir.resolve("out.xml"));
       ISerializer<CLASS> serializer = context.newSerializer(Format.XML, clazz);
       measureSerializer(obj, "XML", out, serializer, iterations);
@@ -147,23 +150,33 @@ class ReadWriteTest {
     // JSON
     {
       Path out = ObjectUtils.notNull(tempDir.resolve("out.json"));
-      ISerializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz);
-      measureSerializer(obj, "JSON", out, serializer, iterations);
-
-      IDeserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
-      deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
-      obj = measureDeserializer("JSON", out, deserializer, iterations);
+      {
+        IBindingContext context = new DefaultBindingContext();
+        ISerializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz);
+        measureSerializer(obj, "JSON", out, serializer, iterations);
+      }
+      {
+        IBindingContext context = new DefaultBindingContext();
+        IDeserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
+        deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
+        obj = measureDeserializer("JSON", out, deserializer, iterations);
+      }
     }
 
     // YAML
     {
       Path out = ObjectUtils.notNull(tempDir.resolve("out.yaml"));
-      ISerializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz);
-      measureSerializer(obj, "YAML", out, serializer, iterations);
-
-      IDeserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
-      deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
-      measureDeserializer("YAML", out, deserializer, iterations);
+      {
+        IBindingContext context = new DefaultBindingContext();
+        ISerializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz);
+        measureSerializer(obj, "YAML", out, serializer, iterations);
+      }
+      {
+        IBindingContext context = new DefaultBindingContext();
+        IDeserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
+        deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
+        measureDeserializer("YAML", out, deserializer, iterations);
+      }
     }
   }
 
