@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib;
 
-import gov.nist.secauto.metaschema.core.model.xml.IModulePostProcessor;
+import gov.nist.secauto.metaschema.core.model.IModuleLoader;
 import gov.nist.secauto.metaschema.databind.DefaultBindingContext;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
@@ -63,7 +63,7 @@ public class OscalBindingContext
    * @param modulePostProcessors
    *          a list of module post processors to call after loading a module
    */
-  public OscalBindingContext(@NonNull List<IModulePostProcessor> modulePostProcessors) {
+  public OscalBindingContext(@NonNull List<IModuleLoader.IModulePostProcessor> modulePostProcessors) {
     super(modulePostProcessors);
     registerBindingMatcher(Catalog.class);
     registerBindingMatcher(Profile.class);

@@ -44,7 +44,7 @@ import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.metaschema.databind.io.BindingException;
 import gov.nist.secauto.metaschema.databind.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.databind.io.IBoundLoader;
-import gov.nist.secauto.metaschema.databind.model.IBoundDefinitionAssembly;
+import gov.nist.secauto.metaschema.databind.model.IBoundDefinitionModelAssembly;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.OscalUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
@@ -269,7 +269,7 @@ public class ProfileResolver {
 
     return INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IBoundDefinitionAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
+            (IBoundDefinitionModelAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
   }
@@ -550,7 +550,7 @@ public class ProfileResolver {
     // rebuild the document, since the paths have changed
     IDocumentNodeItem resolvedCatalogItem = INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IBoundDefinitionAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
+            (IBoundDefinitionModelAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
 
@@ -562,7 +562,7 @@ public class ProfileResolver {
       throws ProfileResolutionException {
     IDocumentNodeItem resolvedCatalogDocument = INodeItemFactory.instance().newDocumentNodeItem(
         ObjectUtils.requireNonNull(
-            (IBoundDefinitionAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
+            (IBoundDefinitionModelAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
         ObjectUtils.requireNonNull(profileItem.getBaseUri()),
         resolvedCatalog);
 
