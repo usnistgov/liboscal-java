@@ -124,7 +124,7 @@
 
 		<dependency.metaschema-framework.version>0.12.2</dependency.metaschema-framework.version>
 
-		<dependency.auto-service.version>1.0.1</dependency.auto-service.version>
+		<dependency.auto-service.version>1.1.1</dependency.auto-service.version>
 		<dependency.commons-lang3.version>3.14.0</dependency.commons-lang3.version>
 		<dependency.infinispan.version>13.0.10.Final</dependency.infinispan.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
