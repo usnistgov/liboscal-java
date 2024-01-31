@@ -182,7 +182,8 @@ class ProfileResolutionTests {
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
 
-    // OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog,
+    // OscalBindingContext.instance().newSerializer(Format.YAML,
+    // Catalog.class).serialize(catalog,
     // System.out);
 
     // System.out.println("Pre scrub: " + writer.getBuffer().toString());
@@ -255,5 +256,14 @@ class ProfileResolutionTests {
     Catalog resolvedCatalog = resolveProfile(url);
 
     assertNotNull(resolvedCatalog);
+  }
+
+  @Test
+  void testIssue106Profile() throws IOException, ProfileResolutionException, URISyntaxException {
+    Path profileFile = Paths.get(JUNIT_TEST_PATH, "content/issue106-profile.xml");
+    assert profileFile != null;
+    Catalog catalog = resolveProfile(profileFile);
+    assertNotNull(catalog);
+    assertEquals("1.1.1", catalog.getMetadata().getOscalVersion());
   }
 }
