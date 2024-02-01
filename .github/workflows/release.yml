@@ -12,7 +12,7 @@ jobs:
       actions: read
       contents: write
     steps:
-    - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
         token: ${{ github.token }}
         submodules: recursive
@@ -25,7 +25,7 @@ jobs:
       with:
         maven-version: 3.9.3
     - name: Set up JDK 11
-      uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2
+      uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
       with:
         java-version: 11
         distribution: 'temurin'
