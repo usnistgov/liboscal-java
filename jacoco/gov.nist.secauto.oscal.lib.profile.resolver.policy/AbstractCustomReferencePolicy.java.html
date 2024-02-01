@@ -57,10 +57,11 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
   }
 
   /**
-   * Get the possible item types that can be searched in the order in which the identifier will be
-   * looked up.
+   * Get the possible item types that can be searched in the order in which the
+   * identifier will be looked up.
    * &lt;p&gt;
-   * The {@code reference} object is provided to allow for context sensitive item type tailoring.
+   * The {@code reference} object is provided to allow for context sensitive item
+   * type tailoring.
    *
    * @param reference
    *          the reference object
@@ -79,7 +80,8 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
    * @param item
    *          the referenced item
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
+   *          the reference visitor state, which can be used for further
+   *          processing
    * @return {@code true} if the hit was handled or {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
@@ -90,27 +92,27 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
 
-<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (visitorContext.getIndexer().isSelected(item)) {</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">      if (!visitorContext.isResolved(item)) {</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">    if (visitorContext.getIndexer().isSelected(item)) {</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">      if (!visitorContext.isResolved(item)) {</span>
         // this referenced item will need to be resolved
-<span class="fc" id="L96">        ReferenceCountingVisitor.instance().resolveEntity(item, visitorContext);</span>
+<span class="fc" id="L98">        ReferenceCountingVisitor.instance().resolveEntity(item, visitorContext);</span>
       }
-<span class="fc" id="L98">      item.incrementReferenceCount();</span>
+<span class="fc" id="L100">      item.incrementReferenceCount();</span>
 
-<span class="fc bfc" id="L100" title="All 2 branches covered.">      if (item.isIdentifierReassigned()) {</span>
-<span class="fc" id="L101">        String referenceText = ObjectUtils.notNull(getReferenceText(reference));</span>
-<span class="fc" id="L102">        String newReferenceText = getIdentifierParser().update(referenceText, item.getIdentifier());</span>
-<span class="fc" id="L103">        setReferenceText(reference, newReferenceText);</span>
-<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (LOGGER.isDebugEnabled()) {</span>
-<span class="fc" id="L105">          LOGGER.atDebug().log(&quot;Mapping {} reference '{}' to '{}'.&quot;, item.getItemType().name(), referenceText,</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">      if (item.isIdentifierReassigned()) {</span>
+<span class="fc" id="L103">        String referenceText = ObjectUtils.notNull(getReferenceText(reference));</span>
+<span class="fc" id="L104">        String newReferenceText = getIdentifierParser().update(referenceText, item.getIdentifier());</span>
+<span class="fc" id="L105">        setReferenceText(reference, newReferenceText);</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L107">          LOGGER.atDebug().log(&quot;Mapping {} reference '{}' to '{}'.&quot;, item.getItemType().name(), referenceText,</span>
               newReferenceText);
         }
       }
-<span class="fc" id="L109">      handleSelected(contextItem, reference, item, visitorContext);</span>
+<span class="fc" id="L111">      handleSelected(contextItem, reference, item, visitorContext);</span>
     } else {
-<span class="fc" id="L111">      handleUnselected(contextItem, reference, item, visitorContext);</span>
+<span class="fc" id="L113">      handleUnselected(contextItem, reference, item, visitorContext);</span>
     }
-<span class="fc" id="L113">    return true;</span>
+<span class="fc" id="L115">    return true;</span>
   }
 
   /**
@@ -135,7 +137,7 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // do nothing by default
-<span class="nc" id="L138">  }</span>
+<span class="nc" id="L140">  }</span>
 
   /**
    * Handle an index hit against an item related to an selected control.
@@ -149,7 +151,8 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
    * @param item
    *          the referenced item
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
+   *          the reference visitor state, which can be used for further
+   *          processing
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
    */
@@ -159,11 +162,11 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // do nothing by default
-<span class="fc" id="L162">  }</span>
+<span class="fc" id="L165">  }</span>
 
   /**
-   * Handle an index miss for a reference. This occurs when the referenced item was not found in the
-   * index.
+   * Handle an index miss for a reference. This occurs when the referenced item
+   * was not found in the index.
    * &lt;p&gt;
    * Subclasses can override this method to perform extra processing.
    *
@@ -176,8 +179,10 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
    * @param identifier
    *          the parsed identifier
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
-   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   *          the reference visitor state, which can be used for further
+   *          processing
+   * @return {@code true} if the reference is handled by this method or
+   *         {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index miss
    */
@@ -188,12 +193,13 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
       @NonNull String identifier,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // provide no handler by default
-<span class="nc" id="L191">    return false;</span>
+<span class="nc" id="L196">    return false;</span>
   }
 
   /**
-   * Handle the case where the identifier was not a syntax match for an expected identifier. This can
-   * occur when the reference is malformed, using an unrecognized syntax.
+   * Handle the case where the identifier was not a syntax match for an expected
+   * identifier. This can occur when the reference is malformed, using an
+   * unrecognized syntax.
    * &lt;p&gt;
    * Subclasses can override this method to perform extra processing.
    *
@@ -202,8 +208,10 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
    * @param reference
    *          the identifier reference object generating the hit
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
-   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   *          the reference visitor state, which can be used for further
+   *          processing
+   * @return {@code true} if the reference is handled by this method or
+   *         {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index miss due to a non match
    */
@@ -212,7 +220,7 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
       @NonNull TYPE reference,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // provide no handler by default
-<span class="nc" id="L215">    return false;</span>
+<span class="nc" id="L223">    return false;</span>
   }
 
   @Override
@@ -220,11 +228,12 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
       @NonNull IRequiredValueModelNodeItem contextItem,
       @NonNull TYPE type,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
-<span class="fc" id="L223">    String referenceText = getReferenceText(type);</span>
+<span class="fc" id="L231">    String referenceText = getReferenceText(type);</span>
 
-    // if the reference text does not exist, ignore the reference; otherwise, handle it.
-<span class="pc bpc" id="L226" title="1 of 2 branches missed.">    return referenceText == null</span>
-<span class="pc bpc" id="L227" title="1 of 2 branches missed.">        || handleIdentifier(contextItem, type, getIdentifierParser().parse(referenceText), visitorContext);</span>
+    // if the reference text does not exist, ignore the reference; otherwise, handle
+    // it.
+<span class="pc bpc" id="L235" title="1 of 2 branches missed.">    return referenceText == null</span>
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">        || handleIdentifier(contextItem, type, getIdentifierParser().parse(referenceText), visitorContext);</span>
   }
 
   /**
@@ -237,8 +246,10 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
    * @param identifier
    *          the identifier
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
-   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   *          the reference visitor state, which can be used for further
+   *          processing
+   * @return {@code true} if the reference is handled by this method or
+   *         {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the reference
    */
@@ -248,27 +259,27 @@ public abstract class AbstractCustomReferencePolicy&lt;TYPE&gt; implements ICust
       @Nullable String identifier,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     boolean retval;
-<span class="fc bfc" id="L251" title="All 2 branches covered.">    if (identifier == null) {</span>
-<span class="fc" id="L252">      retval = handleIdentifierNonMatch(contextItem, type, visitorContext);</span>
+<span class="fc bfc" id="L262" title="All 2 branches covered.">    if (identifier == null) {</span>
+<span class="fc" id="L263">      retval = handleIdentifierNonMatch(contextItem, type, visitorContext);</span>
     } else {
-<span class="fc" id="L254">      List&lt;IEntityItem.ItemType&gt; itemTypes = getEntityItemTypes(type);</span>
-<span class="fc" id="L255">      IEntityItem item = null;</span>
-<span class="pc bpc" id="L256" title="1 of 2 branches missed.">      for (IEntityItem.ItemType itemType : itemTypes) {</span>
-<span class="pc bpc" id="L257" title="1 of 2 branches missed.">        assert itemType != null;</span>
+<span class="fc" id="L265">      List&lt;IEntityItem.ItemType&gt; itemTypes = getEntityItemTypes(type);</span>
+<span class="fc" id="L266">      IEntityItem item = null;</span>
+<span class="pc bpc" id="L267" title="1 of 2 branches missed.">      for (IEntityItem.ItemType itemType : itemTypes) {</span>
+<span class="pc bpc" id="L268" title="1 of 2 branches missed.">        assert itemType != null;</span>
 
-<span class="fc" id="L259">        item = visitorContext.getEntity(itemType, identifier);</span>
-<span class="fc bfc" id="L260" title="All 2 branches covered.">        if (item != null) {</span>
-<span class="fc" id="L261">          break;</span>
+<span class="fc" id="L270">        item = visitorContext.getEntity(itemType, identifier);</span>
+<span class="fc bfc" id="L271" title="All 2 branches covered.">        if (item != null) {</span>
+<span class="fc" id="L272">          break;</span>
         }
-<span class="fc" id="L263">      }</span>
+<span class="fc" id="L274">      }</span>
 
-<span class="pc bpc" id="L265" title="1 of 2 branches missed.">      if (item == null) {</span>
-<span class="nc" id="L266">        retval = handleIndexMiss(contextItem, type, itemTypes, identifier, visitorContext);</span>
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">      if (item == null) {</span>
+<span class="nc" id="L277">        retval = handleIndexMiss(contextItem, type, itemTypes, identifier, visitorContext);</span>
       } else {
-<span class="fc" id="L268">        retval = handleIndexHit(contextItem, type, item, visitorContext);</span>
+<span class="fc" id="L279">        retval = handleIndexHit(contextItem, type, item, visitorContext);</span>
       }
     }
-<span class="fc" id="L271">    return retval;</span>
+<span class="fc" id="L282">    return retval;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

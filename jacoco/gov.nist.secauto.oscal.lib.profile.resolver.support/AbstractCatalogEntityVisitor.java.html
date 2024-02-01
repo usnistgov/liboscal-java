@@ -42,7 +42,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 /**
  * Visits a catalog document and its children as designated.
  * &lt;p&gt;
- * This implementation is stateless. The {@code T} parameter can be used to convey state as needed.
+ * This implementation is stateless. The {@code T} parameter can be used to
+ * convey state as needed.
  *
  * @param &lt;T&gt;
  *          the state type
@@ -52,21 +53,21 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
     extends AbstractCatalogVisitor&lt;T, R&gt; {
   @NonNull
-<span class="fc" id="L55">  public static final MetapathExpression CHILD_PART_METAPATH</span>
-<span class="fc" id="L56">      = MetapathExpression.compile(&quot;part|part//part&quot;);</span>
+<span class="fc" id="L56">  public static final MetapathExpression CHILD_PART_METAPATH</span>
+<span class="fc" id="L57">      = MetapathExpression.compile(&quot;part|part//part&quot;);</span>
   @NonNull
-<span class="fc" id="L58">  private static final MetapathExpression BACK_MATTER_RESOURCES_METAPATH</span>
-<span class="fc" id="L59">      = MetapathExpression.compile(&quot;back-matter/resource&quot;);</span>
+<span class="fc" id="L59">  private static final MetapathExpression BACK_MATTER_RESOURCES_METAPATH</span>
+<span class="fc" id="L60">      = MetapathExpression.compile(&quot;back-matter/resource&quot;);</span>
   @NonNull
-<span class="fc" id="L61">  private static final Set&lt;IEntityItem.ItemType&gt; GROUP_CONTAINER_TYPES</span>
-<span class="fc" id="L62">      = ObjectUtils.notNull(EnumSet.of(</span>
+<span class="fc" id="L62">  private static final Set&lt;IEntityItem.ItemType&gt; GROUP_CONTAINER_TYPES</span>
+<span class="fc" id="L63">      = ObjectUtils.notNull(EnumSet.of(</span>
           IEntityItem.ItemType.GROUP,
           IEntityItem.ItemType.CONTROL,
           IEntityItem.ItemType.PARAMETER,
           IEntityItem.ItemType.PART));
   @NonNull
-<span class="fc" id="L68">  private static final Set&lt;IEntityItem.ItemType&gt; CONTROL_CONTAINER_TYPES</span>
-<span class="fc" id="L69">      = ObjectUtils.notNull(EnumSet.of(</span>
+<span class="fc" id="L69">  private static final Set&lt;IEntityItem.ItemType&gt; CONTROL_CONTAINER_TYPES</span>
+<span class="fc" id="L70">      = ObjectUtils.notNull(EnumSet.of(</span>
           IEntityItem.ItemType.CONTROL,
           IEntityItem.ItemType.PARAMETER,
           IEntityItem.ItemType.PART));
@@ -74,107 +75,108 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
   private final Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit;
 
   /**
-   * Create a new visitor that will visit the item types identified by {@code itemTypesToVisit}.
+   * Create a new visitor that will visit the item types identified by
+   * {@code itemTypesToVisit}.
    *
    * @param itemTypesToVisit
    *          the item type the visitor will visit
    */
-<span class="fc" id="L82">  public AbstractCatalogEntityVisitor(@NonNull Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit) {</span>
-<span class="fc" id="L83">    this.itemTypesToVisit = CollectionUtil.unmodifiableSet(itemTypesToVisit);</span>
-<span class="fc" id="L84">  }</span>
+<span class="fc" id="L84">  public AbstractCatalogEntityVisitor(@NonNull Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit) {</span>
+<span class="fc" id="L85">    this.itemTypesToVisit = CollectionUtil.unmodifiableSet(itemTypesToVisit);</span>
+<span class="fc" id="L86">  }</span>
 
   public Set&lt;IEntityItem.ItemType&gt; getItemTypesToVisit() {
-<span class="fc" id="L87">    return CollectionUtil.unmodifiableSet(itemTypesToVisit);</span>
+<span class="fc" id="L89">    return CollectionUtil.unmodifiableSet(itemTypesToVisit);</span>
   }
 
   protected boolean isVisitedItemType(@NonNull IEntityItem.ItemType type) {
-<span class="fc" id="L91">    return itemTypesToVisit.contains(type);</span>
+<span class="fc" id="L93">    return itemTypesToVisit.contains(type);</span>
   }
 
   @Override
   public R visitCatalog(IDocumentNodeItem catalogDocument, T state) {
-<span class="fc" id="L96">    R result = super.visitCatalog(catalogDocument, state);</span>
+<span class="fc" id="L98">    R result = super.visitCatalog(catalogDocument, state);</span>
 
-<span class="fc" id="L98">    IRootAssemblyNodeItem root = catalogDocument.getRootAssemblyNodeItem();</span>
-<span class="fc" id="L99">    visitMetadata(root, state);</span>
-<span class="fc" id="L100">    visitBackMatter(root, state);</span>
-<span class="fc" id="L101">    return result;</span>
+<span class="fc" id="L100">    IRootAssemblyNodeItem root = catalogDocument.getRootAssemblyNodeItem();</span>
+<span class="fc" id="L101">    visitMetadata(root, state);</span>
+<span class="fc" id="L102">    visitBackMatter(root, state);</span>
+<span class="fc" id="L103">    return result;</span>
   }
 
   @Override
   protected R visitGroupContainer(IRequiredValueModelNodeItem catalogOrGroup, R initialResult, T state) {
     R retval;
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">    if (Collections.disjoint(getItemTypesToVisit(), GROUP_CONTAINER_TYPES)) {</span>
-<span class="nc" id="L108">      retval = initialResult;</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">    if (Collections.disjoint(getItemTypesToVisit(), GROUP_CONTAINER_TYPES)) {</span>
+<span class="nc" id="L110">      retval = initialResult;</span>
     } else {
-<span class="fc" id="L110">      retval = super.visitGroupContainer(catalogOrGroup, initialResult, state);</span>
+<span class="fc" id="L112">      retval = super.visitGroupContainer(catalogOrGroup, initialResult, state);</span>
     }
-<span class="fc" id="L112">    return retval;</span>
+<span class="fc" id="L114">    return retval;</span>
   }
 
   @Override
   protected R visitControlContainer(IRequiredValueModelNodeItem catalogOrGroupOrControl, R initialResult, T state) {
     R retval;
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">    if (Collections.disjoint(getItemTypesToVisit(), CONTROL_CONTAINER_TYPES)) {</span>
-<span class="nc" id="L119">      retval = initialResult;</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">    if (Collections.disjoint(getItemTypesToVisit(), CONTROL_CONTAINER_TYPES)) {</span>
+<span class="nc" id="L121">      retval = initialResult;</span>
     } else {
       // first descend to all control container children
-<span class="fc" id="L122">      retval = super.visitControlContainer(catalogOrGroupOrControl, initialResult, state);</span>
+<span class="fc" id="L124">      retval = super.visitControlContainer(catalogOrGroupOrControl, initialResult, state);</span>
 
       // handle parameters
-<span class="fc bfc" id="L125" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.PARAMETER)) {</span>
-<span class="fc" id="L126">        retval = catalogOrGroupOrControl.getModelItemsByName(&quot;param&quot;).stream()</span>
-<span class="fc" id="L127">            .map(paramItem -&gt; {</span>
-<span class="fc" id="L128">              return visitParameter(ObjectUtils.requireNonNull(paramItem), catalogOrGroupOrControl, state);</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.PARAMETER)) {</span>
+<span class="fc" id="L128">        retval = catalogOrGroupOrControl.getModelItemsByName(&quot;param&quot;).stream()</span>
+<span class="fc" id="L129">            .map(paramItem -&gt; {</span>
+<span class="fc" id="L130">              return visitParameter(ObjectUtils.requireNonNull(paramItem), catalogOrGroupOrControl, state);</span>
             })
-<span class="fc" id="L130">            .reduce(retval, (first, second) -&gt; aggregateResults(first, second, state));</span>
+<span class="fc" id="L132">            .reduce(retval, (first, second) -&gt; aggregateResults(first, second, state));</span>
       } // TODO Auto-generated method stub
     }
-<span class="fc" id="L133">    return retval;</span>
+<span class="fc" id="L135">    return retval;</span>
   }
 
   protected void visitParts(@NonNull IRequiredValueModelNodeItem groupOrControlItem, T state) {
     // handle parts
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
-<span class="fc" id="L139">      CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()</span>
-<span class="fc" id="L140">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
-<span class="fc" id="L141">          .forEachOrdered(partItem -&gt; {</span>
-<span class="fc" id="L142">            visitPart(ObjectUtils.requireNonNull(partItem), groupOrControlItem, state);</span>
-<span class="fc" id="L143">          });</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
+<span class="fc" id="L141">      CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()</span>
+<span class="fc" id="L142">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
+<span class="fc" id="L143">          .forEachOrdered(partItem -&gt; {</span>
+<span class="fc" id="L144">            visitPart(ObjectUtils.requireNonNull(partItem), groupOrControlItem, state);</span>
+<span class="fc" id="L145">          });</span>
     }
-<span class="fc" id="L145">  }</span>
+<span class="fc" id="L147">  }</span>
 
   @Override
   protected R visitGroupInternal(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
-<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
-<span class="fc" id="L150">      visitParts(item, state);</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
+<span class="fc" id="L152">      visitParts(item, state);</span>
     }
 
-<span class="fc" id="L153">    R retval = childResult;</span>
-<span class="fc bfc" id="L154" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.GROUP)) {</span>
-<span class="fc" id="L155">      retval = visitGroup(item, retval, state);</span>
+<span class="fc" id="L155">    R retval = childResult;</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.GROUP)) {</span>
+<span class="fc" id="L157">      retval = visitGroup(item, retval, state);</span>
     }
-<span class="fc" id="L157">    return retval;</span>
+<span class="fc" id="L159">    return retval;</span>
   }
 
   @Override
   protected R visitControlInternal(IRequiredValueModelNodeItem item, R childResult, T state) {
-<span class="fc bfc" id="L162" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
-<span class="fc" id="L163">      visitParts(item, state);</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</span>
+<span class="fc" id="L165">      visitParts(item, state);</span>
     }
 
-<span class="fc" id="L166">    R retval = childResult;</span>
-<span class="pc bpc" id="L167" title="1 of 2 branches missed.">    if (isVisitedItemType(IEntityItem.ItemType.CONTROL)) {</span>
-<span class="fc" id="L168">      retval = visitControl(item, retval, state);</span>
+<span class="fc" id="L168">    R retval = childResult;</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">    if (isVisitedItemType(IEntityItem.ItemType.CONTROL)) {</span>
+<span class="fc" id="L170">      retval = visitControl(item, retval, state);</span>
     }
-<span class="fc" id="L170">    return retval;</span>
+<span class="fc" id="L172">    return retval;</span>
   }
 
   /**
    * Called when visiting a parameter.
    * &lt;p&gt;
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
    *          the Metapath item for the parameter
@@ -189,14 +191,14 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
       @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,
       T state) {
     // do nothing
-<span class="nc" id="L192">    return newDefaultResult(state);</span>
+<span class="nc" id="L194">    return newDefaultResult(state);</span>
   }
 
   /**
    * Called when visiting a part.
    * &lt;p&gt;
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
    *          the Metapath item for the part
@@ -210,7 +212,7 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
       @NonNull IRequiredValueModelNodeItem groupOrControl,
       T state) {
     // do nothing
-<span class="nc" id="L213">  }</span>
+<span class="nc" id="L215">  }</span>
 
   /**
    * Called when visiting the &quot;metadata&quot; section of an OSCAL document.
@@ -223,35 +225,36 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
    *          the calling context information
    */
   protected void visitMetadata(@NonNull IRootAssemblyNodeItem rootItem, T state) {
-<span class="fc" id="L226">    rootItem.getModelItemsByName(&quot;metadata&quot;).forEach(metadataItem -&gt; {</span>
-<span class="fc bfc" id="L227" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.ROLE)) {</span>
-<span class="fc" id="L228">        metadataItem.getModelItemsByName(&quot;role&quot;).forEach(roleItem -&gt; {</span>
-<span class="fc" id="L229">          visitRole(ObjectUtils.requireNonNull(roleItem), metadataItem, state);</span>
-<span class="fc" id="L230">        });</span>
+<span class="fc" id="L228">    rootItem.getModelItemsByName(&quot;metadata&quot;).forEach(metadataItem -&gt; {</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.ROLE)) {</span>
+<span class="fc" id="L230">        metadataItem.getModelItemsByName(&quot;role&quot;).forEach(roleItem -&gt; {</span>
+<span class="fc" id="L231">          visitRole(ObjectUtils.requireNonNull(roleItem), metadataItem, state);</span>
+<span class="fc" id="L232">        });</span>
       }
 
-<span class="fc bfc" id="L233" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.LOCATION)) {</span>
-<span class="fc" id="L234">        metadataItem.getModelItemsByName(&quot;location&quot;).forEach(locationItem -&gt; {</span>
-<span class="nc" id="L235">          visitLocation(ObjectUtils.requireNonNull(locationItem), metadataItem, state);</span>
-<span class="nc" id="L236">        });</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.LOCATION)) {</span>
+<span class="fc" id="L236">        metadataItem.getModelItemsByName(&quot;location&quot;).forEach(locationItem -&gt; {</span>
+<span class="nc" id="L237">          visitLocation(ObjectUtils.requireNonNull(locationItem), metadataItem, state);</span>
+<span class="nc" id="L238">        });</span>
       }
 
-<span class="fc bfc" id="L239" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.PARTY)) {</span>
-<span class="fc" id="L240">        metadataItem.getModelItemsByName(&quot;party&quot;).forEach(partyItem -&gt; {</span>
-<span class="fc" id="L241">          visitParty(ObjectUtils.requireNonNull(partyItem), metadataItem, state);</span>
-<span class="fc" id="L242">        });</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">      if (isVisitedItemType(IEntityItem.ItemType.PARTY)) {</span>
+<span class="fc" id="L242">        metadataItem.getModelItemsByName(&quot;party&quot;).forEach(partyItem -&gt; {</span>
+<span class="fc" id="L243">          visitParty(ObjectUtils.requireNonNull(partyItem), metadataItem, state);</span>
+<span class="fc" id="L244">        });</span>
       }
-<span class="fc" id="L244">    });</span>
-<span class="fc" id="L245">  }</span>
+<span class="fc" id="L246">    });</span>
+<span class="fc" id="L247">  }</span>
 
   /**
    * Called when visiting a role in the &quot;metadata&quot; section of an OSCAL document.
    * &lt;p&gt;
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
-   *          the role Metaschema node item which is a child of the &quot;metadata&quot; node
+   *          the role Metaschema node item which is a child of the &quot;metadata&quot;
+   *          node
    * @param metadataItem
    *          the &quot;metadata&quot; Metaschema node item containing the role
    * @param state
@@ -262,16 +265,18 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
       @NonNull IRequiredValueModelNodeItem metadataItem,
       T state) {
     // do nothing
-<span class="nc" id="L265">  }</span>
+<span class="nc" id="L268">  }</span>
 
   /**
-   * Called when visiting a location in the &quot;metadata&quot; section of an OSCAL document.
+   * Called when visiting a location in the &quot;metadata&quot; section of an OSCAL
+   * document.
    * &lt;p&gt;
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
-   *          the location Metaschema node item which is a child of the &quot;metadata&quot; node
+   *          the location Metaschema node item which is a child of the &quot;metadata&quot;
+   *          node
    * @param metadataItem
    *          the &quot;metadata&quot; Metaschema node item containing the location
    * @param state
@@ -282,16 +287,17 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
       @NonNull IRequiredValueModelNodeItem metadataItem,
       T state) {
     // do nothing
-<span class="nc" id="L285">  }</span>
+<span class="nc" id="L290">  }</span>
 
   /**
    * Called when visiting a party in the &quot;metadata&quot; section of an OSCAL document.
    * &lt;p&gt;
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
-   *          the party Metaschema node item which is a child of the &quot;metadata&quot; node
+   *          the party Metaschema node item which is a child of the &quot;metadata&quot;
+   *          node
    * @param metadataItem
    *          the &quot;metadata&quot; Metaschema node item containing the party
    * @param state
@@ -302,7 +308,7 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
       @NonNull IRequiredValueModelNodeItem metadataItem,
       T state) {
     // do nothing
-<span class="nc" id="L305">  }</span>
+<span class="nc" id="L311">  }</span>
 
   /**
    * Called when visiting the &quot;back-matter&quot; section of an OSCAL document.
@@ -315,23 +321,25 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
    *          the calling context information
    */
   protected void visitBackMatter(@NonNull IRootAssemblyNodeItem rootItem, T state) {
-<span class="fc bfc" id="L318" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.RESOURCE)) {</span>
-<span class="fc" id="L319">      BACK_MATTER_RESOURCES_METAPATH.evaluate(rootItem).asStream()</span>
-<span class="fc" id="L320">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
-<span class="fc" id="L321">          .forEachOrdered(resourceItem -&gt; {</span>
-<span class="fc" id="L322">            visitResource(ObjectUtils.requireNonNull(resourceItem), rootItem, state);</span>
-<span class="fc" id="L323">          });</span>
+<span class="fc bfc" id="L324" title="All 2 branches covered.">    if (isVisitedItemType(IEntityItem.ItemType.RESOURCE)) {</span>
+<span class="fc" id="L325">      BACK_MATTER_RESOURCES_METAPATH.evaluate(rootItem).asStream()</span>
+<span class="fc" id="L326">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</span>
+<span class="fc" id="L327">          .forEachOrdered(resourceItem -&gt; {</span>
+<span class="fc" id="L328">            visitResource(ObjectUtils.requireNonNull(resourceItem), rootItem, state);</span>
+<span class="fc" id="L329">          });</span>
     }
-<span class="fc" id="L325">  }</span>
+<span class="fc" id="L331">  }</span>
 
   /**
-   * Called when visiting a resource in the &quot;back-matter&quot; section of an OSCAL document.
+   * Called when visiting a resource in the &quot;back-matter&quot; section of an OSCAL
+   * document.
    * &lt;p&gt;
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
-   *          the resource Metaschema node item which is a child of the &quot;metadata&quot; node
+   *          the resource Metaschema node item which is a child of the &quot;metadata&quot;
+   *          node
    * @param backMatterItem
    *          the resource Metaschema node item containing the party
    * @param state
@@ -342,6 +350,6 @@ public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;
       @NonNull IRootAssemblyNodeItem backMatterItem,
       T state) {
     // do nothing
-<span class="nc" id="L345">  }</span>
+<span class="nc" id="L353">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

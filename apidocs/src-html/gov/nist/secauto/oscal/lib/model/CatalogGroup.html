@@ -47,7 +47,7 @@
 <span class="sourceLineNo">038</span><a id="line.38">@ValueConstraints(</a>
 <span class="sourceLineNo">039</span><a id="line.39">    allowedValues = {</a>
 <span class="sourceLineNo">040</span><a id="line.40">        @AllowedValues(level = IConstraint.Level.ERROR, target = "prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = {@AllowedValue(value = "label", description = "A human-readable label for the parent context, which may be rendered in place of the actual identifier for some use cases."), @AllowedValue(value = "sort-id", description = "An alternative identifier, whose value is easily sortable among other such values in the document."), @AllowedValue(value = "alt-identifier", description = "An alternate or aliased identifier for the parent context.")}),</a>
-<span class="sourceLineNo">041</span><a id="line.41">        @AllowedValues(level = IConstraint.Level.ERROR, target = "part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = @AllowedValue(value = "overview", description = "An introduction to a control or a group of controls."))</a>
+<span class="sourceLineNo">041</span><a id="line.41">        @AllowedValues(level = IConstraint.Level.ERROR, target = "part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name", values = {@AllowedValue(value = "overview", description = "An introduction to a control or a group of controls."), @AllowedValue(value = "instruction", description = "Information providing directions for a control or a group of controls.")})</a>
 <span class="sourceLineNo">042</span><a id="line.42">    }</a>
 <span class="sourceLineNo">043</span><a id="line.43">)</a>
 <span class="sourceLineNo">044</span><a id="line.44">public class CatalogGroup extends AbstractCatalogGroup {</a>

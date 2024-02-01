@@ -76,8 +76,8 @@ import edu.umd.cs.findbugs.annotations.Nullable;
   }
 
   /**
-   * Keep entities that have a reference count greater than zero or are required to be kept based on
-   * the &quot;keep&quot;=&quot;always property.
+   * Keep entities that have a reference count greater than zero or are required
+   * to be kept based on the &quot;keep&quot;=&quot;always property.
    *
    * @param entities
    *          the entity items to filter
@@ -88,8 +88,8 @@ import edu.umd.cs.findbugs.annotations.Nullable;
   }
 
   /**
-   * Keep entities that have a reference count of zero or are not required to be kept based on the
-   * &quot;keep&quot;=&quot;always property.
+   * Keep entities that have a reference count of zero or are not required to be
+   * kept based on the &quot;keep&quot;=&quot;always property.
    *
    * @param entities
    *          the entity items to filter
@@ -100,65 +100,68 @@ import edu.umd.cs.findbugs.annotations.Nullable;
   }
 
   /**
-   * Generates a stream of distinct items that have a reference count greater than zero or are
-   * required to be kept based on the &quot;keep&quot;=&quot;always property.
+   * Generates a stream of distinct items that have a reference count greater than
+   * zero or are required to be kept based on the &quot;keep&quot;=&quot;always property.
    * &lt;p&gt;
-   * Distinct items are determined based on the item's key using the provided {@code keyMapper}.
+   * Distinct items are determined based on the item's key using the provided
+   * {@code keyMapper}.
    *
    * @param &lt;T&gt;
    *          the item type
    * @param &lt;K&gt;
    *          the key type
    * @param resolvedItems
-   *          a series of previously resolved items to add to prepend to the stream
+   *          a series of previously resolved items to add to prepend to the
+   *          stream
    * @param importedEntityItems
    *          a collection of new items to filter then append to the stream
    * @param keyMapper
    *          the key mapping function to determine the item's key
-   * @return the resulting series of items with duplicate items with the same key removed
+   * @return the resulting series of items with duplicate items with the same key
+   *         removed
    */
   // TODO: Is this the right name for this method?
   static &lt;T, K&gt; Stream&lt;T&gt; filterDistinct(
       @NonNull Stream&lt;T&gt; resolvedItems,
       @NonNull Collection&lt;IEntityItem&gt; importedEntityItems,
       @NonNull Function&lt;? super T, ? extends K&gt; keyMapper) {
-<span class="fc" id="L125">    @SuppressWarnings(&quot;unchecked&quot;) Stream&lt;T&gt; importedStream = getReferencedEntitiesAsStream(importedEntityItems)</span>
-<span class="fc" id="L126">        .map(entity -&gt; (T) entity.getInstanceValue());</span>
+<span class="fc" id="L128">    @SuppressWarnings(&quot;unchecked&quot;) Stream&lt;T&gt; importedStream = getReferencedEntitiesAsStream(importedEntityItems)</span>
+<span class="fc" id="L129">        .map(entity -&gt; (T) entity.getInstanceValue());</span>
 
-<span class="fc" id="L128">    return CustomCollectors.distinctByKey(</span>
-<span class="fc" id="L129">        ObjectUtils.notNull(Stream.concat(resolvedItems, importedStream)),</span>
+<span class="fc" id="L131">    return CustomCollectors.distinctByKey(</span>
+<span class="fc" id="L132">        ObjectUtils.notNull(Stream.concat(resolvedItems, importedStream)),</span>
         keyMapper,
-<span class="nc" id="L131">        (key, value1, value2) -&gt; value2);</span>
+<span class="nc" id="L134">        (key, value1, value2) -&gt; value2);</span>
   }
 
   static void logIndex(@NonNull IIndexer indexer, @NonNull Level logLevel) {
-<span class="fc" id="L135">    Logger logger = LogManager.getLogger();</span>
+<span class="fc" id="L138">    Logger logger = LogManager.getLogger();</span>
 
-<span class="fc" id="L137">    Set&lt;INodeItem&gt; indexedItems = new HashSet&lt;&gt;();</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">    if (logger.isEnabled(logLevel)) {</span>
-<span class="fc bfc" id="L139" title="All 2 branches covered.">      for (ItemType itemType : ItemType.values()) {</span>
-<span class="pc bpc" id="L140" title="2 of 4 branches missed.">        assert itemType != null;</span>
-<span class="fc bfc" id="L141" title="All 2 branches covered.">        for (IEntityItem item : indexer.getEntitiesByItemType(itemType)) {</span>
-<span class="fc" id="L142">          INodeItem nodeItem = item.getInstance();</span>
-<span class="fc" id="L143">          indexedItems.add(nodeItem);</span>
-<span class="fc" id="L144">          logger.atLevel(logLevel).log(&quot;{} {}: selected: {}, reference count: {}&quot;,</span>
-<span class="fc" id="L145">              itemType.name(),</span>
-<span class="pc bpc" id="L146" title="1 of 2 branches missed.">              item.isIdentifierReassigned() ? item.getIdentifier() + &quot;(&quot; + item.getOriginalIdentifier() + &quot;)&quot;</span>
-<span class="pc" id="L147">                  : item.getIdentifier(),</span>
-<span class="fc" id="L148">              indexer.getSelectionStatus(nodeItem),</span>
-<span class="fc" id="L149">              item.getReferenceCount());</span>
-<span class="fc" id="L150">        }</span>
+<span class="fc" id="L140">    Set&lt;INodeItem&gt; indexedItems = new HashSet&lt;&gt;();</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">    if (logger.isEnabled(logLevel)) {</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">      for (ItemType itemType : ItemType.values()) {</span>
+<span class="pc bpc" id="L143" title="2 of 4 branches missed.">        assert itemType != null;</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        for (IEntityItem item : indexer.getEntitiesByItemType(itemType)) {</span>
+<span class="fc" id="L145">          INodeItem nodeItem = item.getInstance();</span>
+<span class="fc" id="L146">          indexedItems.add(nodeItem);</span>
+<span class="fc" id="L147">          logger.atLevel(logLevel).log(&quot;{} {}: selected: {}, reference count: {}&quot;,</span>
+<span class="fc" id="L148">              itemType.name(),</span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">              item.isIdentifierReassigned() ? item.getIdentifier() + &quot;(&quot; + item.getOriginalIdentifier() + &quot;)&quot;</span>
+<span class="pc" id="L150">                  : item.getIdentifier(),</span>
+<span class="fc" id="L151">              indexer.getSelectionStatus(nodeItem),</span>
+<span class="fc" id="L152">              item.getReferenceCount());</span>
+<span class="fc" id="L153">        }</span>
       }
     }
 
-<span class="fc bfc" id="L154" title="All 2 branches covered.">    for (Map.Entry&lt;INodeItem, SelectionStatus&gt; entry : indexer.getSelectionStatusMap().entrySet()) {</span>
-<span class="fc" id="L155">      INodeItem nodeItem = entry.getKey();</span>
-<span class="fc bfc" id="L156" title="All 2 branches covered.">      if (!indexedItems.contains(nodeItem)) {</span>
-<span class="fc" id="L157">        Object value = nodeItem.getValue();</span>
-<span class="pc bpc" id="L158" title="1 of 2 branches missed.">        logger.atLevel(logLevel).log(&quot;{}: {}&quot;, value == null ? &quot;(null)&quot; : value.getClass().getName(), entry.getValue());</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">    for (Map.Entry&lt;INodeItem, SelectionStatus&gt; entry : indexer.getSelectionStatusMap().entrySet()) {</span>
+<span class="fc" id="L158">      INodeItem nodeItem = entry.getKey();</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">      if (!indexedItems.contains(nodeItem)) {</span>
+<span class="fc" id="L160">        Object value = nodeItem.getValue();</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">        logger.atLevel(logLevel).log(&quot;{}: {}&quot;, value == null ? &quot;(null)&quot; : value.getClass().getName(), entry.getValue());</span>
       }
-<span class="fc" id="L160">    }</span>
-<span class="fc" id="L161">  }</span>
+<span class="fc" id="L163">    }</span>
+<span class="fc" id="L164">  }</span>
 
   @NonNull
   IEntityItem addRole(@NonNull IRequiredValueModelNodeItem role);
@@ -189,11 +192,12 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 
   @Nullable
   default IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull UUID identifier) {
-<span class="nc" id="L192">    return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);</span>
+<span class="nc" id="L195">    return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);</span>
   }
 
   /**
-   * Lookup an item of the given {@code itemType} having the given {@code identifier}.
+   * Lookup an item of the given {@code itemType} having the given
+   * {@code identifier}.
    * &lt;p&gt;
    * Will normalize the case of a UUID-based identifier.
    *
@@ -205,11 +209,12 @@ import edu.umd.cs.findbugs.annotations.Nullable;
    */
   @Nullable
   default IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier) {
-<span class="fc" id="L208">    return getEntity(itemType, identifier, itemType.isUuid());</span>
+<span class="fc" id="L212">    return getEntity(itemType, identifier, itemType.isUuid());</span>
   }
 
   /**
-   * Lookup an item of the given {@code itemType} having the given {@code identifier}.
+   * Lookup an item of the given {@code itemType} having the given
+   * {@code identifier}.
    * &lt;p&gt;
    * Will normalize the case of a UUID-based the identifier when requested.
    *
@@ -218,7 +223,8 @@ import edu.umd.cs.findbugs.annotations.Nullable;
    * @param identifier
    *          the identifier to lookup
    * @param normalize
-   *          {@code true} if the identifier case should be normalized or {@code false} otherwise
+   *          {@code true} if the identifier case should be normalized or
+   *          {@code false} otherwise
    * @return the matching item or {@code null} if no match was found
    */
   @Nullable

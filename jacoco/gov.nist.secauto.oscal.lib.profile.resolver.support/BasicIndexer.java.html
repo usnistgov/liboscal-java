@@ -190,130 +190,133 @@ public class BasicIndexer implements IIndexer {
 <span class="fc bfc" id="L190" title="All 2 branches covered.">    return entityGroup == null ? CollectionUtil.emptyList() : ObjectUtils.notNull(entityGroup.values());</span>
   }
   //
-  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID identifier) {
-  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);
+  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID
+  // identifier) {
+  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()),
+  // false);
   // }
   //
-  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier) {
+  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String
+  // identifier) {
   // return getEntity(itemType, identifier, itemType.isUuid());
   // }
 
   @Override
   public IEntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier, boolean normalize) {
-<span class="fc" id="L203">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(itemType);</span>
-<span class="fc bfc" id="L204" title="All 2 branches covered.">    String normalizedIdentifier = normalize ? normalizeIdentifier(identifier) : identifier;</span>
-<span class="pc bpc" id="L205" title="1 of 2 branches missed.">    return entityGroup == null ? null : entityGroup.get(normalizedIdentifier);</span>
+<span class="fc" id="L206">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(itemType);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">    String normalizedIdentifier = normalize ? normalizeIdentifier(identifier) : identifier;</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">    return entityGroup == null ? null : entityGroup.get(normalizedIdentifier);</span>
   }
 
   protected IEntityItem addItem(@NonNull IEntityItem item) {
-<span class="fc" id="L209">    IEntityItem.ItemType type = item.getItemType();</span>
+<span class="fc" id="L212">    IEntityItem.ItemType type = item.getItemType();</span>
 
     @SuppressWarnings(&quot;PMD.UseConcurrentHashMap&quot;) // need ordering
-<span class="fc" id="L212">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.computeIfAbsent(</span>
+<span class="fc" id="L215">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.computeIfAbsent(</span>
         type,
-<span class="fc" id="L214">        (key) -&gt; Collections.synchronizedMap(new LinkedHashMap&lt;&gt;()));</span>
-<span class="fc" id="L215">    IEntityItem oldEntity = entityGroup.put(item.getIdentifier(), item);</span>
+<span class="fc" id="L217">        (key) -&gt; Collections.synchronizedMap(new LinkedHashMap&lt;&gt;()));</span>
+<span class="fc" id="L218">    IEntityItem oldEntity = entityGroup.put(item.getIdentifier(), item);</span>
 
-<span class="pc bpc" id="L217" title="1 of 4 branches missed.">    if (oldEntity != null &amp;&amp; LOGGER.isWarnEnabled()) {</span>
-<span class="fc" id="L218">      LOGGER.atWarn().log(&quot;Duplicate {} found with identifier {} in index.&quot;,</span>
-<span class="fc" id="L219">          oldEntity.getItemType().name().toLowerCase(Locale.ROOT),</span>
-<span class="fc" id="L220">          oldEntity.getIdentifier());</span>
+<span class="pc bpc" id="L220" title="1 of 4 branches missed.">    if (oldEntity != null &amp;&amp; LOGGER.isWarnEnabled()) {</span>
+<span class="fc" id="L221">      LOGGER.atWarn().log(&quot;Duplicate {} found with identifier {} in index.&quot;,</span>
+<span class="fc" id="L222">          oldEntity.getItemType().name().toLowerCase(Locale.ROOT),</span>
+<span class="fc" id="L223">          oldEntity.getIdentifier());</span>
     }
-<span class="fc" id="L222">    return oldEntity;</span>
+<span class="fc" id="L225">    return oldEntity;</span>
   }
 
   @NonNull
   protected IEntityItem addItem(@NonNull AbstractEntityItem.Builder builder) {
-<span class="fc" id="L227">    IEntityItem retval = builder.build();</span>
-<span class="fc" id="L228">    addItem(retval);</span>
-<span class="fc" id="L229">    return retval;</span>
+<span class="fc" id="L230">    IEntityItem retval = builder.build();</span>
+<span class="fc" id="L231">    addItem(retval);</span>
+<span class="fc" id="L232">    return retval;</span>
   }
 
   @Override
   public boolean removeItem(@NonNull IEntityItem entity) {
-<span class="fc" id="L234">    IEntityItem.ItemType type = entity.getItemType();</span>
-<span class="fc" id="L235">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(type);</span>
+<span class="fc" id="L237">    IEntityItem.ItemType type = entity.getItemType();</span>
+<span class="fc" id="L238">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(type);</span>
 
-<span class="fc" id="L237">    boolean retval = false;</span>
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">    if (entityGroup != null) {</span>
-<span class="fc" id="L239">      retval = entityGroup.remove(entity.getIdentifier(), entity);</span>
+<span class="fc" id="L240">    boolean retval = false;</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">    if (entityGroup != null) {</span>
+<span class="fc" id="L242">      retval = entityGroup.remove(entity.getIdentifier(), entity);</span>
 
       // remove if present
-<span class="fc" id="L242">      nodeItemToSelectionStatusMap.remove(entity.getInstance());</span>
+<span class="fc" id="L245">      nodeItemToSelectionStatusMap.remove(entity.getInstance());</span>
 
-<span class="pc bpc" id="L244" title="1 of 2 branches missed.">      if (retval) {</span>
-<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (LOGGER.isDebugEnabled()) {</span>
-<span class="fc" id="L246">          LOGGER.atDebug().log(&quot;Removing {} '{}' from index.&quot;, type.name(), entity.getIdentifier());</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">      if (retval) {</span>
+<span class="pc bpc" id="L248" title="1 of 2 branches missed.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L249">          LOGGER.atDebug().log(&quot;Removing {} '{}' from index.&quot;, type.name(), entity.getIdentifier());</span>
         }
-<span class="nc bnc" id="L248" title="All 2 branches missed.">      } else if (LOGGER.isDebugEnabled()) {</span>
-<span class="nc" id="L249">        LOGGER.atDebug().log(&quot;The {} entity '{}' was not found in the index to remove.&quot;,</span>
-<span class="nc" id="L250">            type.name(),</span>
-<span class="nc" id="L251">            entity.getIdentifier());</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">      } else if (LOGGER.isDebugEnabled()) {</span>
+<span class="nc" id="L252">        LOGGER.atDebug().log(&quot;The {} entity '{}' was not found in the index to remove.&quot;,</span>
+<span class="nc" id="L253">            type.name(),</span>
+<span class="nc" id="L254">            entity.getIdentifier());</span>
       }
     }
-<span class="fc" id="L254">    return retval;</span>
+<span class="fc" id="L257">    return retval;</span>
   }
 
   @Override
   public IEntityItem addRole(IRequiredValueModelNodeItem item) {
-<span class="fc" id="L259">    Role role = (Role) item.getValue();</span>
-<span class="fc" id="L260">    String identifier = ObjectUtils.requireNonNull(role.getId());</span>
+<span class="fc" id="L262">    Role role = (Role) item.getValue();</span>
+<span class="fc" id="L263">    String identifier = ObjectUtils.requireNonNull(role.getId());</span>
 
-<span class="fc" id="L262">    return addItem(newBuilder(item, ItemType.ROLE, identifier));</span>
+<span class="fc" id="L265">    return addItem(newBuilder(item, ItemType.ROLE, identifier));</span>
   }
 
   @Override
   public IEntityItem addLocation(IRequiredValueModelNodeItem item) {
-<span class="nc" id="L267">    Location location = (Location) item.getValue();</span>
-<span class="nc" id="L268">    UUID identifier = ObjectUtils.requireNonNull(location.getUuid());</span>
+<span class="nc" id="L270">    Location location = (Location) item.getValue();</span>
+<span class="nc" id="L271">    UUID identifier = ObjectUtils.requireNonNull(location.getUuid());</span>
 
-<span class="nc" id="L270">    return addItem(newBuilder(item, ItemType.LOCATION, identifier));</span>
+<span class="nc" id="L273">    return addItem(newBuilder(item, ItemType.LOCATION, identifier));</span>
   }
 
   @Override
   public IEntityItem addParty(IRequiredValueModelNodeItem item) {
-<span class="fc" id="L275">    Party party = (Party) item.getValue();</span>
-<span class="fc" id="L276">    UUID identifier = ObjectUtils.requireNonNull(party.getUuid());</span>
+<span class="fc" id="L278">    Party party = (Party) item.getValue();</span>
+<span class="fc" id="L279">    UUID identifier = ObjectUtils.requireNonNull(party.getUuid());</span>
 
-<span class="fc" id="L278">    return addItem(newBuilder(item, ItemType.PARTY, identifier));</span>
+<span class="fc" id="L281">    return addItem(newBuilder(item, ItemType.PARTY, identifier));</span>
   }
 
   @Override
   public IEntityItem addGroup(IRequiredValueModelNodeItem item) {
-<span class="fc" id="L283">    CatalogGroup group = (CatalogGroup) item.getValue();</span>
-<span class="fc" id="L284">    String identifier = group.getId();</span>
-<span class="fc bfc" id="L285" title="All 2 branches covered.">    return identifier == null ? null : addItem(newBuilder(item, ItemType.GROUP, identifier));</span>
+<span class="fc" id="L286">    CatalogGroup group = (CatalogGroup) item.getValue();</span>
+<span class="fc" id="L287">    String identifier = group.getId();</span>
+<span class="fc bfc" id="L288" title="All 2 branches covered.">    return identifier == null ? null : addItem(newBuilder(item, ItemType.GROUP, identifier));</span>
   }
 
   @Override
   public IEntityItem addControl(IRequiredValueModelNodeItem item) {
-<span class="fc" id="L290">    Control control = (Control) item.getValue();</span>
-<span class="fc" id="L291">    String identifier = ObjectUtils.requireNonNull(control.getId());</span>
-<span class="fc" id="L292">    return addItem(newBuilder(item, ItemType.CONTROL, identifier));</span>
+<span class="fc" id="L293">    Control control = (Control) item.getValue();</span>
+<span class="fc" id="L294">    String identifier = ObjectUtils.requireNonNull(control.getId());</span>
+<span class="fc" id="L295">    return addItem(newBuilder(item, ItemType.CONTROL, identifier));</span>
   }
 
   @Override
   public IEntityItem addParameter(IRequiredValueModelNodeItem item) {
-<span class="fc" id="L297">    Parameter parameter = (Parameter) item.getValue();</span>
-<span class="fc" id="L298">    String identifier = ObjectUtils.requireNonNull(parameter.getId());</span>
+<span class="fc" id="L300">    Parameter parameter = (Parameter) item.getValue();</span>
+<span class="fc" id="L301">    String identifier = ObjectUtils.requireNonNull(parameter.getId());</span>
 
-<span class="fc" id="L300">    return addItem(newBuilder(item, ItemType.PARAMETER, identifier));</span>
+<span class="fc" id="L303">    return addItem(newBuilder(item, ItemType.PARAMETER, identifier));</span>
   }
 
   @Override
   public IEntityItem addPart(IRequiredValueModelNodeItem item) {
-<span class="fc" id="L305">    ControlPart part = (ControlPart) item.getValue();</span>
-<span class="fc" id="L306">    String identifier = part.getId();</span>
+<span class="fc" id="L308">    ControlPart part = (ControlPart) item.getValue();</span>
+<span class="fc" id="L309">    String identifier = part.getId();</span>
 
-<span class="fc bfc" id="L308" title="All 2 branches covered.">    return identifier == null ? null : addItem(newBuilder(item, ItemType.PART, identifier));</span>
+<span class="fc bfc" id="L311" title="All 2 branches covered.">    return identifier == null ? null : addItem(newBuilder(item, ItemType.PART, identifier));</span>
   }
 
   @Override
   public IEntityItem addResource(IRequiredValueModelNodeItem item) {
-<span class="fc" id="L313">    Resource resource = (Resource) item.getValue();</span>
-<span class="fc" id="L314">    UUID identifier = ObjectUtils.requireNonNull(resource.getUuid());</span>
+<span class="fc" id="L316">    Resource resource = (Resource) item.getValue();</span>
+<span class="fc" id="L317">    UUID identifier = ObjectUtils.requireNonNull(resource.getUuid());</span>
 
-<span class="fc" id="L316">    return addItem(newBuilder(item, ItemType.RESOURCE, identifier));</span>
+<span class="fc" id="L319">    return addItem(newBuilder(item, ItemType.RESOURCE, identifier));</span>
   }
 
   @NonNull
@@ -321,16 +324,17 @@ public class BasicIndexer implements IIndexer {
       @NonNull IRequiredValueModelNodeItem item,
       @NonNull ItemType itemType,
       @NonNull UUID identifier) {
-<span class="fc" id="L324">    return newBuilder(item, itemType, ObjectUtils.notNull(identifier.toString()));</span>
+<span class="fc" id="L327">    return newBuilder(item, itemType, ObjectUtils.notNull(identifier.toString()));</span>
   }
 
   /**
    * Create a new builder with the provided info.
    * &lt;p&gt;
-   * This method can be overloaded to support applying additional data to the returned builder.
+   * This method can be overloaded to support applying additional data to the
+   * returned builder.
    * &lt;p&gt;
-   * When working with identifiers that are case insensitve, it is important to ensure that the
-   * identifiers are normalized to lower case.
+   * When working with identifiers that are case insensitve, it is important to
+   * ensure that the identifiers are normalized to lower case.
    *
    * @param item
    *          the Metapath node to associate with the entity
@@ -345,10 +349,10 @@ public class BasicIndexer implements IIndexer {
       @NonNull IRequiredValueModelNodeItem item,
       @NonNull ItemType itemType,
       @NonNull String identifier) {
-<span class="fc" id="L348">    return new AbstractEntityItem.Builder()</span>
-<span class="fc" id="L349">        .instance(item, itemType)</span>
-<span class="fc" id="L350">        .originalIdentifier(identifier)</span>
-<span class="fc" id="L351">        .source(ObjectUtils.requireNonNull(item.getBaseUri(), &quot;item must have an associated URI&quot;));</span>
+<span class="fc" id="L352">    return new AbstractEntityItem.Builder()</span>
+<span class="fc" id="L353">        .instance(item, itemType)</span>
+<span class="fc" id="L354">        .originalIdentifier(identifier)</span>
+<span class="fc" id="L355">        .source(ObjectUtils.requireNonNull(item.getBaseUri(), &quot;item must have an associated URI&quot;));</span>
   }
 
   /**
@@ -360,9 +364,9 @@ public class BasicIndexer implements IIndexer {
    */
   @NonNull
   public String normalizeIdentifier(@NonNull String identifier) {
-<span class="fc bfc" id="L363" title="All 2 branches covered.">    return UuidAdapter.UUID_PATTERN.matcher(identifier).matches()</span>
-<span class="fc" id="L364">        ? ObjectUtils.notNull(identifier.toLowerCase(Locale.ROOT))</span>
-<span class="fc" id="L365">        : identifier;</span>
+<span class="fc bfc" id="L367" title="All 2 branches covered.">    return UuidAdapter.UUID_PATTERN.matcher(identifier).matches()</span>
+<span class="fc" id="L368">        ? ObjectUtils.notNull(identifier.toLowerCase(Locale.ROOT))</span>
+<span class="fc" id="L369">        : identifier;</span>
   }
   //
   // private static class ItemGroup {

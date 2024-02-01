@@ -34,17 +34,19 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * Used to visit a catalog containing groups and controls.
  *
  * @param &lt;T&gt;
- *          the type of the context object used to pass calling context information
+ *          the type of the context object used to pass calling context
+ *          information
  * @param &lt;R&gt;
- *          the type of the result for visiting a collection of groups and/or controls
+ *          the type of the result for visiting a collection of groups and/or
+ *          controls
  */
 public interface ICatalogVisitor&lt;T, R&gt; {
 
   /**
    * Called when visiting a group.
    * &lt;p&gt;
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
    *          the Metapath item for the group
@@ -56,14 +58,14 @@ public interface ICatalogVisitor&lt;T, R&gt; {
    */
   default R visitGroup(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
     // do nothing by default
-<span class="fc" id="L59">    return childResult;</span>
+<span class="fc" id="L61">    return childResult;</span>
   }
 
   /**
    * Called when visiting a control.
    * &lt;p&gt;
-   * Can be overridden by classes extending this interface to support processing of the visited
-   * object.
+   * Can be overridden by classes extending this interface to support processing
+   * of the visited object.
    *
    * @param item
    *          the Metapath item for the control
@@ -75,7 +77,7 @@ public interface ICatalogVisitor&lt;T, R&gt; {
    */
   default R visitControl(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {
     // do nothing by default
-<span class="nc" id="L78">    return childResult;</span>
+<span class="nc" id="L80">    return childResult;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

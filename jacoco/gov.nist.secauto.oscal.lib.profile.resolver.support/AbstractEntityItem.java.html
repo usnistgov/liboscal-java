@@ -66,42 +66,43 @@ public abstract class AbstractEntityItem implements IEntityItem {
   // @NonNull
   // public String getIdentifier() {
   // final String checkedReassignedIdentifier = reassignedIdentifier;
-  // return checkedReassignedIdentifier == null ? originalIdentifier : checkedReassignedIdentifier;
+  // return checkedReassignedIdentifier == null ? originalIdentifier :
+  // checkedReassignedIdentifier;
   // }
 
   @Override
   @NonNull
   public IRequiredValueModelNodeItem getInstance() {
-<span class="fc" id="L75">    return instance;</span>
+<span class="fc" id="L76">    return instance;</span>
   }
 
   @Override
   public void setInstance(IRequiredValueModelNodeItem item) {
-<span class="fc" id="L80">    instance = item;</span>
-<span class="fc" id="L81">  }</span>
+<span class="fc" id="L81">    instance = item;</span>
+<span class="fc" id="L82">  }</span>
 
   @Override
   @NonNull
   @SuppressWarnings(&quot;unchecked&quot;)
   public &lt;T&gt; T getInstanceValue() {
-<span class="fc" id="L87">    return (T) getInstance().getValue();</span>
+<span class="fc" id="L88">    return (T) getInstance().getValue();</span>
   }
 
   @Override
   @NonNull
   public ItemType getItemType() {
-<span class="fc" id="L93">    return itemType;</span>
+<span class="fc" id="L94">    return itemType;</span>
   }
 
   @Override
   @NonNull
   public URI getSource() {
-<span class="fc" id="L99">    return source;</span>
+<span class="fc" id="L100">    return source;</span>
   }
 
   @Override
   public int getReferenceCount() {
-<span class="fc" id="L104">    return referenceCount;</span>
+<span class="fc" id="L105">    return referenceCount;</span>
   }
 
   // public boolean isResolved() {
@@ -114,17 +115,17 @@ public abstract class AbstractEntityItem implements IEntityItem {
 
   @Override
   public void incrementReferenceCount() {
-<span class="fc" id="L117">    referenceCount += 1;</span>
-<span class="fc" id="L118">  }</span>
+<span class="fc" id="L118">    referenceCount += 1;</span>
+<span class="fc" id="L119">  }</span>
 
   @Override
   public int resetReferenceCount() {
-<span class="fc" id="L122">    int retval = referenceCount;</span>
-<span class="fc" id="L123">    referenceCount = 0;</span>
-<span class="fc" id="L124">    return retval;</span>
+<span class="fc" id="L123">    int retval = referenceCount;</span>
+<span class="fc" id="L124">    referenceCount = 0;</span>
+<span class="fc" id="L125">    return retval;</span>
   }
 
-<span class="fc" id="L127">  static final class Builder {</span>
+<span class="fc" id="L128">  static final class Builder {</span>
     private String originalIdentifier;
     private String reassignedIdentifier;
     private IRequiredValueModelNodeItem instance;
@@ -133,9 +134,9 @@ public abstract class AbstractEntityItem implements IEntityItem {
 
     @NonNull
     public Builder instance(@NonNull IRequiredValueModelNodeItem item, @NonNull ItemType itemType) {
-<span class="fc" id="L136">      this.instance = item;</span>
-<span class="fc" id="L137">      this.itemType = itemType;</span>
-<span class="fc" id="L138">      return this;</span>
+<span class="fc" id="L137">      this.instance = item;</span>
+<span class="fc" id="L138">      this.itemType = itemType;</span>
+<span class="fc" id="L139">      return this;</span>
     }
 
     // @NonNull
@@ -146,8 +147,8 @@ public abstract class AbstractEntityItem implements IEntityItem {
 
     @NonNull
     public Builder reassignedIdentifier(@NonNull String identifier) {
-<span class="fc" id="L149">      this.reassignedIdentifier = identifier;</span>
-<span class="fc" id="L150">      return this;</span>
+<span class="fc" id="L150">      this.reassignedIdentifier = identifier;</span>
+<span class="fc" id="L151">      return this;</span>
     }
     //
     // @NonNull
@@ -158,19 +159,19 @@ public abstract class AbstractEntityItem implements IEntityItem {
 
     @NonNull
     public Builder originalIdentifier(@NonNull String identifier) {
-<span class="fc" id="L161">      this.originalIdentifier = identifier;</span>
-<span class="fc" id="L162">      return this;</span>
+<span class="fc" id="L162">      this.originalIdentifier = identifier;</span>
+<span class="fc" id="L163">      return this;</span>
     }
 
     @NonNull
     public Builder source(@NonNull URI source) {
-<span class="fc" id="L167">      this.source = source;</span>
-<span class="fc" id="L168">      return this;</span>
+<span class="fc" id="L168">      this.source = source;</span>
+<span class="fc" id="L169">      return this;</span>
     }
 
     @NonNull
     public IEntityItem build() {
-<span class="fc bfc" id="L173" title="All 2 branches covered.">      return reassignedIdentifier == null ? new OriginalEntityItem(this) : new ReassignedEntityItem(this);</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">      return reassignedIdentifier == null ? new OriginalEntityItem(this) : new ReassignedEntityItem(this);</span>
     }
   }
 
@@ -178,17 +179,17 @@ public abstract class AbstractEntityItem implements IEntityItem {
       extends AbstractEntityItem {
 
     protected OriginalEntityItem(@NonNull Builder builder) {
-<span class="fc" id="L181">      super(builder);</span>
-<span class="fc" id="L182">    }</span>
+<span class="fc" id="L182">      super(builder);</span>
+<span class="fc" id="L183">    }</span>
 
     @Override
     public String getIdentifier() {
-<span class="fc" id="L186">      return getOriginalIdentifier();</span>
+<span class="fc" id="L187">      return getOriginalIdentifier();</span>
     }
 
     @Override
     public boolean isIdentifierReassigned() {
-<span class="fc" id="L191">      return false;</span>
+<span class="fc" id="L192">      return false;</span>
     }
   }
 
@@ -198,18 +199,18 @@ public abstract class AbstractEntityItem implements IEntityItem {
     private final String reassignedIdentifier;
 
     protected ReassignedEntityItem(@NonNull Builder builder) {
-<span class="fc" id="L201">      super(builder);</span>
-<span class="fc" id="L202">      this.reassignedIdentifier = ObjectUtils.requireNonNull(builder.reassignedIdentifier);</span>
-<span class="fc" id="L203">    }</span>
+<span class="fc" id="L202">      super(builder);</span>
+<span class="fc" id="L203">      this.reassignedIdentifier = ObjectUtils.requireNonNull(builder.reassignedIdentifier);</span>
+<span class="fc" id="L204">    }</span>
 
     @Override
     public String getIdentifier() {
-<span class="fc" id="L207">      return reassignedIdentifier;</span>
+<span class="fc" id="L208">      return reassignedIdentifier;</span>
     }
 
     @Override
     public boolean isIdentifierReassigned() {
-<span class="fc" id="L212">      return true;</span>
+<span class="fc" id="L213">      return true;</span>
     }
   }
 }

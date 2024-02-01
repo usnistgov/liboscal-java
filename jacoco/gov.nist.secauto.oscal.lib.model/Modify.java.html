@@ -284,111 +284,6 @@ public class Modify {
     }
 
     /**
-     * Specifies objects to be removed from a control based on specific aspects of the object that must all match.
-     */
-    @MetaschemaAssembly(
-        formalName = &quot;Removal&quot;,
-        description = &quot;Specifies objects to be removed from a control based on specific aspects of the object that must all match.&quot;,
-        name = &quot;remove&quot;,
-        metaschema = OscalProfileMetaschema.class,
-        remarks = &quot;Use `by-name`, `by-class`, `by-id` or `by-item-name` to indicate class tokens or ID reference, or the formal name, of the component to be removed or erased from a control, when a catalog is resolved. The control affected is indicated by the pointer on the removal's parent (containing) `alter` element.\n&quot;
-                + &quot;\n&quot;
-                + &quot;To change an element, use `remove` to remove the element, then `add` to add it back again with changes.&quot;
-    )
-    public static class Remove {
-      @BoundFlag(
-          formalName = &quot;Reference by (assigned) name&quot;,
-          description = &quot;Identify items remove by matching their assigned name.&quot;,
-          useName = &quot;by-name&quot;,
-          typeAdapter = TokenAdapter.class
-      )
-      private String _byName;
-
-      @BoundFlag(
-          formalName = &quot;Reference by class&quot;,
-          description = &quot;Identify items to remove by matching their `class`.&quot;,
-          useName = &quot;by-class&quot;,
-          typeAdapter = TokenAdapter.class
-      )
-      private String _byClass;
-
-      @BoundFlag(
-          formalName = &quot;Reference by ID&quot;,
-          description = &quot;Identify items to remove indicated by their `id`.&quot;,
-          useName = &quot;by-id&quot;,
-          typeAdapter = TokenAdapter.class
-      )
-      private String _byId;
-
-      @BoundFlag(
-          formalName = &quot;Item Name Reference&quot;,
-          description = &quot;Identify items to remove by the name of the item's information object name, e.g. `title` or `prop`.&quot;,
-          useName = &quot;by-item-name&quot;,
-          typeAdapter = TokenAdapter.class
-      )
-      @ValueConstraints(
-          allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;param&quot;, description = &quot;A descendant parameter and all of its descendants.&quot;), @AllowedValue(value = &quot;prop&quot;, description = &quot;A descendant property and all of its descendants.&quot;), @AllowedValue(value = &quot;link&quot;, description = &quot;A descendant link and all of its descendants.&quot;), @AllowedValue(value = &quot;part&quot;, description = &quot;A descendant parameter and all of its descendants.&quot;), @AllowedValue(value = &quot;mapping&quot;, description = &quot;A descendant mapping and all of its descendants.&quot;), @AllowedValue(value = &quot;map&quot;, description = &quot;A descendant mapping entry (map) and all of its descendants.&quot;)})
-      )
-      private String _byItemName;
-
-      @BoundFlag(
-          formalName = &quot;Item Namespace Reference&quot;,
-          description = &quot;Identify items to remove by the item's `ns`, which is the namespace associated with a `part`, or `prop`.&quot;,
-          useName = &quot;by-ns&quot;,
-          typeAdapter = TokenAdapter.class
-      )
-      private String _byNs;
-
-<span class="nc" id="L342">      public Remove() {</span>
-<span class="nc" id="L343">      }</span>
-
-      public String getByName() {
-<span class="nc" id="L346">        return _byName;</span>
-      }
-
-      public void setByName(String value) {
-<span class="nc" id="L350">        _byName = value;</span>
-<span class="nc" id="L351">      }</span>
-
-      public String getByClass() {
-<span class="nc" id="L354">        return _byClass;</span>
-      }
-
-      public void setByClass(String value) {
-<span class="nc" id="L358">        _byClass = value;</span>
-<span class="nc" id="L359">      }</span>
-
-      public String getById() {
-<span class="nc" id="L362">        return _byId;</span>
-      }
-
-      public void setById(String value) {
-<span class="nc" id="L366">        _byId = value;</span>
-<span class="nc" id="L367">      }</span>
-
-      public String getByItemName() {
-<span class="nc" id="L370">        return _byItemName;</span>
-      }
-
-      public void setByItemName(String value) {
-<span class="nc" id="L374">        _byItemName = value;</span>
-<span class="nc" id="L375">      }</span>
-
-      public String getByNs() {
-<span class="nc" id="L378">        return _byNs;</span>
-      }
-
-      public void setByNs(String value) {
-<span class="nc" id="L382">        _byNs = value;</span>
-<span class="nc" id="L383">      }</span>
-
-      @Override
-      public String toString() {
-<span class="nc" id="L387">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-      }
-    }
-
-    /**
      * Specifies contents to be added into controls, in resolution.
      */
     @MetaschemaAssembly(
@@ -484,40 +379,40 @@ public class Modify {
       )
       private List&lt;ControlPart&gt; _parts;
 
-<span class="fc" id="L487">      public Add() {</span>
-<span class="fc" id="L488">      }</span>
+<span class="fc" id="L382">      public Add() {</span>
+<span class="fc" id="L383">      }</span>
 
       public String getPosition() {
-<span class="fc" id="L491">        return _position;</span>
+<span class="fc" id="L386">        return _position;</span>
       }
 
       public void setPosition(String value) {
-<span class="nc" id="L495">        _position = value;</span>
-<span class="nc" id="L496">      }</span>
+<span class="nc" id="L390">        _position = value;</span>
+<span class="nc" id="L391">      }</span>
 
       public String getById() {
-<span class="fc" id="L499">        return _byId;</span>
+<span class="fc" id="L394">        return _byId;</span>
       }
 
       public void setById(String value) {
-<span class="nc" id="L503">        _byId = value;</span>
-<span class="nc" id="L504">      }</span>
+<span class="nc" id="L398">        _byId = value;</span>
+<span class="nc" id="L399">      }</span>
 
       public MarkupLine getTitle() {
-<span class="fc" id="L507">        return _title;</span>
+<span class="fc" id="L402">        return _title;</span>
       }
 
       public void setTitle(MarkupLine value) {
-<span class="nc" id="L511">        _title = value;</span>
-<span class="nc" id="L512">      }</span>
+<span class="nc" id="L406">        _title = value;</span>
+<span class="nc" id="L407">      }</span>
 
       public List&lt;Parameter&gt; getParams() {
-<span class="fc" id="L515">        return _params;</span>
+<span class="fc" id="L410">        return _params;</span>
       }
 
       public void setParams(List&lt;Parameter&gt; value) {
-<span class="nc" id="L519">        _params = value;</span>
-<span class="nc" id="L520">      }</span>
+<span class="nc" id="L414">        _params = value;</span>
+<span class="nc" id="L415">      }</span>
 
       /**
        * Add a new {@link Parameter} item to the underlying collection.
@@ -525,11 +420,11 @@ public class Modify {
        * @return {@code true}
        */
       public boolean addParam(Parameter item) {
-<span class="nc" id="L528">        Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L529" title="All 2 branches missed.">        if (_params == null) {</span>
-<span class="nc" id="L530">          _params = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L423">        Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L424" title="All 2 branches missed.">        if (_params == null) {</span>
+<span class="nc" id="L425">          _params = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L532">        return _params.add(value);</span>
+<span class="nc" id="L427">        return _params.add(value);</span>
       }
 
       /**
@@ -538,17 +433,17 @@ public class Modify {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeParam(Parameter item) {
-<span class="nc" id="L541">        Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L542" title="All 2 branches missed.">        return _params == null ? false : _params.remove(value);</span>
+<span class="nc" id="L436">        Parameter value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L437" title="All 2 branches missed.">        return _params == null ? false : _params.remove(value);</span>
       }
 
       public List&lt;Property&gt; getProps() {
-<span class="fc" id="L546">        return _props;</span>
+<span class="fc" id="L441">        return _props;</span>
       }
 
       public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L550">        _props = value;</span>
-<span class="nc" id="L551">      }</span>
+<span class="nc" id="L445">        _props = value;</span>
+<span class="nc" id="L446">      }</span>
 
       /**
        * Add a new {@link Property} item to the underlying collection.
@@ -556,11 +451,11 @@ public class Modify {
        * @return {@code true}
        */
       public boolean addProp(Property item) {
-<span class="nc" id="L559">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L560" title="All 2 branches missed.">        if (_props == null) {</span>
-<span class="nc" id="L561">          _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L454">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L455" title="All 2 branches missed.">        if (_props == null) {</span>
+<span class="nc" id="L456">          _props = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L563">        return _props.add(value);</span>
+<span class="nc" id="L458">        return _props.add(value);</span>
       }
 
       /**
@@ -569,17 +464,17 @@ public class Modify {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeProp(Property item) {
-<span class="nc" id="L572">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L573" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L467">        Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L468" title="All 2 branches missed.">        return _props == null ? false : _props.remove(value);</span>
       }
 
       public List&lt;Link&gt; getLinks() {
-<span class="fc" id="L577">        return _links;</span>
+<span class="fc" id="L472">        return _links;</span>
       }
 
       public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L581">        _links = value;</span>
-<span class="nc" id="L582">      }</span>
+<span class="nc" id="L476">        _links = value;</span>
+<span class="nc" id="L477">      }</span>
 
       /**
        * Add a new {@link Link} item to the underlying collection.
@@ -587,11 +482,11 @@ public class Modify {
        * @return {@code true}
        */
       public boolean addLink(Link item) {
-<span class="nc" id="L590">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L591" title="All 2 branches missed.">        if (_links == null) {</span>
-<span class="nc" id="L592">          _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L485">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L486" title="All 2 branches missed.">        if (_links == null) {</span>
+<span class="nc" id="L487">          _links = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L594">        return _links.add(value);</span>
+<span class="nc" id="L489">        return _links.add(value);</span>
       }
 
       /**
@@ -600,17 +495,17 @@ public class Modify {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeLink(Link item) {
-<span class="nc" id="L603">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L604" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L498">        Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L499" title="All 2 branches missed.">        return _links == null ? false : _links.remove(value);</span>
       }
 
       public List&lt;ControlPart&gt; getParts() {
-<span class="fc" id="L608">        return _parts;</span>
+<span class="fc" id="L503">        return _parts;</span>
       }
 
       public void setParts(List&lt;ControlPart&gt; value) {
-<span class="nc" id="L612">        _parts = value;</span>
-<span class="nc" id="L613">      }</span>
+<span class="nc" id="L507">        _parts = value;</span>
+<span class="nc" id="L508">      }</span>
 
       /**
        * Add a new {@link ControlPart} item to the underlying collection.
@@ -618,11 +513,11 @@ public class Modify {
        * @return {@code true}
        */
       public boolean addPart(ControlPart item) {
-<span class="nc" id="L621">        ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L622" title="All 2 branches missed.">        if (_parts == null) {</span>
-<span class="nc" id="L623">          _parts = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L516">        ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">        if (_parts == null) {</span>
+<span class="nc" id="L518">          _parts = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L625">        return _parts.add(value);</span>
+<span class="nc" id="L520">        return _parts.add(value);</span>
       }
 
       /**
@@ -631,9 +526,114 @@ public class Modify {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removePart(ControlPart item) {
-<span class="nc" id="L634">        ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L635" title="All 2 branches missed.">        return _parts == null ? false : _parts.remove(value);</span>
+<span class="nc" id="L529">        ControlPart value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L530" title="All 2 branches missed.">        return _parts == null ? false : _parts.remove(value);</span>
       }
+
+      @Override
+      public String toString() {
+<span class="nc" id="L535">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
+     * Specifies objects to be removed from a control based on specific aspects of the object that must all match.
+     */
+    @MetaschemaAssembly(
+        formalName = &quot;Removal&quot;,
+        description = &quot;Specifies objects to be removed from a control based on specific aspects of the object that must all match.&quot;,
+        name = &quot;remove&quot;,
+        metaschema = OscalProfileMetaschema.class,
+        remarks = &quot;Use `by-name`, `by-class`, `by-id` or `by-item-name` to indicate class tokens or ID reference, or the formal name, of the component to be removed or erased from a control, when a catalog is resolved. The control affected is indicated by the pointer on the removal's parent (containing) `alter` element.\n&quot;
+                + &quot;\n&quot;
+                + &quot;To change an element, use `remove` to remove the element, then `add` to add it back again with changes.&quot;
+    )
+    public static class Remove {
+      @BoundFlag(
+          formalName = &quot;Reference by (assigned) name&quot;,
+          description = &quot;Identify items remove by matching their assigned name.&quot;,
+          useName = &quot;by-name&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byName;
+
+      @BoundFlag(
+          formalName = &quot;Reference by class&quot;,
+          description = &quot;Identify items to remove by matching their `class`.&quot;,
+          useName = &quot;by-class&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byClass;
+
+      @BoundFlag(
+          formalName = &quot;Reference by ID&quot;,
+          description = &quot;Identify items to remove indicated by their `id`.&quot;,
+          useName = &quot;by-id&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byId;
+
+      @BoundFlag(
+          formalName = &quot;Item Name Reference&quot;,
+          description = &quot;Identify items to remove by the name of the item's information object name, e.g. `title` or `prop`.&quot;,
+          useName = &quot;by-item-name&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      @ValueConstraints(
+          allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, values = {@AllowedValue(value = &quot;param&quot;, description = &quot;A descendant parameter and all of its descendants.&quot;), @AllowedValue(value = &quot;prop&quot;, description = &quot;A descendant property and all of its descendants.&quot;), @AllowedValue(value = &quot;link&quot;, description = &quot;A descendant link and all of its descendants.&quot;), @AllowedValue(value = &quot;part&quot;, description = &quot;A descendant parameter and all of its descendants.&quot;), @AllowedValue(value = &quot;mapping&quot;, description = &quot;A descendant mapping and all of its descendants.&quot;), @AllowedValue(value = &quot;map&quot;, description = &quot;A descendant mapping entry (map) and all of its descendants.&quot;)})
+      )
+      private String _byItemName;
+
+      @BoundFlag(
+          formalName = &quot;Item Namespace Reference&quot;,
+          description = &quot;Identify items to remove by the item's `ns`, which is the namespace associated with a `part`, or `prop`.&quot;,
+          useName = &quot;by-ns&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _byNs;
+
+<span class="nc" id="L595">      public Remove() {</span>
+<span class="nc" id="L596">      }</span>
+
+      public String getByName() {
+<span class="nc" id="L599">        return _byName;</span>
+      }
+
+      public void setByName(String value) {
+<span class="nc" id="L603">        _byName = value;</span>
+<span class="nc" id="L604">      }</span>
+
+      public String getByClass() {
+<span class="nc" id="L607">        return _byClass;</span>
+      }
+
+      public void setByClass(String value) {
+<span class="nc" id="L611">        _byClass = value;</span>
+<span class="nc" id="L612">      }</span>
+
+      public String getById() {
+<span class="nc" id="L615">        return _byId;</span>
+      }
+
+      public void setById(String value) {
+<span class="nc" id="L619">        _byId = value;</span>
+<span class="nc" id="L620">      }</span>
+
+      public String getByItemName() {
+<span class="nc" id="L623">        return _byItemName;</span>
+      }
+
+      public void setByItemName(String value) {
+<span class="nc" id="L627">        _byItemName = value;</span>
+<span class="nc" id="L628">      }</span>
+
+      public String getByNs() {
+<span class="nc" id="L631">        return _byNs;</span>
+      }
+
+      public void setByNs(String value) {
+<span class="nc" id="L635">        _byNs = value;</span>
+<span class="nc" id="L636">      }</span>
 
       @Override
       public String toString() {

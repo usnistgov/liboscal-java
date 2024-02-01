@@ -38,7 +38,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 @ValueConstraints(
     allowedValues = {
         @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;label&quot;, description = &quot;A human-readable label for the parent context, which may be rendered in place of the actual identifier for some use cases.&quot;), @AllowedValue(value = &quot;sort-id&quot;, description = &quot;An alternative identifier, whose value is easily sortable among other such values in the document.&quot;), @AllowedValue(value = &quot;alt-identifier&quot;, description = &quot;An alternate or aliased identifier for the parent context.&quot;)}),
-        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;overview&quot;, description = &quot;An introduction to a control or a group of controls.&quot;))
+        @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;part[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = {@AllowedValue(value = &quot;overview&quot;, description = &quot;An introduction to a control or a group of controls.&quot;), @AllowedValue(value = &quot;instruction&quot;, description = &quot;Information providing directions for a control or a group of controls.&quot;)})
     }
 )
 public class CatalogGroup extends AbstractCatalogGroup {

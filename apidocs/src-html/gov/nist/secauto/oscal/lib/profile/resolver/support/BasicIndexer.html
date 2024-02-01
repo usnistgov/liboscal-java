@@ -199,207 +199,211 @@
 <span class="sourceLineNo">190</span><a id="line.190">    return entityGroup == null ? CollectionUtil.emptyList() : ObjectUtils.notNull(entityGroup.values());</a>
 <span class="sourceLineNo">191</span><a id="line.191">  }</a>
 <span class="sourceLineNo">192</span><a id="line.192">  //</a>
-<span class="sourceLineNo">193</span><a id="line.193">  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID identifier) {</a>
-<span class="sourceLineNo">194</span><a id="line.194">  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);</a>
-<span class="sourceLineNo">195</span><a id="line.195">  // }</a>
-<span class="sourceLineNo">196</span><a id="line.196">  //</a>
-<span class="sourceLineNo">197</span><a id="line.197">  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier) {</a>
-<span class="sourceLineNo">198</span><a id="line.198">  // return getEntity(itemType, identifier, itemType.isUuid());</a>
-<span class="sourceLineNo">199</span><a id="line.199">  // }</a>
-<span class="sourceLineNo">200</span><a id="line.200"></a>
-<span class="sourceLineNo">201</span><a id="line.201">  @Override</a>
-<span class="sourceLineNo">202</span><a id="line.202">  public IEntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier, boolean normalize) {</a>
-<span class="sourceLineNo">203</span><a id="line.203">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(itemType);</a>
-<span class="sourceLineNo">204</span><a id="line.204">    String normalizedIdentifier = normalize ? normalizeIdentifier(identifier) : identifier;</a>
-<span class="sourceLineNo">205</span><a id="line.205">    return entityGroup == null ? null : entityGroup.get(normalizedIdentifier);</a>
-<span class="sourceLineNo">206</span><a id="line.206">  }</a>
-<span class="sourceLineNo">207</span><a id="line.207"></a>
-<span class="sourceLineNo">208</span><a id="line.208">  protected IEntityItem addItem(@NonNull IEntityItem item) {</a>
-<span class="sourceLineNo">209</span><a id="line.209">    IEntityItem.ItemType type = item.getItemType();</a>
+<span class="sourceLineNo">193</span><a id="line.193">  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull UUID</a>
+<span class="sourceLineNo">194</span><a id="line.194">  // identifier) {</a>
+<span class="sourceLineNo">195</span><a id="line.195">  // return getEntity(itemType, ObjectUtils.notNull(identifier.toString()),</a>
+<span class="sourceLineNo">196</span><a id="line.196">  // false);</a>
+<span class="sourceLineNo">197</span><a id="line.197">  // }</a>
+<span class="sourceLineNo">198</span><a id="line.198">  //</a>
+<span class="sourceLineNo">199</span><a id="line.199">  // public EntityItem getEntity(@NonNull ItemType itemType, @NonNull String</a>
+<span class="sourceLineNo">200</span><a id="line.200">  // identifier) {</a>
+<span class="sourceLineNo">201</span><a id="line.201">  // return getEntity(itemType, identifier, itemType.isUuid());</a>
+<span class="sourceLineNo">202</span><a id="line.202">  // }</a>
+<span class="sourceLineNo">203</span><a id="line.203"></a>
+<span class="sourceLineNo">204</span><a id="line.204">  @Override</a>
+<span class="sourceLineNo">205</span><a id="line.205">  public IEntityItem getEntity(@NonNull ItemType itemType, @NonNull String identifier, boolean normalize) {</a>
+<span class="sourceLineNo">206</span><a id="line.206">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(itemType);</a>
+<span class="sourceLineNo">207</span><a id="line.207">    String normalizedIdentifier = normalize ? normalizeIdentifier(identifier) : identifier;</a>
+<span class="sourceLineNo">208</span><a id="line.208">    return entityGroup == null ? null : entityGroup.get(normalizedIdentifier);</a>
+<span class="sourceLineNo">209</span><a id="line.209">  }</a>
 <span class="sourceLineNo">210</span><a id="line.210"></a>
-<span class="sourceLineNo">211</span><a id="line.211">    @SuppressWarnings("PMD.UseConcurrentHashMap") // need ordering</a>
-<span class="sourceLineNo">212</span><a id="line.212">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.computeIfAbsent(</a>
-<span class="sourceLineNo">213</span><a id="line.213">        type,</a>
-<span class="sourceLineNo">214</span><a id="line.214">        (key) -&gt; Collections.synchronizedMap(new LinkedHashMap&lt;&gt;()));</a>
-<span class="sourceLineNo">215</span><a id="line.215">    IEntityItem oldEntity = entityGroup.put(item.getIdentifier(), item);</a>
-<span class="sourceLineNo">216</span><a id="line.216"></a>
-<span class="sourceLineNo">217</span><a id="line.217">    if (oldEntity != null &amp;&amp; LOGGER.isWarnEnabled()) {</a>
-<span class="sourceLineNo">218</span><a id="line.218">      LOGGER.atWarn().log("Duplicate {} found with identifier {} in index.",</a>
-<span class="sourceLineNo">219</span><a id="line.219">          oldEntity.getItemType().name().toLowerCase(Locale.ROOT),</a>
-<span class="sourceLineNo">220</span><a id="line.220">          oldEntity.getIdentifier());</a>
-<span class="sourceLineNo">221</span><a id="line.221">    }</a>
-<span class="sourceLineNo">222</span><a id="line.222">    return oldEntity;</a>
-<span class="sourceLineNo">223</span><a id="line.223">  }</a>
-<span class="sourceLineNo">224</span><a id="line.224"></a>
-<span class="sourceLineNo">225</span><a id="line.225">  @NonNull</a>
-<span class="sourceLineNo">226</span><a id="line.226">  protected IEntityItem addItem(@NonNull AbstractEntityItem.Builder builder) {</a>
-<span class="sourceLineNo">227</span><a id="line.227">    IEntityItem retval = builder.build();</a>
-<span class="sourceLineNo">228</span><a id="line.228">    addItem(retval);</a>
-<span class="sourceLineNo">229</span><a id="line.229">    return retval;</a>
-<span class="sourceLineNo">230</span><a id="line.230">  }</a>
-<span class="sourceLineNo">231</span><a id="line.231"></a>
-<span class="sourceLineNo">232</span><a id="line.232">  @Override</a>
-<span class="sourceLineNo">233</span><a id="line.233">  public boolean removeItem(@NonNull IEntityItem entity) {</a>
-<span class="sourceLineNo">234</span><a id="line.234">    IEntityItem.ItemType type = entity.getItemType();</a>
-<span class="sourceLineNo">235</span><a id="line.235">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(type);</a>
-<span class="sourceLineNo">236</span><a id="line.236"></a>
-<span class="sourceLineNo">237</span><a id="line.237">    boolean retval = false;</a>
-<span class="sourceLineNo">238</span><a id="line.238">    if (entityGroup != null) {</a>
-<span class="sourceLineNo">239</span><a id="line.239">      retval = entityGroup.remove(entity.getIdentifier(), entity);</a>
-<span class="sourceLineNo">240</span><a id="line.240"></a>
-<span class="sourceLineNo">241</span><a id="line.241">      // remove if present</a>
-<span class="sourceLineNo">242</span><a id="line.242">      nodeItemToSelectionStatusMap.remove(entity.getInstance());</a>
+<span class="sourceLineNo">211</span><a id="line.211">  protected IEntityItem addItem(@NonNull IEntityItem item) {</a>
+<span class="sourceLineNo">212</span><a id="line.212">    IEntityItem.ItemType type = item.getItemType();</a>
+<span class="sourceLineNo">213</span><a id="line.213"></a>
+<span class="sourceLineNo">214</span><a id="line.214">    @SuppressWarnings("PMD.UseConcurrentHashMap") // need ordering</a>
+<span class="sourceLineNo">215</span><a id="line.215">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.computeIfAbsent(</a>
+<span class="sourceLineNo">216</span><a id="line.216">        type,</a>
+<span class="sourceLineNo">217</span><a id="line.217">        (key) -&gt; Collections.synchronizedMap(new LinkedHashMap&lt;&gt;()));</a>
+<span class="sourceLineNo">218</span><a id="line.218">    IEntityItem oldEntity = entityGroup.put(item.getIdentifier(), item);</a>
+<span class="sourceLineNo">219</span><a id="line.219"></a>
+<span class="sourceLineNo">220</span><a id="line.220">    if (oldEntity != null &amp;&amp; LOGGER.isWarnEnabled()) {</a>
+<span class="sourceLineNo">221</span><a id="line.221">      LOGGER.atWarn().log("Duplicate {} found with identifier {} in index.",</a>
+<span class="sourceLineNo">222</span><a id="line.222">          oldEntity.getItemType().name().toLowerCase(Locale.ROOT),</a>
+<span class="sourceLineNo">223</span><a id="line.223">          oldEntity.getIdentifier());</a>
+<span class="sourceLineNo">224</span><a id="line.224">    }</a>
+<span class="sourceLineNo">225</span><a id="line.225">    return oldEntity;</a>
+<span class="sourceLineNo">226</span><a id="line.226">  }</a>
+<span class="sourceLineNo">227</span><a id="line.227"></a>
+<span class="sourceLineNo">228</span><a id="line.228">  @NonNull</a>
+<span class="sourceLineNo">229</span><a id="line.229">  protected IEntityItem addItem(@NonNull AbstractEntityItem.Builder builder) {</a>
+<span class="sourceLineNo">230</span><a id="line.230">    IEntityItem retval = builder.build();</a>
+<span class="sourceLineNo">231</span><a id="line.231">    addItem(retval);</a>
+<span class="sourceLineNo">232</span><a id="line.232">    return retval;</a>
+<span class="sourceLineNo">233</span><a id="line.233">  }</a>
+<span class="sourceLineNo">234</span><a id="line.234"></a>
+<span class="sourceLineNo">235</span><a id="line.235">  @Override</a>
+<span class="sourceLineNo">236</span><a id="line.236">  public boolean removeItem(@NonNull IEntityItem entity) {</a>
+<span class="sourceLineNo">237</span><a id="line.237">    IEntityItem.ItemType type = entity.getItemType();</a>
+<span class="sourceLineNo">238</span><a id="line.238">    Map&lt;String, IEntityItem&gt; entityGroup = entityTypeToIdentifierToEntityMap.get(type);</a>
+<span class="sourceLineNo">239</span><a id="line.239"></a>
+<span class="sourceLineNo">240</span><a id="line.240">    boolean retval = false;</a>
+<span class="sourceLineNo">241</span><a id="line.241">    if (entityGroup != null) {</a>
+<span class="sourceLineNo">242</span><a id="line.242">      retval = entityGroup.remove(entity.getIdentifier(), entity);</a>
 <span class="sourceLineNo">243</span><a id="line.243"></a>
-<span class="sourceLineNo">244</span><a id="line.244">      if (retval) {</a>
-<span class="sourceLineNo">245</span><a id="line.245">        if (LOGGER.isDebugEnabled()) {</a>
-<span class="sourceLineNo">246</span><a id="line.246">          LOGGER.atDebug().log("Removing {} '{}' from index.", type.name(), entity.getIdentifier());</a>
-<span class="sourceLineNo">247</span><a id="line.247">        }</a>
-<span class="sourceLineNo">248</span><a id="line.248">      } else if (LOGGER.isDebugEnabled()) {</a>
-<span class="sourceLineNo">249</span><a id="line.249">        LOGGER.atDebug().log("The {} entity '{}' was not found in the index to remove.",</a>
-<span class="sourceLineNo">250</span><a id="line.250">            type.name(),</a>
-<span class="sourceLineNo">251</span><a id="line.251">            entity.getIdentifier());</a>
-<span class="sourceLineNo">252</span><a id="line.252">      }</a>
-<span class="sourceLineNo">253</span><a id="line.253">    }</a>
-<span class="sourceLineNo">254</span><a id="line.254">    return retval;</a>
-<span class="sourceLineNo">255</span><a id="line.255">  }</a>
-<span class="sourceLineNo">256</span><a id="line.256"></a>
-<span class="sourceLineNo">257</span><a id="line.257">  @Override</a>
-<span class="sourceLineNo">258</span><a id="line.258">  public IEntityItem addRole(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">259</span><a id="line.259">    Role role = (Role) item.getValue();</a>
-<span class="sourceLineNo">260</span><a id="line.260">    String identifier = ObjectUtils.requireNonNull(role.getId());</a>
-<span class="sourceLineNo">261</span><a id="line.261"></a>
-<span class="sourceLineNo">262</span><a id="line.262">    return addItem(newBuilder(item, ItemType.ROLE, identifier));</a>
-<span class="sourceLineNo">263</span><a id="line.263">  }</a>
+<span class="sourceLineNo">244</span><a id="line.244">      // remove if present</a>
+<span class="sourceLineNo">245</span><a id="line.245">      nodeItemToSelectionStatusMap.remove(entity.getInstance());</a>
+<span class="sourceLineNo">246</span><a id="line.246"></a>
+<span class="sourceLineNo">247</span><a id="line.247">      if (retval) {</a>
+<span class="sourceLineNo">248</span><a id="line.248">        if (LOGGER.isDebugEnabled()) {</a>
+<span class="sourceLineNo">249</span><a id="line.249">          LOGGER.atDebug().log("Removing {} '{}' from index.", type.name(), entity.getIdentifier());</a>
+<span class="sourceLineNo">250</span><a id="line.250">        }</a>
+<span class="sourceLineNo">251</span><a id="line.251">      } else if (LOGGER.isDebugEnabled()) {</a>
+<span class="sourceLineNo">252</span><a id="line.252">        LOGGER.atDebug().log("The {} entity '{}' was not found in the index to remove.",</a>
+<span class="sourceLineNo">253</span><a id="line.253">            type.name(),</a>
+<span class="sourceLineNo">254</span><a id="line.254">            entity.getIdentifier());</a>
+<span class="sourceLineNo">255</span><a id="line.255">      }</a>
+<span class="sourceLineNo">256</span><a id="line.256">    }</a>
+<span class="sourceLineNo">257</span><a id="line.257">    return retval;</a>
+<span class="sourceLineNo">258</span><a id="line.258">  }</a>
+<span class="sourceLineNo">259</span><a id="line.259"></a>
+<span class="sourceLineNo">260</span><a id="line.260">  @Override</a>
+<span class="sourceLineNo">261</span><a id="line.261">  public IEntityItem addRole(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">262</span><a id="line.262">    Role role = (Role) item.getValue();</a>
+<span class="sourceLineNo">263</span><a id="line.263">    String identifier = ObjectUtils.requireNonNull(role.getId());</a>
 <span class="sourceLineNo">264</span><a id="line.264"></a>
-<span class="sourceLineNo">265</span><a id="line.265">  @Override</a>
-<span class="sourceLineNo">266</span><a id="line.266">  public IEntityItem addLocation(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">267</span><a id="line.267">    Location location = (Location) item.getValue();</a>
-<span class="sourceLineNo">268</span><a id="line.268">    UUID identifier = ObjectUtils.requireNonNull(location.getUuid());</a>
-<span class="sourceLineNo">269</span><a id="line.269"></a>
-<span class="sourceLineNo">270</span><a id="line.270">    return addItem(newBuilder(item, ItemType.LOCATION, identifier));</a>
-<span class="sourceLineNo">271</span><a id="line.271">  }</a>
+<span class="sourceLineNo">265</span><a id="line.265">    return addItem(newBuilder(item, ItemType.ROLE, identifier));</a>
+<span class="sourceLineNo">266</span><a id="line.266">  }</a>
+<span class="sourceLineNo">267</span><a id="line.267"></a>
+<span class="sourceLineNo">268</span><a id="line.268">  @Override</a>
+<span class="sourceLineNo">269</span><a id="line.269">  public IEntityItem addLocation(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">270</span><a id="line.270">    Location location = (Location) item.getValue();</a>
+<span class="sourceLineNo">271</span><a id="line.271">    UUID identifier = ObjectUtils.requireNonNull(location.getUuid());</a>
 <span class="sourceLineNo">272</span><a id="line.272"></a>
-<span class="sourceLineNo">273</span><a id="line.273">  @Override</a>
-<span class="sourceLineNo">274</span><a id="line.274">  public IEntityItem addParty(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">275</span><a id="line.275">    Party party = (Party) item.getValue();</a>
-<span class="sourceLineNo">276</span><a id="line.276">    UUID identifier = ObjectUtils.requireNonNull(party.getUuid());</a>
-<span class="sourceLineNo">277</span><a id="line.277"></a>
-<span class="sourceLineNo">278</span><a id="line.278">    return addItem(newBuilder(item, ItemType.PARTY, identifier));</a>
-<span class="sourceLineNo">279</span><a id="line.279">  }</a>
+<span class="sourceLineNo">273</span><a id="line.273">    return addItem(newBuilder(item, ItemType.LOCATION, identifier));</a>
+<span class="sourceLineNo">274</span><a id="line.274">  }</a>
+<span class="sourceLineNo">275</span><a id="line.275"></a>
+<span class="sourceLineNo">276</span><a id="line.276">  @Override</a>
+<span class="sourceLineNo">277</span><a id="line.277">  public IEntityItem addParty(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">278</span><a id="line.278">    Party party = (Party) item.getValue();</a>
+<span class="sourceLineNo">279</span><a id="line.279">    UUID identifier = ObjectUtils.requireNonNull(party.getUuid());</a>
 <span class="sourceLineNo">280</span><a id="line.280"></a>
-<span class="sourceLineNo">281</span><a id="line.281">  @Override</a>
-<span class="sourceLineNo">282</span><a id="line.282">  public IEntityItem addGroup(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">283</span><a id="line.283">    CatalogGroup group = (CatalogGroup) item.getValue();</a>
-<span class="sourceLineNo">284</span><a id="line.284">    String identifier = group.getId();</a>
-<span class="sourceLineNo">285</span><a id="line.285">    return identifier == null ? null : addItem(newBuilder(item, ItemType.GROUP, identifier));</a>
-<span class="sourceLineNo">286</span><a id="line.286">  }</a>
-<span class="sourceLineNo">287</span><a id="line.287"></a>
-<span class="sourceLineNo">288</span><a id="line.288">  @Override</a>
-<span class="sourceLineNo">289</span><a id="line.289">  public IEntityItem addControl(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">290</span><a id="line.290">    Control control = (Control) item.getValue();</a>
-<span class="sourceLineNo">291</span><a id="line.291">    String identifier = ObjectUtils.requireNonNull(control.getId());</a>
-<span class="sourceLineNo">292</span><a id="line.292">    return addItem(newBuilder(item, ItemType.CONTROL, identifier));</a>
-<span class="sourceLineNo">293</span><a id="line.293">  }</a>
-<span class="sourceLineNo">294</span><a id="line.294"></a>
-<span class="sourceLineNo">295</span><a id="line.295">  @Override</a>
-<span class="sourceLineNo">296</span><a id="line.296">  public IEntityItem addParameter(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">297</span><a id="line.297">    Parameter parameter = (Parameter) item.getValue();</a>
-<span class="sourceLineNo">298</span><a id="line.298">    String identifier = ObjectUtils.requireNonNull(parameter.getId());</a>
-<span class="sourceLineNo">299</span><a id="line.299"></a>
-<span class="sourceLineNo">300</span><a id="line.300">    return addItem(newBuilder(item, ItemType.PARAMETER, identifier));</a>
-<span class="sourceLineNo">301</span><a id="line.301">  }</a>
+<span class="sourceLineNo">281</span><a id="line.281">    return addItem(newBuilder(item, ItemType.PARTY, identifier));</a>
+<span class="sourceLineNo">282</span><a id="line.282">  }</a>
+<span class="sourceLineNo">283</span><a id="line.283"></a>
+<span class="sourceLineNo">284</span><a id="line.284">  @Override</a>
+<span class="sourceLineNo">285</span><a id="line.285">  public IEntityItem addGroup(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">286</span><a id="line.286">    CatalogGroup group = (CatalogGroup) item.getValue();</a>
+<span class="sourceLineNo">287</span><a id="line.287">    String identifier = group.getId();</a>
+<span class="sourceLineNo">288</span><a id="line.288">    return identifier == null ? null : addItem(newBuilder(item, ItemType.GROUP, identifier));</a>
+<span class="sourceLineNo">289</span><a id="line.289">  }</a>
+<span class="sourceLineNo">290</span><a id="line.290"></a>
+<span class="sourceLineNo">291</span><a id="line.291">  @Override</a>
+<span class="sourceLineNo">292</span><a id="line.292">  public IEntityItem addControl(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">293</span><a id="line.293">    Control control = (Control) item.getValue();</a>
+<span class="sourceLineNo">294</span><a id="line.294">    String identifier = ObjectUtils.requireNonNull(control.getId());</a>
+<span class="sourceLineNo">295</span><a id="line.295">    return addItem(newBuilder(item, ItemType.CONTROL, identifier));</a>
+<span class="sourceLineNo">296</span><a id="line.296">  }</a>
+<span class="sourceLineNo">297</span><a id="line.297"></a>
+<span class="sourceLineNo">298</span><a id="line.298">  @Override</a>
+<span class="sourceLineNo">299</span><a id="line.299">  public IEntityItem addParameter(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">300</span><a id="line.300">    Parameter parameter = (Parameter) item.getValue();</a>
+<span class="sourceLineNo">301</span><a id="line.301">    String identifier = ObjectUtils.requireNonNull(parameter.getId());</a>
 <span class="sourceLineNo">302</span><a id="line.302"></a>
-<span class="sourceLineNo">303</span><a id="line.303">  @Override</a>
-<span class="sourceLineNo">304</span><a id="line.304">  public IEntityItem addPart(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">305</span><a id="line.305">    ControlPart part = (ControlPart) item.getValue();</a>
-<span class="sourceLineNo">306</span><a id="line.306">    String identifier = part.getId();</a>
-<span class="sourceLineNo">307</span><a id="line.307"></a>
-<span class="sourceLineNo">308</span><a id="line.308">    return identifier == null ? null : addItem(newBuilder(item, ItemType.PART, identifier));</a>
-<span class="sourceLineNo">309</span><a id="line.309">  }</a>
+<span class="sourceLineNo">303</span><a id="line.303">    return addItem(newBuilder(item, ItemType.PARAMETER, identifier));</a>
+<span class="sourceLineNo">304</span><a id="line.304">  }</a>
+<span class="sourceLineNo">305</span><a id="line.305"></a>
+<span class="sourceLineNo">306</span><a id="line.306">  @Override</a>
+<span class="sourceLineNo">307</span><a id="line.307">  public IEntityItem addPart(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">308</span><a id="line.308">    ControlPart part = (ControlPart) item.getValue();</a>
+<span class="sourceLineNo">309</span><a id="line.309">    String identifier = part.getId();</a>
 <span class="sourceLineNo">310</span><a id="line.310"></a>
-<span class="sourceLineNo">311</span><a id="line.311">  @Override</a>
-<span class="sourceLineNo">312</span><a id="line.312">  public IEntityItem addResource(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">313</span><a id="line.313">    Resource resource = (Resource) item.getValue();</a>
-<span class="sourceLineNo">314</span><a id="line.314">    UUID identifier = ObjectUtils.requireNonNull(resource.getUuid());</a>
-<span class="sourceLineNo">315</span><a id="line.315"></a>
-<span class="sourceLineNo">316</span><a id="line.316">    return addItem(newBuilder(item, ItemType.RESOURCE, identifier));</a>
-<span class="sourceLineNo">317</span><a id="line.317">  }</a>
+<span class="sourceLineNo">311</span><a id="line.311">    return identifier == null ? null : addItem(newBuilder(item, ItemType.PART, identifier));</a>
+<span class="sourceLineNo">312</span><a id="line.312">  }</a>
+<span class="sourceLineNo">313</span><a id="line.313"></a>
+<span class="sourceLineNo">314</span><a id="line.314">  @Override</a>
+<span class="sourceLineNo">315</span><a id="line.315">  public IEntityItem addResource(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">316</span><a id="line.316">    Resource resource = (Resource) item.getValue();</a>
+<span class="sourceLineNo">317</span><a id="line.317">    UUID identifier = ObjectUtils.requireNonNull(resource.getUuid());</a>
 <span class="sourceLineNo">318</span><a id="line.318"></a>
-<span class="sourceLineNo">319</span><a id="line.319">  @NonNull</a>
-<span class="sourceLineNo">320</span><a id="line.320">  protected final AbstractEntityItem.Builder newBuilder(</a>
-<span class="sourceLineNo">321</span><a id="line.321">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">322</span><a id="line.322">      @NonNull ItemType itemType,</a>
-<span class="sourceLineNo">323</span><a id="line.323">      @NonNull UUID identifier) {</a>
-<span class="sourceLineNo">324</span><a id="line.324">    return newBuilder(item, itemType, ObjectUtils.notNull(identifier.toString()));</a>
-<span class="sourceLineNo">325</span><a id="line.325">  }</a>
-<span class="sourceLineNo">326</span><a id="line.326"></a>
-<span class="sourceLineNo">327</span><a id="line.327">  /**</a>
-<span class="sourceLineNo">328</span><a id="line.328">   * Create a new builder with the provided info.</a>
-<span class="sourceLineNo">329</span><a id="line.329">   * &lt;p&gt;</a>
-<span class="sourceLineNo">330</span><a id="line.330">   * This method can be overloaded to support applying additional data to the returned builder.</a>
-<span class="sourceLineNo">331</span><a id="line.331">   * &lt;p&gt;</a>
-<span class="sourceLineNo">332</span><a id="line.332">   * When working with identifiers that are case insensitve, it is important to ensure that the</a>
-<span class="sourceLineNo">333</span><a id="line.333">   * identifiers are normalized to lower case.</a>
-<span class="sourceLineNo">334</span><a id="line.334">   *</a>
-<span class="sourceLineNo">335</span><a id="line.335">   * @param item</a>
-<span class="sourceLineNo">336</span><a id="line.336">   *          the Metapath node to associate with the entity</a>
-<span class="sourceLineNo">337</span><a id="line.337">   * @param itemType</a>
-<span class="sourceLineNo">338</span><a id="line.338">   *          the type of entity</a>
-<span class="sourceLineNo">339</span><a id="line.339">   * @param identifier</a>
-<span class="sourceLineNo">340</span><a id="line.340">   *          the entity's identifier</a>
-<span class="sourceLineNo">341</span><a id="line.341">   * @return the entity builder</a>
-<span class="sourceLineNo">342</span><a id="line.342">   */</a>
-<span class="sourceLineNo">343</span><a id="line.343">  @NonNull</a>
-<span class="sourceLineNo">344</span><a id="line.344">  protected AbstractEntityItem.Builder newBuilder(</a>
-<span class="sourceLineNo">345</span><a id="line.345">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">346</span><a id="line.346">      @NonNull ItemType itemType,</a>
-<span class="sourceLineNo">347</span><a id="line.347">      @NonNull String identifier) {</a>
-<span class="sourceLineNo">348</span><a id="line.348">    return new AbstractEntityItem.Builder()</a>
-<span class="sourceLineNo">349</span><a id="line.349">        .instance(item, itemType)</a>
-<span class="sourceLineNo">350</span><a id="line.350">        .originalIdentifier(identifier)</a>
-<span class="sourceLineNo">351</span><a id="line.351">        .source(ObjectUtils.requireNonNull(item.getBaseUri(), "item must have an associated URI"));</a>
-<span class="sourceLineNo">352</span><a id="line.352">  }</a>
-<span class="sourceLineNo">353</span><a id="line.353"></a>
-<span class="sourceLineNo">354</span><a id="line.354">  /**</a>
-<span class="sourceLineNo">355</span><a id="line.355">   * Lower case UUID-based identifiers and leave others unmodified.</a>
-<span class="sourceLineNo">356</span><a id="line.356">   *</a>
-<span class="sourceLineNo">357</span><a id="line.357">   * @param identifier</a>
-<span class="sourceLineNo">358</span><a id="line.358">   *          the identifier</a>
-<span class="sourceLineNo">359</span><a id="line.359">   * @return the resulting normalized identifier</a>
-<span class="sourceLineNo">360</span><a id="line.360">   */</a>
-<span class="sourceLineNo">361</span><a id="line.361">  @NonNull</a>
-<span class="sourceLineNo">362</span><a id="line.362">  public String normalizeIdentifier(@NonNull String identifier) {</a>
-<span class="sourceLineNo">363</span><a id="line.363">    return UuidAdapter.UUID_PATTERN.matcher(identifier).matches()</a>
-<span class="sourceLineNo">364</span><a id="line.364">        ? ObjectUtils.notNull(identifier.toLowerCase(Locale.ROOT))</a>
-<span class="sourceLineNo">365</span><a id="line.365">        : identifier;</a>
-<span class="sourceLineNo">366</span><a id="line.366">  }</a>
-<span class="sourceLineNo">367</span><a id="line.367">  //</a>
-<span class="sourceLineNo">368</span><a id="line.368">  // private static class ItemGroup {</a>
-<span class="sourceLineNo">369</span><a id="line.369">  // @NonNull</a>
-<span class="sourceLineNo">370</span><a id="line.370">  // private final ItemType itemType;</a>
-<span class="sourceLineNo">371</span><a id="line.371">  // Map&lt;String, IEntityItem&gt; idToEntityMap;</a>
-<span class="sourceLineNo">372</span><a id="line.372">  //</a>
-<span class="sourceLineNo">373</span><a id="line.373">  // public ItemGroup(@NonNull ItemType itemType) {</a>
-<span class="sourceLineNo">374</span><a id="line.374">  // this.itemType = itemType;</a>
-<span class="sourceLineNo">375</span><a id="line.375">  // this.idToEntityMap = new LinkedHashMap&lt;&gt;();</a>
-<span class="sourceLineNo">376</span><a id="line.376">  // }</a>
-<span class="sourceLineNo">377</span><a id="line.377">  //</a>
-<span class="sourceLineNo">378</span><a id="line.378">  // public IEntityItem getEntity(@NonNull String identifier) {</a>
-<span class="sourceLineNo">379</span><a id="line.379">  // return idToEntityMap.get(identifier);</a>
+<span class="sourceLineNo">319</span><a id="line.319">    return addItem(newBuilder(item, ItemType.RESOURCE, identifier));</a>
+<span class="sourceLineNo">320</span><a id="line.320">  }</a>
+<span class="sourceLineNo">321</span><a id="line.321"></a>
+<span class="sourceLineNo">322</span><a id="line.322">  @NonNull</a>
+<span class="sourceLineNo">323</span><a id="line.323">  protected final AbstractEntityItem.Builder newBuilder(</a>
+<span class="sourceLineNo">324</span><a id="line.324">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">325</span><a id="line.325">      @NonNull ItemType itemType,</a>
+<span class="sourceLineNo">326</span><a id="line.326">      @NonNull UUID identifier) {</a>
+<span class="sourceLineNo">327</span><a id="line.327">    return newBuilder(item, itemType, ObjectUtils.notNull(identifier.toString()));</a>
+<span class="sourceLineNo">328</span><a id="line.328">  }</a>
+<span class="sourceLineNo">329</span><a id="line.329"></a>
+<span class="sourceLineNo">330</span><a id="line.330">  /**</a>
+<span class="sourceLineNo">331</span><a id="line.331">   * Create a new builder with the provided info.</a>
+<span class="sourceLineNo">332</span><a id="line.332">   * &lt;p&gt;</a>
+<span class="sourceLineNo">333</span><a id="line.333">   * This method can be overloaded to support applying additional data to the</a>
+<span class="sourceLineNo">334</span><a id="line.334">   * returned builder.</a>
+<span class="sourceLineNo">335</span><a id="line.335">   * &lt;p&gt;</a>
+<span class="sourceLineNo">336</span><a id="line.336">   * When working with identifiers that are case insensitve, it is important to</a>
+<span class="sourceLineNo">337</span><a id="line.337">   * ensure that the identifiers are normalized to lower case.</a>
+<span class="sourceLineNo">338</span><a id="line.338">   *</a>
+<span class="sourceLineNo">339</span><a id="line.339">   * @param item</a>
+<span class="sourceLineNo">340</span><a id="line.340">   *          the Metapath node to associate with the entity</a>
+<span class="sourceLineNo">341</span><a id="line.341">   * @param itemType</a>
+<span class="sourceLineNo">342</span><a id="line.342">   *          the type of entity</a>
+<span class="sourceLineNo">343</span><a id="line.343">   * @param identifier</a>
+<span class="sourceLineNo">344</span><a id="line.344">   *          the entity's identifier</a>
+<span class="sourceLineNo">345</span><a id="line.345">   * @return the entity builder</a>
+<span class="sourceLineNo">346</span><a id="line.346">   */</a>
+<span class="sourceLineNo">347</span><a id="line.347">  @NonNull</a>
+<span class="sourceLineNo">348</span><a id="line.348">  protected AbstractEntityItem.Builder newBuilder(</a>
+<span class="sourceLineNo">349</span><a id="line.349">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">350</span><a id="line.350">      @NonNull ItemType itemType,</a>
+<span class="sourceLineNo">351</span><a id="line.351">      @NonNull String identifier) {</a>
+<span class="sourceLineNo">352</span><a id="line.352">    return new AbstractEntityItem.Builder()</a>
+<span class="sourceLineNo">353</span><a id="line.353">        .instance(item, itemType)</a>
+<span class="sourceLineNo">354</span><a id="line.354">        .originalIdentifier(identifier)</a>
+<span class="sourceLineNo">355</span><a id="line.355">        .source(ObjectUtils.requireNonNull(item.getBaseUri(), "item must have an associated URI"));</a>
+<span class="sourceLineNo">356</span><a id="line.356">  }</a>
+<span class="sourceLineNo">357</span><a id="line.357"></a>
+<span class="sourceLineNo">358</span><a id="line.358">  /**</a>
+<span class="sourceLineNo">359</span><a id="line.359">   * Lower case UUID-based identifiers and leave others unmodified.</a>
+<span class="sourceLineNo">360</span><a id="line.360">   *</a>
+<span class="sourceLineNo">361</span><a id="line.361">   * @param identifier</a>
+<span class="sourceLineNo">362</span><a id="line.362">   *          the identifier</a>
+<span class="sourceLineNo">363</span><a id="line.363">   * @return the resulting normalized identifier</a>
+<span class="sourceLineNo">364</span><a id="line.364">   */</a>
+<span class="sourceLineNo">365</span><a id="line.365">  @NonNull</a>
+<span class="sourceLineNo">366</span><a id="line.366">  public String normalizeIdentifier(@NonNull String identifier) {</a>
+<span class="sourceLineNo">367</span><a id="line.367">    return UuidAdapter.UUID_PATTERN.matcher(identifier).matches()</a>
+<span class="sourceLineNo">368</span><a id="line.368">        ? ObjectUtils.notNull(identifier.toLowerCase(Locale.ROOT))</a>
+<span class="sourceLineNo">369</span><a id="line.369">        : identifier;</a>
+<span class="sourceLineNo">370</span><a id="line.370">  }</a>
+<span class="sourceLineNo">371</span><a id="line.371">  //</a>
+<span class="sourceLineNo">372</span><a id="line.372">  // private static class ItemGroup {</a>
+<span class="sourceLineNo">373</span><a id="line.373">  // @NonNull</a>
+<span class="sourceLineNo">374</span><a id="line.374">  // private final ItemType itemType;</a>
+<span class="sourceLineNo">375</span><a id="line.375">  // Map&lt;String, IEntityItem&gt; idToEntityMap;</a>
+<span class="sourceLineNo">376</span><a id="line.376">  //</a>
+<span class="sourceLineNo">377</span><a id="line.377">  // public ItemGroup(@NonNull ItemType itemType) {</a>
+<span class="sourceLineNo">378</span><a id="line.378">  // this.itemType = itemType;</a>
+<span class="sourceLineNo">379</span><a id="line.379">  // this.idToEntityMap = new LinkedHashMap&lt;&gt;();</a>
 <span class="sourceLineNo">380</span><a id="line.380">  // }</a>
 <span class="sourceLineNo">381</span><a id="line.381">  //</a>
-<span class="sourceLineNo">382</span><a id="line.382">  // @SuppressWarnings("null")</a>
-<span class="sourceLineNo">383</span><a id="line.383">  // @NonNull</a>
-<span class="sourceLineNo">384</span><a id="line.384">  // public Collection&lt;IEntityItem&gt; getEntities() {</a>
-<span class="sourceLineNo">385</span><a id="line.385">  // return idToEntityMap.values();</a>
-<span class="sourceLineNo">386</span><a id="line.386">  // }</a>
-<span class="sourceLineNo">387</span><a id="line.387">  //</a>
-<span class="sourceLineNo">388</span><a id="line.388">  // public IEntityItem add(@NonNull IEntityItem entity) {</a>
-<span class="sourceLineNo">389</span><a id="line.389">  // assert itemType.equals(entity.getItemType());</a>
-<span class="sourceLineNo">390</span><a id="line.390">  // return idToEntityMap.put(entity.getOriginalIdentifier(), entity);</a>
-<span class="sourceLineNo">391</span><a id="line.391">  // }</a>
-<span class="sourceLineNo">392</span><a id="line.392">  // }</a>
-<span class="sourceLineNo">393</span><a id="line.393">}</a>
+<span class="sourceLineNo">382</span><a id="line.382">  // public IEntityItem getEntity(@NonNull String identifier) {</a>
+<span class="sourceLineNo">383</span><a id="line.383">  // return idToEntityMap.get(identifier);</a>
+<span class="sourceLineNo">384</span><a id="line.384">  // }</a>
+<span class="sourceLineNo">385</span><a id="line.385">  //</a>
+<span class="sourceLineNo">386</span><a id="line.386">  // @SuppressWarnings("null")</a>
+<span class="sourceLineNo">387</span><a id="line.387">  // @NonNull</a>
+<span class="sourceLineNo">388</span><a id="line.388">  // public Collection&lt;IEntityItem&gt; getEntities() {</a>
+<span class="sourceLineNo">389</span><a id="line.389">  // return idToEntityMap.values();</a>
+<span class="sourceLineNo">390</span><a id="line.390">  // }</a>
+<span class="sourceLineNo">391</span><a id="line.391">  //</a>
+<span class="sourceLineNo">392</span><a id="line.392">  // public IEntityItem add(@NonNull IEntityItem entity) {</a>
+<span class="sourceLineNo">393</span><a id="line.393">  // assert itemType.equals(entity.getItemType());</a>
+<span class="sourceLineNo">394</span><a id="line.394">  // return idToEntityMap.put(entity.getOriginalIdentifier(), entity);</a>
+<span class="sourceLineNo">395</span><a id="line.395">  // }</a>
+<span class="sourceLineNo">396</span><a id="line.396">  // }</a>
+<span class="sourceLineNo">397</span><a id="line.397">}</a>
 
 
 

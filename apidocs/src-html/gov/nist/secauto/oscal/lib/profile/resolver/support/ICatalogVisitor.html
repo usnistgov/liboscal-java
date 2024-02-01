@@ -43,50 +43,52 @@
 <span class="sourceLineNo">034</span><a id="line.34"> * Used to visit a catalog containing groups and controls.</a>
 <span class="sourceLineNo">035</span><a id="line.35"> *</a>
 <span class="sourceLineNo">036</span><a id="line.36"> * @param &lt;T&gt;</a>
-<span class="sourceLineNo">037</span><a id="line.37"> *          the type of the context object used to pass calling context information</a>
-<span class="sourceLineNo">038</span><a id="line.38"> * @param &lt;R&gt;</a>
-<span class="sourceLineNo">039</span><a id="line.39"> *          the type of the result for visiting a collection of groups and/or controls</a>
-<span class="sourceLineNo">040</span><a id="line.40"> */</a>
-<span class="sourceLineNo">041</span><a id="line.41">public interface ICatalogVisitor&lt;T, R&gt; {</a>
-<span class="sourceLineNo">042</span><a id="line.42"></a>
-<span class="sourceLineNo">043</span><a id="line.43">  /**</a>
-<span class="sourceLineNo">044</span><a id="line.44">   * Called when visiting a group.</a>
-<span class="sourceLineNo">045</span><a id="line.45">   * &lt;p&gt;</a>
-<span class="sourceLineNo">046</span><a id="line.46">   * Can be overridden by classes extending this interface to support processing of the visited</a>
-<span class="sourceLineNo">047</span><a id="line.47">   * object.</a>
-<span class="sourceLineNo">048</span><a id="line.48">   *</a>
-<span class="sourceLineNo">049</span><a id="line.49">   * @param item</a>
-<span class="sourceLineNo">050</span><a id="line.50">   *          the Metapath item for the group</a>
-<span class="sourceLineNo">051</span><a id="line.51">   * @param childResult</a>
-<span class="sourceLineNo">052</span><a id="line.52">   *          the result of evaluating the group's children</a>
-<span class="sourceLineNo">053</span><a id="line.53">   * @param state</a>
-<span class="sourceLineNo">054</span><a id="line.54">   *          the calling context information</a>
-<span class="sourceLineNo">055</span><a id="line.55">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">056</span><a id="line.56">   */</a>
-<span class="sourceLineNo">057</span><a id="line.57">  default R visitGroup(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {</a>
-<span class="sourceLineNo">058</span><a id="line.58">    // do nothing by default</a>
-<span class="sourceLineNo">059</span><a id="line.59">    return childResult;</a>
-<span class="sourceLineNo">060</span><a id="line.60">  }</a>
-<span class="sourceLineNo">061</span><a id="line.61"></a>
-<span class="sourceLineNo">062</span><a id="line.62">  /**</a>
-<span class="sourceLineNo">063</span><a id="line.63">   * Called when visiting a control.</a>
-<span class="sourceLineNo">064</span><a id="line.64">   * &lt;p&gt;</a>
-<span class="sourceLineNo">065</span><a id="line.65">   * Can be overridden by classes extending this interface to support processing of the visited</a>
-<span class="sourceLineNo">066</span><a id="line.66">   * object.</a>
-<span class="sourceLineNo">067</span><a id="line.67">   *</a>
-<span class="sourceLineNo">068</span><a id="line.68">   * @param item</a>
-<span class="sourceLineNo">069</span><a id="line.69">   *          the Metapath item for the control</a>
-<span class="sourceLineNo">070</span><a id="line.70">   * @param childResult</a>
-<span class="sourceLineNo">071</span><a id="line.71">   *          the result of evaluating the control's children</a>
-<span class="sourceLineNo">072</span><a id="line.72">   * @param state</a>
-<span class="sourceLineNo">073</span><a id="line.73">   *          the calling context information</a>
-<span class="sourceLineNo">074</span><a id="line.74">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">075</span><a id="line.75">   */</a>
-<span class="sourceLineNo">076</span><a id="line.76">  default R visitControl(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {</a>
-<span class="sourceLineNo">077</span><a id="line.77">    // do nothing by default</a>
-<span class="sourceLineNo">078</span><a id="line.78">    return childResult;</a>
-<span class="sourceLineNo">079</span><a id="line.79">  }</a>
-<span class="sourceLineNo">080</span><a id="line.80">}</a>
+<span class="sourceLineNo">037</span><a id="line.37"> *          the type of the context object used to pass calling context</a>
+<span class="sourceLineNo">038</span><a id="line.38"> *          information</a>
+<span class="sourceLineNo">039</span><a id="line.39"> * @param &lt;R&gt;</a>
+<span class="sourceLineNo">040</span><a id="line.40"> *          the type of the result for visiting a collection of groups and/or</a>
+<span class="sourceLineNo">041</span><a id="line.41"> *          controls</a>
+<span class="sourceLineNo">042</span><a id="line.42"> */</a>
+<span class="sourceLineNo">043</span><a id="line.43">public interface ICatalogVisitor&lt;T, R&gt; {</a>
+<span class="sourceLineNo">044</span><a id="line.44"></a>
+<span class="sourceLineNo">045</span><a id="line.45">  /**</a>
+<span class="sourceLineNo">046</span><a id="line.46">   * Called when visiting a group.</a>
+<span class="sourceLineNo">047</span><a id="line.47">   * &lt;p&gt;</a>
+<span class="sourceLineNo">048</span><a id="line.48">   * Can be overridden by classes extending this interface to support processing</a>
+<span class="sourceLineNo">049</span><a id="line.49">   * of the visited object.</a>
+<span class="sourceLineNo">050</span><a id="line.50">   *</a>
+<span class="sourceLineNo">051</span><a id="line.51">   * @param item</a>
+<span class="sourceLineNo">052</span><a id="line.52">   *          the Metapath item for the group</a>
+<span class="sourceLineNo">053</span><a id="line.53">   * @param childResult</a>
+<span class="sourceLineNo">054</span><a id="line.54">   *          the result of evaluating the group's children</a>
+<span class="sourceLineNo">055</span><a id="line.55">   * @param state</a>
+<span class="sourceLineNo">056</span><a id="line.56">   *          the calling context information</a>
+<span class="sourceLineNo">057</span><a id="line.57">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">058</span><a id="line.58">   */</a>
+<span class="sourceLineNo">059</span><a id="line.59">  default R visitGroup(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {</a>
+<span class="sourceLineNo">060</span><a id="line.60">    // do nothing by default</a>
+<span class="sourceLineNo">061</span><a id="line.61">    return childResult;</a>
+<span class="sourceLineNo">062</span><a id="line.62">  }</a>
+<span class="sourceLineNo">063</span><a id="line.63"></a>
+<span class="sourceLineNo">064</span><a id="line.64">  /**</a>
+<span class="sourceLineNo">065</span><a id="line.65">   * Called when visiting a control.</a>
+<span class="sourceLineNo">066</span><a id="line.66">   * &lt;p&gt;</a>
+<span class="sourceLineNo">067</span><a id="line.67">   * Can be overridden by classes extending this interface to support processing</a>
+<span class="sourceLineNo">068</span><a id="line.68">   * of the visited object.</a>
+<span class="sourceLineNo">069</span><a id="line.69">   *</a>
+<span class="sourceLineNo">070</span><a id="line.70">   * @param item</a>
+<span class="sourceLineNo">071</span><a id="line.71">   *          the Metapath item for the control</a>
+<span class="sourceLineNo">072</span><a id="line.72">   * @param childResult</a>
+<span class="sourceLineNo">073</span><a id="line.73">   *          the result of evaluating the control's children</a>
+<span class="sourceLineNo">074</span><a id="line.74">   * @param state</a>
+<span class="sourceLineNo">075</span><a id="line.75">   *          the calling context information</a>
+<span class="sourceLineNo">076</span><a id="line.76">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">077</span><a id="line.77">   */</a>
+<span class="sourceLineNo">078</span><a id="line.78">  default R visitControl(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {</a>
+<span class="sourceLineNo">079</span><a id="line.79">    // do nothing by default</a>
+<span class="sourceLineNo">080</span><a id="line.80">    return childResult;</a>
+<span class="sourceLineNo">081</span><a id="line.81">  }</a>
+<span class="sourceLineNo">082</span><a id="line.82">}</a>
 
 
 

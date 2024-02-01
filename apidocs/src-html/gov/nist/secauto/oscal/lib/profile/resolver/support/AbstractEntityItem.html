@@ -75,153 +75,154 @@
 <span class="sourceLineNo">066</span><a id="line.66">  // @NonNull</a>
 <span class="sourceLineNo">067</span><a id="line.67">  // public String getIdentifier() {</a>
 <span class="sourceLineNo">068</span><a id="line.68">  // final String checkedReassignedIdentifier = reassignedIdentifier;</a>
-<span class="sourceLineNo">069</span><a id="line.69">  // return checkedReassignedIdentifier == null ? originalIdentifier : checkedReassignedIdentifier;</a>
-<span class="sourceLineNo">070</span><a id="line.70">  // }</a>
-<span class="sourceLineNo">071</span><a id="line.71"></a>
-<span class="sourceLineNo">072</span><a id="line.72">  @Override</a>
-<span class="sourceLineNo">073</span><a id="line.73">  @NonNull</a>
-<span class="sourceLineNo">074</span><a id="line.74">  public IRequiredValueModelNodeItem getInstance() {</a>
-<span class="sourceLineNo">075</span><a id="line.75">    return instance;</a>
-<span class="sourceLineNo">076</span><a id="line.76">  }</a>
-<span class="sourceLineNo">077</span><a id="line.77"></a>
-<span class="sourceLineNo">078</span><a id="line.78">  @Override</a>
-<span class="sourceLineNo">079</span><a id="line.79">  public void setInstance(IRequiredValueModelNodeItem item) {</a>
-<span class="sourceLineNo">080</span><a id="line.80">    instance = item;</a>
-<span class="sourceLineNo">081</span><a id="line.81">  }</a>
-<span class="sourceLineNo">082</span><a id="line.82"></a>
-<span class="sourceLineNo">083</span><a id="line.83">  @Override</a>
-<span class="sourceLineNo">084</span><a id="line.84">  @NonNull</a>
-<span class="sourceLineNo">085</span><a id="line.85">  @SuppressWarnings("unchecked")</a>
-<span class="sourceLineNo">086</span><a id="line.86">  public &lt;T&gt; T getInstanceValue() {</a>
-<span class="sourceLineNo">087</span><a id="line.87">    return (T) getInstance().getValue();</a>
-<span class="sourceLineNo">088</span><a id="line.88">  }</a>
-<span class="sourceLineNo">089</span><a id="line.89"></a>
-<span class="sourceLineNo">090</span><a id="line.90">  @Override</a>
-<span class="sourceLineNo">091</span><a id="line.91">  @NonNull</a>
-<span class="sourceLineNo">092</span><a id="line.92">  public ItemType getItemType() {</a>
-<span class="sourceLineNo">093</span><a id="line.93">    return itemType;</a>
-<span class="sourceLineNo">094</span><a id="line.94">  }</a>
-<span class="sourceLineNo">095</span><a id="line.95"></a>
-<span class="sourceLineNo">096</span><a id="line.96">  @Override</a>
-<span class="sourceLineNo">097</span><a id="line.97">  @NonNull</a>
-<span class="sourceLineNo">098</span><a id="line.98">  public URI getSource() {</a>
-<span class="sourceLineNo">099</span><a id="line.99">    return source;</a>
-<span class="sourceLineNo">100</span><a id="line.100">  }</a>
-<span class="sourceLineNo">101</span><a id="line.101"></a>
-<span class="sourceLineNo">102</span><a id="line.102">  @Override</a>
-<span class="sourceLineNo">103</span><a id="line.103">  public int getReferenceCount() {</a>
-<span class="sourceLineNo">104</span><a id="line.104">    return referenceCount;</a>
-<span class="sourceLineNo">105</span><a id="line.105">  }</a>
-<span class="sourceLineNo">106</span><a id="line.106"></a>
-<span class="sourceLineNo">107</span><a id="line.107">  // public boolean isResolved() {</a>
-<span class="sourceLineNo">108</span><a id="line.108">  // return resolved;</a>
-<span class="sourceLineNo">109</span><a id="line.109">  // }</a>
-<span class="sourceLineNo">110</span><a id="line.110">  //</a>
-<span class="sourceLineNo">111</span><a id="line.111">  // public void markResolved() {</a>
-<span class="sourceLineNo">112</span><a id="line.112">  // resolved = true;</a>
-<span class="sourceLineNo">113</span><a id="line.113">  // }</a>
-<span class="sourceLineNo">114</span><a id="line.114"></a>
-<span class="sourceLineNo">115</span><a id="line.115">  @Override</a>
-<span class="sourceLineNo">116</span><a id="line.116">  public void incrementReferenceCount() {</a>
-<span class="sourceLineNo">117</span><a id="line.117">    referenceCount += 1;</a>
-<span class="sourceLineNo">118</span><a id="line.118">  }</a>
-<span class="sourceLineNo">119</span><a id="line.119"></a>
-<span class="sourceLineNo">120</span><a id="line.120">  @Override</a>
-<span class="sourceLineNo">121</span><a id="line.121">  public int resetReferenceCount() {</a>
-<span class="sourceLineNo">122</span><a id="line.122">    int retval = referenceCount;</a>
-<span class="sourceLineNo">123</span><a id="line.123">    referenceCount = 0;</a>
-<span class="sourceLineNo">124</span><a id="line.124">    return retval;</a>
-<span class="sourceLineNo">125</span><a id="line.125">  }</a>
-<span class="sourceLineNo">126</span><a id="line.126"></a>
-<span class="sourceLineNo">127</span><a id="line.127">  static final class Builder {</a>
-<span class="sourceLineNo">128</span><a id="line.128">    private String originalIdentifier;</a>
-<span class="sourceLineNo">129</span><a id="line.129">    private String reassignedIdentifier;</a>
-<span class="sourceLineNo">130</span><a id="line.130">    private IRequiredValueModelNodeItem instance;</a>
-<span class="sourceLineNo">131</span><a id="line.131">    private ItemType itemType;</a>
-<span class="sourceLineNo">132</span><a id="line.132">    private URI source;</a>
-<span class="sourceLineNo">133</span><a id="line.133"></a>
-<span class="sourceLineNo">134</span><a id="line.134">    @NonNull</a>
-<span class="sourceLineNo">135</span><a id="line.135">    public Builder instance(@NonNull IRequiredValueModelNodeItem item, @NonNull ItemType itemType) {</a>
-<span class="sourceLineNo">136</span><a id="line.136">      this.instance = item;</a>
-<span class="sourceLineNo">137</span><a id="line.137">      this.itemType = itemType;</a>
-<span class="sourceLineNo">138</span><a id="line.138">      return this;</a>
-<span class="sourceLineNo">139</span><a id="line.139">    }</a>
-<span class="sourceLineNo">140</span><a id="line.140"></a>
-<span class="sourceLineNo">141</span><a id="line.141">    // @NonNull</a>
-<span class="sourceLineNo">142</span><a id="line.142">    // public Builder reassignedIdentifier(@NonNull UUID identifier) {</a>
-<span class="sourceLineNo">143</span><a id="line.143">    // // no need to normalize, since UUIDs are formatted lower case</a>
-<span class="sourceLineNo">144</span><a id="line.144">    // return reassignedIdentifier(identifier.toString());</a>
-<span class="sourceLineNo">145</span><a id="line.145">    // }</a>
-<span class="sourceLineNo">146</span><a id="line.146"></a>
-<span class="sourceLineNo">147</span><a id="line.147">    @NonNull</a>
-<span class="sourceLineNo">148</span><a id="line.148">    public Builder reassignedIdentifier(@NonNull String identifier) {</a>
-<span class="sourceLineNo">149</span><a id="line.149">      this.reassignedIdentifier = identifier;</a>
-<span class="sourceLineNo">150</span><a id="line.150">      return this;</a>
-<span class="sourceLineNo">151</span><a id="line.151">    }</a>
-<span class="sourceLineNo">152</span><a id="line.152">    //</a>
-<span class="sourceLineNo">153</span><a id="line.153">    // @NonNull</a>
-<span class="sourceLineNo">154</span><a id="line.154">    // public Builder originalIdentifier(@NonNull UUID identifier) {</a>
-<span class="sourceLineNo">155</span><a id="line.155">    // // no need to normalize, since UUIDs are formatted lower case</a>
-<span class="sourceLineNo">156</span><a id="line.156">    // return originalIdentifier(identifier.toString());</a>
-<span class="sourceLineNo">157</span><a id="line.157">    // }</a>
-<span class="sourceLineNo">158</span><a id="line.158"></a>
-<span class="sourceLineNo">159</span><a id="line.159">    @NonNull</a>
-<span class="sourceLineNo">160</span><a id="line.160">    public Builder originalIdentifier(@NonNull String identifier) {</a>
-<span class="sourceLineNo">161</span><a id="line.161">      this.originalIdentifier = identifier;</a>
-<span class="sourceLineNo">162</span><a id="line.162">      return this;</a>
-<span class="sourceLineNo">163</span><a id="line.163">    }</a>
-<span class="sourceLineNo">164</span><a id="line.164"></a>
-<span class="sourceLineNo">165</span><a id="line.165">    @NonNull</a>
-<span class="sourceLineNo">166</span><a id="line.166">    public Builder source(@NonNull URI source) {</a>
-<span class="sourceLineNo">167</span><a id="line.167">      this.source = source;</a>
-<span class="sourceLineNo">168</span><a id="line.168">      return this;</a>
-<span class="sourceLineNo">169</span><a id="line.169">    }</a>
-<span class="sourceLineNo">170</span><a id="line.170"></a>
-<span class="sourceLineNo">171</span><a id="line.171">    @NonNull</a>
-<span class="sourceLineNo">172</span><a id="line.172">    public IEntityItem build() {</a>
-<span class="sourceLineNo">173</span><a id="line.173">      return reassignedIdentifier == null ? new OriginalEntityItem(this) : new ReassignedEntityItem(this);</a>
-<span class="sourceLineNo">174</span><a id="line.174">    }</a>
-<span class="sourceLineNo">175</span><a id="line.175">  }</a>
-<span class="sourceLineNo">176</span><a id="line.176"></a>
-<span class="sourceLineNo">177</span><a id="line.177">  static final class OriginalEntityItem</a>
-<span class="sourceLineNo">178</span><a id="line.178">      extends AbstractEntityItem {</a>
-<span class="sourceLineNo">179</span><a id="line.179"></a>
-<span class="sourceLineNo">180</span><a id="line.180">    protected OriginalEntityItem(@NonNull Builder builder) {</a>
-<span class="sourceLineNo">181</span><a id="line.181">      super(builder);</a>
-<span class="sourceLineNo">182</span><a id="line.182">    }</a>
-<span class="sourceLineNo">183</span><a id="line.183"></a>
-<span class="sourceLineNo">184</span><a id="line.184">    @Override</a>
-<span class="sourceLineNo">185</span><a id="line.185">    public String getIdentifier() {</a>
-<span class="sourceLineNo">186</span><a id="line.186">      return getOriginalIdentifier();</a>
-<span class="sourceLineNo">187</span><a id="line.187">    }</a>
-<span class="sourceLineNo">188</span><a id="line.188"></a>
-<span class="sourceLineNo">189</span><a id="line.189">    @Override</a>
-<span class="sourceLineNo">190</span><a id="line.190">    public boolean isIdentifierReassigned() {</a>
-<span class="sourceLineNo">191</span><a id="line.191">      return false;</a>
-<span class="sourceLineNo">192</span><a id="line.192">    }</a>
-<span class="sourceLineNo">193</span><a id="line.193">  }</a>
-<span class="sourceLineNo">194</span><a id="line.194"></a>
-<span class="sourceLineNo">195</span><a id="line.195">  static final class ReassignedEntityItem</a>
-<span class="sourceLineNo">196</span><a id="line.196">      extends AbstractEntityItem {</a>
-<span class="sourceLineNo">197</span><a id="line.197">    @NonNull</a>
-<span class="sourceLineNo">198</span><a id="line.198">    private final String reassignedIdentifier;</a>
-<span class="sourceLineNo">199</span><a id="line.199"></a>
-<span class="sourceLineNo">200</span><a id="line.200">    protected ReassignedEntityItem(@NonNull Builder builder) {</a>
-<span class="sourceLineNo">201</span><a id="line.201">      super(builder);</a>
-<span class="sourceLineNo">202</span><a id="line.202">      this.reassignedIdentifier = ObjectUtils.requireNonNull(builder.reassignedIdentifier);</a>
-<span class="sourceLineNo">203</span><a id="line.203">    }</a>
-<span class="sourceLineNo">204</span><a id="line.204"></a>
-<span class="sourceLineNo">205</span><a id="line.205">    @Override</a>
-<span class="sourceLineNo">206</span><a id="line.206">    public String getIdentifier() {</a>
-<span class="sourceLineNo">207</span><a id="line.207">      return reassignedIdentifier;</a>
-<span class="sourceLineNo">208</span><a id="line.208">    }</a>
-<span class="sourceLineNo">209</span><a id="line.209"></a>
-<span class="sourceLineNo">210</span><a id="line.210">    @Override</a>
-<span class="sourceLineNo">211</span><a id="line.211">    public boolean isIdentifierReassigned() {</a>
-<span class="sourceLineNo">212</span><a id="line.212">      return true;</a>
-<span class="sourceLineNo">213</span><a id="line.213">    }</a>
-<span class="sourceLineNo">214</span><a id="line.214">  }</a>
-<span class="sourceLineNo">215</span><a id="line.215">}</a>
+<span class="sourceLineNo">069</span><a id="line.69">  // return checkedReassignedIdentifier == null ? originalIdentifier :</a>
+<span class="sourceLineNo">070</span><a id="line.70">  // checkedReassignedIdentifier;</a>
+<span class="sourceLineNo">071</span><a id="line.71">  // }</a>
+<span class="sourceLineNo">072</span><a id="line.72"></a>
+<span class="sourceLineNo">073</span><a id="line.73">  @Override</a>
+<span class="sourceLineNo">074</span><a id="line.74">  @NonNull</a>
+<span class="sourceLineNo">075</span><a id="line.75">  public IRequiredValueModelNodeItem getInstance() {</a>
+<span class="sourceLineNo">076</span><a id="line.76">    return instance;</a>
+<span class="sourceLineNo">077</span><a id="line.77">  }</a>
+<span class="sourceLineNo">078</span><a id="line.78"></a>
+<span class="sourceLineNo">079</span><a id="line.79">  @Override</a>
+<span class="sourceLineNo">080</span><a id="line.80">  public void setInstance(IRequiredValueModelNodeItem item) {</a>
+<span class="sourceLineNo">081</span><a id="line.81">    instance = item;</a>
+<span class="sourceLineNo">082</span><a id="line.82">  }</a>
+<span class="sourceLineNo">083</span><a id="line.83"></a>
+<span class="sourceLineNo">084</span><a id="line.84">  @Override</a>
+<span class="sourceLineNo">085</span><a id="line.85">  @NonNull</a>
+<span class="sourceLineNo">086</span><a id="line.86">  @SuppressWarnings("unchecked")</a>
+<span class="sourceLineNo">087</span><a id="line.87">  public &lt;T&gt; T getInstanceValue() {</a>
+<span class="sourceLineNo">088</span><a id="line.88">    return (T) getInstance().getValue();</a>
+<span class="sourceLineNo">089</span><a id="line.89">  }</a>
+<span class="sourceLineNo">090</span><a id="line.90"></a>
+<span class="sourceLineNo">091</span><a id="line.91">  @Override</a>
+<span class="sourceLineNo">092</span><a id="line.92">  @NonNull</a>
+<span class="sourceLineNo">093</span><a id="line.93">  public ItemType getItemType() {</a>
+<span class="sourceLineNo">094</span><a id="line.94">    return itemType;</a>
+<span class="sourceLineNo">095</span><a id="line.95">  }</a>
+<span class="sourceLineNo">096</span><a id="line.96"></a>
+<span class="sourceLineNo">097</span><a id="line.97">  @Override</a>
+<span class="sourceLineNo">098</span><a id="line.98">  @NonNull</a>
+<span class="sourceLineNo">099</span><a id="line.99">  public URI getSource() {</a>
+<span class="sourceLineNo">100</span><a id="line.100">    return source;</a>
+<span class="sourceLineNo">101</span><a id="line.101">  }</a>
+<span class="sourceLineNo">102</span><a id="line.102"></a>
+<span class="sourceLineNo">103</span><a id="line.103">  @Override</a>
+<span class="sourceLineNo">104</span><a id="line.104">  public int getReferenceCount() {</a>
+<span class="sourceLineNo">105</span><a id="line.105">    return referenceCount;</a>
+<span class="sourceLineNo">106</span><a id="line.106">  }</a>
+<span class="sourceLineNo">107</span><a id="line.107"></a>
+<span class="sourceLineNo">108</span><a id="line.108">  // public boolean isResolved() {</a>
+<span class="sourceLineNo">109</span><a id="line.109">  // return resolved;</a>
+<span class="sourceLineNo">110</span><a id="line.110">  // }</a>
+<span class="sourceLineNo">111</span><a id="line.111">  //</a>
+<span class="sourceLineNo">112</span><a id="line.112">  // public void markResolved() {</a>
+<span class="sourceLineNo">113</span><a id="line.113">  // resolved = true;</a>
+<span class="sourceLineNo">114</span><a id="line.114">  // }</a>
+<span class="sourceLineNo">115</span><a id="line.115"></a>
+<span class="sourceLineNo">116</span><a id="line.116">  @Override</a>
+<span class="sourceLineNo">117</span><a id="line.117">  public void incrementReferenceCount() {</a>
+<span class="sourceLineNo">118</span><a id="line.118">    referenceCount += 1;</a>
+<span class="sourceLineNo">119</span><a id="line.119">  }</a>
+<span class="sourceLineNo">120</span><a id="line.120"></a>
+<span class="sourceLineNo">121</span><a id="line.121">  @Override</a>
+<span class="sourceLineNo">122</span><a id="line.122">  public int resetReferenceCount() {</a>
+<span class="sourceLineNo">123</span><a id="line.123">    int retval = referenceCount;</a>
+<span class="sourceLineNo">124</span><a id="line.124">    referenceCount = 0;</a>
+<span class="sourceLineNo">125</span><a id="line.125">    return retval;</a>
+<span class="sourceLineNo">126</span><a id="line.126">  }</a>
+<span class="sourceLineNo">127</span><a id="line.127"></a>
+<span class="sourceLineNo">128</span><a id="line.128">  static final class Builder {</a>
+<span class="sourceLineNo">129</span><a id="line.129">    private String originalIdentifier;</a>
+<span class="sourceLineNo">130</span><a id="line.130">    private String reassignedIdentifier;</a>
+<span class="sourceLineNo">131</span><a id="line.131">    private IRequiredValueModelNodeItem instance;</a>
+<span class="sourceLineNo">132</span><a id="line.132">    private ItemType itemType;</a>
+<span class="sourceLineNo">133</span><a id="line.133">    private URI source;</a>
+<span class="sourceLineNo">134</span><a id="line.134"></a>
+<span class="sourceLineNo">135</span><a id="line.135">    @NonNull</a>
+<span class="sourceLineNo">136</span><a id="line.136">    public Builder instance(@NonNull IRequiredValueModelNodeItem item, @NonNull ItemType itemType) {</a>
+<span class="sourceLineNo">137</span><a id="line.137">      this.instance = item;</a>
+<span class="sourceLineNo">138</span><a id="line.138">      this.itemType = itemType;</a>
+<span class="sourceLineNo">139</span><a id="line.139">      return this;</a>
+<span class="sourceLineNo">140</span><a id="line.140">    }</a>
+<span class="sourceLineNo">141</span><a id="line.141"></a>
+<span class="sourceLineNo">142</span><a id="line.142">    // @NonNull</a>
+<span class="sourceLineNo">143</span><a id="line.143">    // public Builder reassignedIdentifier(@NonNull UUID identifier) {</a>
+<span class="sourceLineNo">144</span><a id="line.144">    // // no need to normalize, since UUIDs are formatted lower case</a>
+<span class="sourceLineNo">145</span><a id="line.145">    // return reassignedIdentifier(identifier.toString());</a>
+<span class="sourceLineNo">146</span><a id="line.146">    // }</a>
+<span class="sourceLineNo">147</span><a id="line.147"></a>
+<span class="sourceLineNo">148</span><a id="line.148">    @NonNull</a>
+<span class="sourceLineNo">149</span><a id="line.149">    public Builder reassignedIdentifier(@NonNull String identifier) {</a>
+<span class="sourceLineNo">150</span><a id="line.150">      this.reassignedIdentifier = identifier;</a>
+<span class="sourceLineNo">151</span><a id="line.151">      return this;</a>
+<span class="sourceLineNo">152</span><a id="line.152">    }</a>
+<span class="sourceLineNo">153</span><a id="line.153">    //</a>
+<span class="sourceLineNo">154</span><a id="line.154">    // @NonNull</a>
+<span class="sourceLineNo">155</span><a id="line.155">    // public Builder originalIdentifier(@NonNull UUID identifier) {</a>
+<span class="sourceLineNo">156</span><a id="line.156">    // // no need to normalize, since UUIDs are formatted lower case</a>
+<span class="sourceLineNo">157</span><a id="line.157">    // return originalIdentifier(identifier.toString());</a>
+<span class="sourceLineNo">158</span><a id="line.158">    // }</a>
+<span class="sourceLineNo">159</span><a id="line.159"></a>
+<span class="sourceLineNo">160</span><a id="line.160">    @NonNull</a>
+<span class="sourceLineNo">161</span><a id="line.161">    public Builder originalIdentifier(@NonNull String identifier) {</a>
+<span class="sourceLineNo">162</span><a id="line.162">      this.originalIdentifier = identifier;</a>
+<span class="sourceLineNo">163</span><a id="line.163">      return this;</a>
+<span class="sourceLineNo">164</span><a id="line.164">    }</a>
+<span class="sourceLineNo">165</span><a id="line.165"></a>
+<span class="sourceLineNo">166</span><a id="line.166">    @NonNull</a>
+<span class="sourceLineNo">167</span><a id="line.167">    public Builder source(@NonNull URI source) {</a>
+<span class="sourceLineNo">168</span><a id="line.168">      this.source = source;</a>
+<span class="sourceLineNo">169</span><a id="line.169">      return this;</a>
+<span class="sourceLineNo">170</span><a id="line.170">    }</a>
+<span class="sourceLineNo">171</span><a id="line.171"></a>
+<span class="sourceLineNo">172</span><a id="line.172">    @NonNull</a>
+<span class="sourceLineNo">173</span><a id="line.173">    public IEntityItem build() {</a>
+<span class="sourceLineNo">174</span><a id="line.174">      return reassignedIdentifier == null ? new OriginalEntityItem(this) : new ReassignedEntityItem(this);</a>
+<span class="sourceLineNo">175</span><a id="line.175">    }</a>
+<span class="sourceLineNo">176</span><a id="line.176">  }</a>
+<span class="sourceLineNo">177</span><a id="line.177"></a>
+<span class="sourceLineNo">178</span><a id="line.178">  static final class OriginalEntityItem</a>
+<span class="sourceLineNo">179</span><a id="line.179">      extends AbstractEntityItem {</a>
+<span class="sourceLineNo">180</span><a id="line.180"></a>
+<span class="sourceLineNo">181</span><a id="line.181">    protected OriginalEntityItem(@NonNull Builder builder) {</a>
+<span class="sourceLineNo">182</span><a id="line.182">      super(builder);</a>
+<span class="sourceLineNo">183</span><a id="line.183">    }</a>
+<span class="sourceLineNo">184</span><a id="line.184"></a>
+<span class="sourceLineNo">185</span><a id="line.185">    @Override</a>
+<span class="sourceLineNo">186</span><a id="line.186">    public String getIdentifier() {</a>
+<span class="sourceLineNo">187</span><a id="line.187">      return getOriginalIdentifier();</a>
+<span class="sourceLineNo">188</span><a id="line.188">    }</a>
+<span class="sourceLineNo">189</span><a id="line.189"></a>
+<span class="sourceLineNo">190</span><a id="line.190">    @Override</a>
+<span class="sourceLineNo">191</span><a id="line.191">    public boolean isIdentifierReassigned() {</a>
+<span class="sourceLineNo">192</span><a id="line.192">      return false;</a>
+<span class="sourceLineNo">193</span><a id="line.193">    }</a>
+<span class="sourceLineNo">194</span><a id="line.194">  }</a>
+<span class="sourceLineNo">195</span><a id="line.195"></a>
+<span class="sourceLineNo">196</span><a id="line.196">  static final class ReassignedEntityItem</a>
+<span class="sourceLineNo">197</span><a id="line.197">      extends AbstractEntityItem {</a>
+<span class="sourceLineNo">198</span><a id="line.198">    @NonNull</a>
+<span class="sourceLineNo">199</span><a id="line.199">    private final String reassignedIdentifier;</a>
+<span class="sourceLineNo">200</span><a id="line.200"></a>
+<span class="sourceLineNo">201</span><a id="line.201">    protected ReassignedEntityItem(@NonNull Builder builder) {</a>
+<span class="sourceLineNo">202</span><a id="line.202">      super(builder);</a>
+<span class="sourceLineNo">203</span><a id="line.203">      this.reassignedIdentifier = ObjectUtils.requireNonNull(builder.reassignedIdentifier);</a>
+<span class="sourceLineNo">204</span><a id="line.204">    }</a>
+<span class="sourceLineNo">205</span><a id="line.205"></a>
+<span class="sourceLineNo">206</span><a id="line.206">    @Override</a>
+<span class="sourceLineNo">207</span><a id="line.207">    public String getIdentifier() {</a>
+<span class="sourceLineNo">208</span><a id="line.208">      return reassignedIdentifier;</a>
+<span class="sourceLineNo">209</span><a id="line.209">    }</a>
+<span class="sourceLineNo">210</span><a id="line.210"></a>
+<span class="sourceLineNo">211</span><a id="line.211">    @Override</a>
+<span class="sourceLineNo">212</span><a id="line.212">    public boolean isIdentifierReassigned() {</a>
+<span class="sourceLineNo">213</span><a id="line.213">      return true;</a>
+<span class="sourceLineNo">214</span><a id="line.214">    }</a>
+<span class="sourceLineNo">215</span><a id="line.215">  }</a>
+<span class="sourceLineNo">216</span><a id="line.216">}</a>
 
 
 

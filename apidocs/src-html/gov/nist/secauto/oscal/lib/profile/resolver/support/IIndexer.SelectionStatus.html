@@ -85,8 +85,8 @@
 <span class="sourceLineNo">076</span><a id="line.76">  }</a>
 <span class="sourceLineNo">077</span><a id="line.77"></a>
 <span class="sourceLineNo">078</span><a id="line.78">  /**</a>
-<span class="sourceLineNo">079</span><a id="line.79">   * Keep entities that have a reference count greater than zero or are required to be kept based on</a>
-<span class="sourceLineNo">080</span><a id="line.80">   * the "keep"="always property.</a>
+<span class="sourceLineNo">079</span><a id="line.79">   * Keep entities that have a reference count greater than zero or are required</a>
+<span class="sourceLineNo">080</span><a id="line.80">   * to be kept based on the "keep"="always property.</a>
 <span class="sourceLineNo">081</span><a id="line.81">   *</a>
 <span class="sourceLineNo">082</span><a id="line.82">   * @param entities</a>
 <span class="sourceLineNo">083</span><a id="line.83">   *          the entity items to filter</a>
@@ -97,8 +97,8 @@
 <span class="sourceLineNo">088</span><a id="line.88">  }</a>
 <span class="sourceLineNo">089</span><a id="line.89"></a>
 <span class="sourceLineNo">090</span><a id="line.90">  /**</a>
-<span class="sourceLineNo">091</span><a id="line.91">   * Keep entities that have a reference count of zero or are not required to be kept based on the</a>
-<span class="sourceLineNo">092</span><a id="line.92">   * "keep"="always property.</a>
+<span class="sourceLineNo">091</span><a id="line.91">   * Keep entities that have a reference count of zero or are not required to be</a>
+<span class="sourceLineNo">092</span><a id="line.92">   * kept based on the "keep"="always property.</a>
 <span class="sourceLineNo">093</span><a id="line.93">   *</a>
 <span class="sourceLineNo">094</span><a id="line.94">   * @param entities</a>
 <span class="sourceLineNo">095</span><a id="line.95">   *          the entity items to filter</a>
@@ -109,153 +109,159 @@
 <span class="sourceLineNo">100</span><a id="line.100">  }</a>
 <span class="sourceLineNo">101</span><a id="line.101"></a>
 <span class="sourceLineNo">102</span><a id="line.102">  /**</a>
-<span class="sourceLineNo">103</span><a id="line.103">   * Generates a stream of distinct items that have a reference count greater than zero or are</a>
-<span class="sourceLineNo">104</span><a id="line.104">   * required to be kept based on the "keep"="always property.</a>
+<span class="sourceLineNo">103</span><a id="line.103">   * Generates a stream of distinct items that have a reference count greater than</a>
+<span class="sourceLineNo">104</span><a id="line.104">   * zero or are required to be kept based on the "keep"="always property.</a>
 <span class="sourceLineNo">105</span><a id="line.105">   * &lt;p&gt;</a>
-<span class="sourceLineNo">106</span><a id="line.106">   * Distinct items are determined based on the item's key using the provided {@code keyMapper}.</a>
-<span class="sourceLineNo">107</span><a id="line.107">   *</a>
-<span class="sourceLineNo">108</span><a id="line.108">   * @param &lt;T&gt;</a>
-<span class="sourceLineNo">109</span><a id="line.109">   *          the item type</a>
-<span class="sourceLineNo">110</span><a id="line.110">   * @param &lt;K&gt;</a>
-<span class="sourceLineNo">111</span><a id="line.111">   *          the key type</a>
-<span class="sourceLineNo">112</span><a id="line.112">   * @param resolvedItems</a>
-<span class="sourceLineNo">113</span><a id="line.113">   *          a series of previously resolved items to add to prepend to the stream</a>
-<span class="sourceLineNo">114</span><a id="line.114">   * @param importedEntityItems</a>
-<span class="sourceLineNo">115</span><a id="line.115">   *          a collection of new items to filter then append to the stream</a>
-<span class="sourceLineNo">116</span><a id="line.116">   * @param keyMapper</a>
-<span class="sourceLineNo">117</span><a id="line.117">   *          the key mapping function to determine the item's key</a>
-<span class="sourceLineNo">118</span><a id="line.118">   * @return the resulting series of items with duplicate items with the same key removed</a>
-<span class="sourceLineNo">119</span><a id="line.119">   */</a>
-<span class="sourceLineNo">120</span><a id="line.120">  // TODO: Is this the right name for this method?</a>
-<span class="sourceLineNo">121</span><a id="line.121">  static &lt;T, K&gt; Stream&lt;T&gt; filterDistinct(</a>
-<span class="sourceLineNo">122</span><a id="line.122">      @NonNull Stream&lt;T&gt; resolvedItems,</a>
-<span class="sourceLineNo">123</span><a id="line.123">      @NonNull Collection&lt;IEntityItem&gt; importedEntityItems,</a>
-<span class="sourceLineNo">124</span><a id="line.124">      @NonNull Function&lt;? super T, ? extends K&gt; keyMapper) {</a>
-<span class="sourceLineNo">125</span><a id="line.125">    @SuppressWarnings("unchecked") Stream&lt;T&gt; importedStream = getReferencedEntitiesAsStream(importedEntityItems)</a>
-<span class="sourceLineNo">126</span><a id="line.126">        .map(entity -&gt; (T) entity.getInstanceValue());</a>
-<span class="sourceLineNo">127</span><a id="line.127"></a>
-<span class="sourceLineNo">128</span><a id="line.128">    return CustomCollectors.distinctByKey(</a>
-<span class="sourceLineNo">129</span><a id="line.129">        ObjectUtils.notNull(Stream.concat(resolvedItems, importedStream)),</a>
-<span class="sourceLineNo">130</span><a id="line.130">        keyMapper,</a>
-<span class="sourceLineNo">131</span><a id="line.131">        (key, value1, value2) -&gt; value2);</a>
-<span class="sourceLineNo">132</span><a id="line.132">  }</a>
-<span class="sourceLineNo">133</span><a id="line.133"></a>
-<span class="sourceLineNo">134</span><a id="line.134">  static void logIndex(@NonNull IIndexer indexer, @NonNull Level logLevel) {</a>
-<span class="sourceLineNo">135</span><a id="line.135">    Logger logger = LogManager.getLogger();</a>
+<span class="sourceLineNo">106</span><a id="line.106">   * Distinct items are determined based on the item's key using the provided</a>
+<span class="sourceLineNo">107</span><a id="line.107">   * {@code keyMapper}.</a>
+<span class="sourceLineNo">108</span><a id="line.108">   *</a>
+<span class="sourceLineNo">109</span><a id="line.109">   * @param &lt;T&gt;</a>
+<span class="sourceLineNo">110</span><a id="line.110">   *          the item type</a>
+<span class="sourceLineNo">111</span><a id="line.111">   * @param &lt;K&gt;</a>
+<span class="sourceLineNo">112</span><a id="line.112">   *          the key type</a>
+<span class="sourceLineNo">113</span><a id="line.113">   * @param resolvedItems</a>
+<span class="sourceLineNo">114</span><a id="line.114">   *          a series of previously resolved items to add to prepend to the</a>
+<span class="sourceLineNo">115</span><a id="line.115">   *          stream</a>
+<span class="sourceLineNo">116</span><a id="line.116">   * @param importedEntityItems</a>
+<span class="sourceLineNo">117</span><a id="line.117">   *          a collection of new items to filter then append to the stream</a>
+<span class="sourceLineNo">118</span><a id="line.118">   * @param keyMapper</a>
+<span class="sourceLineNo">119</span><a id="line.119">   *          the key mapping function to determine the item's key</a>
+<span class="sourceLineNo">120</span><a id="line.120">   * @return the resulting series of items with duplicate items with the same key</a>
+<span class="sourceLineNo">121</span><a id="line.121">   *         removed</a>
+<span class="sourceLineNo">122</span><a id="line.122">   */</a>
+<span class="sourceLineNo">123</span><a id="line.123">  // TODO: Is this the right name for this method?</a>
+<span class="sourceLineNo">124</span><a id="line.124">  static &lt;T, K&gt; Stream&lt;T&gt; filterDistinct(</a>
+<span class="sourceLineNo">125</span><a id="line.125">      @NonNull Stream&lt;T&gt; resolvedItems,</a>
+<span class="sourceLineNo">126</span><a id="line.126">      @NonNull Collection&lt;IEntityItem&gt; importedEntityItems,</a>
+<span class="sourceLineNo">127</span><a id="line.127">      @NonNull Function&lt;? super T, ? extends K&gt; keyMapper) {</a>
+<span class="sourceLineNo">128</span><a id="line.128">    @SuppressWarnings("unchecked") Stream&lt;T&gt; importedStream = getReferencedEntitiesAsStream(importedEntityItems)</a>
+<span class="sourceLineNo">129</span><a id="line.129">        .map(entity -&gt; (T) entity.getInstanceValue());</a>
+<span class="sourceLineNo">130</span><a id="line.130"></a>
+<span class="sourceLineNo">131</span><a id="line.131">    return CustomCollectors.distinctByKey(</a>
+<span class="sourceLineNo">132</span><a id="line.132">        ObjectUtils.notNull(Stream.concat(resolvedItems, importedStream)),</a>
+<span class="sourceLineNo">133</span><a id="line.133">        keyMapper,</a>
+<span class="sourceLineNo">134</span><a id="line.134">        (key, value1, value2) -&gt; value2);</a>
+<span class="sourceLineNo">135</span><a id="line.135">  }</a>
 <span class="sourceLineNo">136</span><a id="line.136"></a>
-<span class="sourceLineNo">137</span><a id="line.137">    Set&lt;INodeItem&gt; indexedItems = new HashSet&lt;&gt;();</a>
-<span class="sourceLineNo">138</span><a id="line.138">    if (logger.isEnabled(logLevel)) {</a>
-<span class="sourceLineNo">139</span><a id="line.139">      for (ItemType itemType : ItemType.values()) {</a>
-<span class="sourceLineNo">140</span><a id="line.140">        assert itemType != null;</a>
-<span class="sourceLineNo">141</span><a id="line.141">        for (IEntityItem item : indexer.getEntitiesByItemType(itemType)) {</a>
-<span class="sourceLineNo">142</span><a id="line.142">          INodeItem nodeItem = item.getInstance();</a>
-<span class="sourceLineNo">143</span><a id="line.143">          indexedItems.add(nodeItem);</a>
-<span class="sourceLineNo">144</span><a id="line.144">          logger.atLevel(logLevel).log("{} {}: selected: {}, reference count: {}",</a>
-<span class="sourceLineNo">145</span><a id="line.145">              itemType.name(),</a>
-<span class="sourceLineNo">146</span><a id="line.146">              item.isIdentifierReassigned() ? item.getIdentifier() + "(" + item.getOriginalIdentifier() + ")"</a>
-<span class="sourceLineNo">147</span><a id="line.147">                  : item.getIdentifier(),</a>
-<span class="sourceLineNo">148</span><a id="line.148">              indexer.getSelectionStatus(nodeItem),</a>
-<span class="sourceLineNo">149</span><a id="line.149">              item.getReferenceCount());</a>
-<span class="sourceLineNo">150</span><a id="line.150">        }</a>
-<span class="sourceLineNo">151</span><a id="line.151">      }</a>
-<span class="sourceLineNo">152</span><a id="line.152">    }</a>
-<span class="sourceLineNo">153</span><a id="line.153"></a>
-<span class="sourceLineNo">154</span><a id="line.154">    for (Map.Entry&lt;INodeItem, SelectionStatus&gt; entry : indexer.getSelectionStatusMap().entrySet()) {</a>
-<span class="sourceLineNo">155</span><a id="line.155">      INodeItem nodeItem = entry.getKey();</a>
-<span class="sourceLineNo">156</span><a id="line.156">      if (!indexedItems.contains(nodeItem)) {</a>
-<span class="sourceLineNo">157</span><a id="line.157">        Object value = nodeItem.getValue();</a>
-<span class="sourceLineNo">158</span><a id="line.158">        logger.atLevel(logLevel).log("{}: {}", value == null ? "(null)" : value.getClass().getName(), entry.getValue());</a>
-<span class="sourceLineNo">159</span><a id="line.159">      }</a>
-<span class="sourceLineNo">160</span><a id="line.160">    }</a>
-<span class="sourceLineNo">161</span><a id="line.161">  }</a>
-<span class="sourceLineNo">162</span><a id="line.162"></a>
-<span class="sourceLineNo">163</span><a id="line.163">  @NonNull</a>
-<span class="sourceLineNo">164</span><a id="line.164">  IEntityItem addRole(@NonNull IRequiredValueModelNodeItem role);</a>
+<span class="sourceLineNo">137</span><a id="line.137">  static void logIndex(@NonNull IIndexer indexer, @NonNull Level logLevel) {</a>
+<span class="sourceLineNo">138</span><a id="line.138">    Logger logger = LogManager.getLogger();</a>
+<span class="sourceLineNo">139</span><a id="line.139"></a>
+<span class="sourceLineNo">140</span><a id="line.140">    Set&lt;INodeItem&gt; indexedItems = new HashSet&lt;&gt;();</a>
+<span class="sourceLineNo">141</span><a id="line.141">    if (logger.isEnabled(logLevel)) {</a>
+<span class="sourceLineNo">142</span><a id="line.142">      for (ItemType itemType : ItemType.values()) {</a>
+<span class="sourceLineNo">143</span><a id="line.143">        assert itemType != null;</a>
+<span class="sourceLineNo">144</span><a id="line.144">        for (IEntityItem item : indexer.getEntitiesByItemType(itemType)) {</a>
+<span class="sourceLineNo">145</span><a id="line.145">          INodeItem nodeItem = item.getInstance();</a>
+<span class="sourceLineNo">146</span><a id="line.146">          indexedItems.add(nodeItem);</a>
+<span class="sourceLineNo">147</span><a id="line.147">          logger.atLevel(logLevel).log("{} {}: selected: {}, reference count: {}",</a>
+<span class="sourceLineNo">148</span><a id="line.148">              itemType.name(),</a>
+<span class="sourceLineNo">149</span><a id="line.149">              item.isIdentifierReassigned() ? item.getIdentifier() + "(" + item.getOriginalIdentifier() + ")"</a>
+<span class="sourceLineNo">150</span><a id="line.150">                  : item.getIdentifier(),</a>
+<span class="sourceLineNo">151</span><a id="line.151">              indexer.getSelectionStatus(nodeItem),</a>
+<span class="sourceLineNo">152</span><a id="line.152">              item.getReferenceCount());</a>
+<span class="sourceLineNo">153</span><a id="line.153">        }</a>
+<span class="sourceLineNo">154</span><a id="line.154">      }</a>
+<span class="sourceLineNo">155</span><a id="line.155">    }</a>
+<span class="sourceLineNo">156</span><a id="line.156"></a>
+<span class="sourceLineNo">157</span><a id="line.157">    for (Map.Entry&lt;INodeItem, SelectionStatus&gt; entry : indexer.getSelectionStatusMap().entrySet()) {</a>
+<span class="sourceLineNo">158</span><a id="line.158">      INodeItem nodeItem = entry.getKey();</a>
+<span class="sourceLineNo">159</span><a id="line.159">      if (!indexedItems.contains(nodeItem)) {</a>
+<span class="sourceLineNo">160</span><a id="line.160">        Object value = nodeItem.getValue();</a>
+<span class="sourceLineNo">161</span><a id="line.161">        logger.atLevel(logLevel).log("{}: {}", value == null ? "(null)" : value.getClass().getName(), entry.getValue());</a>
+<span class="sourceLineNo">162</span><a id="line.162">      }</a>
+<span class="sourceLineNo">163</span><a id="line.163">    }</a>
+<span class="sourceLineNo">164</span><a id="line.164">  }</a>
 <span class="sourceLineNo">165</span><a id="line.165"></a>
 <span class="sourceLineNo">166</span><a id="line.166">  @NonNull</a>
-<span class="sourceLineNo">167</span><a id="line.167">  IEntityItem addLocation(@NonNull IRequiredValueModelNodeItem location);</a>
+<span class="sourceLineNo">167</span><a id="line.167">  IEntityItem addRole(@NonNull IRequiredValueModelNodeItem role);</a>
 <span class="sourceLineNo">168</span><a id="line.168"></a>
 <span class="sourceLineNo">169</span><a id="line.169">  @NonNull</a>
-<span class="sourceLineNo">170</span><a id="line.170">  IEntityItem addParty(@NonNull IRequiredValueModelNodeItem party);</a>
+<span class="sourceLineNo">170</span><a id="line.170">  IEntityItem addLocation(@NonNull IRequiredValueModelNodeItem location);</a>
 <span class="sourceLineNo">171</span><a id="line.171"></a>
-<span class="sourceLineNo">172</span><a id="line.172">  @Nullable</a>
-<span class="sourceLineNo">173</span><a id="line.173">  IEntityItem addGroup(@NonNull IRequiredValueModelNodeItem group);</a>
+<span class="sourceLineNo">172</span><a id="line.172">  @NonNull</a>
+<span class="sourceLineNo">173</span><a id="line.173">  IEntityItem addParty(@NonNull IRequiredValueModelNodeItem party);</a>
 <span class="sourceLineNo">174</span><a id="line.174"></a>
-<span class="sourceLineNo">175</span><a id="line.175">  @NonNull</a>
-<span class="sourceLineNo">176</span><a id="line.176">  IEntityItem addControl(@NonNull IRequiredValueModelNodeItem control);</a>
+<span class="sourceLineNo">175</span><a id="line.175">  @Nullable</a>
+<span class="sourceLineNo">176</span><a id="line.176">  IEntityItem addGroup(@NonNull IRequiredValueModelNodeItem group);</a>
 <span class="sourceLineNo">177</span><a id="line.177"></a>
 <span class="sourceLineNo">178</span><a id="line.178">  @NonNull</a>
-<span class="sourceLineNo">179</span><a id="line.179">  IEntityItem addParameter(@NonNull IRequiredValueModelNodeItem parameter);</a>
+<span class="sourceLineNo">179</span><a id="line.179">  IEntityItem addControl(@NonNull IRequiredValueModelNodeItem control);</a>
 <span class="sourceLineNo">180</span><a id="line.180"></a>
-<span class="sourceLineNo">181</span><a id="line.181">  @Nullable</a>
-<span class="sourceLineNo">182</span><a id="line.182">  IEntityItem addPart(@NonNull IRequiredValueModelNodeItem part);</a>
+<span class="sourceLineNo">181</span><a id="line.181">  @NonNull</a>
+<span class="sourceLineNo">182</span><a id="line.182">  IEntityItem addParameter(@NonNull IRequiredValueModelNodeItem parameter);</a>
 <span class="sourceLineNo">183</span><a id="line.183"></a>
-<span class="sourceLineNo">184</span><a id="line.184">  @NonNull</a>
-<span class="sourceLineNo">185</span><a id="line.185">  IEntityItem addResource(@NonNull IRequiredValueModelNodeItem resource);</a>
+<span class="sourceLineNo">184</span><a id="line.184">  @Nullable</a>
+<span class="sourceLineNo">185</span><a id="line.185">  IEntityItem addPart(@NonNull IRequiredValueModelNodeItem part);</a>
 <span class="sourceLineNo">186</span><a id="line.186"></a>
 <span class="sourceLineNo">187</span><a id="line.187">  @NonNull</a>
-<span class="sourceLineNo">188</span><a id="line.188">  Collection&lt;IEntityItem&gt; getEntitiesByItemType(@NonNull IEntityItem.ItemType itemType);</a>
+<span class="sourceLineNo">188</span><a id="line.188">  IEntityItem addResource(@NonNull IRequiredValueModelNodeItem resource);</a>
 <span class="sourceLineNo">189</span><a id="line.189"></a>
-<span class="sourceLineNo">190</span><a id="line.190">  @Nullable</a>
-<span class="sourceLineNo">191</span><a id="line.191">  default IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull UUID identifier) {</a>
-<span class="sourceLineNo">192</span><a id="line.192">    return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);</a>
-<span class="sourceLineNo">193</span><a id="line.193">  }</a>
-<span class="sourceLineNo">194</span><a id="line.194"></a>
-<span class="sourceLineNo">195</span><a id="line.195">  /**</a>
-<span class="sourceLineNo">196</span><a id="line.196">   * Lookup an item of the given {@code itemType} having the given {@code identifier}.</a>
-<span class="sourceLineNo">197</span><a id="line.197">   * &lt;p&gt;</a>
-<span class="sourceLineNo">198</span><a id="line.198">   * Will normalize the case of a UUID-based identifier.</a>
-<span class="sourceLineNo">199</span><a id="line.199">   *</a>
-<span class="sourceLineNo">200</span><a id="line.200">   * @param itemType</a>
-<span class="sourceLineNo">201</span><a id="line.201">   *          the type of item to search for</a>
-<span class="sourceLineNo">202</span><a id="line.202">   * @param identifier</a>
-<span class="sourceLineNo">203</span><a id="line.203">   *          the identifier to lookup</a>
-<span class="sourceLineNo">204</span><a id="line.204">   * @return the matching item or {@code null} if no match was found</a>
-<span class="sourceLineNo">205</span><a id="line.205">   */</a>
-<span class="sourceLineNo">206</span><a id="line.206">  @Nullable</a>
-<span class="sourceLineNo">207</span><a id="line.207">  default IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier) {</a>
-<span class="sourceLineNo">208</span><a id="line.208">    return getEntity(itemType, identifier, itemType.isUuid());</a>
-<span class="sourceLineNo">209</span><a id="line.209">  }</a>
-<span class="sourceLineNo">210</span><a id="line.210"></a>
-<span class="sourceLineNo">211</span><a id="line.211">  /**</a>
-<span class="sourceLineNo">212</span><a id="line.212">   * Lookup an item of the given {@code itemType} having the given {@code identifier}.</a>
-<span class="sourceLineNo">213</span><a id="line.213">   * &lt;p&gt;</a>
-<span class="sourceLineNo">214</span><a id="line.214">   * Will normalize the case of a UUID-based the identifier when requested.</a>
-<span class="sourceLineNo">215</span><a id="line.215">   *</a>
-<span class="sourceLineNo">216</span><a id="line.216">   * @param itemType</a>
-<span class="sourceLineNo">217</span><a id="line.217">   *          the type of item to search for</a>
-<span class="sourceLineNo">218</span><a id="line.218">   * @param identifier</a>
-<span class="sourceLineNo">219</span><a id="line.219">   *          the identifier to lookup</a>
-<span class="sourceLineNo">220</span><a id="line.220">   * @param normalize</a>
-<span class="sourceLineNo">221</span><a id="line.221">   *          {@code true} if the identifier case should be normalized or {@code false} otherwise</a>
-<span class="sourceLineNo">222</span><a id="line.222">   * @return the matching item or {@code null} if no match was found</a>
-<span class="sourceLineNo">223</span><a id="line.223">   */</a>
-<span class="sourceLineNo">224</span><a id="line.224">  @Nullable</a>
-<span class="sourceLineNo">225</span><a id="line.225">  IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier, boolean normalize);</a>
-<span class="sourceLineNo">226</span><a id="line.226"></a>
-<span class="sourceLineNo">227</span><a id="line.227">  boolean removeItem(@NonNull IEntityItem entity);</a>
-<span class="sourceLineNo">228</span><a id="line.228"></a>
-<span class="sourceLineNo">229</span><a id="line.229">  boolean isSelected(@NonNull IEntityItem entity);</a>
-<span class="sourceLineNo">230</span><a id="line.230"></a>
-<span class="sourceLineNo">231</span><a id="line.231">  Map&lt;INodeItem, SelectionStatus&gt; getSelectionStatusMap();</a>
+<span class="sourceLineNo">190</span><a id="line.190">  @NonNull</a>
+<span class="sourceLineNo">191</span><a id="line.191">  Collection&lt;IEntityItem&gt; getEntitiesByItemType(@NonNull IEntityItem.ItemType itemType);</a>
+<span class="sourceLineNo">192</span><a id="line.192"></a>
+<span class="sourceLineNo">193</span><a id="line.193">  @Nullable</a>
+<span class="sourceLineNo">194</span><a id="line.194">  default IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull UUID identifier) {</a>
+<span class="sourceLineNo">195</span><a id="line.195">    return getEntity(itemType, ObjectUtils.notNull(identifier.toString()), false);</a>
+<span class="sourceLineNo">196</span><a id="line.196">  }</a>
+<span class="sourceLineNo">197</span><a id="line.197"></a>
+<span class="sourceLineNo">198</span><a id="line.198">  /**</a>
+<span class="sourceLineNo">199</span><a id="line.199">   * Lookup an item of the given {@code itemType} having the given</a>
+<span class="sourceLineNo">200</span><a id="line.200">   * {@code identifier}.</a>
+<span class="sourceLineNo">201</span><a id="line.201">   * &lt;p&gt;</a>
+<span class="sourceLineNo">202</span><a id="line.202">   * Will normalize the case of a UUID-based identifier.</a>
+<span class="sourceLineNo">203</span><a id="line.203">   *</a>
+<span class="sourceLineNo">204</span><a id="line.204">   * @param itemType</a>
+<span class="sourceLineNo">205</span><a id="line.205">   *          the type of item to search for</a>
+<span class="sourceLineNo">206</span><a id="line.206">   * @param identifier</a>
+<span class="sourceLineNo">207</span><a id="line.207">   *          the identifier to lookup</a>
+<span class="sourceLineNo">208</span><a id="line.208">   * @return the matching item or {@code null} if no match was found</a>
+<span class="sourceLineNo">209</span><a id="line.209">   */</a>
+<span class="sourceLineNo">210</span><a id="line.210">  @Nullable</a>
+<span class="sourceLineNo">211</span><a id="line.211">  default IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier) {</a>
+<span class="sourceLineNo">212</span><a id="line.212">    return getEntity(itemType, identifier, itemType.isUuid());</a>
+<span class="sourceLineNo">213</span><a id="line.213">  }</a>
+<span class="sourceLineNo">214</span><a id="line.214"></a>
+<span class="sourceLineNo">215</span><a id="line.215">  /**</a>
+<span class="sourceLineNo">216</span><a id="line.216">   * Lookup an item of the given {@code itemType} having the given</a>
+<span class="sourceLineNo">217</span><a id="line.217">   * {@code identifier}.</a>
+<span class="sourceLineNo">218</span><a id="line.218">   * &lt;p&gt;</a>
+<span class="sourceLineNo">219</span><a id="line.219">   * Will normalize the case of a UUID-based the identifier when requested.</a>
+<span class="sourceLineNo">220</span><a id="line.220">   *</a>
+<span class="sourceLineNo">221</span><a id="line.221">   * @param itemType</a>
+<span class="sourceLineNo">222</span><a id="line.222">   *          the type of item to search for</a>
+<span class="sourceLineNo">223</span><a id="line.223">   * @param identifier</a>
+<span class="sourceLineNo">224</span><a id="line.224">   *          the identifier to lookup</a>
+<span class="sourceLineNo">225</span><a id="line.225">   * @param normalize</a>
+<span class="sourceLineNo">226</span><a id="line.226">   *          {@code true} if the identifier case should be normalized or</a>
+<span class="sourceLineNo">227</span><a id="line.227">   *          {@code false} otherwise</a>
+<span class="sourceLineNo">228</span><a id="line.228">   * @return the matching item or {@code null} if no match was found</a>
+<span class="sourceLineNo">229</span><a id="line.229">   */</a>
+<span class="sourceLineNo">230</span><a id="line.230">  @Nullable</a>
+<span class="sourceLineNo">231</span><a id="line.231">  IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier, boolean normalize);</a>
 <span class="sourceLineNo">232</span><a id="line.232"></a>
-<span class="sourceLineNo">233</span><a id="line.233">  @NonNull</a>
-<span class="sourceLineNo">234</span><a id="line.234">  SelectionStatus getSelectionStatus(@NonNull INodeItem item);</a>
-<span class="sourceLineNo">235</span><a id="line.235"></a>
-<span class="sourceLineNo">236</span><a id="line.236">  void setSelectionStatus(@NonNull INodeItem item, @NonNull SelectionStatus selectionStatus);</a>
-<span class="sourceLineNo">237</span><a id="line.237"></a>
-<span class="sourceLineNo">238</span><a id="line.238">  void resetSelectionStatus();</a>
-<span class="sourceLineNo">239</span><a id="line.239"></a>
-<span class="sourceLineNo">240</span><a id="line.240">  void append(@NonNull IIndexer result);</a>
+<span class="sourceLineNo">233</span><a id="line.233">  boolean removeItem(@NonNull IEntityItem entity);</a>
+<span class="sourceLineNo">234</span><a id="line.234"></a>
+<span class="sourceLineNo">235</span><a id="line.235">  boolean isSelected(@NonNull IEntityItem entity);</a>
+<span class="sourceLineNo">236</span><a id="line.236"></a>
+<span class="sourceLineNo">237</span><a id="line.237">  Map&lt;INodeItem, SelectionStatus&gt; getSelectionStatusMap();</a>
+<span class="sourceLineNo">238</span><a id="line.238"></a>
+<span class="sourceLineNo">239</span><a id="line.239">  @NonNull</a>
+<span class="sourceLineNo">240</span><a id="line.240">  SelectionStatus getSelectionStatus(@NonNull INodeItem item);</a>
 <span class="sourceLineNo">241</span><a id="line.241"></a>
-<span class="sourceLineNo">242</span><a id="line.242">  /**</a>
-<span class="sourceLineNo">243</span><a id="line.243">   * Get a copy of the entity map.</a>
-<span class="sourceLineNo">244</span><a id="line.244">   *</a>
-<span class="sourceLineNo">245</span><a id="line.245">   * @return the copy</a>
-<span class="sourceLineNo">246</span><a id="line.246">   */</a>
-<span class="sourceLineNo">247</span><a id="line.247">  @NonNull</a>
-<span class="sourceLineNo">248</span><a id="line.248">  Map&lt;ItemType, Map&lt;String, IEntityItem&gt;&gt; getEntities();</a>
-<span class="sourceLineNo">249</span><a id="line.249">}</a>
+<span class="sourceLineNo">242</span><a id="line.242">  void setSelectionStatus(@NonNull INodeItem item, @NonNull SelectionStatus selectionStatus);</a>
+<span class="sourceLineNo">243</span><a id="line.243"></a>
+<span class="sourceLineNo">244</span><a id="line.244">  void resetSelectionStatus();</a>
+<span class="sourceLineNo">245</span><a id="line.245"></a>
+<span class="sourceLineNo">246</span><a id="line.246">  void append(@NonNull IIndexer result);</a>
+<span class="sourceLineNo">247</span><a id="line.247"></a>
+<span class="sourceLineNo">248</span><a id="line.248">  /**</a>
+<span class="sourceLineNo">249</span><a id="line.249">   * Get a copy of the entity map.</a>
+<span class="sourceLineNo">250</span><a id="line.250">   *</a>
+<span class="sourceLineNo">251</span><a id="line.251">   * @return the copy</a>
+<span class="sourceLineNo">252</span><a id="line.252">   */</a>
+<span class="sourceLineNo">253</span><a id="line.253">  @NonNull</a>
+<span class="sourceLineNo">254</span><a id="line.254">  Map&lt;ItemType, Map&lt;String, IEntityItem&gt;&gt; getEntities();</a>
+<span class="sourceLineNo">255</span><a id="line.255">}</a>
 
 
 

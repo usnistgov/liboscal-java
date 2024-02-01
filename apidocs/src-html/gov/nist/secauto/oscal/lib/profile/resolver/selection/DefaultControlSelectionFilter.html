@@ -61,147 +61,149 @@
 <span class="sourceLineNo">052</span><a id="line.52">  private final List&lt;Selection&gt; selections;</a>
 <span class="sourceLineNo">053</span><a id="line.53"></a>
 <span class="sourceLineNo">054</span><a id="line.54">  /**</a>
-<span class="sourceLineNo">055</span><a id="line.55">   * Construct a new selection filter based on the provided list of select criteria.</a>
-<span class="sourceLineNo">056</span><a id="line.56">   *</a>
-<span class="sourceLineNo">057</span><a id="line.57">   * @param selections</a>
-<span class="sourceLineNo">058</span><a id="line.58">   *          a list of select criteria</a>
-<span class="sourceLineNo">059</span><a id="line.59">   */</a>
-<span class="sourceLineNo">060</span><a id="line.60">  @SuppressWarnings("null")</a>
-<span class="sourceLineNo">061</span><a id="line.61">  public DefaultControlSelectionFilter(@NonNull List&lt;? extends IProfileSelectControlById&gt; selections) {</a>
-<span class="sourceLineNo">062</span><a id="line.62">    this.selections = selections.stream()</a>
-<span class="sourceLineNo">063</span><a id="line.63">        // ignore null entries</a>
-<span class="sourceLineNo">064</span><a id="line.64">        .filter(Objects::nonNull)</a>
-<span class="sourceLineNo">065</span><a id="line.65">        // create a selection object for the selection</a>
-<span class="sourceLineNo">066</span><a id="line.66">        .map(selection -&gt; new Selection(selection))</a>
-<span class="sourceLineNo">067</span><a id="line.67">        .collect(Collectors.toUnmodifiableList());</a>
-<span class="sourceLineNo">068</span><a id="line.68">  }</a>
-<span class="sourceLineNo">069</span><a id="line.69"></a>
-<span class="sourceLineNo">070</span><a id="line.70">  @NonNull</a>
-<span class="sourceLineNo">071</span><a id="line.71">  @Override</a>
-<span class="sourceLineNo">072</span><a id="line.72">  public Pair&lt;Boolean, Boolean&gt; apply(IControl control) {</a>
-<span class="sourceLineNo">073</span><a id="line.73">    String id = control.getId();</a>
-<span class="sourceLineNo">074</span><a id="line.74">    if (id == null) {</a>
-<span class="sourceLineNo">075</span><a id="line.75">      throw new ProfileResolutionEvaluationException("control is missing an identifier");</a>
-<span class="sourceLineNo">076</span><a id="line.76">    }</a>
-<span class="sourceLineNo">077</span><a id="line.77">    return match(id);</a>
-<span class="sourceLineNo">078</span><a id="line.78">  }</a>
-<span class="sourceLineNo">079</span><a id="line.79"></a>
-<span class="sourceLineNo">080</span><a id="line.80">  /**</a>
-<span class="sourceLineNo">081</span><a id="line.81">   * Checks if the provided control identifier matches the criteria defined by this object.</a>
-<span class="sourceLineNo">082</span><a id="line.82">   *</a>
-<span class="sourceLineNo">083</span><a id="line.83">   * @param id</a>
-<span class="sourceLineNo">084</span><a id="line.84">   *          the control identifier to match</a>
-<span class="sourceLineNo">085</span><a id="line.85">   * @return a {@link Pair} whose first member is {@code true} for a match or {@code false} otherwise,</a>
-<span class="sourceLineNo">086</span><a id="line.86">   *         and whose second member is {@code true} if the match applies to any child controls or</a>
-<span class="sourceLineNo">087</span><a id="line.87">   *         {@code false} otherwise</a>
-<span class="sourceLineNo">088</span><a id="line.88">   */</a>
-<span class="sourceLineNo">089</span><a id="line.89">  @SuppressWarnings("null")</a>
-<span class="sourceLineNo">090</span><a id="line.90">  @NonNull</a>
-<span class="sourceLineNo">091</span><a id="line.91">  protected Pair&lt;Boolean, Boolean&gt; match(String id) {</a>
-<span class="sourceLineNo">092</span><a id="line.92">    return selections.parallelStream()</a>
-<span class="sourceLineNo">093</span><a id="line.93">        .map(selection -&gt; selection.match(id))</a>
-<span class="sourceLineNo">094</span><a id="line.94">        // filter out non-matches</a>
-<span class="sourceLineNo">095</span><a id="line.95">        .filter(pair -&gt; pair.getLeft())</a>
-<span class="sourceLineNo">096</span><a id="line.96">        // aggregate matches</a>
-<span class="sourceLineNo">097</span><a id="line.97">        .reduce((first, second) -&gt; {</a>
-<span class="sourceLineNo">098</span><a id="line.98">          Pair&lt;Boolean, Boolean&gt; result;</a>
-<span class="sourceLineNo">099</span><a id="line.99">          if (first.getLeft() || second.getLeft()) {</a>
-<span class="sourceLineNo">100</span><a id="line.100">            // at least one matches</a>
-<span class="sourceLineNo">101</span><a id="line.101">            boolean withChild = first.getLeft() &amp;&amp; first.getRight() || second.getLeft() &amp;&amp; second.getRight();</a>
-<span class="sourceLineNo">102</span><a id="line.102">            result = Pair.of(true, withChild);</a>
-<span class="sourceLineNo">103</span><a id="line.103">          } else {</a>
-<span class="sourceLineNo">104</span><a id="line.104">            result = IControlSelectionFilter.NON_MATCH;</a>
-<span class="sourceLineNo">105</span><a id="line.105">          }</a>
-<span class="sourceLineNo">106</span><a id="line.106">          return result;</a>
-<span class="sourceLineNo">107</span><a id="line.107">        })</a>
-<span class="sourceLineNo">108</span><a id="line.108">        .orElse(NON_MATCH);</a>
-<span class="sourceLineNo">109</span><a id="line.109">  }</a>
-<span class="sourceLineNo">110</span><a id="line.110"></a>
-<span class="sourceLineNo">111</span><a id="line.111">  @SuppressWarnings("PMD.ImplicitSwitchFallThrough")</a>
-<span class="sourceLineNo">112</span><a id="line.112">  private static Pattern toPattern(@NonNull Matching matching) {</a>
-<span class="sourceLineNo">113</span><a id="line.113">    String pattern = ObjectUtils.requireNonNull(matching.getPattern());</a>
-<span class="sourceLineNo">114</span><a id="line.114">    String regex = pattern.chars().boxed().map(ch -&gt; (char) ch.intValue()).map(ch -&gt; {</a>
-<span class="sourceLineNo">115</span><a id="line.115"></a>
-<span class="sourceLineNo">116</span><a id="line.116">      String value;</a>
-<span class="sourceLineNo">117</span><a id="line.117">      switch (ch) {</a>
-<span class="sourceLineNo">118</span><a id="line.118">      case '*':</a>
-<span class="sourceLineNo">119</span><a id="line.119">        value = ".*";</a>
-<span class="sourceLineNo">120</span><a id="line.120">        break;</a>
-<span class="sourceLineNo">121</span><a id="line.121">      case '?':</a>
-<span class="sourceLineNo">122</span><a id="line.122">        value = ".";</a>
-<span class="sourceLineNo">123</span><a id="line.123">        break;</a>
-<span class="sourceLineNo">124</span><a id="line.124">      case '.':</a>
-<span class="sourceLineNo">125</span><a id="line.125">      case '+':</a>
-<span class="sourceLineNo">126</span><a id="line.126">      case '\\':</a>
-<span class="sourceLineNo">127</span><a id="line.127">      case '[':</a>
-<span class="sourceLineNo">128</span><a id="line.128">      case ']':</a>
-<span class="sourceLineNo">129</span><a id="line.129">      case '{':</a>
-<span class="sourceLineNo">130</span><a id="line.130">      case '}':</a>
-<span class="sourceLineNo">131</span><a id="line.131">      case '(':</a>
-<span class="sourceLineNo">132</span><a id="line.132">      case ')':</a>
-<span class="sourceLineNo">133</span><a id="line.133">      case '^':</a>
-<span class="sourceLineNo">134</span><a id="line.134">      case '$':</a>
-<span class="sourceLineNo">135</span><a id="line.135">        value = "\\" + ch;</a>
-<span class="sourceLineNo">136</span><a id="line.136">        break;</a>
-<span class="sourceLineNo">137</span><a id="line.137">      default:</a>
-<span class="sourceLineNo">138</span><a id="line.138">        value = String.valueOf(ch);</a>
-<span class="sourceLineNo">139</span><a id="line.139">      }</a>
-<span class="sourceLineNo">140</span><a id="line.140">      return value;</a>
-<span class="sourceLineNo">141</span><a id="line.141">    }).collect(Collectors.joining("", "^", "$"));</a>
-<span class="sourceLineNo">142</span><a id="line.142"></a>
-<span class="sourceLineNo">143</span><a id="line.143">    if (LOGGER.isTraceEnabled()) {</a>
-<span class="sourceLineNo">144</span><a id="line.144">      LOGGER.atTrace().log("regex: {}", regex);</a>
-<span class="sourceLineNo">145</span><a id="line.145">    }</a>
-<span class="sourceLineNo">146</span><a id="line.146">    return Pattern.compile(regex);</a>
-<span class="sourceLineNo">147</span><a id="line.147">  }</a>
-<span class="sourceLineNo">148</span><a id="line.148"></a>
-<span class="sourceLineNo">149</span><a id="line.149">  private static class Selection {</a>
+<span class="sourceLineNo">055</span><a id="line.55">   * Construct a new selection filter based on the provided list of select</a>
+<span class="sourceLineNo">056</span><a id="line.56">   * criteria.</a>
+<span class="sourceLineNo">057</span><a id="line.57">   *</a>
+<span class="sourceLineNo">058</span><a id="line.58">   * @param selections</a>
+<span class="sourceLineNo">059</span><a id="line.59">   *          a list of select criteria</a>
+<span class="sourceLineNo">060</span><a id="line.60">   */</a>
+<span class="sourceLineNo">061</span><a id="line.61">  @SuppressWarnings("null")</a>
+<span class="sourceLineNo">062</span><a id="line.62">  public DefaultControlSelectionFilter(@NonNull List&lt;? extends IProfileSelectControlById&gt; selections) {</a>
+<span class="sourceLineNo">063</span><a id="line.63">    this.selections = selections.stream()</a>
+<span class="sourceLineNo">064</span><a id="line.64">        // ignore null entries</a>
+<span class="sourceLineNo">065</span><a id="line.65">        .filter(Objects::nonNull)</a>
+<span class="sourceLineNo">066</span><a id="line.66">        // create a selection object for the selection</a>
+<span class="sourceLineNo">067</span><a id="line.67">        .map(selection -&gt; new Selection(selection))</a>
+<span class="sourceLineNo">068</span><a id="line.68">        .collect(Collectors.toUnmodifiableList());</a>
+<span class="sourceLineNo">069</span><a id="line.69">  }</a>
+<span class="sourceLineNo">070</span><a id="line.70"></a>
+<span class="sourceLineNo">071</span><a id="line.71">  @NonNull</a>
+<span class="sourceLineNo">072</span><a id="line.72">  @Override</a>
+<span class="sourceLineNo">073</span><a id="line.73">  public Pair&lt;Boolean, Boolean&gt; apply(IControl control) {</a>
+<span class="sourceLineNo">074</span><a id="line.74">    String id = control.getId();</a>
+<span class="sourceLineNo">075</span><a id="line.75">    if (id == null) {</a>
+<span class="sourceLineNo">076</span><a id="line.76">      throw new ProfileResolutionEvaluationException("control is missing an identifier");</a>
+<span class="sourceLineNo">077</span><a id="line.77">    }</a>
+<span class="sourceLineNo">078</span><a id="line.78">    return match(id);</a>
+<span class="sourceLineNo">079</span><a id="line.79">  }</a>
+<span class="sourceLineNo">080</span><a id="line.80"></a>
+<span class="sourceLineNo">081</span><a id="line.81">  /**</a>
+<span class="sourceLineNo">082</span><a id="line.82">   * Checks if the provided control identifier matches the criteria defined by</a>
+<span class="sourceLineNo">083</span><a id="line.83">   * this object.</a>
+<span class="sourceLineNo">084</span><a id="line.84">   *</a>
+<span class="sourceLineNo">085</span><a id="line.85">   * @param id</a>
+<span class="sourceLineNo">086</span><a id="line.86">   *          the control identifier to match</a>
+<span class="sourceLineNo">087</span><a id="line.87">   * @return a {@link Pair} whose first member is {@code true} for a match or</a>
+<span class="sourceLineNo">088</span><a id="line.88">   *         {@code false} otherwise, and whose second member is {@code true} if</a>
+<span class="sourceLineNo">089</span><a id="line.89">   *         the match applies to any child controls or {@code false} otherwise</a>
+<span class="sourceLineNo">090</span><a id="line.90">   */</a>
+<span class="sourceLineNo">091</span><a id="line.91">  @SuppressWarnings("null")</a>
+<span class="sourceLineNo">092</span><a id="line.92">  @NonNull</a>
+<span class="sourceLineNo">093</span><a id="line.93">  protected Pair&lt;Boolean, Boolean&gt; match(String id) {</a>
+<span class="sourceLineNo">094</span><a id="line.94">    return selections.parallelStream()</a>
+<span class="sourceLineNo">095</span><a id="line.95">        .map(selection -&gt; selection.match(id))</a>
+<span class="sourceLineNo">096</span><a id="line.96">        // filter out non-matches</a>
+<span class="sourceLineNo">097</span><a id="line.97">        .filter(pair -&gt; pair.getLeft())</a>
+<span class="sourceLineNo">098</span><a id="line.98">        // aggregate matches</a>
+<span class="sourceLineNo">099</span><a id="line.99">        .reduce((first, second) -&gt; {</a>
+<span class="sourceLineNo">100</span><a id="line.100">          Pair&lt;Boolean, Boolean&gt; result;</a>
+<span class="sourceLineNo">101</span><a id="line.101">          if (first.getLeft() || second.getLeft()) {</a>
+<span class="sourceLineNo">102</span><a id="line.102">            // at least one matches</a>
+<span class="sourceLineNo">103</span><a id="line.103">            boolean withChild = first.getLeft() &amp;&amp; first.getRight() || second.getLeft() &amp;&amp; second.getRight();</a>
+<span class="sourceLineNo">104</span><a id="line.104">            result = Pair.of(true, withChild);</a>
+<span class="sourceLineNo">105</span><a id="line.105">          } else {</a>
+<span class="sourceLineNo">106</span><a id="line.106">            result = IControlSelectionFilter.NON_MATCH;</a>
+<span class="sourceLineNo">107</span><a id="line.107">          }</a>
+<span class="sourceLineNo">108</span><a id="line.108">          return result;</a>
+<span class="sourceLineNo">109</span><a id="line.109">        })</a>
+<span class="sourceLineNo">110</span><a id="line.110">        .orElse(NON_MATCH);</a>
+<span class="sourceLineNo">111</span><a id="line.111">  }</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">  @SuppressWarnings("PMD.ImplicitSwitchFallThrough")</a>
+<span class="sourceLineNo">114</span><a id="line.114">  private static Pattern toPattern(@NonNull Matching matching) {</a>
+<span class="sourceLineNo">115</span><a id="line.115">    String pattern = ObjectUtils.requireNonNull(matching.getPattern());</a>
+<span class="sourceLineNo">116</span><a id="line.116">    String regex = pattern.chars().boxed().map(ch -&gt; (char) ch.intValue()).map(ch -&gt; {</a>
+<span class="sourceLineNo">117</span><a id="line.117"></a>
+<span class="sourceLineNo">118</span><a id="line.118">      String value;</a>
+<span class="sourceLineNo">119</span><a id="line.119">      switch (ch) {</a>
+<span class="sourceLineNo">120</span><a id="line.120">      case '*':</a>
+<span class="sourceLineNo">121</span><a id="line.121">        value = ".*";</a>
+<span class="sourceLineNo">122</span><a id="line.122">        break;</a>
+<span class="sourceLineNo">123</span><a id="line.123">      case '?':</a>
+<span class="sourceLineNo">124</span><a id="line.124">        value = ".";</a>
+<span class="sourceLineNo">125</span><a id="line.125">        break;</a>
+<span class="sourceLineNo">126</span><a id="line.126">      case '.':</a>
+<span class="sourceLineNo">127</span><a id="line.127">      case '+':</a>
+<span class="sourceLineNo">128</span><a id="line.128">      case '\\':</a>
+<span class="sourceLineNo">129</span><a id="line.129">      case '[':</a>
+<span class="sourceLineNo">130</span><a id="line.130">      case ']':</a>
+<span class="sourceLineNo">131</span><a id="line.131">      case '{':</a>
+<span class="sourceLineNo">132</span><a id="line.132">      case '}':</a>
+<span class="sourceLineNo">133</span><a id="line.133">      case '(':</a>
+<span class="sourceLineNo">134</span><a id="line.134">      case ')':</a>
+<span class="sourceLineNo">135</span><a id="line.135">      case '^':</a>
+<span class="sourceLineNo">136</span><a id="line.136">      case '$':</a>
+<span class="sourceLineNo">137</span><a id="line.137">        value = "\\" + ch;</a>
+<span class="sourceLineNo">138</span><a id="line.138">        break;</a>
+<span class="sourceLineNo">139</span><a id="line.139">      default:</a>
+<span class="sourceLineNo">140</span><a id="line.140">        value = String.valueOf(ch);</a>
+<span class="sourceLineNo">141</span><a id="line.141">      }</a>
+<span class="sourceLineNo">142</span><a id="line.142">      return value;</a>
+<span class="sourceLineNo">143</span><a id="line.143">    }).collect(Collectors.joining("", "^", "$"));</a>
+<span class="sourceLineNo">144</span><a id="line.144"></a>
+<span class="sourceLineNo">145</span><a id="line.145">    if (LOGGER.isTraceEnabled()) {</a>
+<span class="sourceLineNo">146</span><a id="line.146">      LOGGER.atTrace().log("regex: {}", regex);</a>
+<span class="sourceLineNo">147</span><a id="line.147">    }</a>
+<span class="sourceLineNo">148</span><a id="line.148">    return Pattern.compile(regex);</a>
+<span class="sourceLineNo">149</span><a id="line.149">  }</a>
 <span class="sourceLineNo">150</span><a id="line.150"></a>
-<span class="sourceLineNo">151</span><a id="line.151">    private final boolean withChildControls;</a>
-<span class="sourceLineNo">152</span><a id="line.152">    private final Set&lt;String&gt; identifiers;</a>
-<span class="sourceLineNo">153</span><a id="line.153">    private final List&lt;Pattern&gt; patterns;</a>
-<span class="sourceLineNo">154</span><a id="line.154"></a>
-<span class="sourceLineNo">155</span><a id="line.155">    public Selection(IProfileSelectControlById selection) {</a>
-<span class="sourceLineNo">156</span><a id="line.156">      // process with-child-controls</a>
-<span class="sourceLineNo">157</span><a id="line.157">      // default is "no"</a>
-<span class="sourceLineNo">158</span><a id="line.158">      this.withChildControls = "yes".equals(selection.getWithChildControls());</a>
-<span class="sourceLineNo">159</span><a id="line.159"></a>
-<span class="sourceLineNo">160</span><a id="line.160">      // process with-ids</a>
-<span class="sourceLineNo">161</span><a id="line.161">      List&lt;String&gt; ids = selection.getWithIds();</a>
-<span class="sourceLineNo">162</span><a id="line.162">      if (ids == null) {</a>
-<span class="sourceLineNo">163</span><a id="line.163">        ids = Collections.emptyList();</a>
-<span class="sourceLineNo">164</span><a id="line.164">      }</a>
-<span class="sourceLineNo">165</span><a id="line.165">      this.identifiers = ids.stream()</a>
-<span class="sourceLineNo">166</span><a id="line.166">          .filter(Objects::nonNull)</a>
-<span class="sourceLineNo">167</span><a id="line.167">          .collect(Collectors.toUnmodifiableSet());</a>
-<span class="sourceLineNo">168</span><a id="line.168"></a>
-<span class="sourceLineNo">169</span><a id="line.169">      // process with-ids</a>
-<span class="sourceLineNo">170</span><a id="line.170">      List&lt;Matching&gt; matching = selection.getMatching();</a>
-<span class="sourceLineNo">171</span><a id="line.171">      if (matching == null) {</a>
-<span class="sourceLineNo">172</span><a id="line.172">        matching = Collections.emptyList();</a>
-<span class="sourceLineNo">173</span><a id="line.173">      }</a>
-<span class="sourceLineNo">174</span><a id="line.174">      this.patterns = matching.stream()</a>
-<span class="sourceLineNo">175</span><a id="line.175">          .filter(Objects::nonNull)</a>
-<span class="sourceLineNo">176</span><a id="line.176">          .map(DefaultControlSelectionFilter::toPattern)</a>
-<span class="sourceLineNo">177</span><a id="line.177">          .collect(Collectors.toUnmodifiableList());</a>
-<span class="sourceLineNo">178</span><a id="line.178">    }</a>
-<span class="sourceLineNo">179</span><a id="line.179"></a>
-<span class="sourceLineNo">180</span><a id="line.180">    public boolean isWithChildControls() {</a>
-<span class="sourceLineNo">181</span><a id="line.181">      return withChildControls;</a>
-<span class="sourceLineNo">182</span><a id="line.182">    }</a>
-<span class="sourceLineNo">183</span><a id="line.183"></a>
-<span class="sourceLineNo">184</span><a id="line.184">    @NonNull</a>
-<span class="sourceLineNo">185</span><a id="line.185">    protected Pair&lt;Boolean, Boolean&gt; match(String id) {</a>
-<span class="sourceLineNo">186</span><a id="line.186">      // first check for direct match</a>
-<span class="sourceLineNo">187</span><a id="line.187">      boolean result = identifiers.stream().anyMatch(controlIdentifier -&gt; controlIdentifier.equals(id));</a>
-<span class="sourceLineNo">188</span><a id="line.188">      if (!result) {</a>
-<span class="sourceLineNo">189</span><a id="line.189">        // next check for pattern match</a>
-<span class="sourceLineNo">190</span><a id="line.190">        result = patterns.stream().anyMatch(pattern -&gt; pattern.asMatchPredicate().test(id));</a>
-<span class="sourceLineNo">191</span><a id="line.191">      }</a>
-<span class="sourceLineNo">192</span><a id="line.192">      return ObjectUtils.notNull(Pair.of(result, isWithChildControls()));</a>
-<span class="sourceLineNo">193</span><a id="line.193">    }</a>
-<span class="sourceLineNo">194</span><a id="line.194">  }</a>
-<span class="sourceLineNo">195</span><a id="line.195">}</a>
+<span class="sourceLineNo">151</span><a id="line.151">  private static class Selection {</a>
+<span class="sourceLineNo">152</span><a id="line.152"></a>
+<span class="sourceLineNo">153</span><a id="line.153">    private final boolean withChildControls;</a>
+<span class="sourceLineNo">154</span><a id="line.154">    private final Set&lt;String&gt; identifiers;</a>
+<span class="sourceLineNo">155</span><a id="line.155">    private final List&lt;Pattern&gt; patterns;</a>
+<span class="sourceLineNo">156</span><a id="line.156"></a>
+<span class="sourceLineNo">157</span><a id="line.157">    public Selection(IProfileSelectControlById selection) {</a>
+<span class="sourceLineNo">158</span><a id="line.158">      // process with-child-controls</a>
+<span class="sourceLineNo">159</span><a id="line.159">      // default is "no"</a>
+<span class="sourceLineNo">160</span><a id="line.160">      this.withChildControls = "yes".equals(selection.getWithChildControls());</a>
+<span class="sourceLineNo">161</span><a id="line.161"></a>
+<span class="sourceLineNo">162</span><a id="line.162">      // process with-ids</a>
+<span class="sourceLineNo">163</span><a id="line.163">      List&lt;String&gt; ids = selection.getWithIds();</a>
+<span class="sourceLineNo">164</span><a id="line.164">      if (ids == null) {</a>
+<span class="sourceLineNo">165</span><a id="line.165">        ids = Collections.emptyList();</a>
+<span class="sourceLineNo">166</span><a id="line.166">      }</a>
+<span class="sourceLineNo">167</span><a id="line.167">      this.identifiers = ids.stream()</a>
+<span class="sourceLineNo">168</span><a id="line.168">          .filter(Objects::nonNull)</a>
+<span class="sourceLineNo">169</span><a id="line.169">          .collect(Collectors.toUnmodifiableSet());</a>
+<span class="sourceLineNo">170</span><a id="line.170"></a>
+<span class="sourceLineNo">171</span><a id="line.171">      // process with-ids</a>
+<span class="sourceLineNo">172</span><a id="line.172">      List&lt;Matching&gt; matching = selection.getMatching();</a>
+<span class="sourceLineNo">173</span><a id="line.173">      if (matching == null) {</a>
+<span class="sourceLineNo">174</span><a id="line.174">        matching = Collections.emptyList();</a>
+<span class="sourceLineNo">175</span><a id="line.175">      }</a>
+<span class="sourceLineNo">176</span><a id="line.176">      this.patterns = matching.stream()</a>
+<span class="sourceLineNo">177</span><a id="line.177">          .filter(Objects::nonNull)</a>
+<span class="sourceLineNo">178</span><a id="line.178">          .map(DefaultControlSelectionFilter::toPattern)</a>
+<span class="sourceLineNo">179</span><a id="line.179">          .collect(Collectors.toUnmodifiableList());</a>
+<span class="sourceLineNo">180</span><a id="line.180">    }</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">    public boolean isWithChildControls() {</a>
+<span class="sourceLineNo">183</span><a id="line.183">      return withChildControls;</a>
+<span class="sourceLineNo">184</span><a id="line.184">    }</a>
+<span class="sourceLineNo">185</span><a id="line.185"></a>
+<span class="sourceLineNo">186</span><a id="line.186">    @NonNull</a>
+<span class="sourceLineNo">187</span><a id="line.187">    protected Pair&lt;Boolean, Boolean&gt; match(String id) {</a>
+<span class="sourceLineNo">188</span><a id="line.188">      // first check for direct match</a>
+<span class="sourceLineNo">189</span><a id="line.189">      boolean result = identifiers.stream().anyMatch(controlIdentifier -&gt; controlIdentifier.equals(id));</a>
+<span class="sourceLineNo">190</span><a id="line.190">      if (!result) {</a>
+<span class="sourceLineNo">191</span><a id="line.191">        // next check for pattern match</a>
+<span class="sourceLineNo">192</span><a id="line.192">        result = patterns.stream().anyMatch(pattern -&gt; pattern.asMatchPredicate().test(id));</a>
+<span class="sourceLineNo">193</span><a id="line.193">      }</a>
+<span class="sourceLineNo">194</span><a id="line.194">      return ObjectUtils.notNull(Pair.of(result, isWithChildControls()));</a>
+<span class="sourceLineNo">195</span><a id="line.195">    }</a>
+<span class="sourceLineNo">196</span><a id="line.196">  }</a>
+<span class="sourceLineNo">197</span><a id="line.197">}</a>
 
 
 

@@ -529,6 +529,72 @@ public class BackMatter extends AbstractBackMatter {
     }
 
     /**
+     * A resource encoded using the Base64 alphabet defined by &lt;a href=&quot;https://www.rfc-editor.org/rfc/rfc2045.html&quot;&gt;RFC 2045&lt;/a&gt;.
+     */
+    @MetaschemaField(
+        formalName = &quot;Base64&quot;,
+        description = &quot;A resource encoded using the Base64 alphabet defined by [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045.html).&quot;,
+        name = &quot;base64&quot;,
+        metaschema = OscalMetadataMetaschema.class,
+        isCollapsible = false
+    )
+    public static class Base64 {
+      @MetaschemaFieldValue(
+          valueKeyName = &quot;value&quot;,
+          typeAdapter = Base64Adapter.class
+      )
+      private ByteBuffer _value;
+
+      @BoundFlag(
+          formalName = &quot;File Name&quot;,
+          description = &quot;Name of the file before it was encoded as Base64 to be embedded in a `resource`. This is the name that will be assigned to the file when the file is decoded.&quot;,
+          useName = &quot;filename&quot;,
+          typeAdapter = TokenAdapter.class
+      )
+      private String _filename;
+
+      @BoundFlag(
+          formalName = &quot;Media Type&quot;,
+          description = &quot;A label that indicates the nature of a resource, as a data serialization or format.&quot;,
+          useName = &quot;media-type&quot;,
+          typeAdapter = StringAdapter.class
+      )
+      private String _mediaType;
+
+<span class="nc" id="L564">      public Base64() {</span>
+<span class="nc" id="L565">      }</span>
+
+      public ByteBuffer getValue() {
+<span class="nc" id="L568">        return _value;</span>
+      }
+
+      public void setValue(ByteBuffer value) {
+<span class="nc" id="L572">        _value = value;</span>
+<span class="nc" id="L573">      }</span>
+
+      public String getFilename() {
+<span class="nc" id="L576">        return _filename;</span>
+      }
+
+      public void setFilename(String value) {
+<span class="nc" id="L580">        _filename = value;</span>
+<span class="nc" id="L581">      }</span>
+
+      public String getMediaType() {
+<span class="nc" id="L584">        return _mediaType;</span>
+      }
+
+      public void setMediaType(String value) {
+<span class="nc" id="L588">        _mediaType = value;</span>
+<span class="nc" id="L589">      }</span>
+
+      @Override
+      public String toString() {
+<span class="nc" id="L593">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+      }
+    }
+
+    /**
      * A URL-based pointer to an external resource with an optional hash for verification and change detection.
      */
     @MetaschemaAssembly(
@@ -578,32 +644,32 @@ public class BackMatter extends AbstractBackMatter {
       )
       private List&lt;Hash&gt; _hashes;
 
-<span class="fc" id="L581">      public Rlink() {</span>
-<span class="fc" id="L582">      }</span>
+<span class="fc" id="L647">      public Rlink() {</span>
+<span class="fc" id="L648">      }</span>
 
       public URI getHref() {
-<span class="fc" id="L585">        return _href;</span>
+<span class="fc" id="L651">        return _href;</span>
       }
 
       public void setHref(URI value) {
-<span class="nc" id="L589">        _href = value;</span>
-<span class="nc" id="L590">      }</span>
+<span class="nc" id="L655">        _href = value;</span>
+<span class="nc" id="L656">      }</span>
 
       public String getMediaType() {
-<span class="nc" id="L593">        return _mediaType;</span>
+<span class="nc" id="L659">        return _mediaType;</span>
       }
 
       public void setMediaType(String value) {
-<span class="nc" id="L597">        _mediaType = value;</span>
-<span class="nc" id="L598">      }</span>
+<span class="nc" id="L663">        _mediaType = value;</span>
+<span class="nc" id="L664">      }</span>
 
       public List&lt;Hash&gt; getHashes() {
-<span class="nc" id="L601">        return _hashes;</span>
+<span class="nc" id="L667">        return _hashes;</span>
       }
 
       public void setHashes(List&lt;Hash&gt; value) {
-<span class="nc" id="L605">        _hashes = value;</span>
-<span class="nc" id="L606">      }</span>
+<span class="nc" id="L671">        _hashes = value;</span>
+<span class="nc" id="L672">      }</span>
 
       /**
        * Add a new {@link Hash} item to the underlying collection.
@@ -611,11 +677,11 @@ public class BackMatter extends AbstractBackMatter {
        * @return {@code true}
        */
       public boolean addHash(Hash item) {
-<span class="nc" id="L614">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L615" title="All 2 branches missed.">        if (_hashes == null) {</span>
-<span class="nc" id="L616">          _hashes = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L680">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L681" title="All 2 branches missed.">        if (_hashes == null) {</span>
+<span class="nc" id="L682">          _hashes = new LinkedList&lt;&gt;();</span>
         }
-<span class="nc" id="L618">        return _hashes.add(value);</span>
+<span class="nc" id="L684">        return _hashes.add(value);</span>
       }
 
       /**
@@ -624,75 +690,9 @@ public class BackMatter extends AbstractBackMatter {
        * @return {@code true} if the item was removed or {@code false} otherwise
        */
       public boolean removeHash(Hash item) {
-<span class="nc" id="L627">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L628" title="All 2 branches missed.">        return _hashes == null ? false : _hashes.remove(value);</span>
+<span class="nc" id="L693">        Hash value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L694" title="All 2 branches missed.">        return _hashes == null ? false : _hashes.remove(value);</span>
       }
-
-      @Override
-      public String toString() {
-<span class="nc" id="L633">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-      }
-    }
-
-    /**
-     * A resource encoded using the Base64 alphabet defined by &lt;a href=&quot;https://www.rfc-editor.org/rfc/rfc2045.html&quot;&gt;RFC 2045&lt;/a&gt;.
-     */
-    @MetaschemaField(
-        formalName = &quot;Base64&quot;,
-        description = &quot;A resource encoded using the Base64 alphabet defined by [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045.html).&quot;,
-        name = &quot;base64&quot;,
-        metaschema = OscalMetadataMetaschema.class,
-        isCollapsible = false
-    )
-    public static class Base64 {
-      @MetaschemaFieldValue(
-          valueKeyName = &quot;value&quot;,
-          typeAdapter = Base64Adapter.class
-      )
-      private ByteBuffer _value;
-
-      @BoundFlag(
-          formalName = &quot;File Name&quot;,
-          description = &quot;Name of the file before it was encoded as Base64 to be embedded in a `resource`. This is the name that will be assigned to the file when the file is decoded.&quot;,
-          useName = &quot;filename&quot;,
-          typeAdapter = TokenAdapter.class
-      )
-      private String _filename;
-
-      @BoundFlag(
-          formalName = &quot;Media Type&quot;,
-          description = &quot;A label that indicates the nature of a resource, as a data serialization or format.&quot;,
-          useName = &quot;media-type&quot;,
-          typeAdapter = StringAdapter.class
-      )
-      private String _mediaType;
-
-<span class="nc" id="L670">      public Base64() {</span>
-<span class="nc" id="L671">      }</span>
-
-      public ByteBuffer getValue() {
-<span class="nc" id="L674">        return _value;</span>
-      }
-
-      public void setValue(ByteBuffer value) {
-<span class="nc" id="L678">        _value = value;</span>
-<span class="nc" id="L679">      }</span>
-
-      public String getFilename() {
-<span class="nc" id="L682">        return _filename;</span>
-      }
-
-      public void setFilename(String value) {
-<span class="nc" id="L686">        _filename = value;</span>
-<span class="nc" id="L687">      }</span>
-
-      public String getMediaType() {
-<span class="nc" id="L690">        return _mediaType;</span>
-      }
-
-      public void setMediaType(String value) {
-<span class="nc" id="L694">        _mediaType = value;</span>
-<span class="nc" id="L695">      }</span>
 
       @Override
       public String toString() {

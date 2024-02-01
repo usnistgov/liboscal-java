@@ -440,133 +440,133 @@
 <span class="sourceLineNo">431</span><a id="line.431">  }</a>
 <span class="sourceLineNo">432</span><a id="line.432"></a>
 <span class="sourceLineNo">433</span><a id="line.433">  /**</a>
-<span class="sourceLineNo">434</span><a id="line.434">   * Relates the finding to a set of referenced risks that were used to determine the finding.</a>
+<span class="sourceLineNo">434</span><a id="line.434">   * Identifies the source of the finding, such as a tool or person.</a>
 <span class="sourceLineNo">435</span><a id="line.435">   */</a>
 <span class="sourceLineNo">436</span><a id="line.436">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">437</span><a id="line.437">      formalName = "Associated Risk",</a>
-<span class="sourceLineNo">438</span><a id="line.438">      description = "Relates the finding to a set of referenced risks that were used to determine the finding.",</a>
-<span class="sourceLineNo">439</span><a id="line.439">      name = "associated-risk",</a>
-<span class="sourceLineNo">440</span><a id="line.440">      metaschema = OscalPoamMetaschema.class</a>
-<span class="sourceLineNo">441</span><a id="line.441">  )</a>
-<span class="sourceLineNo">442</span><a id="line.442">  public static class AssociatedRisk {</a>
-<span class="sourceLineNo">443</span><a id="line.443">    @BoundFlag(</a>
-<span class="sourceLineNo">444</span><a id="line.444">        formalName = "Risk Universally Unique Identifier Reference",</a>
-<span class="sourceLineNo">445</span><a id="line.445">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks.",</a>
-<span class="sourceLineNo">446</span><a id="line.446">        useName = "risk-uuid",</a>
-<span class="sourceLineNo">447</span><a id="line.447">        required = true,</a>
-<span class="sourceLineNo">448</span><a id="line.448">        typeAdapter = UuidAdapter.class</a>
-<span class="sourceLineNo">449</span><a id="line.449">    )</a>
-<span class="sourceLineNo">450</span><a id="line.450">    private UUID _riskUuid;</a>
-<span class="sourceLineNo">451</span><a id="line.451"></a>
-<span class="sourceLineNo">452</span><a id="line.452">    public AssociatedRisk() {</a>
-<span class="sourceLineNo">453</span><a id="line.453">    }</a>
-<span class="sourceLineNo">454</span><a id="line.454"></a>
-<span class="sourceLineNo">455</span><a id="line.455">    public UUID getRiskUuid() {</a>
-<span class="sourceLineNo">456</span><a id="line.456">      return _riskUuid;</a>
-<span class="sourceLineNo">457</span><a id="line.457">    }</a>
-<span class="sourceLineNo">458</span><a id="line.458"></a>
-<span class="sourceLineNo">459</span><a id="line.459">    public void setRiskUuid(UUID value) {</a>
-<span class="sourceLineNo">460</span><a id="line.460">      _riskUuid = value;</a>
-<span class="sourceLineNo">461</span><a id="line.461">    }</a>
-<span class="sourceLineNo">462</span><a id="line.462"></a>
-<span class="sourceLineNo">463</span><a id="line.463">    @Override</a>
-<span class="sourceLineNo">464</span><a id="line.464">    public String toString() {</a>
-<span class="sourceLineNo">465</span><a id="line.465">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">437</span><a id="line.437">      formalName = "Origin",</a>
+<span class="sourceLineNo">438</span><a id="line.438">      description = "Identifies the source of the finding, such as a tool or person.",</a>
+<span class="sourceLineNo">439</span><a id="line.439">      name = "origin",</a>
+<span class="sourceLineNo">440</span><a id="line.440">      metaschema = OscalPoamMetaschema.class,</a>
+<span class="sourceLineNo">441</span><a id="line.441">      remarks = "Used to identify the individual and/or tool generated this poam-item."</a>
+<span class="sourceLineNo">442</span><a id="line.442">  )</a>
+<span class="sourceLineNo">443</span><a id="line.443">  public static class Origin {</a>
+<span class="sourceLineNo">444</span><a id="line.444">    @BoundAssembly(</a>
+<span class="sourceLineNo">445</span><a id="line.445">        formalName = "Originating Actor",</a>
+<span class="sourceLineNo">446</span><a id="line.446">        description = "The actor that produces an observation, a finding, or a risk. One or more actor type can be used to specify a person that is using a tool.",</a>
+<span class="sourceLineNo">447</span><a id="line.447">        useName = "actor",</a>
+<span class="sourceLineNo">448</span><a id="line.448">        minOccurs = 1,</a>
+<span class="sourceLineNo">449</span><a id="line.449">        maxOccurs = -1</a>
+<span class="sourceLineNo">450</span><a id="line.450">    )</a>
+<span class="sourceLineNo">451</span><a id="line.451">    @GroupAs(</a>
+<span class="sourceLineNo">452</span><a id="line.452">        name = "actors",</a>
+<span class="sourceLineNo">453</span><a id="line.453">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">454</span><a id="line.454">    )</a>
+<span class="sourceLineNo">455</span><a id="line.455">    private List&lt;OriginActor&gt; _actors;</a>
+<span class="sourceLineNo">456</span><a id="line.456"></a>
+<span class="sourceLineNo">457</span><a id="line.457">    public Origin() {</a>
+<span class="sourceLineNo">458</span><a id="line.458">    }</a>
+<span class="sourceLineNo">459</span><a id="line.459"></a>
+<span class="sourceLineNo">460</span><a id="line.460">    public List&lt;OriginActor&gt; getActors() {</a>
+<span class="sourceLineNo">461</span><a id="line.461">      return _actors;</a>
+<span class="sourceLineNo">462</span><a id="line.462">    }</a>
+<span class="sourceLineNo">463</span><a id="line.463"></a>
+<span class="sourceLineNo">464</span><a id="line.464">    public void setActors(List&lt;OriginActor&gt; value) {</a>
+<span class="sourceLineNo">465</span><a id="line.465">      _actors = value;</a>
 <span class="sourceLineNo">466</span><a id="line.466">    }</a>
-<span class="sourceLineNo">467</span><a id="line.467">  }</a>
-<span class="sourceLineNo">468</span><a id="line.468"></a>
-<span class="sourceLineNo">469</span><a id="line.469">  /**</a>
-<span class="sourceLineNo">470</span><a id="line.470">   * Relates the poam-item to referenced finding(s).</a>
-<span class="sourceLineNo">471</span><a id="line.471">   */</a>
-<span class="sourceLineNo">472</span><a id="line.472">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">473</span><a id="line.473">      formalName = "Related Finding",</a>
-<span class="sourceLineNo">474</span><a id="line.474">      description = "Relates the poam-item to referenced finding(s).",</a>
-<span class="sourceLineNo">475</span><a id="line.475">      name = "related-finding",</a>
-<span class="sourceLineNo">476</span><a id="line.476">      metaschema = OscalPoamMetaschema.class</a>
-<span class="sourceLineNo">477</span><a id="line.477">  )</a>
-<span class="sourceLineNo">478</span><a id="line.478">  public static class RelatedFinding {</a>
-<span class="sourceLineNo">479</span><a id="line.479">    @BoundFlag(</a>
-<span class="sourceLineNo">480</span><a id="line.480">        formalName = "Finding Universally Unique Identifier Reference",</a>
-<span class="sourceLineNo">481</span><a id="line.481">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings.",</a>
-<span class="sourceLineNo">482</span><a id="line.482">        useName = "finding-uuid",</a>
-<span class="sourceLineNo">483</span><a id="line.483">        required = true,</a>
-<span class="sourceLineNo">484</span><a id="line.484">        typeAdapter = UuidAdapter.class</a>
-<span class="sourceLineNo">485</span><a id="line.485">    )</a>
-<span class="sourceLineNo">486</span><a id="line.486">    private UUID _findingUuid;</a>
-<span class="sourceLineNo">487</span><a id="line.487"></a>
-<span class="sourceLineNo">488</span><a id="line.488">    public RelatedFinding() {</a>
+<span class="sourceLineNo">467</span><a id="line.467"></a>
+<span class="sourceLineNo">468</span><a id="line.468">    /**</a>
+<span class="sourceLineNo">469</span><a id="line.469">     * Add a new {@link OriginActor} item to the underlying collection.</a>
+<span class="sourceLineNo">470</span><a id="line.470">     * @param item the item to add</a>
+<span class="sourceLineNo">471</span><a id="line.471">     * @return {@code true}</a>
+<span class="sourceLineNo">472</span><a id="line.472">     */</a>
+<span class="sourceLineNo">473</span><a id="line.473">    public boolean addActor(OriginActor item) {</a>
+<span class="sourceLineNo">474</span><a id="line.474">      OriginActor value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">475</span><a id="line.475">      if (_actors == null) {</a>
+<span class="sourceLineNo">476</span><a id="line.476">        _actors = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">477</span><a id="line.477">      }</a>
+<span class="sourceLineNo">478</span><a id="line.478">      return _actors.add(value);</a>
+<span class="sourceLineNo">479</span><a id="line.479">    }</a>
+<span class="sourceLineNo">480</span><a id="line.480"></a>
+<span class="sourceLineNo">481</span><a id="line.481">    /**</a>
+<span class="sourceLineNo">482</span><a id="line.482">     * Remove the first matching {@link OriginActor} item from the underlying collection.</a>
+<span class="sourceLineNo">483</span><a id="line.483">     * @param item the item to remove</a>
+<span class="sourceLineNo">484</span><a id="line.484">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">485</span><a id="line.485">     */</a>
+<span class="sourceLineNo">486</span><a id="line.486">    public boolean removeActor(OriginActor item) {</a>
+<span class="sourceLineNo">487</span><a id="line.487">      OriginActor value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">488</span><a id="line.488">      return _actors == null ? false : _actors.remove(value);</a>
 <span class="sourceLineNo">489</span><a id="line.489">    }</a>
 <span class="sourceLineNo">490</span><a id="line.490"></a>
-<span class="sourceLineNo">491</span><a id="line.491">    public UUID getFindingUuid() {</a>
-<span class="sourceLineNo">492</span><a id="line.492">      return _findingUuid;</a>
-<span class="sourceLineNo">493</span><a id="line.493">    }</a>
-<span class="sourceLineNo">494</span><a id="line.494"></a>
-<span class="sourceLineNo">495</span><a id="line.495">    public void setFindingUuid(UUID value) {</a>
-<span class="sourceLineNo">496</span><a id="line.496">      _findingUuid = value;</a>
-<span class="sourceLineNo">497</span><a id="line.497">    }</a>
-<span class="sourceLineNo">498</span><a id="line.498"></a>
-<span class="sourceLineNo">499</span><a id="line.499">    @Override</a>
-<span class="sourceLineNo">500</span><a id="line.500">    public String toString() {</a>
-<span class="sourceLineNo">501</span><a id="line.501">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
-<span class="sourceLineNo">502</span><a id="line.502">    }</a>
-<span class="sourceLineNo">503</span><a id="line.503">  }</a>
-<span class="sourceLineNo">504</span><a id="line.504"></a>
-<span class="sourceLineNo">505</span><a id="line.505">  /**</a>
-<span class="sourceLineNo">506</span><a id="line.506">   * Identifies the source of the finding, such as a tool or person.</a>
-<span class="sourceLineNo">507</span><a id="line.507">   */</a>
-<span class="sourceLineNo">508</span><a id="line.508">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">509</span><a id="line.509">      formalName = "Origin",</a>
-<span class="sourceLineNo">510</span><a id="line.510">      description = "Identifies the source of the finding, such as a tool or person.",</a>
-<span class="sourceLineNo">511</span><a id="line.511">      name = "origin",</a>
-<span class="sourceLineNo">512</span><a id="line.512">      metaschema = OscalPoamMetaschema.class,</a>
-<span class="sourceLineNo">513</span><a id="line.513">      remarks = "Used to identify the individual and/or tool generated this poam-item."</a>
-<span class="sourceLineNo">514</span><a id="line.514">  )</a>
-<span class="sourceLineNo">515</span><a id="line.515">  public static class Origin {</a>
-<span class="sourceLineNo">516</span><a id="line.516">    @BoundAssembly(</a>
-<span class="sourceLineNo">517</span><a id="line.517">        formalName = "Originating Actor",</a>
-<span class="sourceLineNo">518</span><a id="line.518">        description = "The actor that produces an observation, a finding, or a risk. One or more actor type can be used to specify a person that is using a tool.",</a>
-<span class="sourceLineNo">519</span><a id="line.519">        useName = "actor",</a>
-<span class="sourceLineNo">520</span><a id="line.520">        minOccurs = 1,</a>
-<span class="sourceLineNo">521</span><a id="line.521">        maxOccurs = -1</a>
-<span class="sourceLineNo">522</span><a id="line.522">    )</a>
-<span class="sourceLineNo">523</span><a id="line.523">    @GroupAs(</a>
-<span class="sourceLineNo">524</span><a id="line.524">        name = "actors",</a>
-<span class="sourceLineNo">525</span><a id="line.525">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">526</span><a id="line.526">    )</a>
-<span class="sourceLineNo">527</span><a id="line.527">    private List&lt;OriginActor&gt; _actors;</a>
-<span class="sourceLineNo">528</span><a id="line.528"></a>
-<span class="sourceLineNo">529</span><a id="line.529">    public Origin() {</a>
+<span class="sourceLineNo">491</span><a id="line.491">    @Override</a>
+<span class="sourceLineNo">492</span><a id="line.492">    public String toString() {</a>
+<span class="sourceLineNo">493</span><a id="line.493">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">494</span><a id="line.494">    }</a>
+<span class="sourceLineNo">495</span><a id="line.495">  }</a>
+<span class="sourceLineNo">496</span><a id="line.496"></a>
+<span class="sourceLineNo">497</span><a id="line.497">  /**</a>
+<span class="sourceLineNo">498</span><a id="line.498">   * Relates the finding to a set of referenced risks that were used to determine the finding.</a>
+<span class="sourceLineNo">499</span><a id="line.499">   */</a>
+<span class="sourceLineNo">500</span><a id="line.500">  @MetaschemaAssembly(</a>
+<span class="sourceLineNo">501</span><a id="line.501">      formalName = "Associated Risk",</a>
+<span class="sourceLineNo">502</span><a id="line.502">      description = "Relates the finding to a set of referenced risks that were used to determine the finding.",</a>
+<span class="sourceLineNo">503</span><a id="line.503">      name = "associated-risk",</a>
+<span class="sourceLineNo">504</span><a id="line.504">      metaschema = OscalPoamMetaschema.class</a>
+<span class="sourceLineNo">505</span><a id="line.505">  )</a>
+<span class="sourceLineNo">506</span><a id="line.506">  public static class AssociatedRisk {</a>
+<span class="sourceLineNo">507</span><a id="line.507">    @BoundFlag(</a>
+<span class="sourceLineNo">508</span><a id="line.508">        formalName = "Risk Universally Unique Identifier Reference",</a>
+<span class="sourceLineNo">509</span><a id="line.509">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks.",</a>
+<span class="sourceLineNo">510</span><a id="line.510">        useName = "risk-uuid",</a>
+<span class="sourceLineNo">511</span><a id="line.511">        required = true,</a>
+<span class="sourceLineNo">512</span><a id="line.512">        typeAdapter = UuidAdapter.class</a>
+<span class="sourceLineNo">513</span><a id="line.513">    )</a>
+<span class="sourceLineNo">514</span><a id="line.514">    private UUID _riskUuid;</a>
+<span class="sourceLineNo">515</span><a id="line.515"></a>
+<span class="sourceLineNo">516</span><a id="line.516">    public AssociatedRisk() {</a>
+<span class="sourceLineNo">517</span><a id="line.517">    }</a>
+<span class="sourceLineNo">518</span><a id="line.518"></a>
+<span class="sourceLineNo">519</span><a id="line.519">    public UUID getRiskUuid() {</a>
+<span class="sourceLineNo">520</span><a id="line.520">      return _riskUuid;</a>
+<span class="sourceLineNo">521</span><a id="line.521">    }</a>
+<span class="sourceLineNo">522</span><a id="line.522"></a>
+<span class="sourceLineNo">523</span><a id="line.523">    public void setRiskUuid(UUID value) {</a>
+<span class="sourceLineNo">524</span><a id="line.524">      _riskUuid = value;</a>
+<span class="sourceLineNo">525</span><a id="line.525">    }</a>
+<span class="sourceLineNo">526</span><a id="line.526"></a>
+<span class="sourceLineNo">527</span><a id="line.527">    @Override</a>
+<span class="sourceLineNo">528</span><a id="line.528">    public String toString() {</a>
+<span class="sourceLineNo">529</span><a id="line.529">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
 <span class="sourceLineNo">530</span><a id="line.530">    }</a>
-<span class="sourceLineNo">531</span><a id="line.531"></a>
-<span class="sourceLineNo">532</span><a id="line.532">    public List&lt;OriginActor&gt; getActors() {</a>
-<span class="sourceLineNo">533</span><a id="line.533">      return _actors;</a>
-<span class="sourceLineNo">534</span><a id="line.534">    }</a>
-<span class="sourceLineNo">535</span><a id="line.535"></a>
-<span class="sourceLineNo">536</span><a id="line.536">    public void setActors(List&lt;OriginActor&gt; value) {</a>
-<span class="sourceLineNo">537</span><a id="line.537">      _actors = value;</a>
-<span class="sourceLineNo">538</span><a id="line.538">    }</a>
-<span class="sourceLineNo">539</span><a id="line.539"></a>
-<span class="sourceLineNo">540</span><a id="line.540">    /**</a>
-<span class="sourceLineNo">541</span><a id="line.541">     * Add a new {@link OriginActor} item to the underlying collection.</a>
-<span class="sourceLineNo">542</span><a id="line.542">     * @param item the item to add</a>
-<span class="sourceLineNo">543</span><a id="line.543">     * @return {@code true}</a>
-<span class="sourceLineNo">544</span><a id="line.544">     */</a>
-<span class="sourceLineNo">545</span><a id="line.545">    public boolean addActor(OriginActor item) {</a>
-<span class="sourceLineNo">546</span><a id="line.546">      OriginActor value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">547</span><a id="line.547">      if (_actors == null) {</a>
-<span class="sourceLineNo">548</span><a id="line.548">        _actors = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">549</span><a id="line.549">      }</a>
-<span class="sourceLineNo">550</span><a id="line.550">      return _actors.add(value);</a>
-<span class="sourceLineNo">551</span><a id="line.551">    }</a>
-<span class="sourceLineNo">552</span><a id="line.552"></a>
-<span class="sourceLineNo">553</span><a id="line.553">    /**</a>
-<span class="sourceLineNo">554</span><a id="line.554">     * Remove the first matching {@link OriginActor} item from the underlying collection.</a>
-<span class="sourceLineNo">555</span><a id="line.555">     * @param item the item to remove</a>
-<span class="sourceLineNo">556</span><a id="line.556">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">557</span><a id="line.557">     */</a>
-<span class="sourceLineNo">558</span><a id="line.558">    public boolean removeActor(OriginActor item) {</a>
-<span class="sourceLineNo">559</span><a id="line.559">      OriginActor value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">560</span><a id="line.560">      return _actors == null ? false : _actors.remove(value);</a>
+<span class="sourceLineNo">531</span><a id="line.531">  }</a>
+<span class="sourceLineNo">532</span><a id="line.532"></a>
+<span class="sourceLineNo">533</span><a id="line.533">  /**</a>
+<span class="sourceLineNo">534</span><a id="line.534">   * Relates the poam-item to referenced finding(s).</a>
+<span class="sourceLineNo">535</span><a id="line.535">   */</a>
+<span class="sourceLineNo">536</span><a id="line.536">  @MetaschemaAssembly(</a>
+<span class="sourceLineNo">537</span><a id="line.537">      formalName = "Related Finding",</a>
+<span class="sourceLineNo">538</span><a id="line.538">      description = "Relates the poam-item to referenced finding(s).",</a>
+<span class="sourceLineNo">539</span><a id="line.539">      name = "related-finding",</a>
+<span class="sourceLineNo">540</span><a id="line.540">      metaschema = OscalPoamMetaschema.class</a>
+<span class="sourceLineNo">541</span><a id="line.541">  )</a>
+<span class="sourceLineNo">542</span><a id="line.542">  public static class RelatedFinding {</a>
+<span class="sourceLineNo">543</span><a id="line.543">    @BoundFlag(</a>
+<span class="sourceLineNo">544</span><a id="line.544">        formalName = "Finding Universally Unique Identifier Reference",</a>
+<span class="sourceLineNo">545</span><a id="line.545">        description = "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings.",</a>
+<span class="sourceLineNo">546</span><a id="line.546">        useName = "finding-uuid",</a>
+<span class="sourceLineNo">547</span><a id="line.547">        required = true,</a>
+<span class="sourceLineNo">548</span><a id="line.548">        typeAdapter = UuidAdapter.class</a>
+<span class="sourceLineNo">549</span><a id="line.549">    )</a>
+<span class="sourceLineNo">550</span><a id="line.550">    private UUID _findingUuid;</a>
+<span class="sourceLineNo">551</span><a id="line.551"></a>
+<span class="sourceLineNo">552</span><a id="line.552">    public RelatedFinding() {</a>
+<span class="sourceLineNo">553</span><a id="line.553">    }</a>
+<span class="sourceLineNo">554</span><a id="line.554"></a>
+<span class="sourceLineNo">555</span><a id="line.555">    public UUID getFindingUuid() {</a>
+<span class="sourceLineNo">556</span><a id="line.556">      return _findingUuid;</a>
+<span class="sourceLineNo">557</span><a id="line.557">    }</a>
+<span class="sourceLineNo">558</span><a id="line.558"></a>
+<span class="sourceLineNo">559</span><a id="line.559">    public void setFindingUuid(UUID value) {</a>
+<span class="sourceLineNo">560</span><a id="line.560">      _findingUuid = value;</a>
 <span class="sourceLineNo">561</span><a id="line.561">    }</a>
 <span class="sourceLineNo">562</span><a id="line.562"></a>
 <span class="sourceLineNo">563</span><a id="line.563">    @Override</a>

@@ -162,6 +162,25 @@ public class Merge {
   }
 
   /**
+   * Directs that controls appear without any grouping structure.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Flat Without Grouping&quot;,
+      description = &quot;Directs that controls appear without any grouping structure.&quot;,
+      name = &quot;flat&quot;,
+      metaschema = OscalProfileMetaschema.class
+  )
+  public static class Flat {
+<span class="nc" id="L174">    public Flat() {</span>
+<span class="nc" id="L175">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L179">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
    * Provides an alternate grouping structure that selected controls will be placed in.
    */
   @MetaschemaAssembly(
@@ -196,16 +215,16 @@ public class Merge {
     )
     private List&lt;InsertControls&gt; _insertControls;
 
-<span class="nc" id="L199">    public Custom() {</span>
-<span class="nc" id="L200">    }</span>
+<span class="nc" id="L218">    public Custom() {</span>
+<span class="nc" id="L219">    }</span>
 
     public List&lt;ProfileGroup&gt; getGroups() {
-<span class="nc" id="L203">      return _groups;</span>
+<span class="nc" id="L222">      return _groups;</span>
     }
 
     public void setGroups(List&lt;ProfileGroup&gt; value) {
-<span class="nc" id="L207">      _groups = value;</span>
-<span class="nc" id="L208">    }</span>
+<span class="nc" id="L226">      _groups = value;</span>
+<span class="nc" id="L227">    }</span>
 
     /**
      * Add a new {@link ProfileGroup} item to the underlying collection.
@@ -213,11 +232,11 @@ public class Merge {
      * @return {@code true}
      */
     public boolean addGroup(ProfileGroup item) {
-<span class="nc" id="L216">      ProfileGroup value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L217" title="All 2 branches missed.">      if (_groups == null) {</span>
-<span class="nc" id="L218">        _groups = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L235">      ProfileGroup value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">      if (_groups == null) {</span>
+<span class="nc" id="L237">        _groups = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L220">      return _groups.add(value);</span>
+<span class="nc" id="L239">      return _groups.add(value);</span>
     }
 
     /**
@@ -226,17 +245,17 @@ public class Merge {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeGroup(ProfileGroup item) {
-<span class="nc" id="L229">      ProfileGroup value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L230" title="All 2 branches missed.">      return _groups == null ? false : _groups.remove(value);</span>
+<span class="nc" id="L248">      ProfileGroup value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">      return _groups == null ? false : _groups.remove(value);</span>
     }
 
     public List&lt;InsertControls&gt; getInsertControls() {
-<span class="nc" id="L234">      return _insertControls;</span>
+<span class="nc" id="L253">      return _insertControls;</span>
     }
 
     public void setInsertControls(List&lt;InsertControls&gt; value) {
-<span class="nc" id="L238">      _insertControls = value;</span>
-<span class="nc" id="L239">    }</span>
+<span class="nc" id="L257">      _insertControls = value;</span>
+<span class="nc" id="L258">    }</span>
 
     /**
      * Add a new {@link InsertControls} item to the underlying collection.
@@ -244,11 +263,11 @@ public class Merge {
      * @return {@code true}
      */
     public boolean addInsertControls(InsertControls item) {
-<span class="nc" id="L247">      InsertControls value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L248" title="All 2 branches missed.">      if (_insertControls == null) {</span>
-<span class="nc" id="L249">        _insertControls = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L266">      InsertControls value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">      if (_insertControls == null) {</span>
+<span class="nc" id="L268">        _insertControls = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L251">      return _insertControls.add(value);</span>
+<span class="nc" id="L270">      return _insertControls.add(value);</span>
     }
 
     /**
@@ -257,28 +276,9 @@ public class Merge {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeInsertControls(InsertControls item) {
-<span class="nc" id="L260">      InsertControls value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L261" title="All 2 branches missed.">      return _insertControls == null ? false : _insertControls.remove(value);</span>
+<span class="nc" id="L279">      InsertControls value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">      return _insertControls == null ? false : _insertControls.remove(value);</span>
     }
-
-    @Override
-    public String toString() {
-<span class="nc" id="L266">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
-   * Directs that controls appear without any grouping structure.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Flat Without Grouping&quot;,
-      description = &quot;Directs that controls appear without any grouping structure.&quot;,
-      name = &quot;flat&quot;,
-      metaschema = OscalProfileMetaschema.class
-  )
-  public static class Flat {
-<span class="nc" id="L280">    public Flat() {</span>
-<span class="nc" id="L281">    }</span>
 
     @Override
     public String toString() {

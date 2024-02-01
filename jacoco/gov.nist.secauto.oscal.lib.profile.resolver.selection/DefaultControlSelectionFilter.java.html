@@ -52,75 +52,77 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
   private final List&lt;Selection&gt; selections;
 
   /**
-   * Construct a new selection filter based on the provided list of select criteria.
+   * Construct a new selection filter based on the provided list of select
+   * criteria.
    *
    * @param selections
    *          a list of select criteria
    */
   @SuppressWarnings(&quot;null&quot;)
-<span class="fc" id="L61">  public DefaultControlSelectionFilter(@NonNull List&lt;? extends IProfileSelectControlById&gt; selections) {</span>
-<span class="fc" id="L62">    this.selections = selections.stream()</span>
+<span class="fc" id="L62">  public DefaultControlSelectionFilter(@NonNull List&lt;? extends IProfileSelectControlById&gt; selections) {</span>
+<span class="fc" id="L63">    this.selections = selections.stream()</span>
         // ignore null entries
-<span class="fc" id="L64">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L65">        .filter(Objects::nonNull)</span>
         // create a selection object for the selection
-<span class="fc" id="L66">        .map(selection -&gt; new Selection(selection))</span>
-<span class="fc" id="L67">        .collect(Collectors.toUnmodifiableList());</span>
-<span class="fc" id="L68">  }</span>
+<span class="fc" id="L67">        .map(selection -&gt; new Selection(selection))</span>
+<span class="fc" id="L68">        .collect(Collectors.toUnmodifiableList());</span>
+<span class="fc" id="L69">  }</span>
 
   @NonNull
   @Override
   public Pair&lt;Boolean, Boolean&gt; apply(IControl control) {
-<span class="fc" id="L73">    String id = control.getId();</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">    if (id == null) {</span>
-<span class="nc" id="L75">      throw new ProfileResolutionEvaluationException(&quot;control is missing an identifier&quot;);</span>
+<span class="fc" id="L74">    String id = control.getId();</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">    if (id == null) {</span>
+<span class="nc" id="L76">      throw new ProfileResolutionEvaluationException(&quot;control is missing an identifier&quot;);</span>
     }
-<span class="fc" id="L77">    return match(id);</span>
+<span class="fc" id="L78">    return match(id);</span>
   }
 
   /**
-   * Checks if the provided control identifier matches the criteria defined by this object.
+   * Checks if the provided control identifier matches the criteria defined by
+   * this object.
    *
    * @param id
    *          the control identifier to match
-   * @return a {@link Pair} whose first member is {@code true} for a match or {@code false} otherwise,
-   *         and whose second member is {@code true} if the match applies to any child controls or
-   *         {@code false} otherwise
+   * @return a {@link Pair} whose first member is {@code true} for a match or
+   *         {@code false} otherwise, and whose second member is {@code true} if
+   *         the match applies to any child controls or {@code false} otherwise
    */
   @SuppressWarnings(&quot;null&quot;)
   @NonNull
   protected Pair&lt;Boolean, Boolean&gt; match(String id) {
-<span class="fc" id="L92">    return selections.parallelStream()</span>
-<span class="fc" id="L93">        .map(selection -&gt; selection.match(id))</span>
+<span class="fc" id="L94">    return selections.parallelStream()</span>
+<span class="fc" id="L95">        .map(selection -&gt; selection.match(id))</span>
         // filter out non-matches
-<span class="fc" id="L95">        .filter(pair -&gt; pair.getLeft())</span>
+<span class="fc" id="L97">        .filter(pair -&gt; pair.getLeft())</span>
         // aggregate matches
-<span class="fc" id="L97">        .reduce((first, second) -&gt; {</span>
+<span class="fc" id="L99">        .reduce((first, second) -&gt; {</span>
           Pair&lt;Boolean, Boolean&gt; result;
-<span class="pc bpc" id="L99" title="3 of 4 branches missed.">          if (first.getLeft() || second.getLeft()) {</span>
+<span class="pc bpc" id="L101" title="3 of 4 branches missed.">          if (first.getLeft() || second.getLeft()) {</span>
             // at least one matches
-<span class="pc bpc" id="L101" title="6 of 8 branches missed.">            boolean withChild = first.getLeft() &amp;&amp; first.getRight() || second.getLeft() &amp;&amp; second.getRight();</span>
-<span class="fc" id="L102">            result = Pair.of(true, withChild);</span>
-<span class="fc" id="L103">          } else {</span>
-<span class="nc" id="L104">            result = IControlSelectionFilter.NON_MATCH;</span>
+<span class="pc bpc" id="L103" title="6 of 8 branches missed.">            boolean withChild = first.getLeft() &amp;&amp; first.getRight() || second.getLeft() &amp;&amp; second.getRight();</span>
+<span class="fc" id="L104">            result = Pair.of(true, withChild);</span>
+<span class="fc" id="L105">          } else {</span>
+<span class="nc" id="L106">            result = IControlSelectionFilter.NON_MATCH;</span>
           }
-<span class="fc" id="L106">          return result;</span>
+<span class="fc" id="L108">          return result;</span>
         })
-<span class="fc" id="L108">        .orElse(NON_MATCH);</span>
+<span class="fc" id="L110">        .orElse(NON_MATCH);</span>
   }
 
   @SuppressWarnings(&quot;PMD.ImplicitSwitchFallThrough&quot;)
   private static Pattern toPattern(@NonNull Matching matching) {
-<span class="fc" id="L113">    String pattern = ObjectUtils.requireNonNull(matching.getPattern());</span>
-<span class="fc" id="L114">    String regex = pattern.chars().boxed().map(ch -&gt; (char) ch.intValue()).map(ch -&gt; {</span>
+<span class="fc" id="L115">    String pattern = ObjectUtils.requireNonNull(matching.getPattern());</span>
+<span class="fc" id="L116">    String regex = pattern.chars().boxed().map(ch -&gt; (char) ch.intValue()).map(ch -&gt; {</span>
 
       String value;
-<span class="pc bpc" id="L117" title="1 of 4 branches missed.">      switch (ch) {</span>
+<span class="pc bpc" id="L119" title="1 of 4 branches missed.">      switch (ch) {</span>
       case '*':
-<span class="fc" id="L119">        value = &quot;.*&quot;;</span>
-<span class="fc" id="L120">        break;</span>
+<span class="fc" id="L121">        value = &quot;.*&quot;;</span>
+<span class="fc" id="L122">        break;</span>
       case '?':
-<span class="nc" id="L122">        value = &quot;.&quot;;</span>
-<span class="nc" id="L123">        break;</span>
+<span class="nc" id="L124">        value = &quot;.&quot;;</span>
+<span class="nc" id="L125">        break;</span>
       case '.':
       case '+':
       case '\\':
@@ -132,18 +134,18 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
       case ')':
       case '^':
       case '$':
-<span class="fc" id="L135">        value = &quot;\\&quot; + ch;</span>
-<span class="fc" id="L136">        break;</span>
+<span class="fc" id="L137">        value = &quot;\\&quot; + ch;</span>
+<span class="fc" id="L138">        break;</span>
       default:
-<span class="fc" id="L138">        value = String.valueOf(ch);</span>
+<span class="fc" id="L140">        value = String.valueOf(ch);</span>
       }
-<span class="fc" id="L140">      return value;</span>
-<span class="fc" id="L141">    }).collect(Collectors.joining(&quot;&quot;, &quot;^&quot;, &quot;$&quot;));</span>
+<span class="fc" id="L142">      return value;</span>
+<span class="fc" id="L143">    }).collect(Collectors.joining(&quot;&quot;, &quot;^&quot;, &quot;$&quot;));</span>
 
-<span class="pc bpc" id="L143" title="1 of 2 branches missed.">    if (LOGGER.isTraceEnabled()) {</span>
-<span class="nc" id="L144">      LOGGER.atTrace().log(&quot;regex: {}&quot;, regex);</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">    if (LOGGER.isTraceEnabled()) {</span>
+<span class="nc" id="L146">      LOGGER.atTrace().log(&quot;regex: {}&quot;, regex);</span>
     }
-<span class="fc" id="L146">    return Pattern.compile(regex);</span>
+<span class="fc" id="L148">    return Pattern.compile(regex);</span>
   }
 
   private static class Selection {
@@ -152,44 +154,44 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
     private final Set&lt;String&gt; identifiers;
     private final List&lt;Pattern&gt; patterns;
 
-<span class="fc" id="L155">    public Selection(IProfileSelectControlById selection) {</span>
+<span class="fc" id="L157">    public Selection(IProfileSelectControlById selection) {</span>
       // process with-child-controls
       // default is &quot;no&quot;
-<span class="fc" id="L158">      this.withChildControls = &quot;yes&quot;.equals(selection.getWithChildControls());</span>
+<span class="fc" id="L160">      this.withChildControls = &quot;yes&quot;.equals(selection.getWithChildControls());</span>
 
       // process with-ids
-<span class="fc" id="L161">      List&lt;String&gt; ids = selection.getWithIds();</span>
-<span class="pc bpc" id="L162" title="1 of 2 branches missed.">      if (ids == null) {</span>
-<span class="nc" id="L163">        ids = Collections.emptyList();</span>
+<span class="fc" id="L163">      List&lt;String&gt; ids = selection.getWithIds();</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">      if (ids == null) {</span>
+<span class="nc" id="L165">        ids = Collections.emptyList();</span>
       }
-<span class="fc" id="L165">      this.identifiers = ids.stream()</span>
-<span class="fc" id="L166">          .filter(Objects::nonNull)</span>
-<span class="fc" id="L167">          .collect(Collectors.toUnmodifiableSet());</span>
+<span class="fc" id="L167">      this.identifiers = ids.stream()</span>
+<span class="fc" id="L168">          .filter(Objects::nonNull)</span>
+<span class="fc" id="L169">          .collect(Collectors.toUnmodifiableSet());</span>
 
       // process with-ids
-<span class="fc" id="L170">      List&lt;Matching&gt; matching = selection.getMatching();</span>
-<span class="pc bpc" id="L171" title="1 of 2 branches missed.">      if (matching == null) {</span>
-<span class="nc" id="L172">        matching = Collections.emptyList();</span>
+<span class="fc" id="L172">      List&lt;Matching&gt; matching = selection.getMatching();</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">      if (matching == null) {</span>
+<span class="nc" id="L174">        matching = Collections.emptyList();</span>
       }
-<span class="fc" id="L174">      this.patterns = matching.stream()</span>
-<span class="fc" id="L175">          .filter(Objects::nonNull)</span>
-<span class="fc" id="L176">          .map(DefaultControlSelectionFilter::toPattern)</span>
-<span class="fc" id="L177">          .collect(Collectors.toUnmodifiableList());</span>
-<span class="fc" id="L178">    }</span>
+<span class="fc" id="L176">      this.patterns = matching.stream()</span>
+<span class="fc" id="L177">          .filter(Objects::nonNull)</span>
+<span class="fc" id="L178">          .map(DefaultControlSelectionFilter::toPattern)</span>
+<span class="fc" id="L179">          .collect(Collectors.toUnmodifiableList());</span>
+<span class="fc" id="L180">    }</span>
 
     public boolean isWithChildControls() {
-<span class="fc" id="L181">      return withChildControls;</span>
+<span class="fc" id="L183">      return withChildControls;</span>
     }
 
     @NonNull
     protected Pair&lt;Boolean, Boolean&gt; match(String id) {
       // first check for direct match
-<span class="fc" id="L187">      boolean result = identifiers.stream().anyMatch(controlIdentifier -&gt; controlIdentifier.equals(id));</span>
-<span class="fc bfc" id="L188" title="All 2 branches covered.">      if (!result) {</span>
+<span class="fc" id="L189">      boolean result = identifiers.stream().anyMatch(controlIdentifier -&gt; controlIdentifier.equals(id));</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">      if (!result) {</span>
         // next check for pattern match
-<span class="fc" id="L190">        result = patterns.stream().anyMatch(pattern -&gt; pattern.asMatchPredicate().test(id));</span>
+<span class="fc" id="L192">        result = patterns.stream().anyMatch(pattern -&gt; pattern.asMatchPredicate().test(id));</span>
       }
-<span class="fc" id="L192">      return ObjectUtils.notNull(Pair.of(result, isWithChildControls()));</span>
+<span class="fc" id="L194">      return ObjectUtils.notNull(Pair.of(result, isWithChildControls()));</span>
     }
   }
 }

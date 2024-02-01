@@ -171,122 +171,122 @@
 <span class="sourceLineNo">162</span><a id="line.162">  }</a>
 <span class="sourceLineNo">163</span><a id="line.163"></a>
 <span class="sourceLineNo">164</span><a id="line.164">  /**</a>
-<span class="sourceLineNo">165</span><a id="line.165">   * Provides an alternate grouping structure that selected controls will be placed in.</a>
+<span class="sourceLineNo">165</span><a id="line.165">   * Directs that controls appear without any grouping structure.</a>
 <span class="sourceLineNo">166</span><a id="line.166">   */</a>
 <span class="sourceLineNo">167</span><a id="line.167">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">168</span><a id="line.168">      formalName = "Custom Grouping",</a>
-<span class="sourceLineNo">169</span><a id="line.169">      description = "Provides an alternate grouping structure that selected controls will be placed in.",</a>
-<span class="sourceLineNo">170</span><a id="line.170">      name = "custom",</a>
-<span class="sourceLineNo">171</span><a id="line.171">      metaschema = OscalProfileMetaschema.class,</a>
-<span class="sourceLineNo">172</span><a id="line.172">      remarks = "The `custom` element represents a custom arrangement or organization of controls in the resolution of a catalog. This structuring directive gives the profile author the ability to define an entirely different organization of controls as compared to their source catalog(s)."</a>
-<span class="sourceLineNo">173</span><a id="line.173">  )</a>
-<span class="sourceLineNo">174</span><a id="line.174">  public static class Custom {</a>
-<span class="sourceLineNo">175</span><a id="line.175">    @BoundAssembly(</a>
-<span class="sourceLineNo">176</span><a id="line.176">        formalName = "Control Group",</a>
-<span class="sourceLineNo">177</span><a id="line.177">        description = "A group of (selected) controls or of groups of controls.",</a>
-<span class="sourceLineNo">178</span><a id="line.178">        useName = "group",</a>
-<span class="sourceLineNo">179</span><a id="line.179">        maxOccurs = -1</a>
-<span class="sourceLineNo">180</span><a id="line.180">    )</a>
-<span class="sourceLineNo">181</span><a id="line.181">    @GroupAs(</a>
-<span class="sourceLineNo">182</span><a id="line.182">        name = "groups",</a>
-<span class="sourceLineNo">183</span><a id="line.183">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">184</span><a id="line.184">    )</a>
-<span class="sourceLineNo">185</span><a id="line.185">    private List&lt;ProfileGroup&gt; _groups;</a>
-<span class="sourceLineNo">186</span><a id="line.186"></a>
-<span class="sourceLineNo">187</span><a id="line.187">    @BoundAssembly(</a>
-<span class="sourceLineNo">188</span><a id="line.188">        formalName = "Insert Controls",</a>
-<span class="sourceLineNo">189</span><a id="line.189">        description = "Specifies which controls to use in the containing context.",</a>
-<span class="sourceLineNo">190</span><a id="line.190">        useName = "insert-controls",</a>
-<span class="sourceLineNo">191</span><a id="line.191">        maxOccurs = -1</a>
-<span class="sourceLineNo">192</span><a id="line.192">    )</a>
-<span class="sourceLineNo">193</span><a id="line.193">    @GroupAs(</a>
-<span class="sourceLineNo">194</span><a id="line.194">        name = "insert-controls",</a>
-<span class="sourceLineNo">195</span><a id="line.195">        inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">196</span><a id="line.196">    )</a>
-<span class="sourceLineNo">197</span><a id="line.197">    private List&lt;InsertControls&gt; _insertControls;</a>
-<span class="sourceLineNo">198</span><a id="line.198"></a>
-<span class="sourceLineNo">199</span><a id="line.199">    public Custom() {</a>
-<span class="sourceLineNo">200</span><a id="line.200">    }</a>
-<span class="sourceLineNo">201</span><a id="line.201"></a>
-<span class="sourceLineNo">202</span><a id="line.202">    public List&lt;ProfileGroup&gt; getGroups() {</a>
-<span class="sourceLineNo">203</span><a id="line.203">      return _groups;</a>
-<span class="sourceLineNo">204</span><a id="line.204">    }</a>
+<span class="sourceLineNo">168</span><a id="line.168">      formalName = "Flat Without Grouping",</a>
+<span class="sourceLineNo">169</span><a id="line.169">      description = "Directs that controls appear without any grouping structure.",</a>
+<span class="sourceLineNo">170</span><a id="line.170">      name = "flat",</a>
+<span class="sourceLineNo">171</span><a id="line.171">      metaschema = OscalProfileMetaschema.class</a>
+<span class="sourceLineNo">172</span><a id="line.172">  )</a>
+<span class="sourceLineNo">173</span><a id="line.173">  public static class Flat {</a>
+<span class="sourceLineNo">174</span><a id="line.174">    public Flat() {</a>
+<span class="sourceLineNo">175</span><a id="line.175">    }</a>
+<span class="sourceLineNo">176</span><a id="line.176"></a>
+<span class="sourceLineNo">177</span><a id="line.177">    @Override</a>
+<span class="sourceLineNo">178</span><a id="line.178">    public String toString() {</a>
+<span class="sourceLineNo">179</span><a id="line.179">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
+<span class="sourceLineNo">180</span><a id="line.180">    }</a>
+<span class="sourceLineNo">181</span><a id="line.181">  }</a>
+<span class="sourceLineNo">182</span><a id="line.182"></a>
+<span class="sourceLineNo">183</span><a id="line.183">  /**</a>
+<span class="sourceLineNo">184</span><a id="line.184">   * Provides an alternate grouping structure that selected controls will be placed in.</a>
+<span class="sourceLineNo">185</span><a id="line.185">   */</a>
+<span class="sourceLineNo">186</span><a id="line.186">  @MetaschemaAssembly(</a>
+<span class="sourceLineNo">187</span><a id="line.187">      formalName = "Custom Grouping",</a>
+<span class="sourceLineNo">188</span><a id="line.188">      description = "Provides an alternate grouping structure that selected controls will be placed in.",</a>
+<span class="sourceLineNo">189</span><a id="line.189">      name = "custom",</a>
+<span class="sourceLineNo">190</span><a id="line.190">      metaschema = OscalProfileMetaschema.class,</a>
+<span class="sourceLineNo">191</span><a id="line.191">      remarks = "The `custom` element represents a custom arrangement or organization of controls in the resolution of a catalog. This structuring directive gives the profile author the ability to define an entirely different organization of controls as compared to their source catalog(s)."</a>
+<span class="sourceLineNo">192</span><a id="line.192">  )</a>
+<span class="sourceLineNo">193</span><a id="line.193">  public static class Custom {</a>
+<span class="sourceLineNo">194</span><a id="line.194">    @BoundAssembly(</a>
+<span class="sourceLineNo">195</span><a id="line.195">        formalName = "Control Group",</a>
+<span class="sourceLineNo">196</span><a id="line.196">        description = "A group of (selected) controls or of groups of controls.",</a>
+<span class="sourceLineNo">197</span><a id="line.197">        useName = "group",</a>
+<span class="sourceLineNo">198</span><a id="line.198">        maxOccurs = -1</a>
+<span class="sourceLineNo">199</span><a id="line.199">    )</a>
+<span class="sourceLineNo">200</span><a id="line.200">    @GroupAs(</a>
+<span class="sourceLineNo">201</span><a id="line.201">        name = "groups",</a>
+<span class="sourceLineNo">202</span><a id="line.202">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">203</span><a id="line.203">    )</a>
+<span class="sourceLineNo">204</span><a id="line.204">    private List&lt;ProfileGroup&gt; _groups;</a>
 <span class="sourceLineNo">205</span><a id="line.205"></a>
-<span class="sourceLineNo">206</span><a id="line.206">    public void setGroups(List&lt;ProfileGroup&gt; value) {</a>
-<span class="sourceLineNo">207</span><a id="line.207">      _groups = value;</a>
-<span class="sourceLineNo">208</span><a id="line.208">    }</a>
-<span class="sourceLineNo">209</span><a id="line.209"></a>
-<span class="sourceLineNo">210</span><a id="line.210">    /**</a>
-<span class="sourceLineNo">211</span><a id="line.211">     * Add a new {@link ProfileGroup} item to the underlying collection.</a>
-<span class="sourceLineNo">212</span><a id="line.212">     * @param item the item to add</a>
-<span class="sourceLineNo">213</span><a id="line.213">     * @return {@code true}</a>
-<span class="sourceLineNo">214</span><a id="line.214">     */</a>
-<span class="sourceLineNo">215</span><a id="line.215">    public boolean addGroup(ProfileGroup item) {</a>
-<span class="sourceLineNo">216</span><a id="line.216">      ProfileGroup value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">217</span><a id="line.217">      if (_groups == null) {</a>
-<span class="sourceLineNo">218</span><a id="line.218">        _groups = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">219</span><a id="line.219">      }</a>
-<span class="sourceLineNo">220</span><a id="line.220">      return _groups.add(value);</a>
-<span class="sourceLineNo">221</span><a id="line.221">    }</a>
-<span class="sourceLineNo">222</span><a id="line.222"></a>
-<span class="sourceLineNo">223</span><a id="line.223">    /**</a>
-<span class="sourceLineNo">224</span><a id="line.224">     * Remove the first matching {@link ProfileGroup} item from the underlying collection.</a>
-<span class="sourceLineNo">225</span><a id="line.225">     * @param item the item to remove</a>
-<span class="sourceLineNo">226</span><a id="line.226">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">227</span><a id="line.227">     */</a>
-<span class="sourceLineNo">228</span><a id="line.228">    public boolean removeGroup(ProfileGroup item) {</a>
-<span class="sourceLineNo">229</span><a id="line.229">      ProfileGroup value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">230</span><a id="line.230">      return _groups == null ? false : _groups.remove(value);</a>
-<span class="sourceLineNo">231</span><a id="line.231">    }</a>
-<span class="sourceLineNo">232</span><a id="line.232"></a>
-<span class="sourceLineNo">233</span><a id="line.233">    public List&lt;InsertControls&gt; getInsertControls() {</a>
-<span class="sourceLineNo">234</span><a id="line.234">      return _insertControls;</a>
-<span class="sourceLineNo">235</span><a id="line.235">    }</a>
-<span class="sourceLineNo">236</span><a id="line.236"></a>
-<span class="sourceLineNo">237</span><a id="line.237">    public void setInsertControls(List&lt;InsertControls&gt; value) {</a>
-<span class="sourceLineNo">238</span><a id="line.238">      _insertControls = value;</a>
-<span class="sourceLineNo">239</span><a id="line.239">    }</a>
-<span class="sourceLineNo">240</span><a id="line.240"></a>
-<span class="sourceLineNo">241</span><a id="line.241">    /**</a>
-<span class="sourceLineNo">242</span><a id="line.242">     * Add a new {@link InsertControls} item to the underlying collection.</a>
-<span class="sourceLineNo">243</span><a id="line.243">     * @param item the item to add</a>
-<span class="sourceLineNo">244</span><a id="line.244">     * @return {@code true}</a>
-<span class="sourceLineNo">245</span><a id="line.245">     */</a>
-<span class="sourceLineNo">246</span><a id="line.246">    public boolean addInsertControls(InsertControls item) {</a>
-<span class="sourceLineNo">247</span><a id="line.247">      InsertControls value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">248</span><a id="line.248">      if (_insertControls == null) {</a>
-<span class="sourceLineNo">249</span><a id="line.249">        _insertControls = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">250</span><a id="line.250">      }</a>
-<span class="sourceLineNo">251</span><a id="line.251">      return _insertControls.add(value);</a>
-<span class="sourceLineNo">252</span><a id="line.252">    }</a>
-<span class="sourceLineNo">253</span><a id="line.253"></a>
-<span class="sourceLineNo">254</span><a id="line.254">    /**</a>
-<span class="sourceLineNo">255</span><a id="line.255">     * Remove the first matching {@link InsertControls} item from the underlying collection.</a>
-<span class="sourceLineNo">256</span><a id="line.256">     * @param item the item to remove</a>
-<span class="sourceLineNo">257</span><a id="line.257">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">258</span><a id="line.258">     */</a>
-<span class="sourceLineNo">259</span><a id="line.259">    public boolean removeInsertControls(InsertControls item) {</a>
-<span class="sourceLineNo">260</span><a id="line.260">      InsertControls value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">261</span><a id="line.261">      return _insertControls == null ? false : _insertControls.remove(value);</a>
-<span class="sourceLineNo">262</span><a id="line.262">    }</a>
-<span class="sourceLineNo">263</span><a id="line.263"></a>
-<span class="sourceLineNo">264</span><a id="line.264">    @Override</a>
-<span class="sourceLineNo">265</span><a id="line.265">    public String toString() {</a>
-<span class="sourceLineNo">266</span><a id="line.266">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
-<span class="sourceLineNo">267</span><a id="line.267">    }</a>
-<span class="sourceLineNo">268</span><a id="line.268">  }</a>
-<span class="sourceLineNo">269</span><a id="line.269"></a>
-<span class="sourceLineNo">270</span><a id="line.270">  /**</a>
-<span class="sourceLineNo">271</span><a id="line.271">   * Directs that controls appear without any grouping structure.</a>
-<span class="sourceLineNo">272</span><a id="line.272">   */</a>
-<span class="sourceLineNo">273</span><a id="line.273">  @MetaschemaAssembly(</a>
-<span class="sourceLineNo">274</span><a id="line.274">      formalName = "Flat Without Grouping",</a>
-<span class="sourceLineNo">275</span><a id="line.275">      description = "Directs that controls appear without any grouping structure.",</a>
-<span class="sourceLineNo">276</span><a id="line.276">      name = "flat",</a>
-<span class="sourceLineNo">277</span><a id="line.277">      metaschema = OscalProfileMetaschema.class</a>
-<span class="sourceLineNo">278</span><a id="line.278">  )</a>
-<span class="sourceLineNo">279</span><a id="line.279">  public static class Flat {</a>
-<span class="sourceLineNo">280</span><a id="line.280">    public Flat() {</a>
+<span class="sourceLineNo">206</span><a id="line.206">    @BoundAssembly(</a>
+<span class="sourceLineNo">207</span><a id="line.207">        formalName = "Insert Controls",</a>
+<span class="sourceLineNo">208</span><a id="line.208">        description = "Specifies which controls to use in the containing context.",</a>
+<span class="sourceLineNo">209</span><a id="line.209">        useName = "insert-controls",</a>
+<span class="sourceLineNo">210</span><a id="line.210">        maxOccurs = -1</a>
+<span class="sourceLineNo">211</span><a id="line.211">    )</a>
+<span class="sourceLineNo">212</span><a id="line.212">    @GroupAs(</a>
+<span class="sourceLineNo">213</span><a id="line.213">        name = "insert-controls",</a>
+<span class="sourceLineNo">214</span><a id="line.214">        inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">215</span><a id="line.215">    )</a>
+<span class="sourceLineNo">216</span><a id="line.216">    private List&lt;InsertControls&gt; _insertControls;</a>
+<span class="sourceLineNo">217</span><a id="line.217"></a>
+<span class="sourceLineNo">218</span><a id="line.218">    public Custom() {</a>
+<span class="sourceLineNo">219</span><a id="line.219">    }</a>
+<span class="sourceLineNo">220</span><a id="line.220"></a>
+<span class="sourceLineNo">221</span><a id="line.221">    public List&lt;ProfileGroup&gt; getGroups() {</a>
+<span class="sourceLineNo">222</span><a id="line.222">      return _groups;</a>
+<span class="sourceLineNo">223</span><a id="line.223">    }</a>
+<span class="sourceLineNo">224</span><a id="line.224"></a>
+<span class="sourceLineNo">225</span><a id="line.225">    public void setGroups(List&lt;ProfileGroup&gt; value) {</a>
+<span class="sourceLineNo">226</span><a id="line.226">      _groups = value;</a>
+<span class="sourceLineNo">227</span><a id="line.227">    }</a>
+<span class="sourceLineNo">228</span><a id="line.228"></a>
+<span class="sourceLineNo">229</span><a id="line.229">    /**</a>
+<span class="sourceLineNo">230</span><a id="line.230">     * Add a new {@link ProfileGroup} item to the underlying collection.</a>
+<span class="sourceLineNo">231</span><a id="line.231">     * @param item the item to add</a>
+<span class="sourceLineNo">232</span><a id="line.232">     * @return {@code true}</a>
+<span class="sourceLineNo">233</span><a id="line.233">     */</a>
+<span class="sourceLineNo">234</span><a id="line.234">    public boolean addGroup(ProfileGroup item) {</a>
+<span class="sourceLineNo">235</span><a id="line.235">      ProfileGroup value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">236</span><a id="line.236">      if (_groups == null) {</a>
+<span class="sourceLineNo">237</span><a id="line.237">        _groups = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">238</span><a id="line.238">      }</a>
+<span class="sourceLineNo">239</span><a id="line.239">      return _groups.add(value);</a>
+<span class="sourceLineNo">240</span><a id="line.240">    }</a>
+<span class="sourceLineNo">241</span><a id="line.241"></a>
+<span class="sourceLineNo">242</span><a id="line.242">    /**</a>
+<span class="sourceLineNo">243</span><a id="line.243">     * Remove the first matching {@link ProfileGroup} item from the underlying collection.</a>
+<span class="sourceLineNo">244</span><a id="line.244">     * @param item the item to remove</a>
+<span class="sourceLineNo">245</span><a id="line.245">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">246</span><a id="line.246">     */</a>
+<span class="sourceLineNo">247</span><a id="line.247">    public boolean removeGroup(ProfileGroup item) {</a>
+<span class="sourceLineNo">248</span><a id="line.248">      ProfileGroup value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">249</span><a id="line.249">      return _groups == null ? false : _groups.remove(value);</a>
+<span class="sourceLineNo">250</span><a id="line.250">    }</a>
+<span class="sourceLineNo">251</span><a id="line.251"></a>
+<span class="sourceLineNo">252</span><a id="line.252">    public List&lt;InsertControls&gt; getInsertControls() {</a>
+<span class="sourceLineNo">253</span><a id="line.253">      return _insertControls;</a>
+<span class="sourceLineNo">254</span><a id="line.254">    }</a>
+<span class="sourceLineNo">255</span><a id="line.255"></a>
+<span class="sourceLineNo">256</span><a id="line.256">    public void setInsertControls(List&lt;InsertControls&gt; value) {</a>
+<span class="sourceLineNo">257</span><a id="line.257">      _insertControls = value;</a>
+<span class="sourceLineNo">258</span><a id="line.258">    }</a>
+<span class="sourceLineNo">259</span><a id="line.259"></a>
+<span class="sourceLineNo">260</span><a id="line.260">    /**</a>
+<span class="sourceLineNo">261</span><a id="line.261">     * Add a new {@link InsertControls} item to the underlying collection.</a>
+<span class="sourceLineNo">262</span><a id="line.262">     * @param item the item to add</a>
+<span class="sourceLineNo">263</span><a id="line.263">     * @return {@code true}</a>
+<span class="sourceLineNo">264</span><a id="line.264">     */</a>
+<span class="sourceLineNo">265</span><a id="line.265">    public boolean addInsertControls(InsertControls item) {</a>
+<span class="sourceLineNo">266</span><a id="line.266">      InsertControls value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">267</span><a id="line.267">      if (_insertControls == null) {</a>
+<span class="sourceLineNo">268</span><a id="line.268">        _insertControls = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">269</span><a id="line.269">      }</a>
+<span class="sourceLineNo">270</span><a id="line.270">      return _insertControls.add(value);</a>
+<span class="sourceLineNo">271</span><a id="line.271">    }</a>
+<span class="sourceLineNo">272</span><a id="line.272"></a>
+<span class="sourceLineNo">273</span><a id="line.273">    /**</a>
+<span class="sourceLineNo">274</span><a id="line.274">     * Remove the first matching {@link InsertControls} item from the underlying collection.</a>
+<span class="sourceLineNo">275</span><a id="line.275">     * @param item the item to remove</a>
+<span class="sourceLineNo">276</span><a id="line.276">     * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">277</span><a id="line.277">     */</a>
+<span class="sourceLineNo">278</span><a id="line.278">    public boolean removeInsertControls(InsertControls item) {</a>
+<span class="sourceLineNo">279</span><a id="line.279">      InsertControls value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">280</span><a id="line.280">      return _insertControls == null ? false : _insertControls.remove(value);</a>
 <span class="sourceLineNo">281</span><a id="line.281">    }</a>
 <span class="sourceLineNo">282</span><a id="line.282"></a>
 <span class="sourceLineNo">283</span><a id="line.283">    @Override</a>

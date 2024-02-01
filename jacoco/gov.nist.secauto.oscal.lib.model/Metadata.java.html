@@ -607,44 +607,25 @@ public class Metadata extends AbstractMetadata {
   }
 
   /**
-   * A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.
+   * An entry in a sequential list of revisions to the containing document, expected to be in reverse chronological order (i.e. latest first).
    */
   @MetaschemaAssembly(
-      formalName = &quot;Location&quot;,
-      description = &quot;A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.&quot;,
-      name = &quot;location&quot;,
+      formalName = &quot;Revision History Entry&quot;,
+      description = &quot;An entry in a sequential list of revisions to the containing document, expected to be in reverse chronological order (i.e. latest first).&quot;,
+      name = &quot;revision&quot;,
       metaschema = OscalMetadataMetaschema.class,
-      remarks = &quot;An address might be sensitive in nature. In such cases a title, mailing address, email-address, and/or phone number may be used instead.&quot;
+      remarks = &quot;While `published`, `last-modified`, and `oscal-version` are not required, values for these entries should be provided if the information is known. A `link` with a `rel` of \&quot;source\&quot; should be provided if the information is known.&quot;
   )
   @ValueConstraints(
-      allowedValues = {
-          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;type&quot;, description = &quot;Characterizes the kind of location.&quot;)),
-          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='type']/@value&quot;, values = @AllowedValue(value = &quot;data-center&quot;, description = &quot;A location that contains computing assets. A `class` can be used to indicate the sub-type of data-center as *primary* or *alternate*.&quot;)),
-          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='type' and @value='data-center']/@class&quot;, values = {@AllowedValue(value = &quot;primary&quot;, description = &quot;The location is a data-center used for normal operations.&quot;), @AllowedValue(value = &quot;alternate&quot;, description = &quot;The location is a data-center used for fail-over or backup operations.&quot;)})
-      }
+      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;link/@rel&quot;, allowOthers = true, values = {@AllowedValue(value = &quot;canonical&quot;, description = &quot;The link identifies the authoritative location for this resource. Defined by [RFC 6596](https://tools.ietf.org/html/rfc6596).&quot;), @AllowedValue(value = &quot;alternate&quot;, description = &quot;The link identifies an alternative location or format for this resource. Defined by [the HTML Living Standard](https://html.spec.whatwg.org/multipage/links.html#linkTypes)&quot;), @AllowedValue(value = &quot;predecessor-version&quot;, description = &quot;This link identifies a resource containing the predecessor version in the version history. Defined by [RFC 5829](https://tools.ietf.org/html/rfc5829).&quot;), @AllowedValue(value = &quot;successor-version&quot;, description = &quot;This link identifies a resource containing the predecessor version in the version history. Defined by [RFC 5829](https://tools.ietf.org/html/rfc5829).&quot;), @AllowedValue(value = &quot;version-history&quot;, description = &quot;This link identifies a resource containing the version history of this document. Defined by [RFC 5829](https://tools.ietf.org/html/rfc5829).&quot;)})
   )
-  @AssemblyConstraints(
-      hasCardinality = {
-          @HasCardinality(level = IConstraint.Level.WARNING, target = &quot;address&quot;, minOccurs = 1),
-          @HasCardinality(level = IConstraint.Level.ERROR, target = &quot;title|address|email-address|telephone-number&quot;, minOccurs = 1)
-      }
-  )
-  public static class Location {
-    @BoundFlag(
-        formalName = &quot;Location Universally Unique Identifier&quot;,
-        description = &quot;A unique ID for the location, for reference.&quot;,
-        useName = &quot;uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _uuid;
-
+  public static class Revision {
     /**
-     * &quot;A name given to the location, which may be used by a tool for display and navigation.&quot;
+     * &quot;A name given to the document revision, which may be used by a tool for display and navigation.&quot;
      */
     @BoundField(
-        formalName = &quot;Location Title&quot;,
-        description = &quot;A name given to the location, which may be used by a tool for display and navigation.&quot;,
+        formalName = &quot;Document Title&quot;,
+        description = &quot;A name given to the document revision, which may be used by a tool for display and navigation.&quot;,
         useName = &quot;title&quot;
     )
     @BoundFieldValue(
@@ -652,61 +633,40 @@ public class Metadata extends AbstractMetadata {
     )
     private MarkupLine _title;
 
-    @BoundAssembly(
-        formalName = &quot;Address&quot;,
-        description = &quot;A postal address for the location.&quot;,
-        useName = &quot;address&quot;,
-        remarks = &quot;The physical address of the location, which will provided for physical locations. Virtual locations can omit this data item.&quot;
-    )
-    private Address _address;
-
     @BoundField(
-        formalName = &quot;Email Address&quot;,
-        description = &quot;An email address as defined by [RFC 5322 Section 3.4.1](https://tools.ietf.org/html/rfc5322#section-3.4.1).&quot;,
-        useName = &quot;email-address&quot;,
-        maxOccurs = -1,
-        remarks = &quot;A contact email associated with the location.&quot;
+        formalName = &quot;Publication Timestamp&quot;,
+        description = &quot;The date and time the document was last made available.&quot;,
+        useName = &quot;published&quot;
     )
     @BoundFieldValue(
-        typeAdapter = EmailAddressAdapter.class
+        typeAdapter = DateTimeWithTZAdapter.class
     )
-    @GroupAs(
-        name = &quot;email-addresses&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;String&gt; _emailAddresses;
+    private ZonedDateTime _published;
 
     @BoundField(
-        formalName = &quot;Telephone Number&quot;,
-        description = &quot;A telephone service number as defined by [ITU-T E.164](https://www.itu.int/rec/T-REC-E.164-201011-I/en).&quot;,
-        useName = &quot;telephone-number&quot;,
-        maxOccurs = -1,
-        remarks = &quot;A phone number used to contact the location.&quot;
-    )
-    @GroupAs(
-        name = &quot;telephone-numbers&quot;,
-        inJson = JsonGroupAsBehavior.LIST
-    )
-    private List&lt;TelephoneNumber&gt; _telephoneNumbers;
-
-    /**
-     * &quot;The uniform resource locator (URL) for a web site or other resource associated with the location.&quot;
-     */
-    @BoundField(
-        formalName = &quot;Location URL&quot;,
-        description = &quot;The uniform resource locator (URL) for a web site or other resource associated with the location.&quot;,
-        useName = &quot;url&quot;,
-        maxOccurs = -1,
-        remarks = &quot;This data field is deprecated in favor of using a link with an appropriate relationship.&quot;
+        formalName = &quot;Last Modified Timestamp&quot;,
+        description = &quot;The date and time the document was last stored for later retrieval.&quot;,
+        useName = &quot;last-modified&quot;
     )
     @BoundFieldValue(
-        typeAdapter = UriAdapter.class
+        typeAdapter = DateTimeWithTZAdapter.class
     )
-    @GroupAs(
-        name = &quot;urls&quot;,
-        inJson = JsonGroupAsBehavior.LIST
+    private ZonedDateTime _lastModified;
+
+    @BoundField(
+        formalName = &quot;Document Version&quot;,
+        description = &quot;Used to distinguish a specific revision of an OSCAL document from other previous and future versions.&quot;,
+        useName = &quot;version&quot;,
+        minOccurs = 1
     )
-    private List&lt;URI&gt; _urls;
+    private String _version;
+
+    @BoundField(
+        formalName = &quot;OSCAL Version&quot;,
+        description = &quot;The OSCAL model version the document was authored against and will conform to as valid.&quot;,
+        useName = &quot;oscal-version&quot;
+    )
+    private String _oscalVersion;
 
     @BoundAssembly(
         formalName = &quot;Property&quot;,
@@ -742,133 +702,56 @@ public class Metadata extends AbstractMetadata {
     )
     private MarkupMultiline _remarks;
 
-<span class="nc" id="L745">    public Location() {</span>
-<span class="nc" id="L746">    }</span>
-
-    public UUID getUuid() {
-<span class="nc" id="L749">      return _uuid;</span>
-    }
-
-    public void setUuid(UUID value) {
-<span class="nc" id="L753">      _uuid = value;</span>
-<span class="nc" id="L754">    }</span>
+<span class="fc" id="L705">    public Revision() {</span>
+<span class="fc" id="L706">    }</span>
 
     public MarkupLine getTitle() {
-<span class="nc" id="L757">      return _title;</span>
+<span class="nc" id="L709">      return _title;</span>
     }
 
     public void setTitle(MarkupLine value) {
-<span class="nc" id="L761">      _title = value;</span>
-<span class="nc" id="L762">    }</span>
+<span class="nc" id="L713">      _title = value;</span>
+<span class="nc" id="L714">    }</span>
 
-    public Address getAddress() {
-<span class="nc" id="L765">      return _address;</span>
+    public ZonedDateTime getPublished() {
+<span class="nc" id="L717">      return _published;</span>
     }
 
-    public void setAddress(Address value) {
-<span class="nc" id="L769">      _address = value;</span>
-<span class="nc" id="L770">    }</span>
+    public void setPublished(ZonedDateTime value) {
+<span class="nc" id="L721">      _published = value;</span>
+<span class="nc" id="L722">    }</span>
 
-    public List&lt;String&gt; getEmailAddresses() {
-<span class="nc" id="L773">      return _emailAddresses;</span>
+    public ZonedDateTime getLastModified() {
+<span class="nc" id="L725">      return _lastModified;</span>
     }
 
-    public void setEmailAddresses(List&lt;String&gt; value) {
-<span class="nc" id="L777">      _emailAddresses = value;</span>
-<span class="nc" id="L778">    }</span>
+    public void setLastModified(ZonedDateTime value) {
+<span class="nc" id="L729">      _lastModified = value;</span>
+<span class="nc" id="L730">    }</span>
 
-    /**
-     * Add a new {@link String} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addEmailAddress(String item) {
-<span class="nc" id="L786">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L787" title="All 2 branches missed.">      if (_emailAddresses == null) {</span>
-<span class="nc" id="L788">        _emailAddresses = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L790">      return _emailAddresses.add(value);</span>
+    public String getVersion() {
+<span class="nc" id="L733">      return _version;</span>
     }
 
-    /**
-     * Remove the first matching {@link String} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeEmailAddress(String item) {
-<span class="nc" id="L799">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L800" title="All 2 branches missed.">      return _emailAddresses == null ? false : _emailAddresses.remove(value);</span>
+    public void setVersion(String value) {
+<span class="nc" id="L737">      _version = value;</span>
+<span class="nc" id="L738">    }</span>
+
+    public String getOscalVersion() {
+<span class="nc" id="L741">      return _oscalVersion;</span>
     }
 
-    public List&lt;TelephoneNumber&gt; getTelephoneNumbers() {
-<span class="nc" id="L804">      return _telephoneNumbers;</span>
-    }
-
-    public void setTelephoneNumbers(List&lt;TelephoneNumber&gt; value) {
-<span class="nc" id="L808">      _telephoneNumbers = value;</span>
-<span class="nc" id="L809">    }</span>
-
-    /**
-     * Add a new {@link TelephoneNumber} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addTelephoneNumber(TelephoneNumber item) {
-<span class="nc" id="L817">      TelephoneNumber value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L818" title="All 2 branches missed.">      if (_telephoneNumbers == null) {</span>
-<span class="nc" id="L819">        _telephoneNumbers = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L821">      return _telephoneNumbers.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link TelephoneNumber} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeTelephoneNumber(TelephoneNumber item) {
-<span class="nc" id="L830">      TelephoneNumber value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L831" title="All 2 branches missed.">      return _telephoneNumbers == null ? false : _telephoneNumbers.remove(value);</span>
-    }
-
-    public List&lt;URI&gt; getUrls() {
-<span class="nc" id="L835">      return _urls;</span>
-    }
-
-    public void setUrls(List&lt;URI&gt; value) {
-<span class="nc" id="L839">      _urls = value;</span>
-<span class="nc" id="L840">    }</span>
-
-    /**
-     * Add a new {@link URI} item to the underlying collection.
-     * @param item the item to add
-     * @return {@code true}
-     */
-    public boolean addUrl(URI item) {
-<span class="nc" id="L848">      URI value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L849" title="All 2 branches missed.">      if (_urls == null) {</span>
-<span class="nc" id="L850">        _urls = new LinkedList&lt;&gt;();</span>
-      }
-<span class="nc" id="L852">      return _urls.add(value);</span>
-    }
-
-    /**
-     * Remove the first matching {@link URI} item from the underlying collection.
-     * @param item the item to remove
-     * @return {@code true} if the item was removed or {@code false} otherwise
-     */
-    public boolean removeUrl(URI item) {
-<span class="nc" id="L861">      URI value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L862" title="All 2 branches missed.">      return _urls == null ? false : _urls.remove(value);</span>
-    }
+    public void setOscalVersion(String value) {
+<span class="nc" id="L745">      _oscalVersion = value;</span>
+<span class="nc" id="L746">    }</span>
 
     public List&lt;Property&gt; getProps() {
-<span class="nc" id="L866">      return _props;</span>
+<span class="nc" id="L749">      return _props;</span>
     }
 
     public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L870">      _props = value;</span>
-<span class="nc" id="L871">    }</span>
+<span class="nc" id="L753">      _props = value;</span>
+<span class="nc" id="L754">    }</span>
 
     /**
      * Add a new {@link Property} item to the underlying collection.
@@ -876,11 +759,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addProp(Property item) {
-<span class="nc" id="L879">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L880" title="All 2 branches missed.">      if (_props == null) {</span>
-<span class="nc" id="L881">        _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L762">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L763" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L764">        _props = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L883">      return _props.add(value);</span>
+<span class="nc" id="L766">      return _props.add(value);</span>
     }
 
     /**
@@ -889,17 +772,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeProp(Property item) {
-<span class="nc" id="L892">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L893" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L775">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L776" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
     }
 
     public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L897">      return _links;</span>
+<span class="nc" id="L780">      return _links;</span>
     }
 
     public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L901">      _links = value;</span>
-<span class="nc" id="L902">    }</span>
+<span class="nc" id="L784">      _links = value;</span>
+<span class="nc" id="L785">    }</span>
 
     /**
      * Add a new {@link Link} item to the underlying collection.
@@ -907,11 +790,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addLink(Link item) {
-<span class="nc" id="L910">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L911" title="All 2 branches missed.">      if (_links == null) {</span>
-<span class="nc" id="L912">        _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L793">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L794" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L795">        _links = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L914">      return _links.add(value);</span>
+<span class="nc" id="L797">      return _links.add(value);</span>
     }
 
     /**
@@ -920,21 +803,21 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeLink(Link item) {
-<span class="nc" id="L923">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L924" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L806">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L807" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
     }
 
     public MarkupMultiline getRemarks() {
-<span class="nc" id="L928">      return _remarks;</span>
+<span class="nc" id="L811">      return _remarks;</span>
     }
 
     public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L932">      _remarks = value;</span>
-<span class="nc" id="L933">    }</span>
+<span class="nc" id="L815">      _remarks = value;</span>
+<span class="nc" id="L816">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L937">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L820">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
     }
   }
 
@@ -1125,48 +1008,48 @@ public class Metadata extends AbstractMetadata {
     )
     private MarkupMultiline _remarks;
 
-<span class="fc" id="L1128">    public Party() {</span>
-<span class="fc" id="L1129">    }</span>
+<span class="fc" id="L1011">    public Party() {</span>
+<span class="fc" id="L1012">    }</span>
 
     public UUID getUuid() {
-<span class="fc" id="L1132">      return _uuid;</span>
+<span class="fc" id="L1015">      return _uuid;</span>
     }
 
     public void setUuid(UUID value) {
-<span class="nc" id="L1136">      _uuid = value;</span>
-<span class="nc" id="L1137">    }</span>
+<span class="nc" id="L1019">      _uuid = value;</span>
+<span class="nc" id="L1020">    }</span>
 
     public String getType() {
-<span class="nc" id="L1140">      return _type;</span>
+<span class="nc" id="L1023">      return _type;</span>
     }
 
     public void setType(String value) {
-<span class="nc" id="L1144">      _type = value;</span>
-<span class="nc" id="L1145">    }</span>
+<span class="nc" id="L1027">      _type = value;</span>
+<span class="nc" id="L1028">    }</span>
 
     public String getName() {
-<span class="nc" id="L1148">      return _name;</span>
+<span class="nc" id="L1031">      return _name;</span>
     }
 
     public void setName(String value) {
-<span class="nc" id="L1152">      _name = value;</span>
-<span class="nc" id="L1153">    }</span>
+<span class="nc" id="L1035">      _name = value;</span>
+<span class="nc" id="L1036">    }</span>
 
     public String getShortName() {
-<span class="nc" id="L1156">      return _shortName;</span>
+<span class="nc" id="L1039">      return _shortName;</span>
     }
 
     public void setShortName(String value) {
-<span class="nc" id="L1160">      _shortName = value;</span>
-<span class="nc" id="L1161">    }</span>
+<span class="nc" id="L1043">      _shortName = value;</span>
+<span class="nc" id="L1044">    }</span>
 
     public List&lt;ExternalId&gt; getExternalIds() {
-<span class="nc" id="L1164">      return _externalIds;</span>
+<span class="nc" id="L1047">      return _externalIds;</span>
     }
 
     public void setExternalIds(List&lt;ExternalId&gt; value) {
-<span class="nc" id="L1168">      _externalIds = value;</span>
-<span class="nc" id="L1169">    }</span>
+<span class="nc" id="L1051">      _externalIds = value;</span>
+<span class="nc" id="L1052">    }</span>
 
     /**
      * Add a new {@link ExternalId} item to the underlying collection.
@@ -1174,11 +1057,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addExternalId(ExternalId item) {
-<span class="nc" id="L1177">      ExternalId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1178" title="All 2 branches missed.">      if (_externalIds == null) {</span>
-<span class="nc" id="L1179">        _externalIds = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1060">      ExternalId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1061" title="All 2 branches missed.">      if (_externalIds == null) {</span>
+<span class="nc" id="L1062">        _externalIds = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1181">      return _externalIds.add(value);</span>
+<span class="nc" id="L1064">      return _externalIds.add(value);</span>
     }
 
     /**
@@ -1187,17 +1070,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeExternalId(ExternalId item) {
-<span class="nc" id="L1190">      ExternalId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1191" title="All 2 branches missed.">      return _externalIds == null ? false : _externalIds.remove(value);</span>
+<span class="nc" id="L1073">      ExternalId value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1074" title="All 2 branches missed.">      return _externalIds == null ? false : _externalIds.remove(value);</span>
     }
 
     public List&lt;Property&gt; getProps() {
-<span class="nc" id="L1195">      return _props;</span>
+<span class="nc" id="L1078">      return _props;</span>
     }
 
     public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L1199">      _props = value;</span>
-<span class="nc" id="L1200">    }</span>
+<span class="nc" id="L1082">      _props = value;</span>
+<span class="nc" id="L1083">    }</span>
 
     /**
      * Add a new {@link Property} item to the underlying collection.
@@ -1205,11 +1088,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addProp(Property item) {
-<span class="nc" id="L1208">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1209" title="All 2 branches missed.">      if (_props == null) {</span>
-<span class="nc" id="L1210">        _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1091">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1092" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L1093">        _props = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1212">      return _props.add(value);</span>
+<span class="nc" id="L1095">      return _props.add(value);</span>
     }
 
     /**
@@ -1218,17 +1101,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeProp(Property item) {
-<span class="nc" id="L1221">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1222" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L1104">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1105" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
     }
 
     public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L1226">      return _links;</span>
+<span class="nc" id="L1109">      return _links;</span>
     }
 
     public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L1230">      _links = value;</span>
-<span class="nc" id="L1231">    }</span>
+<span class="nc" id="L1113">      _links = value;</span>
+<span class="nc" id="L1114">    }</span>
 
     /**
      * Add a new {@link Link} item to the underlying collection.
@@ -1236,11 +1119,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addLink(Link item) {
-<span class="nc" id="L1239">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1240" title="All 2 branches missed.">      if (_links == null) {</span>
-<span class="nc" id="L1241">        _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1122">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1123" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L1124">        _links = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1243">      return _links.add(value);</span>
+<span class="nc" id="L1126">      return _links.add(value);</span>
     }
 
     /**
@@ -1249,17 +1132,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeLink(Link item) {
-<span class="nc" id="L1252">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1253" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L1135">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1136" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
     }
 
     public List&lt;String&gt; getEmailAddresses() {
-<span class="nc" id="L1257">      return _emailAddresses;</span>
+<span class="nc" id="L1140">      return _emailAddresses;</span>
     }
 
     public void setEmailAddresses(List&lt;String&gt; value) {
-<span class="nc" id="L1261">      _emailAddresses = value;</span>
-<span class="nc" id="L1262">    }</span>
+<span class="nc" id="L1144">      _emailAddresses = value;</span>
+<span class="nc" id="L1145">    }</span>
 
     /**
      * Add a new {@link String} item to the underlying collection.
@@ -1267,11 +1150,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addEmailAddress(String item) {
-<span class="nc" id="L1270">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1271" title="All 2 branches missed.">      if (_emailAddresses == null) {</span>
-<span class="nc" id="L1272">        _emailAddresses = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1153">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1154" title="All 2 branches missed.">      if (_emailAddresses == null) {</span>
+<span class="nc" id="L1155">        _emailAddresses = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1274">      return _emailAddresses.add(value);</span>
+<span class="nc" id="L1157">      return _emailAddresses.add(value);</span>
     }
 
     /**
@@ -1280,17 +1163,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeEmailAddress(String item) {
-<span class="nc" id="L1283">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1284" title="All 2 branches missed.">      return _emailAddresses == null ? false : _emailAddresses.remove(value);</span>
+<span class="nc" id="L1166">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1167" title="All 2 branches missed.">      return _emailAddresses == null ? false : _emailAddresses.remove(value);</span>
     }
 
     public List&lt;TelephoneNumber&gt; getTelephoneNumbers() {
-<span class="nc" id="L1288">      return _telephoneNumbers;</span>
+<span class="nc" id="L1171">      return _telephoneNumbers;</span>
     }
 
     public void setTelephoneNumbers(List&lt;TelephoneNumber&gt; value) {
-<span class="nc" id="L1292">      _telephoneNumbers = value;</span>
-<span class="nc" id="L1293">    }</span>
+<span class="nc" id="L1175">      _telephoneNumbers = value;</span>
+<span class="nc" id="L1176">    }</span>
 
     /**
      * Add a new {@link TelephoneNumber} item to the underlying collection.
@@ -1298,11 +1181,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addTelephoneNumber(TelephoneNumber item) {
-<span class="nc" id="L1301">      TelephoneNumber value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1302" title="All 2 branches missed.">      if (_telephoneNumbers == null) {</span>
-<span class="nc" id="L1303">        _telephoneNumbers = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1184">      TelephoneNumber value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1185" title="All 2 branches missed.">      if (_telephoneNumbers == null) {</span>
+<span class="nc" id="L1186">        _telephoneNumbers = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1305">      return _telephoneNumbers.add(value);</span>
+<span class="nc" id="L1188">      return _telephoneNumbers.add(value);</span>
     }
 
     /**
@@ -1311,17 +1194,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeTelephoneNumber(TelephoneNumber item) {
-<span class="nc" id="L1314">      TelephoneNumber value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1315" title="All 2 branches missed.">      return _telephoneNumbers == null ? false : _telephoneNumbers.remove(value);</span>
+<span class="nc" id="L1197">      TelephoneNumber value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1198" title="All 2 branches missed.">      return _telephoneNumbers == null ? false : _telephoneNumbers.remove(value);</span>
     }
 
     public List&lt;Address&gt; getAddresses() {
-<span class="nc" id="L1319">      return _addresses;</span>
+<span class="nc" id="L1202">      return _addresses;</span>
     }
 
     public void setAddresses(List&lt;Address&gt; value) {
-<span class="nc" id="L1323">      _addresses = value;</span>
-<span class="nc" id="L1324">    }</span>
+<span class="nc" id="L1206">      _addresses = value;</span>
+<span class="nc" id="L1207">    }</span>
 
     /**
      * Add a new {@link Address} item to the underlying collection.
@@ -1329,11 +1212,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addAddress(Address item) {
-<span class="nc" id="L1332">      Address value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1333" title="All 2 branches missed.">      if (_addresses == null) {</span>
-<span class="nc" id="L1334">        _addresses = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1215">      Address value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1216" title="All 2 branches missed.">      if (_addresses == null) {</span>
+<span class="nc" id="L1217">        _addresses = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1336">      return _addresses.add(value);</span>
+<span class="nc" id="L1219">      return _addresses.add(value);</span>
     }
 
     /**
@@ -1342,17 +1225,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeAddress(Address item) {
-<span class="nc" id="L1345">      Address value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1346" title="All 2 branches missed.">      return _addresses == null ? false : _addresses.remove(value);</span>
+<span class="nc" id="L1228">      Address value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1229" title="All 2 branches missed.">      return _addresses == null ? false : _addresses.remove(value);</span>
     }
 
     public List&lt;UUID&gt; getLocationUuids() {
-<span class="nc" id="L1350">      return _locationUuids;</span>
+<span class="nc" id="L1233">      return _locationUuids;</span>
     }
 
     public void setLocationUuids(List&lt;UUID&gt; value) {
-<span class="nc" id="L1354">      _locationUuids = value;</span>
-<span class="nc" id="L1355">    }</span>
+<span class="nc" id="L1237">      _locationUuids = value;</span>
+<span class="nc" id="L1238">    }</span>
 
     /**
      * Add a new {@link UUID} item to the underlying collection.
@@ -1360,11 +1243,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addLocationUuid(UUID item) {
-<span class="nc" id="L1363">      UUID value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1364" title="All 2 branches missed.">      if (_locationUuids == null) {</span>
-<span class="nc" id="L1365">        _locationUuids = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1246">      UUID value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1247" title="All 2 branches missed.">      if (_locationUuids == null) {</span>
+<span class="nc" id="L1248">        _locationUuids = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1367">      return _locationUuids.add(value);</span>
+<span class="nc" id="L1250">      return _locationUuids.add(value);</span>
     }
 
     /**
@@ -1373,17 +1256,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeLocationUuid(UUID item) {
-<span class="nc" id="L1376">      UUID value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1377" title="All 2 branches missed.">      return _locationUuids == null ? false : _locationUuids.remove(value);</span>
+<span class="nc" id="L1259">      UUID value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1260" title="All 2 branches missed.">      return _locationUuids == null ? false : _locationUuids.remove(value);</span>
     }
 
     public List&lt;UUID&gt; getMemberOfOrganizations() {
-<span class="nc" id="L1381">      return _memberOfOrganizations;</span>
+<span class="nc" id="L1264">      return _memberOfOrganizations;</span>
     }
 
     public void setMemberOfOrganizations(List&lt;UUID&gt; value) {
-<span class="nc" id="L1385">      _memberOfOrganizations = value;</span>
-<span class="nc" id="L1386">    }</span>
+<span class="nc" id="L1268">      _memberOfOrganizations = value;</span>
+<span class="nc" id="L1269">    }</span>
 
     /**
      * Add a new {@link UUID} item to the underlying collection.
@@ -1391,11 +1274,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addMemberOfOrganization(UUID item) {
-<span class="nc" id="L1394">      UUID value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1395" title="All 2 branches missed.">      if (_memberOfOrganizations == null) {</span>
-<span class="nc" id="L1396">        _memberOfOrganizations = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1277">      UUID value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1278" title="All 2 branches missed.">      if (_memberOfOrganizations == null) {</span>
+<span class="nc" id="L1279">        _memberOfOrganizations = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1398">      return _memberOfOrganizations.add(value);</span>
+<span class="nc" id="L1281">      return _memberOfOrganizations.add(value);</span>
     }
 
     /**
@@ -1404,21 +1287,21 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeMemberOfOrganization(UUID item) {
-<span class="nc" id="L1407">      UUID value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1408" title="All 2 branches missed.">      return _memberOfOrganizations == null ? false : _memberOfOrganizations.remove(value);</span>
+<span class="nc" id="L1290">      UUID value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1291" title="All 2 branches missed.">      return _memberOfOrganizations == null ? false : _memberOfOrganizations.remove(value);</span>
     }
 
     public MarkupMultiline getRemarks() {
-<span class="nc" id="L1412">      return _remarks;</span>
+<span class="nc" id="L1295">      return _remarks;</span>
     }
 
     public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L1416">      _remarks = value;</span>
-<span class="nc" id="L1417">    }</span>
+<span class="nc" id="L1299">      _remarks = value;</span>
+<span class="nc" id="L1300">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L1421">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L1304">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
     }
 
     /**
@@ -1450,28 +1333,28 @@ public class Metadata extends AbstractMetadata {
       )
       private URI _scheme;
 
-<span class="nc" id="L1453">      public ExternalId() {</span>
-<span class="nc" id="L1454">      }</span>
+<span class="nc" id="L1336">      public ExternalId() {</span>
+<span class="nc" id="L1337">      }</span>
 
       public String getValue() {
-<span class="nc" id="L1457">        return _value;</span>
+<span class="nc" id="L1340">        return _value;</span>
       }
 
       public void setValue(String value) {
-<span class="nc" id="L1461">        _value = value;</span>
-<span class="nc" id="L1462">      }</span>
+<span class="nc" id="L1344">        _value = value;</span>
+<span class="nc" id="L1345">      }</span>
 
       public URI getScheme() {
-<span class="nc" id="L1465">        return _scheme;</span>
+<span class="nc" id="L1348">        return _scheme;</span>
       }
 
       public void setScheme(URI value) {
-<span class="nc" id="L1469">        _scheme = value;</span>
-<span class="nc" id="L1470">      }</span>
+<span class="nc" id="L1352">        _scheme = value;</span>
+<span class="nc" id="L1353">      }</span>
 
       @Override
       public String toString() {
-<span class="nc" id="L1474">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L1357">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
       }
     }
   }
@@ -1569,48 +1452,48 @@ public class Metadata extends AbstractMetadata {
     )
     private MarkupMultiline _remarks;
 
-<span class="fc" id="L1572">    public Role() {</span>
-<span class="fc" id="L1573">    }</span>
+<span class="fc" id="L1455">    public Role() {</span>
+<span class="fc" id="L1456">    }</span>
 
     public String getId() {
-<span class="fc" id="L1576">      return _id;</span>
+<span class="fc" id="L1459">      return _id;</span>
     }
 
     public void setId(String value) {
-<span class="nc" id="L1580">      _id = value;</span>
-<span class="nc" id="L1581">    }</span>
+<span class="nc" id="L1463">      _id = value;</span>
+<span class="nc" id="L1464">    }</span>
 
     public MarkupLine getTitle() {
-<span class="nc" id="L1584">      return _title;</span>
+<span class="nc" id="L1467">      return _title;</span>
     }
 
     public void setTitle(MarkupLine value) {
-<span class="nc" id="L1588">      _title = value;</span>
-<span class="nc" id="L1589">    }</span>
+<span class="nc" id="L1471">      _title = value;</span>
+<span class="nc" id="L1472">    }</span>
 
     public String getShortName() {
-<span class="nc" id="L1592">      return _shortName;</span>
+<span class="nc" id="L1475">      return _shortName;</span>
     }
 
     public void setShortName(String value) {
-<span class="nc" id="L1596">      _shortName = value;</span>
-<span class="nc" id="L1597">    }</span>
+<span class="nc" id="L1479">      _shortName = value;</span>
+<span class="nc" id="L1480">    }</span>
 
     public MarkupMultiline getDescription() {
-<span class="nc" id="L1600">      return _description;</span>
+<span class="nc" id="L1483">      return _description;</span>
     }
 
     public void setDescription(MarkupMultiline value) {
-<span class="nc" id="L1604">      _description = value;</span>
-<span class="nc" id="L1605">    }</span>
+<span class="nc" id="L1487">      _description = value;</span>
+<span class="nc" id="L1488">    }</span>
 
     public List&lt;Property&gt; getProps() {
-<span class="nc" id="L1608">      return _props;</span>
+<span class="nc" id="L1491">      return _props;</span>
     }
 
     public void setProps(List&lt;Property&gt; value) {
-<span class="nc" id="L1612">      _props = value;</span>
-<span class="nc" id="L1613">    }</span>
+<span class="nc" id="L1495">      _props = value;</span>
+<span class="nc" id="L1496">    }</span>
 
     /**
      * Add a new {@link Property} item to the underlying collection.
@@ -1618,11 +1501,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addProp(Property item) {
-<span class="nc" id="L1621">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1622" title="All 2 branches missed.">      if (_props == null) {</span>
-<span class="nc" id="L1623">        _props = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1504">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1505" title="All 2 branches missed.">      if (_props == null) {</span>
+<span class="nc" id="L1506">        _props = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1625">      return _props.add(value);</span>
+<span class="nc" id="L1508">      return _props.add(value);</span>
     }
 
     /**
@@ -1631,17 +1514,17 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeProp(Property item) {
-<span class="nc" id="L1634">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1635" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
+<span class="nc" id="L1517">      Property value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1518" title="All 2 branches missed.">      return _props == null ? false : _props.remove(value);</span>
     }
 
     public List&lt;Link&gt; getLinks() {
-<span class="nc" id="L1639">      return _links;</span>
+<span class="nc" id="L1522">      return _links;</span>
     }
 
     public void setLinks(List&lt;Link&gt; value) {
-<span class="nc" id="L1643">      _links = value;</span>
-<span class="nc" id="L1644">    }</span>
+<span class="nc" id="L1526">      _links = value;</span>
+<span class="nc" id="L1527">    }</span>
 
     /**
      * Add a new {@link Link} item to the underlying collection.
@@ -1649,11 +1532,11 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true}
      */
     public boolean addLink(Link item) {
-<span class="nc" id="L1652">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1653" title="All 2 branches missed.">      if (_links == null) {</span>
-<span class="nc" id="L1654">        _links = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L1535">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1536" title="All 2 branches missed.">      if (_links == null) {</span>
+<span class="nc" id="L1537">        _links = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L1656">      return _links.add(value);</span>
+<span class="nc" id="L1539">      return _links.add(value);</span>
     }
 
     /**
@@ -1662,44 +1545,63 @@ public class Metadata extends AbstractMetadata {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeLink(Link item) {
-<span class="nc" id="L1665">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L1666" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
+<span class="nc" id="L1548">      Link value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1549" title="All 2 branches missed.">      return _links == null ? false : _links.remove(value);</span>
     }
 
     public MarkupMultiline getRemarks() {
-<span class="nc" id="L1670">      return _remarks;</span>
+<span class="nc" id="L1553">      return _remarks;</span>
     }
 
     public void setRemarks(MarkupMultiline value) {
-<span class="nc" id="L1674">      _remarks = value;</span>
-<span class="nc" id="L1675">    }</span>
+<span class="nc" id="L1557">      _remarks = value;</span>
+<span class="nc" id="L1558">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L1679">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+<span class="nc" id="L1562">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
     }
   }
 
   /**
-   * An entry in a sequential list of revisions to the containing document, expected to be in reverse chronological order (i.e. latest first).
+   * A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.
    */
   @MetaschemaAssembly(
-      formalName = &quot;Revision History Entry&quot;,
-      description = &quot;An entry in a sequential list of revisions to the containing document, expected to be in reverse chronological order (i.e. latest first).&quot;,
-      name = &quot;revision&quot;,
+      formalName = &quot;Location&quot;,
+      description = &quot;A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.&quot;,
+      name = &quot;location&quot;,
       metaschema = OscalMetadataMetaschema.class,
-      remarks = &quot;While `published`, `last-modified`, and `oscal-version` are not required, values for these entries should be provided if the information is known. A `link` with a `rel` of \&quot;source\&quot; should be provided if the information is known.&quot;
+      remarks = &quot;An address might be sensitive in nature. In such cases a title, mailing address, email-address, and/or phone number may be used instead.&quot;
   )
   @ValueConstraints(
-      allowedValues = @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;link/@rel&quot;, allowOthers = true, values = {@AllowedValue(value = &quot;canonical&quot;, description = &quot;The link identifies the authoritative location for this resource. Defined by [RFC 6596](https://tools.ietf.org/html/rfc6596).&quot;), @AllowedValue(value = &quot;alternate&quot;, description = &quot;The link identifies an alternative location or format for this resource. Defined by [the HTML Living Standard](https://html.spec.whatwg.org/multipage/links.html#linkTypes)&quot;), @AllowedValue(value = &quot;predecessor-version&quot;, description = &quot;This link identifies a resource containing the predecessor version in the version history. Defined by [RFC 5829](https://tools.ietf.org/html/rfc5829).&quot;), @AllowedValue(value = &quot;successor-version&quot;, description = &quot;This link identifies a resource containing the predecessor version in the version history. Defined by [RFC 5829](https://tools.ietf.org/html/rfc5829).&quot;), @AllowedValue(value = &quot;version-history&quot;, description = &quot;This link identifies a resource containing the version history of this document. Defined by [RFC 5829](https://tools.ietf.org/html/rfc5829).&quot;)})
+      allowedValues = {
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@name&quot;, values = @AllowedValue(value = &quot;type&quot;, description = &quot;Characterizes the kind of location.&quot;)),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='type']/@value&quot;, values = @AllowedValue(value = &quot;data-center&quot;, description = &quot;A location that contains computing assets. A `class` can be used to indicate the sub-type of data-center as *primary* or *alternate*.&quot;)),
+          @AllowedValues(level = IConstraint.Level.ERROR, target = &quot;prop[has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='type' and @value='data-center']/@class&quot;, values = {@AllowedValue(value = &quot;primary&quot;, description = &quot;The location is a data-center used for normal operations.&quot;), @AllowedValue(value = &quot;alternate&quot;, description = &quot;The location is a data-center used for fail-over or backup operations.&quot;)})
+      }
   )
-  public static class Revision {
+  @AssemblyConstraints(
+      hasCardinality = {
+          @HasCardinality(level = IConstraint.Level.WARNING, target = &quot;address&quot;, minOccurs = 1),
+          @HasCardinality(level = IConstraint.Level.ERROR, target = &quot;title|address|email-address|telephone-number&quot;, minOccurs = 1)
+      }
+  )
+  public static class Location {
+    @BoundFlag(
+        formalName = &quot;Location Universally Unique Identifier&quot;,
+        description = &quot;A unique ID for the location, for reference.&quot;,
+        useName = &quot;uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _uuid;
+
     /**
-     * &quot;A name given to the document revision, which may be used by a tool for display and navigation.&quot;
+     * &quot;A name given to the location, which may be used by a tool for display and navigation.&quot;
      */
     @BoundField(
-        formalName = &quot;Document Title&quot;,
-        description = &quot;A name given to the document revision, which may be used by a tool for display and navigation.&quot;,
+        formalName = &quot;Location Title&quot;,
+        description = &quot;A name given to the location, which may be used by a tool for display and navigation.&quot;,
         useName = &quot;title&quot;
     )
     @BoundFieldValue(
@@ -1707,40 +1609,61 @@ public class Metadata extends AbstractMetadata {
     )
     private MarkupLine _title;
 
+    @BoundAssembly(
+        formalName = &quot;Address&quot;,
+        description = &quot;A postal address for the location.&quot;,
+        useName = &quot;address&quot;,
+        remarks = &quot;The physical address of the location, which will provided for physical locations. Virtual locations can omit this data item.&quot;
+    )
+    private Address _address;
+
     @BoundField(
-        formalName = &quot;Publication Timestamp&quot;,
-        description = &quot;The date and time the document was last made available.&quot;,
-        useName = &quot;published&quot;
+        formalName = &quot;Email Address&quot;,
+        description = &quot;An email address as defined by [RFC 5322 Section 3.4.1](https://tools.ietf.org/html/rfc5322#section-3.4.1).&quot;,
+        useName = &quot;email-address&quot;,
+        maxOccurs = -1,
+        remarks = &quot;A contact email associated with the location.&quot;
     )
     @BoundFieldValue(
-        typeAdapter = DateTimeWithTZAdapter.class
+        typeAdapter = EmailAddressAdapter.class
     )
-    private ZonedDateTime _published;
+    @GroupAs(
+        name = &quot;email-addresses&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;String&gt; _emailAddresses;
 
     @BoundField(
-        formalName = &quot;Last Modified Timestamp&quot;,
-        description = &quot;The date and time the document was last stored for later retrieval.&quot;,
-        useName = &quot;last-modified&quot;
+        formalName = &quot;Telephone Number&quot;,
+        description = &quot;A telephone service number as defined by [ITU-T E.164](https://www.itu.int/rec/T-REC-E.164-201011-I/en).&quot;,
+        useName = &quot;telephone-number&quot;,
+        maxOccurs = -1,
+        remarks = &quot;A phone number used to contact the location.&quot;
+    )
+    @GroupAs(
+        name = &quot;telephone-numbers&quot;,
+        inJson = JsonGroupAsBehavior.LIST
+    )
+    private List&lt;TelephoneNumber&gt; _telephoneNumbers;
+
+    /**
+     * &quot;The uniform resource locator (URL) for a web site or other resource associated with the location.&quot;
+     */
+    @BoundField(
+        formalName = &quot;Location URL&quot;,
+        description = &quot;The uniform resource locator (URL) for a web site or other resource associated with the location.&quot;,
+        useName = &quot;url&quot;,
+        maxOccurs = -1,
+        remarks = &quot;This data field is deprecated in favor of using a link with an appropriate relationship.&quot;
     )
     @BoundFieldValue(
-        typeAdapter = DateTimeWithTZAdapter.class
+        typeAdapter = UriAdapter.class
     )
-    private ZonedDateTime _lastModified;
-
-    @BoundField(
-        formalName = &quot;Document Version&quot;,
-        description = &quot;Used to distinguish a specific revision of an OSCAL document from other previous and future versions.&quot;,
-        useName = &quot;version&quot;,
-        minOccurs = 1
+    @GroupAs(
+        name = &quot;urls&quot;,
+        inJson = JsonGroupAsBehavior.LIST
     )
-    private String _version;
-
-    @BoundField(
-        formalName = &quot;OSCAL Version&quot;,
-        description = &quot;The OSCAL model version the document was authored against and will conform to as valid.&quot;,
-        useName = &quot;oscal-version&quot;
-    )
-    private String _oscalVersion;
+    private List&lt;URI&gt; _urls;
 
     @BoundAssembly(
         formalName = &quot;Property&quot;,
@@ -1776,48 +1699,125 @@ public class Metadata extends AbstractMetadata {
     )
     private MarkupMultiline _remarks;
 
-<span class="nc" id="L1779">    public Revision() {</span>
-<span class="nc" id="L1780">    }</span>
+<span class="nc" id="L1702">    public Location() {</span>
+<span class="nc" id="L1703">    }</span>
+
+    public UUID getUuid() {
+<span class="nc" id="L1706">      return _uuid;</span>
+    }
+
+    public void setUuid(UUID value) {
+<span class="nc" id="L1710">      _uuid = value;</span>
+<span class="nc" id="L1711">    }</span>
 
     public MarkupLine getTitle() {
-<span class="nc" id="L1783">      return _title;</span>
+<span class="nc" id="L1714">      return _title;</span>
     }
 
     public void setTitle(MarkupLine value) {
-<span class="nc" id="L1787">      _title = value;</span>
-<span class="nc" id="L1788">    }</span>
+<span class="nc" id="L1718">      _title = value;</span>
+<span class="nc" id="L1719">    }</span>
 
-    public ZonedDateTime getPublished() {
-<span class="nc" id="L1791">      return _published;</span>
+    public Address getAddress() {
+<span class="nc" id="L1722">      return _address;</span>
     }
 
-    public void setPublished(ZonedDateTime value) {
-<span class="nc" id="L1795">      _published = value;</span>
-<span class="nc" id="L1796">    }</span>
+    public void setAddress(Address value) {
+<span class="nc" id="L1726">      _address = value;</span>
+<span class="nc" id="L1727">    }</span>
 
-    public ZonedDateTime getLastModified() {
-<span class="nc" id="L1799">      return _lastModified;</span>
+    public List&lt;String&gt; getEmailAddresses() {
+<span class="nc" id="L1730">      return _emailAddresses;</span>
     }
 
-    public void setLastModified(ZonedDateTime value) {
-<span class="nc" id="L1803">      _lastModified = value;</span>
-<span class="nc" id="L1804">    }</span>
+    public void setEmailAddresses(List&lt;String&gt; value) {
+<span class="nc" id="L1734">      _emailAddresses = value;</span>
+<span class="nc" id="L1735">    }</span>
 
-    public String getVersion() {
-<span class="nc" id="L1807">      return _version;</span>
+    /**
+     * Add a new {@link String} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addEmailAddress(String item) {
+<span class="nc" id="L1743">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1744" title="All 2 branches missed.">      if (_emailAddresses == null) {</span>
+<span class="nc" id="L1745">        _emailAddresses = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L1747">      return _emailAddresses.add(value);</span>
     }
 
-    public void setVersion(String value) {
-<span class="nc" id="L1811">      _version = value;</span>
-<span class="nc" id="L1812">    }</span>
-
-    public String getOscalVersion() {
-<span class="nc" id="L1815">      return _oscalVersion;</span>
+    /**
+     * Remove the first matching {@link String} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeEmailAddress(String item) {
+<span class="nc" id="L1756">      String value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1757" title="All 2 branches missed.">      return _emailAddresses == null ? false : _emailAddresses.remove(value);</span>
     }
 
-    public void setOscalVersion(String value) {
-<span class="nc" id="L1819">      _oscalVersion = value;</span>
-<span class="nc" id="L1820">    }</span>
+    public List&lt;TelephoneNumber&gt; getTelephoneNumbers() {
+<span class="nc" id="L1761">      return _telephoneNumbers;</span>
+    }
+
+    public void setTelephoneNumbers(List&lt;TelephoneNumber&gt; value) {
+<span class="nc" id="L1765">      _telephoneNumbers = value;</span>
+<span class="nc" id="L1766">    }</span>
+
+    /**
+     * Add a new {@link TelephoneNumber} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addTelephoneNumber(TelephoneNumber item) {
+<span class="nc" id="L1774">      TelephoneNumber value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1775" title="All 2 branches missed.">      if (_telephoneNumbers == null) {</span>
+<span class="nc" id="L1776">        _telephoneNumbers = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L1778">      return _telephoneNumbers.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link TelephoneNumber} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeTelephoneNumber(TelephoneNumber item) {
+<span class="nc" id="L1787">      TelephoneNumber value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1788" title="All 2 branches missed.">      return _telephoneNumbers == null ? false : _telephoneNumbers.remove(value);</span>
+    }
+
+    public List&lt;URI&gt; getUrls() {
+<span class="nc" id="L1792">      return _urls;</span>
+    }
+
+    public void setUrls(List&lt;URI&gt; value) {
+<span class="nc" id="L1796">      _urls = value;</span>
+<span class="nc" id="L1797">    }</span>
+
+    /**
+     * Add a new {@link URI} item to the underlying collection.
+     * @param item the item to add
+     * @return {@code true}
+     */
+    public boolean addUrl(URI item) {
+<span class="nc" id="L1805">      URI value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1806" title="All 2 branches missed.">      if (_urls == null) {</span>
+<span class="nc" id="L1807">        _urls = new LinkedList&lt;&gt;();</span>
+      }
+<span class="nc" id="L1809">      return _urls.add(value);</span>
+    }
+
+    /**
+     * Remove the first matching {@link URI} item from the underlying collection.
+     * @param item the item to remove
+     * @return {@code true} if the item was removed or {@code false} otherwise
+     */
+    public boolean removeUrl(URI item) {
+<span class="nc" id="L1818">      URI value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L1819" title="All 2 branches missed.">      return _urls == null ? false : _urls.remove(value);</span>
+    }
 
     public List&lt;Property&gt; getProps() {
 <span class="nc" id="L1823">      return _props;</span>

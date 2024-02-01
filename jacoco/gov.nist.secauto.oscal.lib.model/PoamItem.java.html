@@ -431,78 +431,6 @@ public class PoamItem {
   }
 
   /**
-   * Relates the finding to a set of referenced risks that were used to determine the finding.
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Associated Risk&quot;,
-      description = &quot;Relates the finding to a set of referenced risks that were used to determine the finding.&quot;,
-      name = &quot;associated-risk&quot;,
-      metaschema = OscalPoamMetaschema.class
-  )
-  public static class AssociatedRisk {
-    @BoundFlag(
-        formalName = &quot;Risk Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks.&quot;,
-        useName = &quot;risk-uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _riskUuid;
-
-<span class="nc" id="L452">    public AssociatedRisk() {</span>
-<span class="nc" id="L453">    }</span>
-
-    public UUID getRiskUuid() {
-<span class="nc" id="L456">      return _riskUuid;</span>
-    }
-
-    public void setRiskUuid(UUID value) {
-<span class="nc" id="L460">      _riskUuid = value;</span>
-<span class="nc" id="L461">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc" id="L465">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
-   * Relates the poam-item to referenced finding(s).
-   */
-  @MetaschemaAssembly(
-      formalName = &quot;Related Finding&quot;,
-      description = &quot;Relates the poam-item to referenced finding(s).&quot;,
-      name = &quot;related-finding&quot;,
-      metaschema = OscalPoamMetaschema.class
-  )
-  public static class RelatedFinding {
-    @BoundFlag(
-        formalName = &quot;Finding Universally Unique Identifier Reference&quot;,
-        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings.&quot;,
-        useName = &quot;finding-uuid&quot;,
-        required = true,
-        typeAdapter = UuidAdapter.class
-    )
-    private UUID _findingUuid;
-
-<span class="nc" id="L488">    public RelatedFinding() {</span>
-<span class="nc" id="L489">    }</span>
-
-    public UUID getFindingUuid() {
-<span class="nc" id="L492">      return _findingUuid;</span>
-    }
-
-    public void setFindingUuid(UUID value) {
-<span class="nc" id="L496">      _findingUuid = value;</span>
-<span class="nc" id="L497">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc" id="L501">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
-    }
-  }
-
-  /**
    * Identifies the source of the finding, such as a tool or person.
    */
   @MetaschemaAssembly(
@@ -526,16 +454,16 @@ public class PoamItem {
     )
     private List&lt;OriginActor&gt; _actors;
 
-<span class="nc" id="L529">    public Origin() {</span>
-<span class="nc" id="L530">    }</span>
+<span class="nc" id="L457">    public Origin() {</span>
+<span class="nc" id="L458">    }</span>
 
     public List&lt;OriginActor&gt; getActors() {
-<span class="nc" id="L533">      return _actors;</span>
+<span class="nc" id="L461">      return _actors;</span>
     }
 
     public void setActors(List&lt;OriginActor&gt; value) {
-<span class="nc" id="L537">      _actors = value;</span>
-<span class="nc" id="L538">    }</span>
+<span class="nc" id="L465">      _actors = value;</span>
+<span class="nc" id="L466">    }</span>
 
     /**
      * Add a new {@link OriginActor} item to the underlying collection.
@@ -543,11 +471,11 @@ public class PoamItem {
      * @return {@code true}
      */
     public boolean addActor(OriginActor item) {
-<span class="nc" id="L546">      OriginActor value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L547" title="All 2 branches missed.">      if (_actors == null) {</span>
-<span class="nc" id="L548">        _actors = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L474">      OriginActor value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L475" title="All 2 branches missed.">      if (_actors == null) {</span>
+<span class="nc" id="L476">        _actors = new LinkedList&lt;&gt;();</span>
       }
-<span class="nc" id="L550">      return _actors.add(value);</span>
+<span class="nc" id="L478">      return _actors.add(value);</span>
     }
 
     /**
@@ -556,9 +484,81 @@ public class PoamItem {
      * @return {@code true} if the item was removed or {@code false} otherwise
      */
     public boolean removeActor(OriginActor item) {
-<span class="nc" id="L559">      OriginActor value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
-<span class="nc bnc" id="L560" title="All 2 branches missed.">      return _actors == null ? false : _actors.remove(value);</span>
+<span class="nc" id="L487">      OriginActor value = ObjectUtils.requireNonNull(item,&quot;item cannot be null&quot;);</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">      return _actors == null ? false : _actors.remove(value);</span>
     }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L493">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
+   * Relates the finding to a set of referenced risks that were used to determine the finding.
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Associated Risk&quot;,
+      description = &quot;Relates the finding to a set of referenced risks that were used to determine the finding.&quot;,
+      name = &quot;associated-risk&quot;,
+      metaschema = OscalPoamMetaschema.class
+  )
+  public static class AssociatedRisk {
+    @BoundFlag(
+        formalName = &quot;Risk Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a risk defined in the list of risks.&quot;,
+        useName = &quot;risk-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _riskUuid;
+
+<span class="nc" id="L516">    public AssociatedRisk() {</span>
+<span class="nc" id="L517">    }</span>
+
+    public UUID getRiskUuid() {
+<span class="nc" id="L520">      return _riskUuid;</span>
+    }
+
+    public void setRiskUuid(UUID value) {
+<span class="nc" id="L524">      _riskUuid = value;</span>
+<span class="nc" id="L525">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L529">      return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</span>
+    }
+  }
+
+  /**
+   * Relates the poam-item to referenced finding(s).
+   */
+  @MetaschemaAssembly(
+      formalName = &quot;Related Finding&quot;,
+      description = &quot;Relates the poam-item to referenced finding(s).&quot;,
+      name = &quot;related-finding&quot;,
+      metaschema = OscalPoamMetaschema.class
+  )
+  public static class RelatedFinding {
+    @BoundFlag(
+        formalName = &quot;Finding Universally Unique Identifier Reference&quot;,
+        description = &quot;A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented) identifier reference to a finding defined in the list of findings.&quot;,
+        useName = &quot;finding-uuid&quot;,
+        required = true,
+        typeAdapter = UuidAdapter.class
+    )
+    private UUID _findingUuid;
+
+<span class="nc" id="L552">    public RelatedFinding() {</span>
+<span class="nc" id="L553">    }</span>
+
+    public UUID getFindingUuid() {
+<span class="nc" id="L556">      return _findingUuid;</span>
+    }
+
+    public void setFindingUuid(UUID value) {
+<span class="nc" id="L560">      _findingUuid = value;</span>
+<span class="nc" id="L561">    }</span>
 
     @Override
     public String toString() {

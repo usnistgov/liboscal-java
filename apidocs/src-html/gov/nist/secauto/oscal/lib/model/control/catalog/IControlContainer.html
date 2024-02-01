@@ -57,41 +57,44 @@
 <span class="sourceLineNo">048</span><a id="line.48">  boolean addControl(@NonNull Control item);</a>
 <span class="sourceLineNo">049</span><a id="line.49"></a>
 <span class="sourceLineNo">050</span><a id="line.50">  /**</a>
-<span class="sourceLineNo">051</span><a id="line.51">   * Remove the first matching {@link Control} item from the underlying collection.</a>
-<span class="sourceLineNo">052</span><a id="line.52">   *</a>
-<span class="sourceLineNo">053</span><a id="line.53">   * @param item</a>
-<span class="sourceLineNo">054</span><a id="line.54">   *          the item to remove</a>
-<span class="sourceLineNo">055</span><a id="line.55">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">056</span><a id="line.56">   */</a>
-<span class="sourceLineNo">057</span><a id="line.57">  boolean removeControl(@NonNull Control item);</a>
-<span class="sourceLineNo">058</span><a id="line.58"></a>
-<span class="sourceLineNo">059</span><a id="line.59">  List&lt;Parameter&gt; getParams();</a>
-<span class="sourceLineNo">060</span><a id="line.60"></a>
-<span class="sourceLineNo">061</span><a id="line.61">  /**</a>
-<span class="sourceLineNo">062</span><a id="line.62">   * Add a new {@link Parameter} item to the underlying collection.</a>
-<span class="sourceLineNo">063</span><a id="line.63">   *</a>
-<span class="sourceLineNo">064</span><a id="line.64">   * @param item</a>
-<span class="sourceLineNo">065</span><a id="line.65">   *          the item to add</a>
-<span class="sourceLineNo">066</span><a id="line.66">   * @return {@code true}</a>
-<span class="sourceLineNo">067</span><a id="line.67">   */</a>
-<span class="sourceLineNo">068</span><a id="line.68">  boolean addParam(@NonNull Parameter item);</a>
-<span class="sourceLineNo">069</span><a id="line.69"></a>
-<span class="sourceLineNo">070</span><a id="line.70">  /**</a>
-<span class="sourceLineNo">071</span><a id="line.71">   * Remove the first matching {@link Parameter} item from the underlying collection.</a>
-<span class="sourceLineNo">072</span><a id="line.72">   *</a>
-<span class="sourceLineNo">073</span><a id="line.73">   * @param item</a>
-<span class="sourceLineNo">074</span><a id="line.74">   *          the item to remove</a>
-<span class="sourceLineNo">075</span><a id="line.75">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">076</span><a id="line.76">   */</a>
-<span class="sourceLineNo">077</span><a id="line.77">  boolean removeParam(@NonNull Parameter item);</a>
-<span class="sourceLineNo">078</span><a id="line.78"></a>
-<span class="sourceLineNo">079</span><a id="line.79">  /**</a>
-<span class="sourceLineNo">080</span><a id="line.80">   * Get the parameter identifiers referenced in the object's context, but not by their child objects.</a>
-<span class="sourceLineNo">081</span><a id="line.81">   *</a>
-<span class="sourceLineNo">082</span><a id="line.82">   * @return a stream of identifiers</a>
-<span class="sourceLineNo">083</span><a id="line.83">   */</a>
-<span class="sourceLineNo">084</span><a id="line.84">  Stream&lt;String&gt; getReferencedParameterIds();</a>
-<span class="sourceLineNo">085</span><a id="line.85">}</a>
+<span class="sourceLineNo">051</span><a id="line.51">   * Remove the first matching {@link Control} item from the underlying</a>
+<span class="sourceLineNo">052</span><a id="line.52">   * collection.</a>
+<span class="sourceLineNo">053</span><a id="line.53">   *</a>
+<span class="sourceLineNo">054</span><a id="line.54">   * @param item</a>
+<span class="sourceLineNo">055</span><a id="line.55">   *          the item to remove</a>
+<span class="sourceLineNo">056</span><a id="line.56">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">057</span><a id="line.57">   */</a>
+<span class="sourceLineNo">058</span><a id="line.58">  boolean removeControl(@NonNull Control item);</a>
+<span class="sourceLineNo">059</span><a id="line.59"></a>
+<span class="sourceLineNo">060</span><a id="line.60">  List&lt;Parameter&gt; getParams();</a>
+<span class="sourceLineNo">061</span><a id="line.61"></a>
+<span class="sourceLineNo">062</span><a id="line.62">  /**</a>
+<span class="sourceLineNo">063</span><a id="line.63">   * Add a new {@link Parameter} item to the underlying collection.</a>
+<span class="sourceLineNo">064</span><a id="line.64">   *</a>
+<span class="sourceLineNo">065</span><a id="line.65">   * @param item</a>
+<span class="sourceLineNo">066</span><a id="line.66">   *          the item to add</a>
+<span class="sourceLineNo">067</span><a id="line.67">   * @return {@code true}</a>
+<span class="sourceLineNo">068</span><a id="line.68">   */</a>
+<span class="sourceLineNo">069</span><a id="line.69">  boolean addParam(@NonNull Parameter item);</a>
+<span class="sourceLineNo">070</span><a id="line.70"></a>
+<span class="sourceLineNo">071</span><a id="line.71">  /**</a>
+<span class="sourceLineNo">072</span><a id="line.72">   * Remove the first matching {@link Parameter} item from the underlying</a>
+<span class="sourceLineNo">073</span><a id="line.73">   * collection.</a>
+<span class="sourceLineNo">074</span><a id="line.74">   *</a>
+<span class="sourceLineNo">075</span><a id="line.75">   * @param item</a>
+<span class="sourceLineNo">076</span><a id="line.76">   *          the item to remove</a>
+<span class="sourceLineNo">077</span><a id="line.77">   * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">078</span><a id="line.78">   */</a>
+<span class="sourceLineNo">079</span><a id="line.79">  boolean removeParam(@NonNull Parameter item);</a>
+<span class="sourceLineNo">080</span><a id="line.80"></a>
+<span class="sourceLineNo">081</span><a id="line.81">  /**</a>
+<span class="sourceLineNo">082</span><a id="line.82">   * Get the parameter identifiers referenced in the object's context, but not by</a>
+<span class="sourceLineNo">083</span><a id="line.83">   * their child objects.</a>
+<span class="sourceLineNo">084</span><a id="line.84">   *</a>
+<span class="sourceLineNo">085</span><a id="line.85">   * @return a stream of identifiers</a>
+<span class="sourceLineNo">086</span><a id="line.86">   */</a>
+<span class="sourceLineNo">087</span><a id="line.87">  Stream&lt;String&gt; getReferencedParameterIds();</a>
+<span class="sourceLineNo">088</span><a id="line.88">}</a>
 
 
 

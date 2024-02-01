@@ -45,130 +45,134 @@
 <span class="sourceLineNo">036</span><a id="line.36"> * Used to visit a catalog containing groups and controls.</a>
 <span class="sourceLineNo">037</span><a id="line.37"> *</a>
 <span class="sourceLineNo">038</span><a id="line.38"> * @param &lt;T&gt;</a>
-<span class="sourceLineNo">039</span><a id="line.39"> *          the type of the state object used to pass calling context information</a>
-<span class="sourceLineNo">040</span><a id="line.40"> * @param &lt;R&gt;</a>
-<span class="sourceLineNo">041</span><a id="line.41"> *          the type of the result for visiting a collection of groups and/or controls</a>
-<span class="sourceLineNo">042</span><a id="line.42"> */</a>
-<span class="sourceLineNo">043</span><a id="line.43">public abstract class AbstractCatalogVisitor&lt;T, R&gt; implements ICatalogVisitor&lt;T, R&gt; {</a>
-<span class="sourceLineNo">044</span><a id="line.44"></a>
-<span class="sourceLineNo">045</span><a id="line.45">  protected abstract R newDefaultResult(T state);</a>
+<span class="sourceLineNo">039</span><a id="line.39"> *          the type of the state object used to pass calling context</a>
+<span class="sourceLineNo">040</span><a id="line.40"> *          information</a>
+<span class="sourceLineNo">041</span><a id="line.41"> * @param &lt;R&gt;</a>
+<span class="sourceLineNo">042</span><a id="line.42"> *          the type of the result for visiting a collection of groups and/or</a>
+<span class="sourceLineNo">043</span><a id="line.43"> *          controls</a>
+<span class="sourceLineNo">044</span><a id="line.44"> */</a>
+<span class="sourceLineNo">045</span><a id="line.45">public abstract class AbstractCatalogVisitor&lt;T, R&gt; implements ICatalogVisitor&lt;T, R&gt; {</a>
 <span class="sourceLineNo">046</span><a id="line.46"></a>
-<span class="sourceLineNo">047</span><a id="line.47">  protected abstract R aggregateResults(R first, R second, T state);</a>
+<span class="sourceLineNo">047</span><a id="line.47">  protected abstract R newDefaultResult(T state);</a>
 <span class="sourceLineNo">048</span><a id="line.48"></a>
-<span class="sourceLineNo">049</span><a id="line.49">  protected R visitCatalog(@NonNull IDocumentNodeItem catalogDocument, T state) {</a>
-<span class="sourceLineNo">050</span><a id="line.50">    return visitGroupContainer(catalogDocument.getRootAssemblyNodeItem(), newDefaultResult(state), state);</a>
-<span class="sourceLineNo">051</span><a id="line.51">  }</a>
-<span class="sourceLineNo">052</span><a id="line.52"></a>
-<span class="sourceLineNo">053</span><a id="line.53">  /**</a>
-<span class="sourceLineNo">054</span><a id="line.54">   * Visit the child groups and controls (in that order) of a given catalog or group container.</a>
-<span class="sourceLineNo">055</span><a id="line.55">   *</a>
-<span class="sourceLineNo">056</span><a id="line.56">   * @param catalogOrGroup</a>
-<span class="sourceLineNo">057</span><a id="line.57">   *          the catalog or group Metapath item currently being visited</a>
-<span class="sourceLineNo">058</span><a id="line.58">   * @param initialResult</a>
-<span class="sourceLineNo">059</span><a id="line.59">   *          the initial result value to use when aggregating child results</a>
-<span class="sourceLineNo">060</span><a id="line.60">   * @param state</a>
-<span class="sourceLineNo">061</span><a id="line.61">   *          the current visitor state</a>
-<span class="sourceLineNo">062</span><a id="line.62">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">063</span><a id="line.63">   */</a>
-<span class="sourceLineNo">064</span><a id="line.64">  protected R visitGroupContainer(</a>
-<span class="sourceLineNo">065</span><a id="line.65">      @NonNull IRequiredValueModelNodeItem catalogOrGroup,</a>
-<span class="sourceLineNo">066</span><a id="line.66">      R initialResult,</a>
-<span class="sourceLineNo">067</span><a id="line.67">      T state) {</a>
-<span class="sourceLineNo">068</span><a id="line.68">    R result = catalogOrGroup.getModelItemsByName("group").stream()</a>
-<span class="sourceLineNo">069</span><a id="line.69">        .map(groupItem -&gt; {</a>
-<span class="sourceLineNo">070</span><a id="line.70">          return visitGroupItem(ObjectUtils.requireNonNull(groupItem), state);</a>
-<span class="sourceLineNo">071</span><a id="line.71">        })</a>
-<span class="sourceLineNo">072</span><a id="line.72">        .reduce(initialResult, (first, second) -&gt; aggregateResults(first, second, state));</a>
-<span class="sourceLineNo">073</span><a id="line.73">    return visitControlContainer(catalogOrGroup, result, state);</a>
-<span class="sourceLineNo">074</span><a id="line.74">  }</a>
-<span class="sourceLineNo">075</span><a id="line.75"></a>
-<span class="sourceLineNo">076</span><a id="line.76">  /**</a>
-<span class="sourceLineNo">077</span><a id="line.77">   * Called when visiting a group.</a>
-<span class="sourceLineNo">078</span><a id="line.78">   * &lt;p&gt;</a>
-<span class="sourceLineNo">079</span><a id="line.79">   * This method will first visit the group's children, then the group itself.</a>
-<span class="sourceLineNo">080</span><a id="line.80">   *</a>
-<span class="sourceLineNo">081</span><a id="line.81">   * @param item</a>
-<span class="sourceLineNo">082</span><a id="line.82">   *          the group Metapath item to visit</a>
-<span class="sourceLineNo">083</span><a id="line.83">   * @param state</a>
-<span class="sourceLineNo">084</span><a id="line.84">   *          the current visitor state</a>
-<span class="sourceLineNo">085</span><a id="line.85">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">086</span><a id="line.86">   */</a>
-<span class="sourceLineNo">087</span><a id="line.87">  protected R visitGroupItem(@NonNull IRequiredValueModelNodeItem item, T state) {</a>
-<span class="sourceLineNo">088</span><a id="line.88">    R childResult = visitGroupContainer(item, newDefaultResult(state), state);</a>
-<span class="sourceLineNo">089</span><a id="line.89">    return visitGroupInternal(item, childResult, state);</a>
-<span class="sourceLineNo">090</span><a id="line.90">  }</a>
-<span class="sourceLineNo">091</span><a id="line.91"></a>
-<span class="sourceLineNo">092</span><a id="line.92">  /**</a>
-<span class="sourceLineNo">093</span><a id="line.93">   * Called when visiting a group after visiting it's children.</a>
-<span class="sourceLineNo">094</span><a id="line.94">   *</a>
-<span class="sourceLineNo">095</span><a id="line.95">   * @param item</a>
-<span class="sourceLineNo">096</span><a id="line.96">   *          the group Metapath item currently being visited</a>
-<span class="sourceLineNo">097</span><a id="line.97">   * @param childResult</a>
-<span class="sourceLineNo">098</span><a id="line.98">   *          the result of visiting the group's children</a>
-<span class="sourceLineNo">099</span><a id="line.99">   * @param state</a>
-<span class="sourceLineNo">100</span><a id="line.100">   *          the current visitor state</a>
-<span class="sourceLineNo">101</span><a id="line.101">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">102</span><a id="line.102">   */</a>
-<span class="sourceLineNo">103</span><a id="line.103">  protected R visitGroupInternal(</a>
-<span class="sourceLineNo">104</span><a id="line.104">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">105</span><a id="line.105">      R childResult,</a>
-<span class="sourceLineNo">106</span><a id="line.106">      T state) {</a>
-<span class="sourceLineNo">107</span><a id="line.107">    return visitGroup(item, childResult, state);</a>
-<span class="sourceLineNo">108</span><a id="line.108">  }</a>
-<span class="sourceLineNo">109</span><a id="line.109"></a>
-<span class="sourceLineNo">110</span><a id="line.110">  /**</a>
-<span class="sourceLineNo">111</span><a id="line.111">   * Visit the child controls (in that order) of a given catalog, group, or control container.</a>
-<span class="sourceLineNo">112</span><a id="line.112">   *</a>
-<span class="sourceLineNo">113</span><a id="line.113">   * @param catalogOrGroupOrControl</a>
-<span class="sourceLineNo">114</span><a id="line.114">   *          the catalog, group, or control Metapath item currently being visited</a>
-<span class="sourceLineNo">115</span><a id="line.115">   * @param initialResult</a>
-<span class="sourceLineNo">116</span><a id="line.116">   *          the initial result value to use when aggregating child results</a>
-<span class="sourceLineNo">117</span><a id="line.117">   * @param state</a>
-<span class="sourceLineNo">118</span><a id="line.118">   *          the current visitor state</a>
-<span class="sourceLineNo">119</span><a id="line.119">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">120</span><a id="line.120">   */</a>
-<span class="sourceLineNo">121</span><a id="line.121">  protected R visitControlContainer(</a>
-<span class="sourceLineNo">122</span><a id="line.122">      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,</a>
-<span class="sourceLineNo">123</span><a id="line.123">      R initialResult,</a>
-<span class="sourceLineNo">124</span><a id="line.124">      T state) {</a>
-<span class="sourceLineNo">125</span><a id="line.125">    return catalogOrGroupOrControl.getModelItemsByName("control").stream()</a>
-<span class="sourceLineNo">126</span><a id="line.126">        .map(controlItem -&gt; {</a>
-<span class="sourceLineNo">127</span><a id="line.127">          return visitControlItem(ObjectUtils.requireNonNull(controlItem), state);</a>
-<span class="sourceLineNo">128</span><a id="line.128">        })</a>
-<span class="sourceLineNo">129</span><a id="line.129">        .reduce(initialResult, (first, second) -&gt; aggregateResults(first, second, state));</a>
-<span class="sourceLineNo">130</span><a id="line.130">  }</a>
-<span class="sourceLineNo">131</span><a id="line.131"></a>
-<span class="sourceLineNo">132</span><a id="line.132">  /**</a>
-<span class="sourceLineNo">133</span><a id="line.133">   * Called when visiting a control.</a>
-<span class="sourceLineNo">134</span><a id="line.134">   * &lt;p&gt;</a>
-<span class="sourceLineNo">135</span><a id="line.135">   * This method will first visit the control's children, then the control itself.</a>
-<span class="sourceLineNo">136</span><a id="line.136">   *</a>
-<span class="sourceLineNo">137</span><a id="line.137">   * @param item</a>
-<span class="sourceLineNo">138</span><a id="line.138">   *          the group Metapath item to visit</a>
-<span class="sourceLineNo">139</span><a id="line.139">   * @param state</a>
-<span class="sourceLineNo">140</span><a id="line.140">   *          the current visitor state</a>
-<span class="sourceLineNo">141</span><a id="line.141">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">142</span><a id="line.142">   */</a>
-<span class="sourceLineNo">143</span><a id="line.143">  protected R visitControlItem(@NonNull IRequiredValueModelNodeItem item, T state) {</a>
-<span class="sourceLineNo">144</span><a id="line.144">    R childResult = visitControlContainer(item, newDefaultResult(state), state);</a>
-<span class="sourceLineNo">145</span><a id="line.145">    return visitControlInternal(item, childResult, state);</a>
-<span class="sourceLineNo">146</span><a id="line.146">  }</a>
-<span class="sourceLineNo">147</span><a id="line.147"></a>
-<span class="sourceLineNo">148</span><a id="line.148">  /**</a>
-<span class="sourceLineNo">149</span><a id="line.149">   * Called when visiting a control after visiting it's children.</a>
-<span class="sourceLineNo">150</span><a id="line.150">   *</a>
-<span class="sourceLineNo">151</span><a id="line.151">   * @param controlItem</a>
-<span class="sourceLineNo">152</span><a id="line.152">   *          the Metapath item for the control currently being visited</a>
-<span class="sourceLineNo">153</span><a id="line.153">   * @param childResult</a>
-<span class="sourceLineNo">154</span><a id="line.154">   *          the result of visiting the control's children</a>
-<span class="sourceLineNo">155</span><a id="line.155">   * @param state</a>
-<span class="sourceLineNo">156</span><a id="line.156">   *          the calling context information</a>
-<span class="sourceLineNo">157</span><a id="line.157">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">158</span><a id="line.158">   */</a>
-<span class="sourceLineNo">159</span><a id="line.159">  protected R visitControlInternal(@NonNull IRequiredValueModelNodeItem controlItem, R childResult, T state) {</a>
-<span class="sourceLineNo">160</span><a id="line.160">    return visitControl(controlItem, childResult, state);</a>
-<span class="sourceLineNo">161</span><a id="line.161">  }</a>
-<span class="sourceLineNo">162</span><a id="line.162">}</a>
+<span class="sourceLineNo">049</span><a id="line.49">  protected abstract R aggregateResults(R first, R second, T state);</a>
+<span class="sourceLineNo">050</span><a id="line.50"></a>
+<span class="sourceLineNo">051</span><a id="line.51">  protected R visitCatalog(@NonNull IDocumentNodeItem catalogDocument, T state) {</a>
+<span class="sourceLineNo">052</span><a id="line.52">    return visitGroupContainer(catalogDocument.getRootAssemblyNodeItem(), newDefaultResult(state), state);</a>
+<span class="sourceLineNo">053</span><a id="line.53">  }</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">  /**</a>
+<span class="sourceLineNo">056</span><a id="line.56">   * Visit the child groups and controls (in that order) of a given catalog or</a>
+<span class="sourceLineNo">057</span><a id="line.57">   * group container.</a>
+<span class="sourceLineNo">058</span><a id="line.58">   *</a>
+<span class="sourceLineNo">059</span><a id="line.59">   * @param catalogOrGroup</a>
+<span class="sourceLineNo">060</span><a id="line.60">   *          the catalog or group Metapath item currently being visited</a>
+<span class="sourceLineNo">061</span><a id="line.61">   * @param initialResult</a>
+<span class="sourceLineNo">062</span><a id="line.62">   *          the initial result value to use when aggregating child results</a>
+<span class="sourceLineNo">063</span><a id="line.63">   * @param state</a>
+<span class="sourceLineNo">064</span><a id="line.64">   *          the current visitor state</a>
+<span class="sourceLineNo">065</span><a id="line.65">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">066</span><a id="line.66">   */</a>
+<span class="sourceLineNo">067</span><a id="line.67">  protected R visitGroupContainer(</a>
+<span class="sourceLineNo">068</span><a id="line.68">      @NonNull IRequiredValueModelNodeItem catalogOrGroup,</a>
+<span class="sourceLineNo">069</span><a id="line.69">      R initialResult,</a>
+<span class="sourceLineNo">070</span><a id="line.70">      T state) {</a>
+<span class="sourceLineNo">071</span><a id="line.71">    R result = catalogOrGroup.getModelItemsByName("group").stream()</a>
+<span class="sourceLineNo">072</span><a id="line.72">        .map(groupItem -&gt; {</a>
+<span class="sourceLineNo">073</span><a id="line.73">          return visitGroupItem(ObjectUtils.requireNonNull(groupItem), state);</a>
+<span class="sourceLineNo">074</span><a id="line.74">        })</a>
+<span class="sourceLineNo">075</span><a id="line.75">        .reduce(initialResult, (first, second) -&gt; aggregateResults(first, second, state));</a>
+<span class="sourceLineNo">076</span><a id="line.76">    return visitControlContainer(catalogOrGroup, result, state);</a>
+<span class="sourceLineNo">077</span><a id="line.77">  }</a>
+<span class="sourceLineNo">078</span><a id="line.78"></a>
+<span class="sourceLineNo">079</span><a id="line.79">  /**</a>
+<span class="sourceLineNo">080</span><a id="line.80">   * Called when visiting a group.</a>
+<span class="sourceLineNo">081</span><a id="line.81">   * &lt;p&gt;</a>
+<span class="sourceLineNo">082</span><a id="line.82">   * This method will first visit the group's children, then the group itself.</a>
+<span class="sourceLineNo">083</span><a id="line.83">   *</a>
+<span class="sourceLineNo">084</span><a id="line.84">   * @param item</a>
+<span class="sourceLineNo">085</span><a id="line.85">   *          the group Metapath item to visit</a>
+<span class="sourceLineNo">086</span><a id="line.86">   * @param state</a>
+<span class="sourceLineNo">087</span><a id="line.87">   *          the current visitor state</a>
+<span class="sourceLineNo">088</span><a id="line.88">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">089</span><a id="line.89">   */</a>
+<span class="sourceLineNo">090</span><a id="line.90">  protected R visitGroupItem(@NonNull IRequiredValueModelNodeItem item, T state) {</a>
+<span class="sourceLineNo">091</span><a id="line.91">    R childResult = visitGroupContainer(item, newDefaultResult(state), state);</a>
+<span class="sourceLineNo">092</span><a id="line.92">    return visitGroupInternal(item, childResult, state);</a>
+<span class="sourceLineNo">093</span><a id="line.93">  }</a>
+<span class="sourceLineNo">094</span><a id="line.94"></a>
+<span class="sourceLineNo">095</span><a id="line.95">  /**</a>
+<span class="sourceLineNo">096</span><a id="line.96">   * Called when visiting a group after visiting it's children.</a>
+<span class="sourceLineNo">097</span><a id="line.97">   *</a>
+<span class="sourceLineNo">098</span><a id="line.98">   * @param item</a>
+<span class="sourceLineNo">099</span><a id="line.99">   *          the group Metapath item currently being visited</a>
+<span class="sourceLineNo">100</span><a id="line.100">   * @param childResult</a>
+<span class="sourceLineNo">101</span><a id="line.101">   *          the result of visiting the group's children</a>
+<span class="sourceLineNo">102</span><a id="line.102">   * @param state</a>
+<span class="sourceLineNo">103</span><a id="line.103">   *          the current visitor state</a>
+<span class="sourceLineNo">104</span><a id="line.104">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">105</span><a id="line.105">   */</a>
+<span class="sourceLineNo">106</span><a id="line.106">  protected R visitGroupInternal(</a>
+<span class="sourceLineNo">107</span><a id="line.107">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">108</span><a id="line.108">      R childResult,</a>
+<span class="sourceLineNo">109</span><a id="line.109">      T state) {</a>
+<span class="sourceLineNo">110</span><a id="line.110">    return visitGroup(item, childResult, state);</a>
+<span class="sourceLineNo">111</span><a id="line.111">  }</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">  /**</a>
+<span class="sourceLineNo">114</span><a id="line.114">   * Visit the child controls (in that order) of a given catalog, group, or</a>
+<span class="sourceLineNo">115</span><a id="line.115">   * control container.</a>
+<span class="sourceLineNo">116</span><a id="line.116">   *</a>
+<span class="sourceLineNo">117</span><a id="line.117">   * @param catalogOrGroupOrControl</a>
+<span class="sourceLineNo">118</span><a id="line.118">   *          the catalog, group, or control Metapath item currently being visited</a>
+<span class="sourceLineNo">119</span><a id="line.119">   * @param initialResult</a>
+<span class="sourceLineNo">120</span><a id="line.120">   *          the initial result value to use when aggregating child results</a>
+<span class="sourceLineNo">121</span><a id="line.121">   * @param state</a>
+<span class="sourceLineNo">122</span><a id="line.122">   *          the current visitor state</a>
+<span class="sourceLineNo">123</span><a id="line.123">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">124</span><a id="line.124">   */</a>
+<span class="sourceLineNo">125</span><a id="line.125">  protected R visitControlContainer(</a>
+<span class="sourceLineNo">126</span><a id="line.126">      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,</a>
+<span class="sourceLineNo">127</span><a id="line.127">      R initialResult,</a>
+<span class="sourceLineNo">128</span><a id="line.128">      T state) {</a>
+<span class="sourceLineNo">129</span><a id="line.129">    return catalogOrGroupOrControl.getModelItemsByName("control").stream()</a>
+<span class="sourceLineNo">130</span><a id="line.130">        .map(controlItem -&gt; {</a>
+<span class="sourceLineNo">131</span><a id="line.131">          return visitControlItem(ObjectUtils.requireNonNull(controlItem), state);</a>
+<span class="sourceLineNo">132</span><a id="line.132">        })</a>
+<span class="sourceLineNo">133</span><a id="line.133">        .reduce(initialResult, (first, second) -&gt; aggregateResults(first, second, state));</a>
+<span class="sourceLineNo">134</span><a id="line.134">  }</a>
+<span class="sourceLineNo">135</span><a id="line.135"></a>
+<span class="sourceLineNo">136</span><a id="line.136">  /**</a>
+<span class="sourceLineNo">137</span><a id="line.137">   * Called when visiting a control.</a>
+<span class="sourceLineNo">138</span><a id="line.138">   * &lt;p&gt;</a>
+<span class="sourceLineNo">139</span><a id="line.139">   * This method will first visit the control's children, then the control itself.</a>
+<span class="sourceLineNo">140</span><a id="line.140">   *</a>
+<span class="sourceLineNo">141</span><a id="line.141">   * @param item</a>
+<span class="sourceLineNo">142</span><a id="line.142">   *          the group Metapath item to visit</a>
+<span class="sourceLineNo">143</span><a id="line.143">   * @param state</a>
+<span class="sourceLineNo">144</span><a id="line.144">   *          the current visitor state</a>
+<span class="sourceLineNo">145</span><a id="line.145">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">146</span><a id="line.146">   */</a>
+<span class="sourceLineNo">147</span><a id="line.147">  protected R visitControlItem(@NonNull IRequiredValueModelNodeItem item, T state) {</a>
+<span class="sourceLineNo">148</span><a id="line.148">    R childResult = visitControlContainer(item, newDefaultResult(state), state);</a>
+<span class="sourceLineNo">149</span><a id="line.149">    return visitControlInternal(item, childResult, state);</a>
+<span class="sourceLineNo">150</span><a id="line.150">  }</a>
+<span class="sourceLineNo">151</span><a id="line.151"></a>
+<span class="sourceLineNo">152</span><a id="line.152">  /**</a>
+<span class="sourceLineNo">153</span><a id="line.153">   * Called when visiting a control after visiting it's children.</a>
+<span class="sourceLineNo">154</span><a id="line.154">   *</a>
+<span class="sourceLineNo">155</span><a id="line.155">   * @param controlItem</a>
+<span class="sourceLineNo">156</span><a id="line.156">   *          the Metapath item for the control currently being visited</a>
+<span class="sourceLineNo">157</span><a id="line.157">   * @param childResult</a>
+<span class="sourceLineNo">158</span><a id="line.158">   *          the result of visiting the control's children</a>
+<span class="sourceLineNo">159</span><a id="line.159">   * @param state</a>
+<span class="sourceLineNo">160</span><a id="line.160">   *          the calling context information</a>
+<span class="sourceLineNo">161</span><a id="line.161">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">162</span><a id="line.162">   */</a>
+<span class="sourceLineNo">163</span><a id="line.163">  protected R visitControlInternal(@NonNull IRequiredValueModelNodeItem controlItem, R childResult, T state) {</a>
+<span class="sourceLineNo">164</span><a id="line.164">    return visitControl(controlItem, childResult, state);</a>
+<span class="sourceLineNo">165</span><a id="line.165">  }</a>
+<span class="sourceLineNo">166</span><a id="line.166">}</a>
 
 
 

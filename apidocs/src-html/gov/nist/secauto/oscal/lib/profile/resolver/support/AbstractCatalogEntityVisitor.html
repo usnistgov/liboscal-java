@@ -51,308 +51,316 @@
 <span class="sourceLineNo">042</span><a id="line.42">/**</a>
 <span class="sourceLineNo">043</span><a id="line.43"> * Visits a catalog document and its children as designated.</a>
 <span class="sourceLineNo">044</span><a id="line.44"> * &lt;p&gt;</a>
-<span class="sourceLineNo">045</span><a id="line.45"> * This implementation is stateless. The {@code T} parameter can be used to convey state as needed.</a>
-<span class="sourceLineNo">046</span><a id="line.46"> *</a>
-<span class="sourceLineNo">047</span><a id="line.47"> * @param &lt;T&gt;</a>
-<span class="sourceLineNo">048</span><a id="line.48"> *          the state type</a>
-<span class="sourceLineNo">049</span><a id="line.49"> * @param &lt;R&gt;</a>
-<span class="sourceLineNo">050</span><a id="line.50"> *          the result type</a>
-<span class="sourceLineNo">051</span><a id="line.51"> */</a>
-<span class="sourceLineNo">052</span><a id="line.52">public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;</a>
-<span class="sourceLineNo">053</span><a id="line.53">    extends AbstractCatalogVisitor&lt;T, R&gt; {</a>
-<span class="sourceLineNo">054</span><a id="line.54">  @NonNull</a>
-<span class="sourceLineNo">055</span><a id="line.55">  public static final MetapathExpression CHILD_PART_METAPATH</a>
-<span class="sourceLineNo">056</span><a id="line.56">      = MetapathExpression.compile("part|part//part");</a>
-<span class="sourceLineNo">057</span><a id="line.57">  @NonNull</a>
-<span class="sourceLineNo">058</span><a id="line.58">  private static final MetapathExpression BACK_MATTER_RESOURCES_METAPATH</a>
-<span class="sourceLineNo">059</span><a id="line.59">      = MetapathExpression.compile("back-matter/resource");</a>
-<span class="sourceLineNo">060</span><a id="line.60">  @NonNull</a>
-<span class="sourceLineNo">061</span><a id="line.61">  private static final Set&lt;IEntityItem.ItemType&gt; GROUP_CONTAINER_TYPES</a>
-<span class="sourceLineNo">062</span><a id="line.62">      = ObjectUtils.notNull(EnumSet.of(</a>
-<span class="sourceLineNo">063</span><a id="line.63">          IEntityItem.ItemType.GROUP,</a>
-<span class="sourceLineNo">064</span><a id="line.64">          IEntityItem.ItemType.CONTROL,</a>
-<span class="sourceLineNo">065</span><a id="line.65">          IEntityItem.ItemType.PARAMETER,</a>
-<span class="sourceLineNo">066</span><a id="line.66">          IEntityItem.ItemType.PART));</a>
-<span class="sourceLineNo">067</span><a id="line.67">  @NonNull</a>
-<span class="sourceLineNo">068</span><a id="line.68">  private static final Set&lt;IEntityItem.ItemType&gt; CONTROL_CONTAINER_TYPES</a>
-<span class="sourceLineNo">069</span><a id="line.69">      = ObjectUtils.notNull(EnumSet.of(</a>
-<span class="sourceLineNo">070</span><a id="line.70">          IEntityItem.ItemType.CONTROL,</a>
-<span class="sourceLineNo">071</span><a id="line.71">          IEntityItem.ItemType.PARAMETER,</a>
-<span class="sourceLineNo">072</span><a id="line.72">          IEntityItem.ItemType.PART));</a>
-<span class="sourceLineNo">073</span><a id="line.73">  @NonNull</a>
-<span class="sourceLineNo">074</span><a id="line.74">  private final Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit;</a>
-<span class="sourceLineNo">075</span><a id="line.75"></a>
-<span class="sourceLineNo">076</span><a id="line.76">  /**</a>
-<span class="sourceLineNo">077</span><a id="line.77">   * Create a new visitor that will visit the item types identified by {@code itemTypesToVisit}.</a>
-<span class="sourceLineNo">078</span><a id="line.78">   *</a>
-<span class="sourceLineNo">079</span><a id="line.79">   * @param itemTypesToVisit</a>
-<span class="sourceLineNo">080</span><a id="line.80">   *          the item type the visitor will visit</a>
-<span class="sourceLineNo">081</span><a id="line.81">   */</a>
-<span class="sourceLineNo">082</span><a id="line.82">  public AbstractCatalogEntityVisitor(@NonNull Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit) {</a>
-<span class="sourceLineNo">083</span><a id="line.83">    this.itemTypesToVisit = CollectionUtil.unmodifiableSet(itemTypesToVisit);</a>
-<span class="sourceLineNo">084</span><a id="line.84">  }</a>
-<span class="sourceLineNo">085</span><a id="line.85"></a>
-<span class="sourceLineNo">086</span><a id="line.86">  public Set&lt;IEntityItem.ItemType&gt; getItemTypesToVisit() {</a>
-<span class="sourceLineNo">087</span><a id="line.87">    return CollectionUtil.unmodifiableSet(itemTypesToVisit);</a>
-<span class="sourceLineNo">088</span><a id="line.88">  }</a>
-<span class="sourceLineNo">089</span><a id="line.89"></a>
-<span class="sourceLineNo">090</span><a id="line.90">  protected boolean isVisitedItemType(@NonNull IEntityItem.ItemType type) {</a>
-<span class="sourceLineNo">091</span><a id="line.91">    return itemTypesToVisit.contains(type);</a>
-<span class="sourceLineNo">092</span><a id="line.92">  }</a>
-<span class="sourceLineNo">093</span><a id="line.93"></a>
-<span class="sourceLineNo">094</span><a id="line.94">  @Override</a>
-<span class="sourceLineNo">095</span><a id="line.95">  public R visitCatalog(IDocumentNodeItem catalogDocument, T state) {</a>
-<span class="sourceLineNo">096</span><a id="line.96">    R result = super.visitCatalog(catalogDocument, state);</a>
-<span class="sourceLineNo">097</span><a id="line.97"></a>
-<span class="sourceLineNo">098</span><a id="line.98">    IRootAssemblyNodeItem root = catalogDocument.getRootAssemblyNodeItem();</a>
-<span class="sourceLineNo">099</span><a id="line.99">    visitMetadata(root, state);</a>
-<span class="sourceLineNo">100</span><a id="line.100">    visitBackMatter(root, state);</a>
-<span class="sourceLineNo">101</span><a id="line.101">    return result;</a>
-<span class="sourceLineNo">102</span><a id="line.102">  }</a>
-<span class="sourceLineNo">103</span><a id="line.103"></a>
-<span class="sourceLineNo">104</span><a id="line.104">  @Override</a>
-<span class="sourceLineNo">105</span><a id="line.105">  protected R visitGroupContainer(IRequiredValueModelNodeItem catalogOrGroup, R initialResult, T state) {</a>
-<span class="sourceLineNo">106</span><a id="line.106">    R retval;</a>
-<span class="sourceLineNo">107</span><a id="line.107">    if (Collections.disjoint(getItemTypesToVisit(), GROUP_CONTAINER_TYPES)) {</a>
-<span class="sourceLineNo">108</span><a id="line.108">      retval = initialResult;</a>
-<span class="sourceLineNo">109</span><a id="line.109">    } else {</a>
-<span class="sourceLineNo">110</span><a id="line.110">      retval = super.visitGroupContainer(catalogOrGroup, initialResult, state);</a>
-<span class="sourceLineNo">111</span><a id="line.111">    }</a>
-<span class="sourceLineNo">112</span><a id="line.112">    return retval;</a>
-<span class="sourceLineNo">113</span><a id="line.113">  }</a>
-<span class="sourceLineNo">114</span><a id="line.114"></a>
-<span class="sourceLineNo">115</span><a id="line.115">  @Override</a>
-<span class="sourceLineNo">116</span><a id="line.116">  protected R visitControlContainer(IRequiredValueModelNodeItem catalogOrGroupOrControl, R initialResult, T state) {</a>
-<span class="sourceLineNo">117</span><a id="line.117">    R retval;</a>
-<span class="sourceLineNo">118</span><a id="line.118">    if (Collections.disjoint(getItemTypesToVisit(), CONTROL_CONTAINER_TYPES)) {</a>
-<span class="sourceLineNo">119</span><a id="line.119">      retval = initialResult;</a>
-<span class="sourceLineNo">120</span><a id="line.120">    } else {</a>
-<span class="sourceLineNo">121</span><a id="line.121">      // first descend to all control container children</a>
-<span class="sourceLineNo">122</span><a id="line.122">      retval = super.visitControlContainer(catalogOrGroupOrControl, initialResult, state);</a>
-<span class="sourceLineNo">123</span><a id="line.123"></a>
-<span class="sourceLineNo">124</span><a id="line.124">      // handle parameters</a>
-<span class="sourceLineNo">125</span><a id="line.125">      if (isVisitedItemType(IEntityItem.ItemType.PARAMETER)) {</a>
-<span class="sourceLineNo">126</span><a id="line.126">        retval = catalogOrGroupOrControl.getModelItemsByName("param").stream()</a>
-<span class="sourceLineNo">127</span><a id="line.127">            .map(paramItem -&gt; {</a>
-<span class="sourceLineNo">128</span><a id="line.128">              return visitParameter(ObjectUtils.requireNonNull(paramItem), catalogOrGroupOrControl, state);</a>
-<span class="sourceLineNo">129</span><a id="line.129">            })</a>
-<span class="sourceLineNo">130</span><a id="line.130">            .reduce(retval, (first, second) -&gt; aggregateResults(first, second, state));</a>
-<span class="sourceLineNo">131</span><a id="line.131">      } // TODO Auto-generated method stub</a>
-<span class="sourceLineNo">132</span><a id="line.132">    }</a>
-<span class="sourceLineNo">133</span><a id="line.133">    return retval;</a>
-<span class="sourceLineNo">134</span><a id="line.134">  }</a>
-<span class="sourceLineNo">135</span><a id="line.135"></a>
-<span class="sourceLineNo">136</span><a id="line.136">  protected void visitParts(@NonNull IRequiredValueModelNodeItem groupOrControlItem, T state) {</a>
-<span class="sourceLineNo">137</span><a id="line.137">    // handle parts</a>
-<span class="sourceLineNo">138</span><a id="line.138">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</a>
-<span class="sourceLineNo">139</span><a id="line.139">      CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()</a>
-<span class="sourceLineNo">140</span><a id="line.140">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</a>
-<span class="sourceLineNo">141</span><a id="line.141">          .forEachOrdered(partItem -&gt; {</a>
-<span class="sourceLineNo">142</span><a id="line.142">            visitPart(ObjectUtils.requireNonNull(partItem), groupOrControlItem, state);</a>
-<span class="sourceLineNo">143</span><a id="line.143">          });</a>
-<span class="sourceLineNo">144</span><a id="line.144">    }</a>
-<span class="sourceLineNo">145</span><a id="line.145">  }</a>
-<span class="sourceLineNo">146</span><a id="line.146"></a>
-<span class="sourceLineNo">147</span><a id="line.147">  @Override</a>
-<span class="sourceLineNo">148</span><a id="line.148">  protected R visitGroupInternal(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {</a>
-<span class="sourceLineNo">149</span><a id="line.149">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</a>
-<span class="sourceLineNo">150</span><a id="line.150">      visitParts(item, state);</a>
-<span class="sourceLineNo">151</span><a id="line.151">    }</a>
-<span class="sourceLineNo">152</span><a id="line.152"></a>
-<span class="sourceLineNo">153</span><a id="line.153">    R retval = childResult;</a>
-<span class="sourceLineNo">154</span><a id="line.154">    if (isVisitedItemType(IEntityItem.ItemType.GROUP)) {</a>
-<span class="sourceLineNo">155</span><a id="line.155">      retval = visitGroup(item, retval, state);</a>
-<span class="sourceLineNo">156</span><a id="line.156">    }</a>
-<span class="sourceLineNo">157</span><a id="line.157">    return retval;</a>
-<span class="sourceLineNo">158</span><a id="line.158">  }</a>
-<span class="sourceLineNo">159</span><a id="line.159"></a>
-<span class="sourceLineNo">160</span><a id="line.160">  @Override</a>
-<span class="sourceLineNo">161</span><a id="line.161">  protected R visitControlInternal(IRequiredValueModelNodeItem item, R childResult, T state) {</a>
-<span class="sourceLineNo">162</span><a id="line.162">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</a>
-<span class="sourceLineNo">163</span><a id="line.163">      visitParts(item, state);</a>
-<span class="sourceLineNo">164</span><a id="line.164">    }</a>
-<span class="sourceLineNo">165</span><a id="line.165"></a>
-<span class="sourceLineNo">166</span><a id="line.166">    R retval = childResult;</a>
-<span class="sourceLineNo">167</span><a id="line.167">    if (isVisitedItemType(IEntityItem.ItemType.CONTROL)) {</a>
-<span class="sourceLineNo">168</span><a id="line.168">      retval = visitControl(item, retval, state);</a>
-<span class="sourceLineNo">169</span><a id="line.169">    }</a>
-<span class="sourceLineNo">170</span><a id="line.170">    return retval;</a>
-<span class="sourceLineNo">171</span><a id="line.171">  }</a>
-<span class="sourceLineNo">172</span><a id="line.172"></a>
-<span class="sourceLineNo">173</span><a id="line.173">  /**</a>
-<span class="sourceLineNo">174</span><a id="line.174">   * Called when visiting a parameter.</a>
-<span class="sourceLineNo">175</span><a id="line.175">   * &lt;p&gt;</a>
-<span class="sourceLineNo">176</span><a id="line.176">   * Can be overridden by classes extending this interface to support processing of the visited</a>
-<span class="sourceLineNo">177</span><a id="line.177">   * object.</a>
-<span class="sourceLineNo">178</span><a id="line.178">   *</a>
-<span class="sourceLineNo">179</span><a id="line.179">   * @param item</a>
-<span class="sourceLineNo">180</span><a id="line.180">   *          the Metapath item for the parameter</a>
-<span class="sourceLineNo">181</span><a id="line.181">   * @param catalogOrGroupOrControl</a>
-<span class="sourceLineNo">182</span><a id="line.182">   *          the parameter's parent Metapath item</a>
-<span class="sourceLineNo">183</span><a id="line.183">   * @param state</a>
-<span class="sourceLineNo">184</span><a id="line.184">   *          the calling context information</a>
-<span class="sourceLineNo">185</span><a id="line.185">   * @return a meaningful result of the given type</a>
-<span class="sourceLineNo">186</span><a id="line.186">   */</a>
-<span class="sourceLineNo">187</span><a id="line.187">  protected R visitParameter(</a>
-<span class="sourceLineNo">188</span><a id="line.188">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">189</span><a id="line.189">      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,</a>
-<span class="sourceLineNo">190</span><a id="line.190">      T state) {</a>
-<span class="sourceLineNo">191</span><a id="line.191">    // do nothing</a>
-<span class="sourceLineNo">192</span><a id="line.192">    return newDefaultResult(state);</a>
-<span class="sourceLineNo">193</span><a id="line.193">  }</a>
-<span class="sourceLineNo">194</span><a id="line.194"></a>
-<span class="sourceLineNo">195</span><a id="line.195">  /**</a>
-<span class="sourceLineNo">196</span><a id="line.196">   * Called when visiting a part.</a>
-<span class="sourceLineNo">197</span><a id="line.197">   * &lt;p&gt;</a>
-<span class="sourceLineNo">198</span><a id="line.198">   * Can be overridden by classes extending this interface to support processing of the visited</a>
-<span class="sourceLineNo">199</span><a id="line.199">   * object.</a>
-<span class="sourceLineNo">200</span><a id="line.200">   *</a>
-<span class="sourceLineNo">201</span><a id="line.201">   * @param item</a>
-<span class="sourceLineNo">202</span><a id="line.202">   *          the Metapath item for the part</a>
-<span class="sourceLineNo">203</span><a id="line.203">   * @param groupOrControl</a>
-<span class="sourceLineNo">204</span><a id="line.204">   *          the part's parent Metapath item</a>
-<span class="sourceLineNo">205</span><a id="line.205">   * @param state</a>
-<span class="sourceLineNo">206</span><a id="line.206">   *          the calling context information</a>
-<span class="sourceLineNo">207</span><a id="line.207">   */</a>
-<span class="sourceLineNo">208</span><a id="line.208">  protected void visitPart( // NOPMD noop default</a>
-<span class="sourceLineNo">209</span><a id="line.209">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">210</span><a id="line.210">      @NonNull IRequiredValueModelNodeItem groupOrControl,</a>
-<span class="sourceLineNo">211</span><a id="line.211">      T state) {</a>
-<span class="sourceLineNo">212</span><a id="line.212">    // do nothing</a>
-<span class="sourceLineNo">213</span><a id="line.213">  }</a>
-<span class="sourceLineNo">214</span><a id="line.214"></a>
-<span class="sourceLineNo">215</span><a id="line.215">  /**</a>
-<span class="sourceLineNo">216</span><a id="line.216">   * Called when visiting the "metadata" section of an OSCAL document.</a>
-<span class="sourceLineNo">217</span><a id="line.217">   * &lt;p&gt;</a>
-<span class="sourceLineNo">218</span><a id="line.218">   * Visits each contained role, location, and party.</a>
-<span class="sourceLineNo">219</span><a id="line.219">   *</a>
-<span class="sourceLineNo">220</span><a id="line.220">   * @param rootItem</a>
-<span class="sourceLineNo">221</span><a id="line.221">   *          the root Metaschema node item containing the "metadata" node</a>
-<span class="sourceLineNo">222</span><a id="line.222">   * @param state</a>
-<span class="sourceLineNo">223</span><a id="line.223">   *          the calling context information</a>
-<span class="sourceLineNo">224</span><a id="line.224">   */</a>
-<span class="sourceLineNo">225</span><a id="line.225">  protected void visitMetadata(@NonNull IRootAssemblyNodeItem rootItem, T state) {</a>
-<span class="sourceLineNo">226</span><a id="line.226">    rootItem.getModelItemsByName("metadata").forEach(metadataItem -&gt; {</a>
-<span class="sourceLineNo">227</span><a id="line.227">      if (isVisitedItemType(IEntityItem.ItemType.ROLE)) {</a>
-<span class="sourceLineNo">228</span><a id="line.228">        metadataItem.getModelItemsByName("role").forEach(roleItem -&gt; {</a>
-<span class="sourceLineNo">229</span><a id="line.229">          visitRole(ObjectUtils.requireNonNull(roleItem), metadataItem, state);</a>
-<span class="sourceLineNo">230</span><a id="line.230">        });</a>
-<span class="sourceLineNo">231</span><a id="line.231">      }</a>
-<span class="sourceLineNo">232</span><a id="line.232"></a>
-<span class="sourceLineNo">233</span><a id="line.233">      if (isVisitedItemType(IEntityItem.ItemType.LOCATION)) {</a>
-<span class="sourceLineNo">234</span><a id="line.234">        metadataItem.getModelItemsByName("location").forEach(locationItem -&gt; {</a>
-<span class="sourceLineNo">235</span><a id="line.235">          visitLocation(ObjectUtils.requireNonNull(locationItem), metadataItem, state);</a>
-<span class="sourceLineNo">236</span><a id="line.236">        });</a>
-<span class="sourceLineNo">237</span><a id="line.237">      }</a>
-<span class="sourceLineNo">238</span><a id="line.238"></a>
-<span class="sourceLineNo">239</span><a id="line.239">      if (isVisitedItemType(IEntityItem.ItemType.PARTY)) {</a>
-<span class="sourceLineNo">240</span><a id="line.240">        metadataItem.getModelItemsByName("party").forEach(partyItem -&gt; {</a>
-<span class="sourceLineNo">241</span><a id="line.241">          visitParty(ObjectUtils.requireNonNull(partyItem), metadataItem, state);</a>
-<span class="sourceLineNo">242</span><a id="line.242">        });</a>
-<span class="sourceLineNo">243</span><a id="line.243">      }</a>
-<span class="sourceLineNo">244</span><a id="line.244">    });</a>
-<span class="sourceLineNo">245</span><a id="line.245">  }</a>
-<span class="sourceLineNo">246</span><a id="line.246"></a>
-<span class="sourceLineNo">247</span><a id="line.247">  /**</a>
-<span class="sourceLineNo">248</span><a id="line.248">   * Called when visiting a role in the "metadata" section of an OSCAL document.</a>
-<span class="sourceLineNo">249</span><a id="line.249">   * &lt;p&gt;</a>
-<span class="sourceLineNo">250</span><a id="line.250">   * Can be overridden by classes extending this interface to support processing of the visited</a>
-<span class="sourceLineNo">251</span><a id="line.251">   * object.</a>
-<span class="sourceLineNo">252</span><a id="line.252">   *</a>
-<span class="sourceLineNo">253</span><a id="line.253">   * @param item</a>
-<span class="sourceLineNo">254</span><a id="line.254">   *          the role Metaschema node item which is a child of the "metadata" node</a>
-<span class="sourceLineNo">255</span><a id="line.255">   * @param metadataItem</a>
-<span class="sourceLineNo">256</span><a id="line.256">   *          the "metadata" Metaschema node item containing the role</a>
-<span class="sourceLineNo">257</span><a id="line.257">   * @param state</a>
-<span class="sourceLineNo">258</span><a id="line.258">   *          the calling context information</a>
-<span class="sourceLineNo">259</span><a id="line.259">   */</a>
-<span class="sourceLineNo">260</span><a id="line.260">  protected void visitRole( // NOPMD noop default</a>
-<span class="sourceLineNo">261</span><a id="line.261">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">262</span><a id="line.262">      @NonNull IRequiredValueModelNodeItem metadataItem,</a>
-<span class="sourceLineNo">263</span><a id="line.263">      T state) {</a>
-<span class="sourceLineNo">264</span><a id="line.264">    // do nothing</a>
-<span class="sourceLineNo">265</span><a id="line.265">  }</a>
-<span class="sourceLineNo">266</span><a id="line.266"></a>
-<span class="sourceLineNo">267</span><a id="line.267">  /**</a>
-<span class="sourceLineNo">268</span><a id="line.268">   * Called when visiting a location in the "metadata" section of an OSCAL document.</a>
-<span class="sourceLineNo">269</span><a id="line.269">   * &lt;p&gt;</a>
-<span class="sourceLineNo">270</span><a id="line.270">   * Can be overridden by classes extending this interface to support processing of the visited</a>
-<span class="sourceLineNo">271</span><a id="line.271">   * object.</a>
-<span class="sourceLineNo">272</span><a id="line.272">   *</a>
-<span class="sourceLineNo">273</span><a id="line.273">   * @param item</a>
-<span class="sourceLineNo">274</span><a id="line.274">   *          the location Metaschema node item which is a child of the "metadata" node</a>
-<span class="sourceLineNo">275</span><a id="line.275">   * @param metadataItem</a>
-<span class="sourceLineNo">276</span><a id="line.276">   *          the "metadata" Metaschema node item containing the location</a>
-<span class="sourceLineNo">277</span><a id="line.277">   * @param state</a>
-<span class="sourceLineNo">278</span><a id="line.278">   *          the calling context information</a>
-<span class="sourceLineNo">279</span><a id="line.279">   */</a>
-<span class="sourceLineNo">280</span><a id="line.280">  protected void visitLocation( // NOPMD noop default</a>
-<span class="sourceLineNo">281</span><a id="line.281">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">282</span><a id="line.282">      @NonNull IRequiredValueModelNodeItem metadataItem,</a>
-<span class="sourceLineNo">283</span><a id="line.283">      T state) {</a>
-<span class="sourceLineNo">284</span><a id="line.284">    // do nothing</a>
-<span class="sourceLineNo">285</span><a id="line.285">  }</a>
-<span class="sourceLineNo">286</span><a id="line.286"></a>
-<span class="sourceLineNo">287</span><a id="line.287">  /**</a>
-<span class="sourceLineNo">288</span><a id="line.288">   * Called when visiting a party in the "metadata" section of an OSCAL document.</a>
-<span class="sourceLineNo">289</span><a id="line.289">   * &lt;p&gt;</a>
-<span class="sourceLineNo">290</span><a id="line.290">   * Can be overridden by classes extending this interface to support processing of the visited</a>
-<span class="sourceLineNo">291</span><a id="line.291">   * object.</a>
-<span class="sourceLineNo">292</span><a id="line.292">   *</a>
-<span class="sourceLineNo">293</span><a id="line.293">   * @param item</a>
-<span class="sourceLineNo">294</span><a id="line.294">   *          the party Metaschema node item which is a child of the "metadata" node</a>
-<span class="sourceLineNo">295</span><a id="line.295">   * @param metadataItem</a>
-<span class="sourceLineNo">296</span><a id="line.296">   *          the "metadata" Metaschema node item containing the party</a>
-<span class="sourceLineNo">297</span><a id="line.297">   * @param state</a>
-<span class="sourceLineNo">298</span><a id="line.298">   *          the calling context information</a>
-<span class="sourceLineNo">299</span><a id="line.299">   */</a>
-<span class="sourceLineNo">300</span><a id="line.300">  protected void visitParty( // NOPMD noop default</a>
-<span class="sourceLineNo">301</span><a id="line.301">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">302</span><a id="line.302">      @NonNull IRequiredValueModelNodeItem metadataItem,</a>
-<span class="sourceLineNo">303</span><a id="line.303">      T state) {</a>
-<span class="sourceLineNo">304</span><a id="line.304">    // do nothing</a>
-<span class="sourceLineNo">305</span><a id="line.305">  }</a>
-<span class="sourceLineNo">306</span><a id="line.306"></a>
-<span class="sourceLineNo">307</span><a id="line.307">  /**</a>
-<span class="sourceLineNo">308</span><a id="line.308">   * Called when visiting the "back-matter" section of an OSCAL document.</a>
-<span class="sourceLineNo">309</span><a id="line.309">   * &lt;p&gt;</a>
-<span class="sourceLineNo">310</span><a id="line.310">   * Visits each contained resource.</a>
-<span class="sourceLineNo">311</span><a id="line.311">   *</a>
-<span class="sourceLineNo">312</span><a id="line.312">   * @param rootItem</a>
-<span class="sourceLineNo">313</span><a id="line.313">   *          the root Metaschema node item containing the "back-matter" node</a>
-<span class="sourceLineNo">314</span><a id="line.314">   * @param state</a>
-<span class="sourceLineNo">315</span><a id="line.315">   *          the calling context information</a>
-<span class="sourceLineNo">316</span><a id="line.316">   */</a>
-<span class="sourceLineNo">317</span><a id="line.317">  protected void visitBackMatter(@NonNull IRootAssemblyNodeItem rootItem, T state) {</a>
-<span class="sourceLineNo">318</span><a id="line.318">    if (isVisitedItemType(IEntityItem.ItemType.RESOURCE)) {</a>
-<span class="sourceLineNo">319</span><a id="line.319">      BACK_MATTER_RESOURCES_METAPATH.evaluate(rootItem).asStream()</a>
-<span class="sourceLineNo">320</span><a id="line.320">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</a>
-<span class="sourceLineNo">321</span><a id="line.321">          .forEachOrdered(resourceItem -&gt; {</a>
-<span class="sourceLineNo">322</span><a id="line.322">            visitResource(ObjectUtils.requireNonNull(resourceItem), rootItem, state);</a>
-<span class="sourceLineNo">323</span><a id="line.323">          });</a>
-<span class="sourceLineNo">324</span><a id="line.324">    }</a>
-<span class="sourceLineNo">325</span><a id="line.325">  }</a>
-<span class="sourceLineNo">326</span><a id="line.326"></a>
-<span class="sourceLineNo">327</span><a id="line.327">  /**</a>
-<span class="sourceLineNo">328</span><a id="line.328">   * Called when visiting a resource in the "back-matter" section of an OSCAL document.</a>
-<span class="sourceLineNo">329</span><a id="line.329">   * &lt;p&gt;</a>
-<span class="sourceLineNo">330</span><a id="line.330">   * Can be overridden by classes extending this interface to support processing of the visited</a>
-<span class="sourceLineNo">331</span><a id="line.331">   * object.</a>
-<span class="sourceLineNo">332</span><a id="line.332">   *</a>
-<span class="sourceLineNo">333</span><a id="line.333">   * @param item</a>
-<span class="sourceLineNo">334</span><a id="line.334">   *          the resource Metaschema node item which is a child of the "metadata" node</a>
-<span class="sourceLineNo">335</span><a id="line.335">   * @param backMatterItem</a>
-<span class="sourceLineNo">336</span><a id="line.336">   *          the resource Metaschema node item containing the party</a>
-<span class="sourceLineNo">337</span><a id="line.337">   * @param state</a>
-<span class="sourceLineNo">338</span><a id="line.338">   *          the calling context information</a>
-<span class="sourceLineNo">339</span><a id="line.339">   */</a>
-<span class="sourceLineNo">340</span><a id="line.340">  protected void visitResource( // NOPMD noop default</a>
-<span class="sourceLineNo">341</span><a id="line.341">      @NonNull IRequiredValueModelNodeItem item,</a>
-<span class="sourceLineNo">342</span><a id="line.342">      @NonNull IRootAssemblyNodeItem backMatterItem,</a>
-<span class="sourceLineNo">343</span><a id="line.343">      T state) {</a>
-<span class="sourceLineNo">344</span><a id="line.344">    // do nothing</a>
-<span class="sourceLineNo">345</span><a id="line.345">  }</a>
-<span class="sourceLineNo">346</span><a id="line.346">}</a>
+<span class="sourceLineNo">045</span><a id="line.45"> * This implementation is stateless. The {@code T} parameter can be used to</a>
+<span class="sourceLineNo">046</span><a id="line.46"> * convey state as needed.</a>
+<span class="sourceLineNo">047</span><a id="line.47"> *</a>
+<span class="sourceLineNo">048</span><a id="line.48"> * @param &lt;T&gt;</a>
+<span class="sourceLineNo">049</span><a id="line.49"> *          the state type</a>
+<span class="sourceLineNo">050</span><a id="line.50"> * @param &lt;R&gt;</a>
+<span class="sourceLineNo">051</span><a id="line.51"> *          the result type</a>
+<span class="sourceLineNo">052</span><a id="line.52"> */</a>
+<span class="sourceLineNo">053</span><a id="line.53">public abstract class AbstractCatalogEntityVisitor&lt;T, R&gt;</a>
+<span class="sourceLineNo">054</span><a id="line.54">    extends AbstractCatalogVisitor&lt;T, R&gt; {</a>
+<span class="sourceLineNo">055</span><a id="line.55">  @NonNull</a>
+<span class="sourceLineNo">056</span><a id="line.56">  public static final MetapathExpression CHILD_PART_METAPATH</a>
+<span class="sourceLineNo">057</span><a id="line.57">      = MetapathExpression.compile("part|part//part");</a>
+<span class="sourceLineNo">058</span><a id="line.58">  @NonNull</a>
+<span class="sourceLineNo">059</span><a id="line.59">  private static final MetapathExpression BACK_MATTER_RESOURCES_METAPATH</a>
+<span class="sourceLineNo">060</span><a id="line.60">      = MetapathExpression.compile("back-matter/resource");</a>
+<span class="sourceLineNo">061</span><a id="line.61">  @NonNull</a>
+<span class="sourceLineNo">062</span><a id="line.62">  private static final Set&lt;IEntityItem.ItemType&gt; GROUP_CONTAINER_TYPES</a>
+<span class="sourceLineNo">063</span><a id="line.63">      = ObjectUtils.notNull(EnumSet.of(</a>
+<span class="sourceLineNo">064</span><a id="line.64">          IEntityItem.ItemType.GROUP,</a>
+<span class="sourceLineNo">065</span><a id="line.65">          IEntityItem.ItemType.CONTROL,</a>
+<span class="sourceLineNo">066</span><a id="line.66">          IEntityItem.ItemType.PARAMETER,</a>
+<span class="sourceLineNo">067</span><a id="line.67">          IEntityItem.ItemType.PART));</a>
+<span class="sourceLineNo">068</span><a id="line.68">  @NonNull</a>
+<span class="sourceLineNo">069</span><a id="line.69">  private static final Set&lt;IEntityItem.ItemType&gt; CONTROL_CONTAINER_TYPES</a>
+<span class="sourceLineNo">070</span><a id="line.70">      = ObjectUtils.notNull(EnumSet.of(</a>
+<span class="sourceLineNo">071</span><a id="line.71">          IEntityItem.ItemType.CONTROL,</a>
+<span class="sourceLineNo">072</span><a id="line.72">          IEntityItem.ItemType.PARAMETER,</a>
+<span class="sourceLineNo">073</span><a id="line.73">          IEntityItem.ItemType.PART));</a>
+<span class="sourceLineNo">074</span><a id="line.74">  @NonNull</a>
+<span class="sourceLineNo">075</span><a id="line.75">  private final Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit;</a>
+<span class="sourceLineNo">076</span><a id="line.76"></a>
+<span class="sourceLineNo">077</span><a id="line.77">  /**</a>
+<span class="sourceLineNo">078</span><a id="line.78">   * Create a new visitor that will visit the item types identified by</a>
+<span class="sourceLineNo">079</span><a id="line.79">   * {@code itemTypesToVisit}.</a>
+<span class="sourceLineNo">080</span><a id="line.80">   *</a>
+<span class="sourceLineNo">081</span><a id="line.81">   * @param itemTypesToVisit</a>
+<span class="sourceLineNo">082</span><a id="line.82">   *          the item type the visitor will visit</a>
+<span class="sourceLineNo">083</span><a id="line.83">   */</a>
+<span class="sourceLineNo">084</span><a id="line.84">  public AbstractCatalogEntityVisitor(@NonNull Set&lt;IEntityItem.ItemType&gt; itemTypesToVisit) {</a>
+<span class="sourceLineNo">085</span><a id="line.85">    this.itemTypesToVisit = CollectionUtil.unmodifiableSet(itemTypesToVisit);</a>
+<span class="sourceLineNo">086</span><a id="line.86">  }</a>
+<span class="sourceLineNo">087</span><a id="line.87"></a>
+<span class="sourceLineNo">088</span><a id="line.88">  public Set&lt;IEntityItem.ItemType&gt; getItemTypesToVisit() {</a>
+<span class="sourceLineNo">089</span><a id="line.89">    return CollectionUtil.unmodifiableSet(itemTypesToVisit);</a>
+<span class="sourceLineNo">090</span><a id="line.90">  }</a>
+<span class="sourceLineNo">091</span><a id="line.91"></a>
+<span class="sourceLineNo">092</span><a id="line.92">  protected boolean isVisitedItemType(@NonNull IEntityItem.ItemType type) {</a>
+<span class="sourceLineNo">093</span><a id="line.93">    return itemTypesToVisit.contains(type);</a>
+<span class="sourceLineNo">094</span><a id="line.94">  }</a>
+<span class="sourceLineNo">095</span><a id="line.95"></a>
+<span class="sourceLineNo">096</span><a id="line.96">  @Override</a>
+<span class="sourceLineNo">097</span><a id="line.97">  public R visitCatalog(IDocumentNodeItem catalogDocument, T state) {</a>
+<span class="sourceLineNo">098</span><a id="line.98">    R result = super.visitCatalog(catalogDocument, state);</a>
+<span class="sourceLineNo">099</span><a id="line.99"></a>
+<span class="sourceLineNo">100</span><a id="line.100">    IRootAssemblyNodeItem root = catalogDocument.getRootAssemblyNodeItem();</a>
+<span class="sourceLineNo">101</span><a id="line.101">    visitMetadata(root, state);</a>
+<span class="sourceLineNo">102</span><a id="line.102">    visitBackMatter(root, state);</a>
+<span class="sourceLineNo">103</span><a id="line.103">    return result;</a>
+<span class="sourceLineNo">104</span><a id="line.104">  }</a>
+<span class="sourceLineNo">105</span><a id="line.105"></a>
+<span class="sourceLineNo">106</span><a id="line.106">  @Override</a>
+<span class="sourceLineNo">107</span><a id="line.107">  protected R visitGroupContainer(IRequiredValueModelNodeItem catalogOrGroup, R initialResult, T state) {</a>
+<span class="sourceLineNo">108</span><a id="line.108">    R retval;</a>
+<span class="sourceLineNo">109</span><a id="line.109">    if (Collections.disjoint(getItemTypesToVisit(), GROUP_CONTAINER_TYPES)) {</a>
+<span class="sourceLineNo">110</span><a id="line.110">      retval = initialResult;</a>
+<span class="sourceLineNo">111</span><a id="line.111">    } else {</a>
+<span class="sourceLineNo">112</span><a id="line.112">      retval = super.visitGroupContainer(catalogOrGroup, initialResult, state);</a>
+<span class="sourceLineNo">113</span><a id="line.113">    }</a>
+<span class="sourceLineNo">114</span><a id="line.114">    return retval;</a>
+<span class="sourceLineNo">115</span><a id="line.115">  }</a>
+<span class="sourceLineNo">116</span><a id="line.116"></a>
+<span class="sourceLineNo">117</span><a id="line.117">  @Override</a>
+<span class="sourceLineNo">118</span><a id="line.118">  protected R visitControlContainer(IRequiredValueModelNodeItem catalogOrGroupOrControl, R initialResult, T state) {</a>
+<span class="sourceLineNo">119</span><a id="line.119">    R retval;</a>
+<span class="sourceLineNo">120</span><a id="line.120">    if (Collections.disjoint(getItemTypesToVisit(), CONTROL_CONTAINER_TYPES)) {</a>
+<span class="sourceLineNo">121</span><a id="line.121">      retval = initialResult;</a>
+<span class="sourceLineNo">122</span><a id="line.122">    } else {</a>
+<span class="sourceLineNo">123</span><a id="line.123">      // first descend to all control container children</a>
+<span class="sourceLineNo">124</span><a id="line.124">      retval = super.visitControlContainer(catalogOrGroupOrControl, initialResult, state);</a>
+<span class="sourceLineNo">125</span><a id="line.125"></a>
+<span class="sourceLineNo">126</span><a id="line.126">      // handle parameters</a>
+<span class="sourceLineNo">127</span><a id="line.127">      if (isVisitedItemType(IEntityItem.ItemType.PARAMETER)) {</a>
+<span class="sourceLineNo">128</span><a id="line.128">        retval = catalogOrGroupOrControl.getModelItemsByName("param").stream()</a>
+<span class="sourceLineNo">129</span><a id="line.129">            .map(paramItem -&gt; {</a>
+<span class="sourceLineNo">130</span><a id="line.130">              return visitParameter(ObjectUtils.requireNonNull(paramItem), catalogOrGroupOrControl, state);</a>
+<span class="sourceLineNo">131</span><a id="line.131">            })</a>
+<span class="sourceLineNo">132</span><a id="line.132">            .reduce(retval, (first, second) -&gt; aggregateResults(first, second, state));</a>
+<span class="sourceLineNo">133</span><a id="line.133">      } // TODO Auto-generated method stub</a>
+<span class="sourceLineNo">134</span><a id="line.134">    }</a>
+<span class="sourceLineNo">135</span><a id="line.135">    return retval;</a>
+<span class="sourceLineNo">136</span><a id="line.136">  }</a>
+<span class="sourceLineNo">137</span><a id="line.137"></a>
+<span class="sourceLineNo">138</span><a id="line.138">  protected void visitParts(@NonNull IRequiredValueModelNodeItem groupOrControlItem, T state) {</a>
+<span class="sourceLineNo">139</span><a id="line.139">    // handle parts</a>
+<span class="sourceLineNo">140</span><a id="line.140">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</a>
+<span class="sourceLineNo">141</span><a id="line.141">      CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()</a>
+<span class="sourceLineNo">142</span><a id="line.142">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</a>
+<span class="sourceLineNo">143</span><a id="line.143">          .forEachOrdered(partItem -&gt; {</a>
+<span class="sourceLineNo">144</span><a id="line.144">            visitPart(ObjectUtils.requireNonNull(partItem), groupOrControlItem, state);</a>
+<span class="sourceLineNo">145</span><a id="line.145">          });</a>
+<span class="sourceLineNo">146</span><a id="line.146">    }</a>
+<span class="sourceLineNo">147</span><a id="line.147">  }</a>
+<span class="sourceLineNo">148</span><a id="line.148"></a>
+<span class="sourceLineNo">149</span><a id="line.149">  @Override</a>
+<span class="sourceLineNo">150</span><a id="line.150">  protected R visitGroupInternal(@NonNull IRequiredValueModelNodeItem item, R childResult, T state) {</a>
+<span class="sourceLineNo">151</span><a id="line.151">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</a>
+<span class="sourceLineNo">152</span><a id="line.152">      visitParts(item, state);</a>
+<span class="sourceLineNo">153</span><a id="line.153">    }</a>
+<span class="sourceLineNo">154</span><a id="line.154"></a>
+<span class="sourceLineNo">155</span><a id="line.155">    R retval = childResult;</a>
+<span class="sourceLineNo">156</span><a id="line.156">    if (isVisitedItemType(IEntityItem.ItemType.GROUP)) {</a>
+<span class="sourceLineNo">157</span><a id="line.157">      retval = visitGroup(item, retval, state);</a>
+<span class="sourceLineNo">158</span><a id="line.158">    }</a>
+<span class="sourceLineNo">159</span><a id="line.159">    return retval;</a>
+<span class="sourceLineNo">160</span><a id="line.160">  }</a>
+<span class="sourceLineNo">161</span><a id="line.161"></a>
+<span class="sourceLineNo">162</span><a id="line.162">  @Override</a>
+<span class="sourceLineNo">163</span><a id="line.163">  protected R visitControlInternal(IRequiredValueModelNodeItem item, R childResult, T state) {</a>
+<span class="sourceLineNo">164</span><a id="line.164">    if (isVisitedItemType(IEntityItem.ItemType.PART)) {</a>
+<span class="sourceLineNo">165</span><a id="line.165">      visitParts(item, state);</a>
+<span class="sourceLineNo">166</span><a id="line.166">    }</a>
+<span class="sourceLineNo">167</span><a id="line.167"></a>
+<span class="sourceLineNo">168</span><a id="line.168">    R retval = childResult;</a>
+<span class="sourceLineNo">169</span><a id="line.169">    if (isVisitedItemType(IEntityItem.ItemType.CONTROL)) {</a>
+<span class="sourceLineNo">170</span><a id="line.170">      retval = visitControl(item, retval, state);</a>
+<span class="sourceLineNo">171</span><a id="line.171">    }</a>
+<span class="sourceLineNo">172</span><a id="line.172">    return retval;</a>
+<span class="sourceLineNo">173</span><a id="line.173">  }</a>
+<span class="sourceLineNo">174</span><a id="line.174"></a>
+<span class="sourceLineNo">175</span><a id="line.175">  /**</a>
+<span class="sourceLineNo">176</span><a id="line.176">   * Called when visiting a parameter.</a>
+<span class="sourceLineNo">177</span><a id="line.177">   * &lt;p&gt;</a>
+<span class="sourceLineNo">178</span><a id="line.178">   * Can be overridden by classes extending this interface to support processing</a>
+<span class="sourceLineNo">179</span><a id="line.179">   * of the visited object.</a>
+<span class="sourceLineNo">180</span><a id="line.180">   *</a>
+<span class="sourceLineNo">181</span><a id="line.181">   * @param item</a>
+<span class="sourceLineNo">182</span><a id="line.182">   *          the Metapath item for the parameter</a>
+<span class="sourceLineNo">183</span><a id="line.183">   * @param catalogOrGroupOrControl</a>
+<span class="sourceLineNo">184</span><a id="line.184">   *          the parameter's parent Metapath item</a>
+<span class="sourceLineNo">185</span><a id="line.185">   * @param state</a>
+<span class="sourceLineNo">186</span><a id="line.186">   *          the calling context information</a>
+<span class="sourceLineNo">187</span><a id="line.187">   * @return a meaningful result of the given type</a>
+<span class="sourceLineNo">188</span><a id="line.188">   */</a>
+<span class="sourceLineNo">189</span><a id="line.189">  protected R visitParameter(</a>
+<span class="sourceLineNo">190</span><a id="line.190">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">191</span><a id="line.191">      @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,</a>
+<span class="sourceLineNo">192</span><a id="line.192">      T state) {</a>
+<span class="sourceLineNo">193</span><a id="line.193">    // do nothing</a>
+<span class="sourceLineNo">194</span><a id="line.194">    return newDefaultResult(state);</a>
+<span class="sourceLineNo">195</span><a id="line.195">  }</a>
+<span class="sourceLineNo">196</span><a id="line.196"></a>
+<span class="sourceLineNo">197</span><a id="line.197">  /**</a>
+<span class="sourceLineNo">198</span><a id="line.198">   * Called when visiting a part.</a>
+<span class="sourceLineNo">199</span><a id="line.199">   * &lt;p&gt;</a>
+<span class="sourceLineNo">200</span><a id="line.200">   * Can be overridden by classes extending this interface to support processing</a>
+<span class="sourceLineNo">201</span><a id="line.201">   * of the visited object.</a>
+<span class="sourceLineNo">202</span><a id="line.202">   *</a>
+<span class="sourceLineNo">203</span><a id="line.203">   * @param item</a>
+<span class="sourceLineNo">204</span><a id="line.204">   *          the Metapath item for the part</a>
+<span class="sourceLineNo">205</span><a id="line.205">   * @param groupOrControl</a>
+<span class="sourceLineNo">206</span><a id="line.206">   *          the part's parent Metapath item</a>
+<span class="sourceLineNo">207</span><a id="line.207">   * @param state</a>
+<span class="sourceLineNo">208</span><a id="line.208">   *          the calling context information</a>
+<span class="sourceLineNo">209</span><a id="line.209">   */</a>
+<span class="sourceLineNo">210</span><a id="line.210">  protected void visitPart( // NOPMD noop default</a>
+<span class="sourceLineNo">211</span><a id="line.211">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">212</span><a id="line.212">      @NonNull IRequiredValueModelNodeItem groupOrControl,</a>
+<span class="sourceLineNo">213</span><a id="line.213">      T state) {</a>
+<span class="sourceLineNo">214</span><a id="line.214">    // do nothing</a>
+<span class="sourceLineNo">215</span><a id="line.215">  }</a>
+<span class="sourceLineNo">216</span><a id="line.216"></a>
+<span class="sourceLineNo">217</span><a id="line.217">  /**</a>
+<span class="sourceLineNo">218</span><a id="line.218">   * Called when visiting the "metadata" section of an OSCAL document.</a>
+<span class="sourceLineNo">219</span><a id="line.219">   * &lt;p&gt;</a>
+<span class="sourceLineNo">220</span><a id="line.220">   * Visits each contained role, location, and party.</a>
+<span class="sourceLineNo">221</span><a id="line.221">   *</a>
+<span class="sourceLineNo">222</span><a id="line.222">   * @param rootItem</a>
+<span class="sourceLineNo">223</span><a id="line.223">   *          the root Metaschema node item containing the "metadata" node</a>
+<span class="sourceLineNo">224</span><a id="line.224">   * @param state</a>
+<span class="sourceLineNo">225</span><a id="line.225">   *          the calling context information</a>
+<span class="sourceLineNo">226</span><a id="line.226">   */</a>
+<span class="sourceLineNo">227</span><a id="line.227">  protected void visitMetadata(@NonNull IRootAssemblyNodeItem rootItem, T state) {</a>
+<span class="sourceLineNo">228</span><a id="line.228">    rootItem.getModelItemsByName("metadata").forEach(metadataItem -&gt; {</a>
+<span class="sourceLineNo">229</span><a id="line.229">      if (isVisitedItemType(IEntityItem.ItemType.ROLE)) {</a>
+<span class="sourceLineNo">230</span><a id="line.230">        metadataItem.getModelItemsByName("role").forEach(roleItem -&gt; {</a>
+<span class="sourceLineNo">231</span><a id="line.231">          visitRole(ObjectUtils.requireNonNull(roleItem), metadataItem, state);</a>
+<span class="sourceLineNo">232</span><a id="line.232">        });</a>
+<span class="sourceLineNo">233</span><a id="line.233">      }</a>
+<span class="sourceLineNo">234</span><a id="line.234"></a>
+<span class="sourceLineNo">235</span><a id="line.235">      if (isVisitedItemType(IEntityItem.ItemType.LOCATION)) {</a>
+<span class="sourceLineNo">236</span><a id="line.236">        metadataItem.getModelItemsByName("location").forEach(locationItem -&gt; {</a>
+<span class="sourceLineNo">237</span><a id="line.237">          visitLocation(ObjectUtils.requireNonNull(locationItem), metadataItem, state);</a>
+<span class="sourceLineNo">238</span><a id="line.238">        });</a>
+<span class="sourceLineNo">239</span><a id="line.239">      }</a>
+<span class="sourceLineNo">240</span><a id="line.240"></a>
+<span class="sourceLineNo">241</span><a id="line.241">      if (isVisitedItemType(IEntityItem.ItemType.PARTY)) {</a>
+<span class="sourceLineNo">242</span><a id="line.242">        metadataItem.getModelItemsByName("party").forEach(partyItem -&gt; {</a>
+<span class="sourceLineNo">243</span><a id="line.243">          visitParty(ObjectUtils.requireNonNull(partyItem), metadataItem, state);</a>
+<span class="sourceLineNo">244</span><a id="line.244">        });</a>
+<span class="sourceLineNo">245</span><a id="line.245">      }</a>
+<span class="sourceLineNo">246</span><a id="line.246">    });</a>
+<span class="sourceLineNo">247</span><a id="line.247">  }</a>
+<span class="sourceLineNo">248</span><a id="line.248"></a>
+<span class="sourceLineNo">249</span><a id="line.249">  /**</a>
+<span class="sourceLineNo">250</span><a id="line.250">   * Called when visiting a role in the "metadata" section of an OSCAL document.</a>
+<span class="sourceLineNo">251</span><a id="line.251">   * &lt;p&gt;</a>
+<span class="sourceLineNo">252</span><a id="line.252">   * Can be overridden by classes extending this interface to support processing</a>
+<span class="sourceLineNo">253</span><a id="line.253">   * of the visited object.</a>
+<span class="sourceLineNo">254</span><a id="line.254">   *</a>
+<span class="sourceLineNo">255</span><a id="line.255">   * @param item</a>
+<span class="sourceLineNo">256</span><a id="line.256">   *          the role Metaschema node item which is a child of the "metadata"</a>
+<span class="sourceLineNo">257</span><a id="line.257">   *          node</a>
+<span class="sourceLineNo">258</span><a id="line.258">   * @param metadataItem</a>
+<span class="sourceLineNo">259</span><a id="line.259">   *          the "metadata" Metaschema node item containing the role</a>
+<span class="sourceLineNo">260</span><a id="line.260">   * @param state</a>
+<span class="sourceLineNo">261</span><a id="line.261">   *          the calling context information</a>
+<span class="sourceLineNo">262</span><a id="line.262">   */</a>
+<span class="sourceLineNo">263</span><a id="line.263">  protected void visitRole( // NOPMD noop default</a>
+<span class="sourceLineNo">264</span><a id="line.264">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">265</span><a id="line.265">      @NonNull IRequiredValueModelNodeItem metadataItem,</a>
+<span class="sourceLineNo">266</span><a id="line.266">      T state) {</a>
+<span class="sourceLineNo">267</span><a id="line.267">    // do nothing</a>
+<span class="sourceLineNo">268</span><a id="line.268">  }</a>
+<span class="sourceLineNo">269</span><a id="line.269"></a>
+<span class="sourceLineNo">270</span><a id="line.270">  /**</a>
+<span class="sourceLineNo">271</span><a id="line.271">   * Called when visiting a location in the "metadata" section of an OSCAL</a>
+<span class="sourceLineNo">272</span><a id="line.272">   * document.</a>
+<span class="sourceLineNo">273</span><a id="line.273">   * &lt;p&gt;</a>
+<span class="sourceLineNo">274</span><a id="line.274">   * Can be overridden by classes extending this interface to support processing</a>
+<span class="sourceLineNo">275</span><a id="line.275">   * of the visited object.</a>
+<span class="sourceLineNo">276</span><a id="line.276">   *</a>
+<span class="sourceLineNo">277</span><a id="line.277">   * @param item</a>
+<span class="sourceLineNo">278</span><a id="line.278">   *          the location Metaschema node item which is a child of the "metadata"</a>
+<span class="sourceLineNo">279</span><a id="line.279">   *          node</a>
+<span class="sourceLineNo">280</span><a id="line.280">   * @param metadataItem</a>
+<span class="sourceLineNo">281</span><a id="line.281">   *          the "metadata" Metaschema node item containing the location</a>
+<span class="sourceLineNo">282</span><a id="line.282">   * @param state</a>
+<span class="sourceLineNo">283</span><a id="line.283">   *          the calling context information</a>
+<span class="sourceLineNo">284</span><a id="line.284">   */</a>
+<span class="sourceLineNo">285</span><a id="line.285">  protected void visitLocation( // NOPMD noop default</a>
+<span class="sourceLineNo">286</span><a id="line.286">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">287</span><a id="line.287">      @NonNull IRequiredValueModelNodeItem metadataItem,</a>
+<span class="sourceLineNo">288</span><a id="line.288">      T state) {</a>
+<span class="sourceLineNo">289</span><a id="line.289">    // do nothing</a>
+<span class="sourceLineNo">290</span><a id="line.290">  }</a>
+<span class="sourceLineNo">291</span><a id="line.291"></a>
+<span class="sourceLineNo">292</span><a id="line.292">  /**</a>
+<span class="sourceLineNo">293</span><a id="line.293">   * Called when visiting a party in the "metadata" section of an OSCAL document.</a>
+<span class="sourceLineNo">294</span><a id="line.294">   * &lt;p&gt;</a>
+<span class="sourceLineNo">295</span><a id="line.295">   * Can be overridden by classes extending this interface to support processing</a>
+<span class="sourceLineNo">296</span><a id="line.296">   * of the visited object.</a>
+<span class="sourceLineNo">297</span><a id="line.297">   *</a>
+<span class="sourceLineNo">298</span><a id="line.298">   * @param item</a>
+<span class="sourceLineNo">299</span><a id="line.299">   *          the party Metaschema node item which is a child of the "metadata"</a>
+<span class="sourceLineNo">300</span><a id="line.300">   *          node</a>
+<span class="sourceLineNo">301</span><a id="line.301">   * @param metadataItem</a>
+<span class="sourceLineNo">302</span><a id="line.302">   *          the "metadata" Metaschema node item containing the party</a>
+<span class="sourceLineNo">303</span><a id="line.303">   * @param state</a>
+<span class="sourceLineNo">304</span><a id="line.304">   *          the calling context information</a>
+<span class="sourceLineNo">305</span><a id="line.305">   */</a>
+<span class="sourceLineNo">306</span><a id="line.306">  protected void visitParty( // NOPMD noop default</a>
+<span class="sourceLineNo">307</span><a id="line.307">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">308</span><a id="line.308">      @NonNull IRequiredValueModelNodeItem metadataItem,</a>
+<span class="sourceLineNo">309</span><a id="line.309">      T state) {</a>
+<span class="sourceLineNo">310</span><a id="line.310">    // do nothing</a>
+<span class="sourceLineNo">311</span><a id="line.311">  }</a>
+<span class="sourceLineNo">312</span><a id="line.312"></a>
+<span class="sourceLineNo">313</span><a id="line.313">  /**</a>
+<span class="sourceLineNo">314</span><a id="line.314">   * Called when visiting the "back-matter" section of an OSCAL document.</a>
+<span class="sourceLineNo">315</span><a id="line.315">   * &lt;p&gt;</a>
+<span class="sourceLineNo">316</span><a id="line.316">   * Visits each contained resource.</a>
+<span class="sourceLineNo">317</span><a id="line.317">   *</a>
+<span class="sourceLineNo">318</span><a id="line.318">   * @param rootItem</a>
+<span class="sourceLineNo">319</span><a id="line.319">   *          the root Metaschema node item containing the "back-matter" node</a>
+<span class="sourceLineNo">320</span><a id="line.320">   * @param state</a>
+<span class="sourceLineNo">321</span><a id="line.321">   *          the calling context information</a>
+<span class="sourceLineNo">322</span><a id="line.322">   */</a>
+<span class="sourceLineNo">323</span><a id="line.323">  protected void visitBackMatter(@NonNull IRootAssemblyNodeItem rootItem, T state) {</a>
+<span class="sourceLineNo">324</span><a id="line.324">    if (isVisitedItemType(IEntityItem.ItemType.RESOURCE)) {</a>
+<span class="sourceLineNo">325</span><a id="line.325">      BACK_MATTER_RESOURCES_METAPATH.evaluate(rootItem).asStream()</a>
+<span class="sourceLineNo">326</span><a id="line.326">          .map(item -&gt; (IRequiredValueModelNodeItem) item)</a>
+<span class="sourceLineNo">327</span><a id="line.327">          .forEachOrdered(resourceItem -&gt; {</a>
+<span class="sourceLineNo">328</span><a id="line.328">            visitResource(ObjectUtils.requireNonNull(resourceItem), rootItem, state);</a>
+<span class="sourceLineNo">329</span><a id="line.329">          });</a>
+<span class="sourceLineNo">330</span><a id="line.330">    }</a>
+<span class="sourceLineNo">331</span><a id="line.331">  }</a>
+<span class="sourceLineNo">332</span><a id="line.332"></a>
+<span class="sourceLineNo">333</span><a id="line.333">  /**</a>
+<span class="sourceLineNo">334</span><a id="line.334">   * Called when visiting a resource in the "back-matter" section of an OSCAL</a>
+<span class="sourceLineNo">335</span><a id="line.335">   * document.</a>
+<span class="sourceLineNo">336</span><a id="line.336">   * &lt;p&gt;</a>
+<span class="sourceLineNo">337</span><a id="line.337">   * Can be overridden by classes extending this interface to support processing</a>
+<span class="sourceLineNo">338</span><a id="line.338">   * of the visited object.</a>
+<span class="sourceLineNo">339</span><a id="line.339">   *</a>
+<span class="sourceLineNo">340</span><a id="line.340">   * @param item</a>
+<span class="sourceLineNo">341</span><a id="line.341">   *          the resource Metaschema node item which is a child of the "metadata"</a>
+<span class="sourceLineNo">342</span><a id="line.342">   *          node</a>
+<span class="sourceLineNo">343</span><a id="line.343">   * @param backMatterItem</a>
+<span class="sourceLineNo">344</span><a id="line.344">   *          the resource Metaschema node item containing the party</a>
+<span class="sourceLineNo">345</span><a id="line.345">   * @param state</a>
+<span class="sourceLineNo">346</span><a id="line.346">   *          the calling context information</a>
+<span class="sourceLineNo">347</span><a id="line.347">   */</a>
+<span class="sourceLineNo">348</span><a id="line.348">  protected void visitResource( // NOPMD noop default</a>
+<span class="sourceLineNo">349</span><a id="line.349">      @NonNull IRequiredValueModelNodeItem item,</a>
+<span class="sourceLineNo">350</span><a id="line.350">      @NonNull IRootAssemblyNodeItem backMatterItem,</a>
+<span class="sourceLineNo">351</span><a id="line.351">      T state) {</a>
+<span class="sourceLineNo">352</span><a id="line.352">    // do nothing</a>
+<span class="sourceLineNo">353</span><a id="line.353">  }</a>
+<span class="sourceLineNo">354</span><a id="line.354">}</a>
 
 
 

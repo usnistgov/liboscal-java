@@ -36,22 +36,25 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * Used to visit a catalog containing groups and controls.
  *
  * @param &lt;T&gt;
- *          the type of the state object used to pass calling context information
+ *          the type of the state object used to pass calling context
+ *          information
  * @param &lt;R&gt;
- *          the type of the result for visiting a collection of groups and/or controls
+ *          the type of the result for visiting a collection of groups and/or
+ *          controls
  */
-<span class="fc" id="L43">public abstract class AbstractCatalogVisitor&lt;T, R&gt; implements ICatalogVisitor&lt;T, R&gt; {</span>
+<span class="fc" id="L45">public abstract class AbstractCatalogVisitor&lt;T, R&gt; implements ICatalogVisitor&lt;T, R&gt; {</span>
 
   protected abstract R newDefaultResult(T state);
 
   protected abstract R aggregateResults(R first, R second, T state);
 
   protected R visitCatalog(@NonNull IDocumentNodeItem catalogDocument, T state) {
-<span class="fc" id="L50">    return visitGroupContainer(catalogDocument.getRootAssemblyNodeItem(), newDefaultResult(state), state);</span>
+<span class="fc" id="L52">    return visitGroupContainer(catalogDocument.getRootAssemblyNodeItem(), newDefaultResult(state), state);</span>
   }
 
   /**
-   * Visit the child groups and controls (in that order) of a given catalog or group container.
+   * Visit the child groups and controls (in that order) of a given catalog or
+   * group container.
    *
    * @param catalogOrGroup
    *          the catalog or group Metapath item currently being visited
@@ -65,12 +68,12 @@ import edu.umd.cs.findbugs.annotations.NonNull;
       @NonNull IRequiredValueModelNodeItem catalogOrGroup,
       R initialResult,
       T state) {
-<span class="fc" id="L68">    R result = catalogOrGroup.getModelItemsByName(&quot;group&quot;).stream()</span>
-<span class="fc" id="L69">        .map(groupItem -&gt; {</span>
-<span class="fc" id="L70">          return visitGroupItem(ObjectUtils.requireNonNull(groupItem), state);</span>
+<span class="fc" id="L71">    R result = catalogOrGroup.getModelItemsByName(&quot;group&quot;).stream()</span>
+<span class="fc" id="L72">        .map(groupItem -&gt; {</span>
+<span class="fc" id="L73">          return visitGroupItem(ObjectUtils.requireNonNull(groupItem), state);</span>
         })
-<span class="fc" id="L72">        .reduce(initialResult, (first, second) -&gt; aggregateResults(first, second, state));</span>
-<span class="fc" id="L73">    return visitControlContainer(catalogOrGroup, result, state);</span>
+<span class="fc" id="L75">        .reduce(initialResult, (first, second) -&gt; aggregateResults(first, second, state));</span>
+<span class="fc" id="L76">    return visitControlContainer(catalogOrGroup, result, state);</span>
   }
 
   /**
@@ -85,8 +88,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
    * @return a meaningful result of the given type
    */
   protected R visitGroupItem(@NonNull IRequiredValueModelNodeItem item, T state) {
-<span class="fc" id="L88">    R childResult = visitGroupContainer(item, newDefaultResult(state), state);</span>
-<span class="fc" id="L89">    return visitGroupInternal(item, childResult, state);</span>
+<span class="fc" id="L91">    R childResult = visitGroupContainer(item, newDefaultResult(state), state);</span>
+<span class="fc" id="L92">    return visitGroupInternal(item, childResult, state);</span>
   }
 
   /**
@@ -104,11 +107,12 @@ import edu.umd.cs.findbugs.annotations.NonNull;
       @NonNull IRequiredValueModelNodeItem item,
       R childResult,
       T state) {
-<span class="nc" id="L107">    return visitGroup(item, childResult, state);</span>
+<span class="nc" id="L110">    return visitGroup(item, childResult, state);</span>
   }
 
   /**
-   * Visit the child controls (in that order) of a given catalog, group, or control container.
+   * Visit the child controls (in that order) of a given catalog, group, or
+   * control container.
    *
    * @param catalogOrGroupOrControl
    *          the catalog, group, or control Metapath item currently being visited
@@ -122,11 +126,11 @@ import edu.umd.cs.findbugs.annotations.NonNull;
       @NonNull IRequiredValueModelNodeItem catalogOrGroupOrControl,
       R initialResult,
       T state) {
-<span class="fc" id="L125">    return catalogOrGroupOrControl.getModelItemsByName(&quot;control&quot;).stream()</span>
-<span class="fc" id="L126">        .map(controlItem -&gt; {</span>
-<span class="fc" id="L127">          return visitControlItem(ObjectUtils.requireNonNull(controlItem), state);</span>
+<span class="fc" id="L129">    return catalogOrGroupOrControl.getModelItemsByName(&quot;control&quot;).stream()</span>
+<span class="fc" id="L130">        .map(controlItem -&gt; {</span>
+<span class="fc" id="L131">          return visitControlItem(ObjectUtils.requireNonNull(controlItem), state);</span>
         })
-<span class="fc" id="L129">        .reduce(initialResult, (first, second) -&gt; aggregateResults(first, second, state));</span>
+<span class="fc" id="L133">        .reduce(initialResult, (first, second) -&gt; aggregateResults(first, second, state));</span>
   }
 
   /**
@@ -141,8 +145,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
    * @return a meaningful result of the given type
    */
   protected R visitControlItem(@NonNull IRequiredValueModelNodeItem item, T state) {
-<span class="fc" id="L144">    R childResult = visitControlContainer(item, newDefaultResult(state), state);</span>
-<span class="fc" id="L145">    return visitControlInternal(item, childResult, state);</span>
+<span class="fc" id="L148">    R childResult = visitControlContainer(item, newDefaultResult(state), state);</span>
+<span class="fc" id="L149">    return visitControlInternal(item, childResult, state);</span>
   }
 
   /**
@@ -157,7 +161,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
    * @return a meaningful result of the given type
    */
   protected R visitControlInternal(@NonNull IRequiredValueModelNodeItem controlItem, R childResult, T state) {
-<span class="nc" id="L160">    return visitControl(controlItem, childResult, state);</span>
+<span class="nc" id="L164">    return visitControl(controlItem, childResult, state);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -538,169 +538,169 @@
 <span class="sourceLineNo">529</span><a id="line.529">    }</a>
 <span class="sourceLineNo">530</span><a id="line.530"></a>
 <span class="sourceLineNo">531</span><a id="line.531">    /**</a>
-<span class="sourceLineNo">532</span><a id="line.532">     * A URL-based pointer to an external resource with an optional hash for verification and change detection.</a>
+<span class="sourceLineNo">532</span><a id="line.532">     * A resource encoded using the Base64 alphabet defined by &lt;a href="https://www.rfc-editor.org/rfc/rfc2045.html"&gt;RFC 2045&lt;/a&gt;.</a>
 <span class="sourceLineNo">533</span><a id="line.533">     */</a>
-<span class="sourceLineNo">534</span><a id="line.534">    @MetaschemaAssembly(</a>
-<span class="sourceLineNo">535</span><a id="line.535">        formalName = "Resource link",</a>
-<span class="sourceLineNo">536</span><a id="line.536">        description = "A URL-based pointer to an external resource with an optional hash for verification and change detection.",</a>
-<span class="sourceLineNo">537</span><a id="line.537">        name = "rlink",</a>
+<span class="sourceLineNo">534</span><a id="line.534">    @MetaschemaField(</a>
+<span class="sourceLineNo">535</span><a id="line.535">        formalName = "Base64",</a>
+<span class="sourceLineNo">536</span><a id="line.536">        description = "A resource encoded using the Base64 alphabet defined by [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045.html).",</a>
+<span class="sourceLineNo">537</span><a id="line.537">        name = "base64",</a>
 <span class="sourceLineNo">538</span><a id="line.538">        metaschema = OscalMetadataMetaschema.class,</a>
-<span class="sourceLineNo">539</span><a id="line.539">        remarks = "Multiple `rlink` objects can be included for a resource. In such a case, all provided `rlink` items are intended to be equivalent in content, but may differ in structure or format.\n"</a>
-<span class="sourceLineNo">540</span><a id="line.540">                + "\n"</a>
-<span class="sourceLineNo">541</span><a id="line.541">                + "A `media-type` is used to identify the format of a given rlink, and can be used to differentiate items in a collection of rlinks. The `media-type` provides a hint to the OSCAL document consumer about the structure of the resource referenced by the `rlink`."</a>
-<span class="sourceLineNo">542</span><a id="line.542">    )</a>
-<span class="sourceLineNo">543</span><a id="line.543">    public static class Rlink {</a>
-<span class="sourceLineNo">544</span><a id="line.544">      @BoundFlag(</a>
-<span class="sourceLineNo">545</span><a id="line.545">          formalName = "Hypertext Reference",</a>
-<span class="sourceLineNo">546</span><a id="line.546">          description = "A resolvable URL pointing to the referenced resource.",</a>
-<span class="sourceLineNo">547</span><a id="line.547">          useName = "href",</a>
-<span class="sourceLineNo">548</span><a id="line.548">          required = true,</a>
-<span class="sourceLineNo">549</span><a id="line.549">          typeAdapter = UriReferenceAdapter.class,</a>
-<span class="sourceLineNo">550</span><a id="line.550">          remarks = "This value may be either:\n"</a>
-<span class="sourceLineNo">551</span><a id="line.551">                  + "\n"</a>
-<span class="sourceLineNo">552</span><a id="line.552">                  + "1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n"</a>
-<span class="sourceLineNo">553</span><a id="line.553">                  + "2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or"</a>
-<span class="sourceLineNo">554</span><a id="line.554">      )</a>
-<span class="sourceLineNo">555</span><a id="line.555">      private URI _href;</a>
-<span class="sourceLineNo">556</span><a id="line.556"></a>
-<span class="sourceLineNo">557</span><a id="line.557">      @BoundFlag(</a>
-<span class="sourceLineNo">558</span><a id="line.558">          formalName = "Media Type",</a>
-<span class="sourceLineNo">559</span><a id="line.559">          description = "A label that indicates the nature of a resource, as a data serialization or format.",</a>
-<span class="sourceLineNo">560</span><a id="line.560">          useName = "media-type",</a>
-<span class="sourceLineNo">561</span><a id="line.561">          typeAdapter = StringAdapter.class</a>
-<span class="sourceLineNo">562</span><a id="line.562">      )</a>
-<span class="sourceLineNo">563</span><a id="line.563">      private String _mediaType;</a>
-<span class="sourceLineNo">564</span><a id="line.564"></a>
-<span class="sourceLineNo">565</span><a id="line.565">      /**</a>
-<span class="sourceLineNo">566</span><a id="line.566">       * "A hash of the resource identified by &lt;code&gt;href&lt;/code&gt;, which can be used to verify the resource was not changed since it was hashed."</a>
-<span class="sourceLineNo">567</span><a id="line.567">       */</a>
-<span class="sourceLineNo">568</span><a id="line.568">      @BoundField(</a>
-<span class="sourceLineNo">569</span><a id="line.569">          formalName = "Hash",</a>
-<span class="sourceLineNo">570</span><a id="line.570">          description = "A hash of the resource identified by `href`, which can be used to verify the resource was not changed since it was hashed.",</a>
-<span class="sourceLineNo">571</span><a id="line.571">          useName = "hash",</a>
-<span class="sourceLineNo">572</span><a id="line.572">          maxOccurs = -1,</a>
-<span class="sourceLineNo">573</span><a id="line.573">          remarks = "The `hash` value can be used to confirm that the resource referenced by the `href` is the same resources that was hashed by retrieving the resource, calculating a hash, and comparing the result to this value."</a>
-<span class="sourceLineNo">574</span><a id="line.574">      )</a>
-<span class="sourceLineNo">575</span><a id="line.575">      @GroupAs(</a>
-<span class="sourceLineNo">576</span><a id="line.576">          name = "hashes",</a>
-<span class="sourceLineNo">577</span><a id="line.577">          inJson = JsonGroupAsBehavior.LIST</a>
-<span class="sourceLineNo">578</span><a id="line.578">      )</a>
-<span class="sourceLineNo">579</span><a id="line.579">      private List&lt;Hash&gt; _hashes;</a>
-<span class="sourceLineNo">580</span><a id="line.580"></a>
-<span class="sourceLineNo">581</span><a id="line.581">      public Rlink() {</a>
-<span class="sourceLineNo">582</span><a id="line.582">      }</a>
-<span class="sourceLineNo">583</span><a id="line.583"></a>
-<span class="sourceLineNo">584</span><a id="line.584">      public URI getHref() {</a>
-<span class="sourceLineNo">585</span><a id="line.585">        return _href;</a>
-<span class="sourceLineNo">586</span><a id="line.586">      }</a>
-<span class="sourceLineNo">587</span><a id="line.587"></a>
-<span class="sourceLineNo">588</span><a id="line.588">      public void setHref(URI value) {</a>
-<span class="sourceLineNo">589</span><a id="line.589">        _href = value;</a>
-<span class="sourceLineNo">590</span><a id="line.590">      }</a>
-<span class="sourceLineNo">591</span><a id="line.591"></a>
-<span class="sourceLineNo">592</span><a id="line.592">      public String getMediaType() {</a>
-<span class="sourceLineNo">593</span><a id="line.593">        return _mediaType;</a>
+<span class="sourceLineNo">539</span><a id="line.539">        isCollapsible = false</a>
+<span class="sourceLineNo">540</span><a id="line.540">    )</a>
+<span class="sourceLineNo">541</span><a id="line.541">    public static class Base64 {</a>
+<span class="sourceLineNo">542</span><a id="line.542">      @MetaschemaFieldValue(</a>
+<span class="sourceLineNo">543</span><a id="line.543">          valueKeyName = "value",</a>
+<span class="sourceLineNo">544</span><a id="line.544">          typeAdapter = Base64Adapter.class</a>
+<span class="sourceLineNo">545</span><a id="line.545">      )</a>
+<span class="sourceLineNo">546</span><a id="line.546">      private ByteBuffer _value;</a>
+<span class="sourceLineNo">547</span><a id="line.547"></a>
+<span class="sourceLineNo">548</span><a id="line.548">      @BoundFlag(</a>
+<span class="sourceLineNo">549</span><a id="line.549">          formalName = "File Name",</a>
+<span class="sourceLineNo">550</span><a id="line.550">          description = "Name of the file before it was encoded as Base64 to be embedded in a `resource`. This is the name that will be assigned to the file when the file is decoded.",</a>
+<span class="sourceLineNo">551</span><a id="line.551">          useName = "filename",</a>
+<span class="sourceLineNo">552</span><a id="line.552">          typeAdapter = TokenAdapter.class</a>
+<span class="sourceLineNo">553</span><a id="line.553">      )</a>
+<span class="sourceLineNo">554</span><a id="line.554">      private String _filename;</a>
+<span class="sourceLineNo">555</span><a id="line.555"></a>
+<span class="sourceLineNo">556</span><a id="line.556">      @BoundFlag(</a>
+<span class="sourceLineNo">557</span><a id="line.557">          formalName = "Media Type",</a>
+<span class="sourceLineNo">558</span><a id="line.558">          description = "A label that indicates the nature of a resource, as a data serialization or format.",</a>
+<span class="sourceLineNo">559</span><a id="line.559">          useName = "media-type",</a>
+<span class="sourceLineNo">560</span><a id="line.560">          typeAdapter = StringAdapter.class</a>
+<span class="sourceLineNo">561</span><a id="line.561">      )</a>
+<span class="sourceLineNo">562</span><a id="line.562">      private String _mediaType;</a>
+<span class="sourceLineNo">563</span><a id="line.563"></a>
+<span class="sourceLineNo">564</span><a id="line.564">      public Base64() {</a>
+<span class="sourceLineNo">565</span><a id="line.565">      }</a>
+<span class="sourceLineNo">566</span><a id="line.566"></a>
+<span class="sourceLineNo">567</span><a id="line.567">      public ByteBuffer getValue() {</a>
+<span class="sourceLineNo">568</span><a id="line.568">        return _value;</a>
+<span class="sourceLineNo">569</span><a id="line.569">      }</a>
+<span class="sourceLineNo">570</span><a id="line.570"></a>
+<span class="sourceLineNo">571</span><a id="line.571">      public void setValue(ByteBuffer value) {</a>
+<span class="sourceLineNo">572</span><a id="line.572">        _value = value;</a>
+<span class="sourceLineNo">573</span><a id="line.573">      }</a>
+<span class="sourceLineNo">574</span><a id="line.574"></a>
+<span class="sourceLineNo">575</span><a id="line.575">      public String getFilename() {</a>
+<span class="sourceLineNo">576</span><a id="line.576">        return _filename;</a>
+<span class="sourceLineNo">577</span><a id="line.577">      }</a>
+<span class="sourceLineNo">578</span><a id="line.578"></a>
+<span class="sourceLineNo">579</span><a id="line.579">      public void setFilename(String value) {</a>
+<span class="sourceLineNo">580</span><a id="line.580">        _filename = value;</a>
+<span class="sourceLineNo">581</span><a id="line.581">      }</a>
+<span class="sourceLineNo">582</span><a id="line.582"></a>
+<span class="sourceLineNo">583</span><a id="line.583">      public String getMediaType() {</a>
+<span class="sourceLineNo">584</span><a id="line.584">        return _mediaType;</a>
+<span class="sourceLineNo">585</span><a id="line.585">      }</a>
+<span class="sourceLineNo">586</span><a id="line.586"></a>
+<span class="sourceLineNo">587</span><a id="line.587">      public void setMediaType(String value) {</a>
+<span class="sourceLineNo">588</span><a id="line.588">        _mediaType = value;</a>
+<span class="sourceLineNo">589</span><a id="line.589">      }</a>
+<span class="sourceLineNo">590</span><a id="line.590"></a>
+<span class="sourceLineNo">591</span><a id="line.591">      @Override</a>
+<span class="sourceLineNo">592</span><a id="line.592">      public String toString() {</a>
+<span class="sourceLineNo">593</span><a id="line.593">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
 <span class="sourceLineNo">594</span><a id="line.594">      }</a>
-<span class="sourceLineNo">595</span><a id="line.595"></a>
-<span class="sourceLineNo">596</span><a id="line.596">      public void setMediaType(String value) {</a>
-<span class="sourceLineNo">597</span><a id="line.597">        _mediaType = value;</a>
-<span class="sourceLineNo">598</span><a id="line.598">      }</a>
-<span class="sourceLineNo">599</span><a id="line.599"></a>
-<span class="sourceLineNo">600</span><a id="line.600">      public List&lt;Hash&gt; getHashes() {</a>
-<span class="sourceLineNo">601</span><a id="line.601">        return _hashes;</a>
-<span class="sourceLineNo">602</span><a id="line.602">      }</a>
-<span class="sourceLineNo">603</span><a id="line.603"></a>
-<span class="sourceLineNo">604</span><a id="line.604">      public void setHashes(List&lt;Hash&gt; value) {</a>
-<span class="sourceLineNo">605</span><a id="line.605">        _hashes = value;</a>
-<span class="sourceLineNo">606</span><a id="line.606">      }</a>
-<span class="sourceLineNo">607</span><a id="line.607"></a>
-<span class="sourceLineNo">608</span><a id="line.608">      /**</a>
-<span class="sourceLineNo">609</span><a id="line.609">       * Add a new {@link Hash} item to the underlying collection.</a>
-<span class="sourceLineNo">610</span><a id="line.610">       * @param item the item to add</a>
-<span class="sourceLineNo">611</span><a id="line.611">       * @return {@code true}</a>
-<span class="sourceLineNo">612</span><a id="line.612">       */</a>
-<span class="sourceLineNo">613</span><a id="line.613">      public boolean addHash(Hash item) {</a>
-<span class="sourceLineNo">614</span><a id="line.614">        Hash value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">615</span><a id="line.615">        if (_hashes == null) {</a>
-<span class="sourceLineNo">616</span><a id="line.616">          _hashes = new LinkedList&lt;&gt;();</a>
-<span class="sourceLineNo">617</span><a id="line.617">        }</a>
-<span class="sourceLineNo">618</span><a id="line.618">        return _hashes.add(value);</a>
-<span class="sourceLineNo">619</span><a id="line.619">      }</a>
-<span class="sourceLineNo">620</span><a id="line.620"></a>
-<span class="sourceLineNo">621</span><a id="line.621">      /**</a>
-<span class="sourceLineNo">622</span><a id="line.622">       * Remove the first matching {@link Hash} item from the underlying collection.</a>
-<span class="sourceLineNo">623</span><a id="line.623">       * @param item the item to remove</a>
-<span class="sourceLineNo">624</span><a id="line.624">       * @return {@code true} if the item was removed or {@code false} otherwise</a>
-<span class="sourceLineNo">625</span><a id="line.625">       */</a>
-<span class="sourceLineNo">626</span><a id="line.626">      public boolean removeHash(Hash item) {</a>
-<span class="sourceLineNo">627</span><a id="line.627">        Hash value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
-<span class="sourceLineNo">628</span><a id="line.628">        return _hashes == null ? false : _hashes.remove(value);</a>
-<span class="sourceLineNo">629</span><a id="line.629">      }</a>
+<span class="sourceLineNo">595</span><a id="line.595">    }</a>
+<span class="sourceLineNo">596</span><a id="line.596"></a>
+<span class="sourceLineNo">597</span><a id="line.597">    /**</a>
+<span class="sourceLineNo">598</span><a id="line.598">     * A URL-based pointer to an external resource with an optional hash for verification and change detection.</a>
+<span class="sourceLineNo">599</span><a id="line.599">     */</a>
+<span class="sourceLineNo">600</span><a id="line.600">    @MetaschemaAssembly(</a>
+<span class="sourceLineNo">601</span><a id="line.601">        formalName = "Resource link",</a>
+<span class="sourceLineNo">602</span><a id="line.602">        description = "A URL-based pointer to an external resource with an optional hash for verification and change detection.",</a>
+<span class="sourceLineNo">603</span><a id="line.603">        name = "rlink",</a>
+<span class="sourceLineNo">604</span><a id="line.604">        metaschema = OscalMetadataMetaschema.class,</a>
+<span class="sourceLineNo">605</span><a id="line.605">        remarks = "Multiple `rlink` objects can be included for a resource. In such a case, all provided `rlink` items are intended to be equivalent in content, but may differ in structure or format.\n"</a>
+<span class="sourceLineNo">606</span><a id="line.606">                + "\n"</a>
+<span class="sourceLineNo">607</span><a id="line.607">                + "A `media-type` is used to identify the format of a given rlink, and can be used to differentiate items in a collection of rlinks. The `media-type` provides a hint to the OSCAL document consumer about the structure of the resource referenced by the `rlink`."</a>
+<span class="sourceLineNo">608</span><a id="line.608">    )</a>
+<span class="sourceLineNo">609</span><a id="line.609">    public static class Rlink {</a>
+<span class="sourceLineNo">610</span><a id="line.610">      @BoundFlag(</a>
+<span class="sourceLineNo">611</span><a id="line.611">          formalName = "Hypertext Reference",</a>
+<span class="sourceLineNo">612</span><a id="line.612">          description = "A resolvable URL pointing to the referenced resource.",</a>
+<span class="sourceLineNo">613</span><a id="line.613">          useName = "href",</a>
+<span class="sourceLineNo">614</span><a id="line.614">          required = true,</a>
+<span class="sourceLineNo">615</span><a id="line.615">          typeAdapter = UriReferenceAdapter.class,</a>
+<span class="sourceLineNo">616</span><a id="line.616">          remarks = "This value may be either:\n"</a>
+<span class="sourceLineNo">617</span><a id="line.617">                  + "\n"</a>
+<span class="sourceLineNo">618</span><a id="line.618">                  + "1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n"</a>
+<span class="sourceLineNo">619</span><a id="line.619">                  + "2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or"</a>
+<span class="sourceLineNo">620</span><a id="line.620">      )</a>
+<span class="sourceLineNo">621</span><a id="line.621">      private URI _href;</a>
+<span class="sourceLineNo">622</span><a id="line.622"></a>
+<span class="sourceLineNo">623</span><a id="line.623">      @BoundFlag(</a>
+<span class="sourceLineNo">624</span><a id="line.624">          formalName = "Media Type",</a>
+<span class="sourceLineNo">625</span><a id="line.625">          description = "A label that indicates the nature of a resource, as a data serialization or format.",</a>
+<span class="sourceLineNo">626</span><a id="line.626">          useName = "media-type",</a>
+<span class="sourceLineNo">627</span><a id="line.627">          typeAdapter = StringAdapter.class</a>
+<span class="sourceLineNo">628</span><a id="line.628">      )</a>
+<span class="sourceLineNo">629</span><a id="line.629">      private String _mediaType;</a>
 <span class="sourceLineNo">630</span><a id="line.630"></a>
-<span class="sourceLineNo">631</span><a id="line.631">      @Override</a>
-<span class="sourceLineNo">632</span><a id="line.632">      public String toString() {</a>
-<span class="sourceLineNo">633</span><a id="line.633">        return new ReflectionToStringBuilder(this, MultilineRecursiveToStringStyle.MULTI_LINE_STYLE).toString();</a>
-<span class="sourceLineNo">634</span><a id="line.634">      }</a>
-<span class="sourceLineNo">635</span><a id="line.635">    }</a>
-<span class="sourceLineNo">636</span><a id="line.636"></a>
-<span class="sourceLineNo">637</span><a id="line.637">    /**</a>
-<span class="sourceLineNo">638</span><a id="line.638">     * A resource encoded using the Base64 alphabet defined by &lt;a href="https://www.rfc-editor.org/rfc/rfc2045.html"&gt;RFC 2045&lt;/a&gt;.</a>
-<span class="sourceLineNo">639</span><a id="line.639">     */</a>
-<span class="sourceLineNo">640</span><a id="line.640">    @MetaschemaField(</a>
-<span class="sourceLineNo">641</span><a id="line.641">        formalName = "Base64",</a>
-<span class="sourceLineNo">642</span><a id="line.642">        description = "A resource encoded using the Base64 alphabet defined by [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045.html).",</a>
-<span class="sourceLineNo">643</span><a id="line.643">        name = "base64",</a>
-<span class="sourceLineNo">644</span><a id="line.644">        metaschema = OscalMetadataMetaschema.class,</a>
-<span class="sourceLineNo">645</span><a id="line.645">        isCollapsible = false</a>
-<span class="sourceLineNo">646</span><a id="line.646">    )</a>
-<span class="sourceLineNo">647</span><a id="line.647">    public static class Base64 {</a>
-<span class="sourceLineNo">648</span><a id="line.648">      @MetaschemaFieldValue(</a>
-<span class="sourceLineNo">649</span><a id="line.649">          valueKeyName = "value",</a>
-<span class="sourceLineNo">650</span><a id="line.650">          typeAdapter = Base64Adapter.class</a>
-<span class="sourceLineNo">651</span><a id="line.651">      )</a>
-<span class="sourceLineNo">652</span><a id="line.652">      private ByteBuffer _value;</a>
+<span class="sourceLineNo">631</span><a id="line.631">      /**</a>
+<span class="sourceLineNo">632</span><a id="line.632">       * "A hash of the resource identified by &lt;code&gt;href&lt;/code&gt;, which can be used to verify the resource was not changed since it was hashed."</a>
+<span class="sourceLineNo">633</span><a id="line.633">       */</a>
+<span class="sourceLineNo">634</span><a id="line.634">      @BoundField(</a>
+<span class="sourceLineNo">635</span><a id="line.635">          formalName = "Hash",</a>
+<span class="sourceLineNo">636</span><a id="line.636">          description = "A hash of the resource identified by `href`, which can be used to verify the resource was not changed since it was hashed.",</a>
+<span class="sourceLineNo">637</span><a id="line.637">          useName = "hash",</a>
+<span class="sourceLineNo">638</span><a id="line.638">          maxOccurs = -1,</a>
+<span class="sourceLineNo">639</span><a id="line.639">          remarks = "The `hash` value can be used to confirm that the resource referenced by the `href` is the same resources that was hashed by retrieving the resource, calculating a hash, and comparing the result to this value."</a>
+<span class="sourceLineNo">640</span><a id="line.640">      )</a>
+<span class="sourceLineNo">641</span><a id="line.641">      @GroupAs(</a>
+<span class="sourceLineNo">642</span><a id="line.642">          name = "hashes",</a>
+<span class="sourceLineNo">643</span><a id="line.643">          inJson = JsonGroupAsBehavior.LIST</a>
+<span class="sourceLineNo">644</span><a id="line.644">      )</a>
+<span class="sourceLineNo">645</span><a id="line.645">      private List&lt;Hash&gt; _hashes;</a>
+<span class="sourceLineNo">646</span><a id="line.646"></a>
+<span class="sourceLineNo">647</span><a id="line.647">      public Rlink() {</a>
+<span class="sourceLineNo">648</span><a id="line.648">      }</a>
+<span class="sourceLineNo">649</span><a id="line.649"></a>
+<span class="sourceLineNo">650</span><a id="line.650">      public URI getHref() {</a>
+<span class="sourceLineNo">651</span><a id="line.651">        return _href;</a>
+<span class="sourceLineNo">652</span><a id="line.652">      }</a>
 <span class="sourceLineNo">653</span><a id="line.653"></a>
-<span class="sourceLineNo">654</span><a id="line.654">      @BoundFlag(</a>
-<span class="sourceLineNo">655</span><a id="line.655">          formalName = "File Name",</a>
-<span class="sourceLineNo">656</span><a id="line.656">          description = "Name of the file before it was encoded as Base64 to be embedded in a `resource`. This is the name that will be assigned to the file when the file is decoded.",</a>
-<span class="sourceLineNo">657</span><a id="line.657">          useName = "filename",</a>
-<span class="sourceLineNo">658</span><a id="line.658">          typeAdapter = TokenAdapter.class</a>
-<span class="sourceLineNo">659</span><a id="line.659">      )</a>
-<span class="sourceLineNo">660</span><a id="line.660">      private String _filename;</a>
+<span class="sourceLineNo">654</span><a id="line.654">      public void setHref(URI value) {</a>
+<span class="sourceLineNo">655</span><a id="line.655">        _href = value;</a>
+<span class="sourceLineNo">656</span><a id="line.656">      }</a>
+<span class="sourceLineNo">657</span><a id="line.657"></a>
+<span class="sourceLineNo">658</span><a id="line.658">      public String getMediaType() {</a>
+<span class="sourceLineNo">659</span><a id="line.659">        return _mediaType;</a>
+<span class="sourceLineNo">660</span><a id="line.660">      }</a>
 <span class="sourceLineNo">661</span><a id="line.661"></a>
-<span class="sourceLineNo">662</span><a id="line.662">      @BoundFlag(</a>
-<span class="sourceLineNo">663</span><a id="line.663">          formalName = "Media Type",</a>
-<span class="sourceLineNo">664</span><a id="line.664">          description = "A label that indicates the nature of a resource, as a data serialization or format.",</a>
-<span class="sourceLineNo">665</span><a id="line.665">          useName = "media-type",</a>
-<span class="sourceLineNo">666</span><a id="line.666">          typeAdapter = StringAdapter.class</a>
-<span class="sourceLineNo">667</span><a id="line.667">      )</a>
-<span class="sourceLineNo">668</span><a id="line.668">      private String _mediaType;</a>
+<span class="sourceLineNo">662</span><a id="line.662">      public void setMediaType(String value) {</a>
+<span class="sourceLineNo">663</span><a id="line.663">        _mediaType = value;</a>
+<span class="sourceLineNo">664</span><a id="line.664">      }</a>
+<span class="sourceLineNo">665</span><a id="line.665"></a>
+<span class="sourceLineNo">666</span><a id="line.666">      public List&lt;Hash&gt; getHashes() {</a>
+<span class="sourceLineNo">667</span><a id="line.667">        return _hashes;</a>
+<span class="sourceLineNo">668</span><a id="line.668">      }</a>
 <span class="sourceLineNo">669</span><a id="line.669"></a>
-<span class="sourceLineNo">670</span><a id="line.670">      public Base64() {</a>
-<span class="sourceLineNo">671</span><a id="line.671">      }</a>
-<span class="sourceLineNo">672</span><a id="line.672"></a>
-<span class="sourceLineNo">673</span><a id="line.673">      public ByteBuffer getValue() {</a>
-<span class="sourceLineNo">674</span><a id="line.674">        return _value;</a>
-<span class="sourceLineNo">675</span><a id="line.675">      }</a>
-<span class="sourceLineNo">676</span><a id="line.676"></a>
-<span class="sourceLineNo">677</span><a id="line.677">      public void setValue(ByteBuffer value) {</a>
-<span class="sourceLineNo">678</span><a id="line.678">        _value = value;</a>
-<span class="sourceLineNo">679</span><a id="line.679">      }</a>
-<span class="sourceLineNo">680</span><a id="line.680"></a>
-<span class="sourceLineNo">681</span><a id="line.681">      public String getFilename() {</a>
-<span class="sourceLineNo">682</span><a id="line.682">        return _filename;</a>
-<span class="sourceLineNo">683</span><a id="line.683">      }</a>
-<span class="sourceLineNo">684</span><a id="line.684"></a>
-<span class="sourceLineNo">685</span><a id="line.685">      public void setFilename(String value) {</a>
-<span class="sourceLineNo">686</span><a id="line.686">        _filename = value;</a>
-<span class="sourceLineNo">687</span><a id="line.687">      }</a>
-<span class="sourceLineNo">688</span><a id="line.688"></a>
-<span class="sourceLineNo">689</span><a id="line.689">      public String getMediaType() {</a>
-<span class="sourceLineNo">690</span><a id="line.690">        return _mediaType;</a>
-<span class="sourceLineNo">691</span><a id="line.691">      }</a>
-<span class="sourceLineNo">692</span><a id="line.692"></a>
-<span class="sourceLineNo">693</span><a id="line.693">      public void setMediaType(String value) {</a>
-<span class="sourceLineNo">694</span><a id="line.694">        _mediaType = value;</a>
+<span class="sourceLineNo">670</span><a id="line.670">      public void setHashes(List&lt;Hash&gt; value) {</a>
+<span class="sourceLineNo">671</span><a id="line.671">        _hashes = value;</a>
+<span class="sourceLineNo">672</span><a id="line.672">      }</a>
+<span class="sourceLineNo">673</span><a id="line.673"></a>
+<span class="sourceLineNo">674</span><a id="line.674">      /**</a>
+<span class="sourceLineNo">675</span><a id="line.675">       * Add a new {@link Hash} item to the underlying collection.</a>
+<span class="sourceLineNo">676</span><a id="line.676">       * @param item the item to add</a>
+<span class="sourceLineNo">677</span><a id="line.677">       * @return {@code true}</a>
+<span class="sourceLineNo">678</span><a id="line.678">       */</a>
+<span class="sourceLineNo">679</span><a id="line.679">      public boolean addHash(Hash item) {</a>
+<span class="sourceLineNo">680</span><a id="line.680">        Hash value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">681</span><a id="line.681">        if (_hashes == null) {</a>
+<span class="sourceLineNo">682</span><a id="line.682">          _hashes = new LinkedList&lt;&gt;();</a>
+<span class="sourceLineNo">683</span><a id="line.683">        }</a>
+<span class="sourceLineNo">684</span><a id="line.684">        return _hashes.add(value);</a>
+<span class="sourceLineNo">685</span><a id="line.685">      }</a>
+<span class="sourceLineNo">686</span><a id="line.686"></a>
+<span class="sourceLineNo">687</span><a id="line.687">      /**</a>
+<span class="sourceLineNo">688</span><a id="line.688">       * Remove the first matching {@link Hash} item from the underlying collection.</a>
+<span class="sourceLineNo">689</span><a id="line.689">       * @param item the item to remove</a>
+<span class="sourceLineNo">690</span><a id="line.690">       * @return {@code true} if the item was removed or {@code false} otherwise</a>
+<span class="sourceLineNo">691</span><a id="line.691">       */</a>
+<span class="sourceLineNo">692</span><a id="line.692">      public boolean removeHash(Hash item) {</a>
+<span class="sourceLineNo">693</span><a id="line.693">        Hash value = ObjectUtils.requireNonNull(item,"item cannot be null");</a>
+<span class="sourceLineNo">694</span><a id="line.694">        return _hashes == null ? false : _hashes.remove(value);</a>
 <span class="sourceLineNo">695</span><a id="line.695">      }</a>
 <span class="sourceLineNo">696</span><a id="line.696"></a>
 <span class="sourceLineNo">697</span><a id="line.697">      @Override</a>
