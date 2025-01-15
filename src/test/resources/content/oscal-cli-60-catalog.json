@@ -1,0 +1,108 @@
+{
+  "catalog": {
+    "uuid": "75505e0e-a09d-484a-a4a7-405dab6de2c9",
+    "controls": [
+      {
+        "id": "ac-17.400",
+        "parts": [
+          {
+            "prose": "Access to privileged account remotely is only done from dedicated management consoles.",
+            "name": "statement",
+            "id": "ac-17.400_smt"
+          },
+          {
+            "prose": "Remote access to systems represents a significant potential vulnerability that can be exploited by adversaries. As such, restricting the execution of privileged commands and access to security-relevant information via remote access reduces the exposure of the organization and the susceptibility to threats by adversaries to the remote access capability.",
+            "name": "guidance",
+            "id": "ac-17.400_gdn"
+          }
+        ],
+        "props": [
+          {
+            "name": "label",
+            "class": "zero-padded",
+            "value": "AC-17(400)"
+          },
+          {
+            "name": "label",
+            "value": "AC-17(400)"
+          },
+          {
+            "name": "sort-id",
+            "value": "ac-17.400"
+          }
+        ],
+        "title": "Privileged Accounts Remote Access"
+      },
+      {
+        "id": "sc-19",
+        "parts": [
+          {
+            "parts": [
+              {
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "a."
+                  }
+                ],
+                "prose": "Establishes usage restrictions and implementation guidance for Voice over Internet Protocol (VoIP) technologies based on the potential to cause damage to the information system if used maliciously; and",
+                "name": "item",
+                "id": "sc-19_smt.a"
+              },
+              {
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "b."
+                  }
+                ],
+                "prose": "Authorizes, monitors, and controls the use of VoIP within the information system.",
+                "name": "item",
+                "id": "sc-19_smt.b"
+              }
+            ],
+            "prose": "The organization:",
+            "name": "statement",
+            "id": "sc-19_smt"
+          },
+          {
+            "name": "guidance",
+            "links": [
+              {
+                "href": "#cm-6",
+                "rel": "related"
+              },
+              {
+                "href": "#sc-7",
+                "rel": "related"
+              },
+              {
+                "href": "#sc-15",
+                "rel": "related"
+              }
+            ],
+            "id": "sc-19_gdn"
+          }
+        ],
+        "props": [
+          {
+            "name": "label",
+            "value": "SC-19"
+          },
+          {
+            "name": "sort-id",
+            "value": "sc-19"
+          }
+        ],
+        "title": "Voice Over Internet Protocol"
+      }
+    ],
+    "metadata": {
+      "oscal-version": "1.1.2",
+      "last-modified": "2024-09-16T23:16:00Z",
+      "title": "OSCAL CLI #60 Control Catalog",
+      "version": "1.0.0"
+    },
+    "back-matter": {}
+  }
+}

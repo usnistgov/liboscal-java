@@ -1,0 +1,26 @@
+# ${project.name}
+
+A Java library to support processing OSCAL content.
+
+This open-source, Metaschema Java library offers a programmatic means to work with [OSCAL](https://pages.nist.gov/OSCAL/) models defined by the [Metaschema modeling language](https://github.com/metaschema-framework/metaschema). This framework also supports programmatically creating, modifying, parsing, and writing XML, JSON, and YAML OSCAL instance data. This work is intended to make it easier for Java software developers to incorporate OSCAL-based capabilities into their applications.
+
+The following features are supported by this library:
+- Reading and writing OSCAL documents in XML, JSON, and YAML formats into a common Java object model.
+- Resolution of OSCAL profiles to [produce resolved catalogs](https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/).
+- Validation of OSCAL content [well-formedness and validation](https://pages.nist.gov/OSCAL/concepts/validation/) of OSCAL syntax using XML and JSON schemas.
+- (Experimental) Validation of OSCAL content using [Metaschema](https://metaschema.dev/) constraints to enforce allowed values, cross-references, and some conditionally required data elements.
+- Builders for programmatically creating common OSCAL data elements.
+
+This library is based on the [Metaschema Java Tools](https://metaschema-java.metaschema.dev/) project.
+
+# Usage
+
+The following dependency can be added to your POM to use this library.
+
+```xml
+<dependency>
+  <groupId>${project.groupId}</groupId>
+  <artifactId>${project.artifactId}</artifactId>
+  <version>${project.version}</version>
+</dependency>
+```

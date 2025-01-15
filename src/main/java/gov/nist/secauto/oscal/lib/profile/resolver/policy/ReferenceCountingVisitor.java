@@ -1,27 +1,6 @@
 /*
- * Portions of this software was developed by employees of the National Institute
- * of Standards and Technology (NIST), an agency of the Federal Government and is
- * being made available as a public service. Pursuant to title 17 United States
- * Code Section 105, works of NIST employees are not subject to copyright
- * protection in the United States. This software may be subject to foreign
- * copyright. Permission in the United States and in foreign countries, to the
- * extent that NIST may hold copyright, to use, copy, modify, create derivative
- * works, and distribute this software and its documentation without fee is hereby
- * granted on a non-exclusive basis, provided that this notice and disclaimer
- * of warranty appears in all copies.
- *
- * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
- * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
- * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
- * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
- * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
- * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
- * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
- * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
- * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
- * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
- * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ * SPDX-FileCopyrightText: none
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
@@ -29,16 +8,21 @@ package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 import com.vladsch.flexmark.ast.InlineLinkNode;
 import com.vladsch.flexmark.util.ast.Node;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.IMarkupString;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.flexmark.InsertAnchorExtension.InsertAnchorNode;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
-import gov.nist.secauto.metaschema.model.common.metapath.function.library.FnData;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IMarkupItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.datatype.markup.IMarkupString;
+import gov.nist.secauto.metaschema.core.datatype.markup.flexmark.InsertAnchorExtension;
+import gov.nist.secauto.metaschema.core.datatype.markup.flexmark.InsertAnchorExtension.InsertAnchorNode;
+import gov.nist.secauto.metaschema.core.metapath.IMetapathExpression;
+import gov.nist.secauto.metaschema.core.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.core.metapath.item.atomic.IMarkupItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IFieldNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.qname.IEnhancedQName;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
+import gov.nist.secauto.oscal.lib.OscalModelConstants;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
@@ -46,6 +30,7 @@ import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.metadata.AbstractProperty;
 import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
+import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolver.UriResolver;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.AbstractCatalogEntityVisitor;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
@@ -53,7 +38,6 @@ import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URI;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,13 +47,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
-import javax.xml.namespace.QName;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class ReferenceCountingVisitor
+public final class ReferenceCountingVisitor
     extends AbstractCatalogEntityVisitor<ReferenceCountingVisitor.Context, Void>
     implements IReferenceVisitor<ReferenceCountingVisitor.Context> {
   private static final Logger LOGGER = LogManager.getLogger(ReferenceCountingVisitor.class);
@@ -77,21 +59,27 @@ public class ReferenceCountingVisitor
   private static final ReferenceCountingVisitor SINGLETON = new ReferenceCountingVisitor();
 
   @NonNull
-  private static final MetapathExpression PARAM_MARKUP_METAPATH
-      = MetapathExpression
-          .compile("label|usage|constraint/(description|tests/remarks)|guideline/prose|select/choice|remarks");
+  private static final IMetapathExpression PARAM_MARKUP_METAPATH
+      = IMetapathExpression
+          .compile(
+              "label|usage|constraint/(description|tests/remarks)|guideline/prose|select/choice|remarks",
+              OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
   @NonNull
-  private static final MetapathExpression ROLE_MARKUP_METAPATH
-      = MetapathExpression.compile("title|description|remarks");
+  private static final IMetapathExpression ROLE_MARKUP_METAPATH
+      = IMetapathExpression.compile("title|description|remarks",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
   @NonNull
-  private static final MetapathExpression LOCATION_MARKUP_METAPATH
-      = MetapathExpression.compile("title|remarks");
+  private static final IMetapathExpression LOCATION_MARKUP_METAPATH
+      = IMetapathExpression.compile("title|remarks",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
   @NonNull
-  private static final MetapathExpression PARTY_MARKUP_METAPATH
-      = MetapathExpression.compile("title|remarks");
+  private static final IMetapathExpression PARTY_MARKUP_METAPATH
+      = IMetapathExpression.compile("title|remarks",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
   @NonNull
-  private static final MetapathExpression RESOURCE_MARKUP_METAPATH
-      = MetapathExpression.compile("title|description|remarks");
+  private static final IMetapathExpression RESOURCE_MARKUP_METAPATH
+      = IMetapathExpression.compile("title|description|remarks",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
 
   @NonNull
   private static final IReferencePolicy<Property> PROPERTY_POLICY_IGNORE = IReferencePolicy.ignore();
@@ -99,7 +87,7 @@ public class ReferenceCountingVisitor
   private static final IReferencePolicy<Link> LINK_POLICY_IGNORE = IReferencePolicy.ignore();
 
   @NonNull
-  private static final Map<QName, IReferencePolicy<Property>> PROPERTY_POLICIES;
+  private static final Map<IEnhancedQName, IReferencePolicy<Property>> PROPERTY_POLICIES;
   @NonNull
   private static final Map<String, IReferencePolicy<Link>> LINK_POLICIES;
   @NonNull
@@ -129,12 +117,14 @@ public class ReferenceCountingVisitor
     LINK_POLICIES.put("corresp", LinkReferencePolicy.create(IEntityItem.ItemType.PART));
   }
 
+  @SuppressFBWarnings(value = "SING_SINGLETON_GETTER_NOT_SYNCHRONIZED", justification = "class initialization")
   public static ReferenceCountingVisitor instance() {
     return SINGLETON;
   }
 
-  public ReferenceCountingVisitor() {
-    // visit everything except parts, roles, locations, parties, parameters, and resources, which are
+  private ReferenceCountingVisitor() {
+    // visit everything except parts, roles, locations, parties, parameters, and
+    // resources, which are
     // handled differently by this visitor
     super(ObjectUtils.notNull(EnumSet.complementOf(
         EnumSet.of(
@@ -168,14 +158,18 @@ public class ReferenceCountingVisitor
   //
   // BackMatter backMatter = profile.getBackMatter();
   // if (backMatter != null) {
-  // for (BackMatter.Resource resource : CollectionUtil.listOrEmpty(backMatter.getResources())) {
+  // for (BackMatter.Resource resource :
+  // CollectionUtil.listOrEmpty(backMatter.getResources())) {
   // visitResource(resource);
   // }
   // }
   // }
 
-  public void visitCatalog(@NonNull IDocumentNodeItem catalogItem, @NonNull IIndexer indexer, @NonNull URI baseUri) {
-    Context context = new Context(indexer, baseUri);
+  public void visitCatalog(
+      @NonNull IDocumentNodeItem catalogItem,
+      @NonNull IIndexer indexer,
+      @NonNull UriResolver resolver) {
+    Context context = new Context(indexer, resolver);
     visitCatalog(catalogItem, context);
 
     IIndexer index = context.getIndexer();
@@ -203,12 +197,16 @@ public class ReferenceCountingVisitor
   }
 
   @Override
-  public Void visitGroup(@NonNull IRequiredValueModelNodeItem item, Void childResult, Context context) {
+  public Void visitGroup(
+      IAssemblyNodeItem item,
+      Void childResult,
+      Context context) {
     IIndexer index = context.getIndexer();
     // handle the group if it is selected
-    // a group will only be selected if it contains a descendant control that is selected
+    // a group will only be selected if it contains a descendant control that is
+    // selected
     if (IIndexer.SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {
-      CatalogGroup group = (CatalogGroup) item.getValue();
+      CatalogGroup group = ObjectUtils.requireNonNull((CatalogGroup) item.getValue());
       String id = group.getId();
 
       boolean resolve;
@@ -235,11 +233,14 @@ public class ReferenceCountingVisitor
   }
 
   @Override
-  public Void visitControl(@NonNull IRequiredValueModelNodeItem item, Void childResult, Context context) {
+  public Void visitControl(
+      IAssemblyNodeItem item,
+      Void childResult,
+      Context context) {
     IIndexer index = context.getIndexer();
     // handle the control if it is selected
     if (IIndexer.SelectionStatus.SELECTED.equals(index.getSelectionStatus(item))) {
-      Control control = (Control) item.getValue();
+      Control control = ObjectUtils.requireNonNull((Control) item.getValue());
       IEntityItem entity
           = context.getIndexer().getEntity(IEntityItem.ItemType.CONTROL, ObjectUtils.notNull(control.getId()), false);
 
@@ -257,21 +258,25 @@ public class ReferenceCountingVisitor
   }
 
   @Override
-  protected void visitParts(@NonNull IRequiredValueModelNodeItem groupOrControlItem, Context context) {
+  protected void visitParts(
+      IAssemblyNodeItem groupOrControlItem,
+      Context context) {
     // visits all descendant parts
-    CHILD_PART_METAPATH.evaluate(groupOrControlItem).asStream()
-        .map(item -> (IRequiredValueModelNodeItem) item)
+    CHILD_PART_METAPATH.evaluate(groupOrControlItem).stream()
+        .map(item -> (IAssemblyNodeItem) item)
         .forEachOrdered(partItem -> {
           visitPart(ObjectUtils.notNull(partItem), groupOrControlItem, context);
         });
   }
 
   @Override
-  protected void visitPart(IRequiredValueModelNodeItem item, IRequiredValueModelNodeItem groupOrControlItem,
+  protected void visitPart(
+      IAssemblyNodeItem item,
+      IAssemblyNodeItem groupOrControlItem,
       Context context) {
     assert context != null;
 
-    ControlPart part = (ControlPart) item.getValue();
+    ControlPart part = ObjectUtils.requireNonNull((ControlPart) item.getValue());
     String id = part.getId();
 
     boolean resolve;
@@ -295,14 +300,17 @@ public class ReferenceCountingVisitor
   }
 
   protected void resolveGroup(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IAssemblyNodeItem item,
       @NonNull Context context) {
     if (IIndexer.SelectionStatus.SELECTED.equals(context.getIndexer().getSelectionStatus(item))) {
 
       // process children
-      item.getModelItemsByName("title").forEach(child -> handleMarkup(ObjectUtils.notNull(child), context));
-      item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child), context));
-      item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child), context));
+      item.getModelItemsByName(OscalModelConstants.QNAME_TITLE)
+          .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
+      item.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+          .forEach(child -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+      item.getModelItemsByName(OscalModelConstants.QNAME_LINK)
+          .forEach(child -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
 
       // always visit parts
       visitParts(item, context);
@@ -312,12 +320,15 @@ public class ReferenceCountingVisitor
   }
 
   protected void resolveControl(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IAssemblyNodeItem item,
       @NonNull Context context) {
     // process non-control, non-param children
-    item.getModelItemsByName("title").forEach(child -> handleMarkup(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_TITLE)
+        .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+        .forEach(child -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_LINK)
+        .forEach(child -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
 
     // always visit parts
     visitParts(item, context);
@@ -326,83 +337,98 @@ public class ReferenceCountingVisitor
   }
 
   private static void resolveRole(@NonNull IEntityItem entity, @NonNull Context context) {
-    IRequiredValueModelNodeItem item = entity.getInstance();
-    item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child), context));
-    ROLE_MARKUP_METAPATH.evaluate(item).asList()
-        .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));
+    IModelNodeItem<?, ?> item = entity.getInstance();
+    item.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+        .forEach(child -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_LINK)
+        .forEach(child -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    ROLE_MARKUP_METAPATH.evaluate(item)
+        .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
   }
 
   private static void resolveParty(@NonNull IEntityItem entity, @NonNull Context context) {
-    IRequiredValueModelNodeItem item = entity.getInstance();
-    item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child), context));
-    PARTY_MARKUP_METAPATH.evaluate(item).asList()
-        .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));
+    IModelNodeItem<?, ?> item = entity.getInstance();
+    item.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+        .forEach(child -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_LINK)
+        .forEach(child -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    PARTY_MARKUP_METAPATH.evaluate(item)
+        .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
   }
 
   public static void resolveLocation(@NonNull IEntityItem entity, @NonNull Context context) {
-    IRequiredValueModelNodeItem item = entity.getInstance();
-    item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child), context));
-    LOCATION_MARKUP_METAPATH.evaluate(item).asList()
-        .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));
+    IModelNodeItem<?, ?> item = entity.getInstance();
+    item.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+        .forEach(child -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_LINK)
+        .forEach(child -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    LOCATION_MARKUP_METAPATH.evaluate(item)
+        .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
   }
 
   public static void resolveResource(@NonNull IEntityItem entity, @NonNull Context context) {
-    IRequiredValueModelNodeItem item = entity.getInstance();
+    IModelNodeItem<?, ?> item = entity.getInstance();
 
-    item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+        .forEach(child -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
 
-    item.getModelItemsByName("citation").forEach(child -> {
+    item.getModelItemsByName(OscalModelConstants.QNAME_CITATION).forEach(child -> {
       if (child != null) {
-        child.getModelItemsByName("text")
-            .forEach(citationChild -> handleMarkup(ObjectUtils.notNull(citationChild), context));
-        child.getModelItemsByName("prop")
-            .forEach(citationChild -> handleProperty(ObjectUtils.notNull(citationChild), context));
-        child.getModelItemsByName("link")
-            .forEach(citationChild -> handleLink(ObjectUtils.notNull(citationChild), context));
+        child.getModelItemsByName(OscalModelConstants.QNAME_TEXT)
+            .forEach(citationChild -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) citationChild), context));
+        child.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+            .forEach(citationChild -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) citationChild), context));
+        child.getModelItemsByName(OscalModelConstants.QNAME_LINK)
+            .forEach(citationChild -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) citationChild), context));
       }
     });
 
-    RESOURCE_MARKUP_METAPATH.evaluate(item).asList()
-        .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));
+    RESOURCE_MARKUP_METAPATH.evaluate(item)
+        .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
   }
 
   public static void resolveParameter(@NonNull IEntityItem entity, @NonNull Context context) {
-    IRequiredValueModelNodeItem item = entity.getInstance();
+    IModelNodeItem<?, ?> item = entity.getInstance();
 
-    item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child), context));
-    PARAM_MARKUP_METAPATH.evaluate(item).asList()
-        .forEach(child -> handleMarkup(ObjectUtils.notNull((IRequiredValueModelNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+        .forEach(child -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_LINK)
+        .forEach(child -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    PARAM_MARKUP_METAPATH.evaluate(item)
+        .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
   }
 
   private static void resolvePart(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IAssemblyNodeItem item,
       @NonNull Context context) {
-    item.getModelItemsByName("title").forEach(child -> handleMarkup(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("prop").forEach(child -> handleProperty(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("link").forEach(child -> handleLink(ObjectUtils.notNull(child), context));
-    item.getModelItemsByName("prose").forEach(child -> handleMarkup(ObjectUtils.notNull(child), context));
-    // item.getModelItemsByName("part").forEach(child -> visitor.visitPart(ObjectUtils.notNull(child),
+    item.getModelItemsByName(OscalModelConstants.QNAME_TITLE)
+        .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_PROP)
+        .forEach(child -> handleProperty(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_LINK)
+        .forEach(child -> handleLink(ObjectUtils.notNull((IAssemblyNodeItem) child), context));
+    item.getModelItemsByName(OscalModelConstants.QNAME_PROSE)
+        .forEach(child -> handleMarkup(ObjectUtils.notNull((IFieldNodeItem) child), context));
+    // item.getModelItemsByName("part").forEach(child ->
+    // visitor.visitPart(ObjectUtils.notNull(child),
     // context));
   }
 
   private static void handleMarkup(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IFieldNodeItem item,
       @NonNull Context context) {
-    IMarkupItem markupItem = (IMarkupItem) FnData.fnDataItem(item);
-    IMarkupString<?> markup = markupItem.getValue();
+    IMarkupItem markupItem = (IMarkupItem) item.toAtomicItem();
+    IMarkupString<?> markup = markupItem.asMarkup();
     handleMarkup(item, markup, context);
   }
 
   private static void handleMarkup(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IFieldNodeItem contextItem,
       @NonNull IMarkupString<?> text,
       @NonNull Context context) {
-    for (Node node : CollectionUtil.toIterable(text.getNodesAsStream().iterator())) {
-      if (node instanceof InsertAnchorNode) {
+    for (Node node : CollectionUtil.toIterable(
+        ObjectUtils.notNull(text.getNodesAsStream().iterator()))) {
+      if (node instanceof InsertAnchorExtension.InsertAnchorNode) {
         handleInsert(contextItem, (InsertAnchorNode) node, context);
       } else if (node instanceof InlineLinkNode) {
         handleAnchor(contextItem, (InlineLinkNode) node, context);
@@ -411,8 +437,8 @@ public class ReferenceCountingVisitor
   }
 
   private static void handleInsert(
-      @NonNull IRequiredValueModelNodeItem contextItem,
-      @NonNull InsertAnchorNode node,
+      @NonNull IFieldNodeItem contextItem,
+      @NonNull InsertAnchorExtension.InsertAnchorNode node,
       @NonNull Context context) {
     boolean retval = INSERT_POLICY.handleReference(contextItem, node, context);
     if (LOGGER.isWarnEnabled() && !retval) {
@@ -423,7 +449,7 @@ public class ReferenceCountingVisitor
   }
 
   private static void handleAnchor(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IFieldNodeItem contextItem,
       @NonNull InlineLinkNode node,
       @NonNull Context context) {
     boolean result = ANCHOR_POLICY.handleReference(contextItem, node, context);
@@ -435,10 +461,10 @@ public class ReferenceCountingVisitor
   }
 
   private static void handleProperty(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IAssemblyNodeItem item,
       @NonNull Context context) {
-    Property property = (Property) item.getValue();
-    QName qname = property.getQName();
+    Property property = ObjectUtils.requireNonNull((Property) item.getValue());
+    IEnhancedQName qname = property.getQName();
 
     IReferencePolicy<Property> policy = PROPERTY_POLICIES.get(qname);
 
@@ -451,9 +477,9 @@ public class ReferenceCountingVisitor
   }
 
   private static void handleLink(
-      @NonNull IRequiredValueModelNodeItem item,
+      @NonNull IAssemblyNodeItem item,
       @NonNull Context context) {
-    Link link = (Link) item.getValue();
+    Link link = ObjectUtils.requireNonNull((Link) item.getValue());
     IReferencePolicy<Link> policy = null;
     String rel = link.getRel();
     if (rel != null) {
@@ -468,7 +494,7 @@ public class ReferenceCountingVisitor
     }
   }
 
-  protected void resolveEntity(
+  protected static void resolveEntity(
       @NonNull IEntityItem entity,
       @NonNull Context context,
       @NonNull BiConsumer<IEntityItem, Context> handler) {
@@ -499,7 +525,7 @@ public class ReferenceCountingVisitor
   }
 
   protected void entityDispatch(@NonNull IEntityItem entity, @NonNull Context context) {
-    IRequiredValueModelNodeItem item = entity.getInstance();
+    IAssemblyNodeItem item = (IAssemblyNodeItem) entity.getInstance();
     switch (entity.getItemType()) {
     case CONTROL:
       resolveControl(item, context);
@@ -536,7 +562,8 @@ public class ReferenceCountingVisitor
   // }
   //
   // @Override
-  // protected Void aggregateResults(Object first, Object second, Object context) {
+  // protected Void aggregateResults(Object first, Object second, Object context)
+  // {
   // return null;
   // }
 
@@ -544,13 +571,13 @@ public class ReferenceCountingVisitor
     @NonNull
     private final IIndexer indexer;
     @NonNull
-    private final URI source;
+    private final UriResolver resolver;
     @NonNull
     private final Set<IEntityItem> resolvedEntities = new HashSet<>();
 
-    private Context(@NonNull IIndexer indexer, @NonNull URI source) {
+    private Context(@NonNull IIndexer indexer, @NonNull UriResolver resolver) {
       this.indexer = indexer;
-      this.source = source;
+      this.resolver = resolver;
     }
 
     @NonNull
@@ -559,15 +586,14 @@ public class ReferenceCountingVisitor
       return indexer;
     }
 
+    @NonNull
+    public UriResolver getUriResolver() {
+      return resolver;
+    }
+
     @Nullable
     public IEntityItem getEntity(@NonNull IEntityItem.ItemType itemType, @NonNull String identifier) {
       return getIndexer().getEntity(itemType, identifier);
-    }
-
-    @SuppressWarnings("unused")
-    @NonNull
-    private URI getSource() {
-      return source;
     }
 
     public void markResolved(@NonNull IEntityItem entity) {
@@ -579,7 +605,7 @@ public class ReferenceCountingVisitor
     }
 
     public void incrementReferenceCount(
-        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull IModelNodeItem<?, ?> contextItem,
         @NonNull IEntityItem.ItemType type,
         @NonNull UUID identifier) {
       incrementReferenceCountInternal(
@@ -590,7 +616,7 @@ public class ReferenceCountingVisitor
     }
 
     public void incrementReferenceCount(
-        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull IModelNodeItem<?, ?> contextItem,
         @NonNull IEntityItem.ItemType type,
         @NonNull String identifier) {
       incrementReferenceCountInternal(
@@ -601,7 +627,7 @@ public class ReferenceCountingVisitor
     }
 
     private void incrementReferenceCountInternal(
-        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull IModelNodeItem<?, ?> contextItem,
         @NonNull IEntityItem.ItemType type,
         @NonNull String identifier,
         boolean normalize) {

@@ -23,7 +23,7 @@ Options:
 
 run_build() {
   echo "Running Maven"
-  mvn -Preporting -Prelease package site site:stage
+  mvn -Prelease package site
 }
 
 parse_args() {
@@ -66,7 +66,7 @@ parse_args() {
   deploy_directory=target/staging
 
   if [[ -z $deploy_branch ]]; then
-    deploy_branch=nist-pages
+    deploy_branch=github-pages
   fi
 
   #if no user identity is already set in the current git environment, use this:

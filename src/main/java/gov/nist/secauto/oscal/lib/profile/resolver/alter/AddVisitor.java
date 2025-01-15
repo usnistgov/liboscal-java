@@ -1,35 +1,14 @@
 /*
- * Portions of this software was developed by employees of the National Institute
- * of Standards and Technology (NIST), an agency of the Federal Government and is
- * being made available as a public service. Pursuant to title 17 United States
- * Code Section 105, works of NIST employees are not subject to copyright
- * protection in the United States. This software may be subject to foreign
- * copyright. Permission in the United States and in foreign countries, to the
- * extent that NIST may hold copyright, to use, copy, modify, create derivative
- * works, and distribute this software and its documentation without fee is hereby
- * granted on a non-exclusive basis, provided that this notice and disclaimer
- * of warranty appears in all copies.
- *
- * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
- * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
- * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
- * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
- * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
- * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
- * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
- * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
- * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
- * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
- * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ * SPDX-FileCopyrightText: none
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 package gov.nist.secauto.oscal.lib.profile.resolver.alter;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.CustomCollectors;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
@@ -57,6 +36,7 @@ import java.util.function.Supplier;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> {
   public enum TargetType {
     CONTROL("control", Control.class),
@@ -75,7 +55,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
     static {
       {
         Map<Class<?>, TargetType> map = new ConcurrentHashMap<>();
-        for (TargetType type : TargetType.values()) {
+        for (TargetType type : values()) {
           map.put(type.getClazz(), type);
         }
         CLASS_TO_TYPE = CollectionUtil.unmodifiableMap(map);
@@ -83,7 +63,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
       {
         Map<String, TargetType> map = new ConcurrentHashMap<>();
-        for (TargetType type : TargetType.values()) {
+        for (TargetType type : values()) {
           map.put(type.fieldName(), type);
         }
         NAME_TO_TYPE = CollectionUtil.unmodifiableMap(map);
@@ -95,8 +75,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
      *
      * @param clazz
      *          the class to identify the target type for
-     * @return the associated target type or {@code null} if the class is not associated with a target
-     *         type
+     * @return the associated target type or {@code null} if the class is not
+     *         associated with a target type
      */
     @Nullable
     public static TargetType forClass(@NonNull Class<?> clazz) {
@@ -114,8 +94,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
      *
      * @param name
      *          the field name to identify the target type for
-     * @return the associated target type or {@code null} if the name is not associated with a target
-     *         type
+     * @return the associated target type or {@code null} if the name is not
+     *         associated with a target type
      */
     @Nullable
     public static TargetType forFieldName(@Nullable String name) {
@@ -157,7 +137,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
     static {
       Map<String, Position> map = new ConcurrentHashMap<>();
-      for (Position position : Position.values()) {
+      for (Position position : values()) {
         map.put(position.name().toLowerCase(Locale.ROOT), position);
       }
       NAME_TO_POSITION = CollectionUtil.unmodifiableMap(map);
@@ -168,7 +148,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
      *
      * @param name
      *          the name to identify the position for
-     * @return the associated position or {@code null} if the name is not associated with a position
+     * @return the associated position or {@code null} if the name is not associated
+     *         with a position
      */
     @Nullable
     public static Position forName(@Nullable String name) {
@@ -225,7 +206,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
       @NonNull List<ControlPart> parts) {
     return INSTANCE.visitControl(
         control,
-        new Context(
+        Context.newContext(
             control,
             position == null ? Position.ENDING : position,
             byId,
@@ -257,8 +238,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
    * <li>the context matches if:
    * <ul>
    * <li>the target item's id matches the "by-id"; or</li>
-   * <li>the "by-id" is not defined and the target item is the control matching the target
-   * context</li>
+   * <li>the "by-id" is not defined and the target item is the control matching
+   * the target context</li>
    * </ul>
    * </li>
    * </ol>
@@ -268,7 +249,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
    * @param targetItem
    *          the current target to process
    * @param titleConsumer
-   *          a consumer to apply a title to or {@code null} if the object has no title field
+   *          a consumer to apply a title to or {@code null} if the object has no
+   *          title field
    * @param paramsSupplier
    *          a supplier for the child {@link Parameter} collection
    * @param propsSupplier
@@ -332,7 +314,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
   // boolean handleChildren = !Collections.disjoint(context.getTargetItemTypes(),
   // getApplicableTypes(itemType));
   // if (handleChildren && handler != null) {
-  // // if the child item type is applicable and there is a handler, iterate over children
+  // // if the child item type is applicable and there is a handler, iterate over
+  // children
   // Iterator<T> iter = collectionSupplier.get().iterator();
   // while (iter.hasNext()) {
   // T item = iter.next();
@@ -343,6 +326,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
   // }
   // }
 
+  @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity" })
   private static <T> boolean handleChild(
       @NonNull TargetType itemType,
       @NonNull Supplier<? extends List<T>> originalCollectionSupplier,
@@ -369,14 +353,14 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
           // if id match, inject the new items into the collection
           switch (context.getPosition()) {
           case AFTER: {
-            newItemsSupplier.get().forEach(add -> iter.add(add));
+            newItemsSupplier.get().forEach(iter::add);
             retval = true;
             break;
           }
           case BEFORE: {
             iter.previous();
             List<T> adds = newItemsSupplier.get();
-            adds.forEach(add -> iter.add(add));
+            adds.forEach(iter::add);
             item = iter.next();
             retval = true;
             break;
@@ -434,26 +418,26 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
     boolean retval = handleCurrent(
         control,
-        title -> control.setTitle(title),
-        () -> control.getParams(),
-        () -> control.getProps(),
-        () -> control.getLinks(),
-        () -> control.getParts(),
+        control::setTitle,
+        control::getParams,
+        control::getProps,
+        control::getLinks,
+        control::getParts,
         context);
 
     // visit params
     retval = retval || handleChild(
         TargetType.PARAM,
-        () -> control.getParams(),
-        () -> context.getParams(),
+        control::getParams,
+        context::getParams,
         child -> visitParameter(ObjectUtils.notNull(child), context),
         context);
 
     // visit parts
     retval = retval || handleChild(
         TargetType.PART,
-        () -> control.getParts(),
-        () -> context.getParts(),
+        control::getParts,
+        context::getParts,
         child -> visitPart(child, context),
         context);
 
@@ -482,8 +466,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
         parameter,
         null,
         null,
-        () -> parameter.getProps(),
-        () -> parameter.getLinks(),
+        parameter::getProps,
+        parameter::getLinks,
         null,
         context);
   }
@@ -515,22 +499,20 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
         part,
         null,
         null,
-        () -> part.getProps(),
-        () -> part.getLinks(),
-        () -> part.getParts(),
+        part::getProps,
+        part::getLinks,
+        part::getParts,
         context);
 
-    // visit parts
-    retval = retval || handleChild(
+    return retval || handleChild(
         TargetType.PART,
-        () -> part.getParts(),
-        () -> context.getParts(),
+        part::getParts,
+        context::getParts,
         child -> visitPart(child, context),
         context);
-    return retval;
   }
 
-  static class Context {
+  static final class Context {
     @NonNull
     private static final Set<TargetType> TITLE_TYPES = ObjectUtils.notNull(
         Set.of(TargetType.CONTROL, TargetType.PART));
@@ -566,7 +548,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
     @NonNull
     private final Set<TargetType> targetItemTypes;
 
-    public Context(
+    @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity", "PMD.NPathComplexity" })
+    public static Context newContext(
         @NonNull Control control,
         @NonNull Position position,
         @Nullable String byId,
@@ -575,9 +558,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
         @NonNull List<Property> props,
         @NonNull List<Link> links,
         @NonNull List<ControlPart> parts) {
-
       Set<TargetType> targetItemTypes = ObjectUtils.notNull(EnumSet.allOf(TargetType.class));
-
       List<String> additionObjects = new LinkedList<>();
 
       boolean sequenceTarget = true;
@@ -610,19 +591,18 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
       }
 
       if (Position.BEFORE.equals(position) || Position.AFTER.equals(position)) {
-        if (sequenceTarget) {
-          if (sequenceTarget && !params.isEmpty() && parts.isEmpty()) {
-            targetItemTypes.retainAll(Set.of(TargetType.PARAM));
-          } else if (sequenceTarget && !parts.isEmpty() && params.isEmpty()) {
-            targetItemTypes.retainAll(Set.of(TargetType.PART));
-          } else {
-            throw new ProfileResolutionEvaluationException(
-                "When using position before or after, only one collection of parameters or parts can be specified.");
-          }
-        } else {
+        if (!sequenceTarget) {
           throw new ProfileResolutionEvaluationException(
               "When using position before or after, one collection of parameters or parts can be specified."
                   + " Other additions must not be used.");
+        }
+        if (!params.isEmpty() && parts.isEmpty()) {
+          targetItemTypes.retainAll(Set.of(TargetType.PARAM));
+        } else if (!parts.isEmpty() && params.isEmpty()) {
+          targetItemTypes.retainAll(Set.of(TargetType.PART));
+        } else {
+          throw new ProfileResolutionEvaluationException(
+              "When using position before or after, only one collection of parameters or parts can be specified.");
         }
       }
 
@@ -631,6 +611,28 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
             additionObjects.stream().collect(CustomCollectors.joiningWithOxfordComma("or")));
       }
 
+      return new Context(
+          control,
+          position,
+          byId,
+          title,
+          params,
+          props,
+          links,
+          parts,
+          targetItemTypes);
+    }
+
+    private Context(
+        @NonNull Control control,
+        @NonNull Position position,
+        @Nullable String byId,
+        @Nullable MarkupLine title,
+        @NonNull List<Parameter> params,
+        @NonNull List<Property> props,
+        @NonNull List<Link> links,
+        @NonNull List<ControlPart> parts,
+        @NonNull Set<TargetType> targetItemTypes) {
       this.control = control;
       this.position = position;
       this.byId = byId;
@@ -642,63 +644,60 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
       this.targetItemTypes = CollectionUtil.unmodifiableSet(targetItemTypes);
     }
 
-    public Control getControl() {
+    @NonNull
+    private Control getControl() {
       return control;
     }
 
     @NonNull
-    public Position getPosition() {
+    private Position getPosition() {
       return position;
     }
 
     @Nullable
-    public String getById() {
+    private String getById() {
       return byId;
     }
 
     @Nullable
-    public MarkupLine getTitle() {
+    private MarkupLine getTitle() {
       return title;
     }
 
     @NonNull
-    public List<Parameter> getParams() {
+    private List<Parameter> getParams() {
       return params;
     }
 
     @NonNull
-    public List<Property> getProps() {
+    private List<Property> getProps() {
       return props;
     }
 
     @NonNull
-    public List<Link> getLinks() {
+    private List<Link> getLinks() {
       return links;
     }
 
     @NonNull
-    public List<ControlPart> getParts() {
+    private List<ControlPart> getParts() {
       return parts;
     }
 
     @NonNull
-    public Set<TargetType> getTargetItemTypes() {
+    private Set<TargetType> getTargetItemTypes() {
       return targetItemTypes;
     }
 
-    public boolean isMatchingType(@NonNull TargetType type) {
+    private boolean isMatchingType(@NonNull TargetType type) {
       return getTargetItemTypes().contains(type);
     }
 
-    public <T> boolean isSequenceTargeted(T targetItem) {
+    private <T> boolean isSequenceTargeted(T targetItem) {
       TargetType objectType = TargetType.forClass(targetItem.getClass());
       return (Position.BEFORE.equals(position) || Position.AFTER.equals(position))
           && (TargetType.PARAM.equals(objectType) && isMatchingType(TargetType.PARAM)
               || TargetType.PART.equals(objectType) && isMatchingType(TargetType.PART));
-    }
-
-    protected boolean checkValue(@Nullable String actual, @Nullable String expected) {
-      return expected == null || expected.equals(actual);
     }
 
     /**
@@ -708,7 +707,7 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
      *          the current object
      * @return {@code true} if the current object applies or {@code false} otherwise
      */
-    public boolean appliesTo(@NonNull Object obj) {
+    private boolean appliesTo(@NonNull Object obj) {
       TargetType objectType = TargetType.forClass(obj.getClass());
 
       boolean retval = objectType != null && isMatchingType(objectType);
@@ -717,7 +716,6 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
 
         // check other criteria
         String actualId = null;
-
         switch (objectType) {
         case CONTROL: {
           Control control = (Control) obj;
@@ -731,7 +729,10 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
         }
         case PART: {
           ControlPart part = (ControlPart) obj;
-          actualId = part.getId() == null ? null : part.getId().toString();
+          String partId = part.getId();
+          if (part.getId() != null) {
+            actualId = partId;
+          }
           break;
         }
         default:

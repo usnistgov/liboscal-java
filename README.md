@@ -2,18 +2,16 @@
 
 A Java library to support processing OSCAL content.
 
-This open-source, Metaschema Java library offers a programatic means to work with [OSCAL](https://pages.nist.gov/OSCAL/) models defined by the [Metaschema modeling language](https://github.com/usnistgov/metaschema). This framework also supports programatically creating, modifying, parsing, and writing XML, JSON, and YAML OSCAL instance data. This work is intended to make it easier for Java software developers to incorporate OSCAL-based capabilities into their applications.
+This open-source, Metaschema Java library offers a programmatic means to work with [OSCAL](https://pages.nist.gov/OSCAL/) models defined by the [Metaschema modeling language](https://github.com/metaschema-framework/metaschema). This framework also supports programmatically creating, modifying, parsing, and writing XML, JSON, and YAML OSCAL instance data. This work is intended to make it easier for Java software developers to incorporate OSCAL-based capabilities into their applications.
 
 The following features are supported by this library:
 - Reading and writing OSCAL documents in XML, JSON, and YAML formats into a common Java object model.
 - Resolution of OSCAL profiles to [produce resolved catalogs](https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/).
 - Validation of OSCAL content [well-formedness and validation](https://pages.nist.gov/OSCAL/concepts/validation/) of OSCAL syntax using XML and JSON schemas.
-- (Experimental) Validation of OSCAL content using [Metaschema](https://pages.nist.gov/metaschema/) constraints to enforce allowed values, cross-references, and some conditionally required data elements.
+- (Experimental) Validation of OSCAL content using [Metaschema](https://metaschema.dev/) constraints to enforce allowed values, cross-references, and some conditionally required data elements.
 - Builders for programmatically creating common OSCAL data elements.
 
-This library is based on the [Metaschema Java Tools](https://pages.nist.gov/metaschema-java/) project.
-
-This effort is part of the [National Institute of Standards and Technology](https://www.nist.gov/) (NIST) [OSCAL](https://www.nist.gov/oscal) Program.
+This library is based on the [Metaschema Java Tools](https://metaschema-java.metaschema.dev/) project.
 
 ## Contributing to this code base
 
@@ -21,15 +19,13 @@ Thank you for interest in contributing to the Metaschema Java framework. For com
 
 ## Public domain
 
-This project is in the worldwide [public domain](LICENSE.md). As stated in [CONTRIBUTING.md](CONTRIBUTING.md).
+This project is in the worldwide [public domain](LICENSE.md) and as stated in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Using as a Maven dependency
 
-This project's modules are published to [Maven Central](https://search.maven.org/search?q=g:gov.nist.secauto.oscal.liboscal-java). We recommend you use [the latest stable release on the Maven Central repository](https://repo1.maven.org/maven2/gov/nist/secauto/oscal/liboscal-java/). You may also download [development snapshots](https://oss.sonatype.org/content/repositories/snapshots/gov/nist/secauto/oscal/liboscal-java/) to evaluate new features or bug fixes merged into develop before they are finalized in a published release.
+This project's modules are published to [Maven Central](https://central.sonatype.com/artifact/dev.metaschema.oscal/liboscal-java). We recommend you use the latest stable release on the Maven Central repository.
 
 You can include these artifacts in your Maven POM as a dependency.
-
-We digitally sign these releases with [the NIST OSCAL Team's Release Engineering Key](https://pgp.mit.edu/pks/lookup?op=get&search=0x6387E83B4828A504).
 
 ## Building
 
@@ -74,11 +70,6 @@ serializer.serialize(catalog, outDir.resolve("test-catalog.yaml"));
 
 The [full code](src/test/java/gov/nist/secauto/oscal/java/ExamplesTest.java) for this example is also available.
 
-## Contact us
+## Relationship to prior work
 
-Maintainer: [David Waltermire](https://www.nist.gov/people/david-waltermire) - [@david-waltermire-nist](https://github.com/david-waltermire-nist), [NIST](https://www.nist.gov/) [Information Technology Labratory](https://www.nist.gov/itl), [Computer Security Division](https://www.nist.gov/itl/csd), [Security Components and Mechanisms Group](https://www.nist.gov/itl/csd/security-components-and-mechanisms)
-
-Email us: [oscal@nist.gov](mailto:oscal@nist.gov)
-
-Chat with us: [Gitter usnistgov-OSCAL/Lobby](https://gitter.im/usnistgov-OSCAL/Lobby)
-
+The contents of this repository is based on work from the [Metaschema Java repository](https://github.com/usnistgov/liboscal-java/) maintained by the National Institute of Standards and Technology (NIST), the [contents of which have been dedicated in the worldwide public domain](https://github.com/usnistgov/liboscal-java/blob/a56c130fa8d35dff9590065c942ccd5ee7f25ae3/LICENSE.md) using the [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) public domain dedication. This repository builds on this prior work, maintaining the [CCO license](https://github.com/metaschema-framework/liboscal-java/blob/main/LICENSE.md) on any new works in this repository.

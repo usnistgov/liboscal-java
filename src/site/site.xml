@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+	name="OSCAL Java API">
+
+  <skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-fluido-skin</artifactId>
+		<version>2.0.0-M9</version>
+  </skin>
+
+	<publishDate position="bottom" format="yyyy-MM-dd" />
+	<version position="left"/>
+
+  <edit>${this.scm.url}</edit>
+
+	<bannerLeft>
+		<name><![CDATA[
+      OSCAL Java API Project
+    ]]>
+		</name>
+		<href>${this.site.url}</href>
+	</bannerLeft>
+
+	<custom>
+		<fluidoSkin>
+      <googleSearch>
+        <sitesearch/>
+      </googleSearch>
+      <gitHub>
+        <projectId>metaschema-framework/liboscal-java</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>black</ribbonColor>
+      </gitHub>
+    </fluidoSkin>
+	</custom>
+
+	<body>
+		<!-- Add a rel to Google profile for all pages -->
+		<head>
+		<![CDATA[
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta http-equiv="Content-Type" content="text/html; charset=${outputEncoding}" />
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous" />
+      <link rel="stylesheet" href="./css/custom.css" />
+    ]]>
+		</head>
+
+    <breadcrumbs>
+      <item name="OSCAL Java" href="./"/>
+    </breadcrumbs>
+
+		<menu name="Main" inherit="top">
+      <item name="Home" href="./"/>
+      <item name="GitHub" href="${this.scm.url}"/>
+    </menu>
+    <menu name="Modules" ref="modules"/>
+    <menu name="Contribute" inherit="bottom">
+      <item name="Contribute" href="${this.scm.url}/CONTRIBUTING.md"/>
+      <item name="Issues" href="${this.issueManagement.url}"/>
+    </menu>
+    <menu name="Maven Documentation" ref="reports" inherit="bottom"/>
+
+		<!-- Disable copyright footer -->
+    <footer>
+      <![CDATA[
+      Copyright and related rights waived via <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.
+      ]]>
+    </footer>
+	</body>
+</project>

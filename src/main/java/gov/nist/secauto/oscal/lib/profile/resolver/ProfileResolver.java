@@ -1,56 +1,45 @@
 /*
- * Portions of this software was developed by employees of the National Institute
- * of Standards and Technology (NIST), an agency of the Federal Government and is
- * being made available as a public service. Pursuant to title 17 United States
- * Code Section 105, works of NIST employees are not subject to copyright
- * protection in the United States. This software may be subject to foreign
- * copyright. Permission in the United States and in foreign countries, to the
- * extent that NIST may hold copyright, to use, copy, modify, create derivative
- * works, and distribute this software and its documentation without fee is hereby
- * granted on a non-exclusive basis, provided that this notice and disclaimer
- * of warranty appears in all copies.
- *
- * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
- * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
- * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
- * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
- * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
- * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
- * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
- * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
- * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
- * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
- * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ * SPDX-FileCopyrightText: none
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
-import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
-import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
-import gov.nist.secauto.metaschema.binding.model.RootAssemblyDefinition;
-import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
-import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
-import gov.nist.secauto.metaschema.model.common.metapath.item.DefaultNodeItemFactory;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.core.metapath.IDocumentLoader;
+import gov.nist.secauto.metaschema.core.metapath.IMetapathExpression;
+import gov.nist.secauto.metaschema.core.metapath.StaticContext;
+import gov.nist.secauto.metaschema.core.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.core.metapath.function.FunctionUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.IItem;
+import gov.nist.secauto.metaschema.core.metapath.item.ISequence;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItemFactory;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.model.IBoundObject;
+import gov.nist.secauto.metaschema.core.qname.IEnhancedQName;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.io.BindingException;
+import gov.nist.secauto.metaschema.databind.io.DeserializationFeature;
+import gov.nist.secauto.metaschema.databind.io.IBoundLoader;
+import gov.nist.secauto.metaschema.databind.model.IBoundDefinitionModelAssembly;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
+import gov.nist.secauto.oscal.lib.OscalModelConstants;
 import gov.nist.secauto.oscal.lib.OscalUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Base64;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource.Rlink;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Merge;
 import gov.nist.secauto.oscal.lib.model.Metadata;
+import gov.nist.secauto.oscal.lib.model.Metadata.Location;
+import gov.nist.secauto.oscal.lib.model.Metadata.Party;
+import gov.nist.secauto.oscal.lib.model.Metadata.Role;
 import gov.nist.secauto.oscal.lib.model.Modify;
 import gov.nist.secauto.oscal.lib.model.Modify.ProfileSetParameter;
 import gov.nist.secauto.oscal.lib.model.Parameter;
@@ -72,15 +61,13 @@ import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -92,18 +79,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 public class ProfileResolver {
-  private static final Logger LOGGER = LogManager.getLogger(ProfileResolver.class);
-  private static final MetapathExpression METAPATH_SET_PARAMETER
-      = MetapathExpression.compile("/profile/modify/set-parameter");
-  private static final MetapathExpression METAPATH_ALTER
-      = MetapathExpression.compile("/profile/modify/alter");
-  private static final MetapathExpression METAPATH_ALTER_REMOVE
-      = MetapathExpression.compile("remove");
-  private static final MetapathExpression METAPATH_ALTER_ADD
-      = MetapathExpression.compile("add");
 
   public enum StructuringDirective {
     FLAT,
@@ -111,78 +89,155 @@ public class ProfileResolver {
     CUSTOM;
   }
 
-  private IBoundLoader loader;
-  private DynamicContext dynamicContext;
+  private static final Logger LOGGER = LogManager.getLogger(ProfileResolver.class);
+  @NonNull
+  private static final IEnhancedQName IMPORT_QNAME = IEnhancedQName.of(OscalModelConstants.NS_OSCAL, "import");
+
+  @NonNull
+  private static final IMetapathExpression METAPATH_SET_PARAMETER
+      = IMetapathExpression.compile("modify/set-parameter",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
+  @NonNull
+  private static final IMetapathExpression METAPATH_ALTER
+      = IMetapathExpression.compile("modify/alter",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
+  @NonNull
+  private static final IMetapathExpression METAPATH_ALTER_REMOVE
+      = IMetapathExpression.compile("remove",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
+  @NonNull
+  private static final IMetapathExpression METAPATH_ALTER_ADD
+      = IMetapathExpression.compile("add",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
+  @NonNull
+  private static final IMetapathExpression CATALOG_OR_PROFILE
+      = IMetapathExpression.compile("/(catalog|profile)",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
+  @NonNull
+  private static final IMetapathExpression CATALOG
+      = IMetapathExpression.compile("/catalog",
+          OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
+
+  @NonNull
+  private final DynamicContext dynamicContext;
+  @NonNull
+  private final UriResolver uriResolver;
+
+  public ProfileResolver() {
+    this(newDynamicContext(), (uri, source) -> source.resolve(uri));
+  }
+
+  public ProfileResolver(
+      @NonNull DynamicContext dynamicContext,
+      @NonNull UriResolver uriResolver) {
+    this.dynamicContext = dynamicContext;
+    this.uriResolver = uriResolver;
+  }
+
+  @NonNull
+  private static DynamicContext newDynamicContext() {
+    IBoundLoader loader = OscalBindingContext.instance().newBoundLoader();
+    loader.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
+
+    DynamicContext retval = new DynamicContext(StaticContext.builder()
+        .defaultModelNamespace(OscalModelConstants.NS_OSCAL)
+        .build());
+    retval.setDocumentLoader(loader);
+    return retval;
+  }
 
   /**
-   * Gets the configured loader or creates a new default loader if no loader was configured.
+   * Gets the configured loader or creates a new default loader if no loader was
+   * configured.
    *
    * @return the bound loader
+   * @since 5.0.0
    */
   @NonNull
-  public IBoundLoader getBoundLoader() {
-    synchronized (this) {
-      if (loader == null) {
-        loader = OscalBindingContext.instance().newBoundLoader();
-        loader.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
-      }
-      assert loader != null;
-      return loader;
-    }
-  }
-
-  public void setBoundLoader(@NonNull IBoundLoader loader) {
-    synchronized (this) {
-      this.loader = loader;
-    }
+  public IDocumentLoader getDocumentLoader() {
+    return getDynamicContext().getDocumentLoader();
   }
 
   @NonNull
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intending to expose this field")
   public DynamicContext getDynamicContext() {
-    synchronized (this) {
-      if (dynamicContext == null) {
-        dynamicContext = new StaticContext().newDynamicContext();
-        dynamicContext.setDocumentLoader(getBoundLoader());
-      }
-      assert dynamicContext != null;
-      return dynamicContext;
-    }
+    return dynamicContext;
   }
 
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intending to store this parameter")
-  public void setDynamicContext(@NonNull DynamicContext dynamicContext) {
-    synchronized (this) {
-      this.dynamicContext = dynamicContext;
-    }
+  @Nullable
+  private static IRootAssemblyNodeItem getRoot(
+      @NonNull IDocumentNodeItem document,
+      @NonNull IMetapathExpression rootPath) {
+    ISequence<?> result = rootPath.evaluate(document);
+    IItem item = result.getFirstItem(false);
+
+    return item == null ? null : FunctionUtils.asType(item);
   }
 
   @NonNull
-  protected EntityResolver getEntityResolver(@NonNull URI documentUri) {
-    return new DocumentEntityResolver(documentUri);
-  }
-
-  public IDocumentNodeItem resolveProfile(@NonNull URL url)
+  public IDocumentNodeItem resolve(@NonNull URL url)
       throws URISyntaxException, IOException, ProfileResolutionException {
-    IBoundLoader loader = getBoundLoader();
+    IDocumentLoader loader = getDocumentLoader();
     IDocumentNodeItem catalogOrProfile = loader.loadAsNodeItem(url);
-    return resolve(catalogOrProfile);
+    return resolve(catalogOrProfile, new Stack<>());
   }
 
-  public IDocumentNodeItem resolveProfile(@NonNull Path path) throws IOException, ProfileResolutionException {
-    IBoundLoader loader = getBoundLoader();
+  @NonNull
+  public IDocumentNodeItem resolve(@NonNull File file) throws IOException, ProfileResolutionException {
+    return resolve(ObjectUtils.notNull(file.toPath()));
+  }
+
+  @NonNull
+  public IDocumentNodeItem resolve(@NonNull Path path) throws IOException, ProfileResolutionException {
+    IDocumentLoader loader = getDocumentLoader();
     IDocumentNodeItem catalogOrProfile = loader.loadAsNodeItem(path);
-    return resolve(catalogOrProfile);
+    return resolve(catalogOrProfile, new Stack<>());
   }
 
-  public IDocumentNodeItem resolveProfile(@NonNull File file) throws IOException, ProfileResolutionException {
-    return resolveProfile(ObjectUtils.notNull(file.toPath()));
+  @NonNull
+  public IDocumentNodeItem resolve(
+      @NonNull IDocumentNodeItem profileOrCatalogDocument)
+      throws IOException, ProfileResolutionException {
+    return resolve(profileOrCatalogDocument, new Stack<>());
+  }
+
+  @NonNull
+  public IDocumentNodeItem resolve(
+      @NonNull IDocumentNodeItem profileOrCatalogDocument,
+      @NonNull Stack<URI> importHistory)
+      throws IOException, ProfileResolutionException {
+    IRootAssemblyNodeItem profileOrCatalog = getRoot(
+        profileOrCatalogDocument,
+        CATALOG_OR_PROFILE);
+    if (profileOrCatalog == null) {
+      throw new ProfileResolutionException(
+          String.format("The provided document '%s' does not contain a catalog or profile.",
+              profileOrCatalogDocument.getDocumentUri()));
+    }
+    return resolve(profileOrCatalog, importHistory);
+  }
+
+  @NonNull
+  public IDocumentNodeItem resolve(
+      @NonNull IRootAssemblyNodeItem profileOrCatalog,
+      @NonNull Stack<URI> importHistory)
+      throws IOException, ProfileResolutionException {
+    Object profileObject = profileOrCatalog.getValue();
+
+    IDocumentNodeItem retval;
+    if (profileObject instanceof Catalog) {
+      // already a catalog
+      retval = profileOrCatalog.getParentNodeItem();
+    } else {
+      // must be a profile
+      retval = resolveProfile(profileOrCatalog, importHistory);
+    }
+    return retval;
   }
 
   /**
    * Resolve the profile to a catalog.
    *
-   * @param profileDocument
+   * @param profileItem
    *          a {@link IDocumentNodeItem} containing the profile to resolve
    * @param importHistory
    *          the import stack for cycle detection
@@ -194,53 +249,22 @@ public class ProfileResolver {
    */
   @NonNull
   protected IDocumentNodeItem resolveProfile(
-      @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IRootAssemblyNodeItem profileItem,
       @NonNull Stack<URI> importHistory) throws IOException, ProfileResolutionException {
     Catalog resolvedCatalog = new Catalog();
 
-    generateMetadata(resolvedCatalog, profileDocument);
+    generateMetadata(resolvedCatalog, profileItem);
 
-    IIndexer index = resolveImports(resolvedCatalog, profileDocument, importHistory);
-    handleReferences(resolvedCatalog, profileDocument, index);
-    handleMerge(resolvedCatalog, profileDocument, index);
-    handleModify(resolvedCatalog, profileDocument);
+    IIndexer index = resolveImports(resolvedCatalog, profileItem, importHistory);
+    handleReferences(resolvedCatalog, profileItem, index);
+    handleMerge(resolvedCatalog, profileItem, index);
+    handleModify(resolvedCatalog, profileItem);
 
-    return DefaultNodeItemFactory.instance().newDocumentNodeItem(
-        new RootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
-        resolvedCatalog,
-        profileDocument.getBaseUri());
-  }
-
-  @NonNull
-  public IDocumentNodeItem resolve(@NonNull IDocumentNodeItem profileOrCatalog)
-      throws IOException, ProfileResolutionException {
-    return resolve(profileOrCatalog, new Stack<>());
-  }
-
-  @NonNull
-  protected IDocumentNodeItem resolve(@NonNull IDocumentNodeItem profileOrCatalog,
-      @NonNull Stack<URI> importHistory)
-      throws IOException, ProfileResolutionException {
-    Object profileObject = profileOrCatalog.getValue();
-
-    IDocumentNodeItem retval;
-    if (profileObject instanceof Catalog) {
-      // already a catalog
-      retval = profileOrCatalog;
-    } else {
-      // must be a profile
-      retval = resolveProfile(profileOrCatalog, importHistory);
-    }
-    return retval;
-  }
-
-  private static Profile toProfile(@NonNull IDocumentNodeItem profileDocument) {
-    Object object = profileDocument.getValue();
-    assert object != null;
-
-    return (Profile) object;
+    return INodeItemFactory.instance().newDocumentNodeItem(
+        ObjectUtils.requireNonNull(
+            (IBoundDefinitionModelAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
+        ObjectUtils.requireNonNull(profileItem.getBaseUri()),
+        resolvedCatalog);
   }
 
   @NonNull
@@ -251,10 +275,12 @@ public class ProfileResolver {
     return (Profile) object;
   }
 
-  private static void generateMetadata(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument) {
+  private void generateMetadata(
+      @NonNull Catalog resolvedCatalog,
+      @NonNull IRootAssemblyNodeItem profileItem) {
     resolvedCatalog.setUuid(UUID.randomUUID());
 
-    Profile profile = toProfile(profileDocument);
+    Profile profile = toProfile(profileItem);
     Metadata profileMetadata = profile.getMetadata();
 
     Metadata resolvedMetadata = new Metadata();
@@ -271,8 +297,11 @@ public class ProfileResolver {
 
     resolvedMetadata.addProp(AbstractProperty.builder("resolution-tool").value("libOSCAL-Java").build());
 
-    URI profileUri = profileDocument.getDocumentUri();
-    resolvedMetadata.addLink(AbstractLink.builder(profileUri).relation("source-profile").build());
+    URI documentUri = profileItem.getParentNodeItem().getDocumentUri();
+    URI profileUri = ObjectUtils.requireNonNull(uriResolver.resolve(documentUri, documentUri));
+    resolvedMetadata.addLink(AbstractLink.builder(profileUri)
+        .relation("source-profile")
+        .build());
 
     resolvedCatalog.setMetadata(resolvedMetadata);
   }
@@ -280,24 +309,24 @@ public class ProfileResolver {
   @NonNull
   private IIndexer resolveImports(
       @NonNull Catalog resolvedCatalog,
-      @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IRootAssemblyNodeItem profileItem,
       @NonNull Stack<URI> importHistory)
       throws IOException, ProfileResolutionException {
 
-    IRootAssemblyNodeItem profileItem = profileDocument.getRootAssemblyNodeItem();
-
     // first verify there is at least one import
-    List<? extends IRequiredValueModelNodeItem> profileImports = profileItem.getModelItemsByName("import");
+    @SuppressWarnings("unchecked")
+    List<IAssemblyNodeItem> profileImports
+        = (List<IAssemblyNodeItem>) profileItem.getModelItemsByName(IMPORT_QNAME);
     if (profileImports.isEmpty()) {
       throw new ProfileResolutionException(String.format("Profile '%s' has no imports", profileItem.getBaseUri()));
     }
 
     // now process each import
     IIndexer retval = new BasicIndexer();
-    for (IRequiredValueModelNodeItem profileImportItem : profileImports) {
+    for (IAssemblyNodeItem profileImportItem : profileImports) {
       IIndexer result = resolveImport(
           ObjectUtils.notNull(profileImportItem),
-          profileDocument,
+          profileItem,
           importHistory,
           resolvedCatalog);
       retval.append(result);
@@ -307,11 +336,11 @@ public class ProfileResolver {
 
   @NonNull
   protected IIndexer resolveImport(
-      @NonNull IRequiredValueModelNodeItem profileImportItem,
-      @NonNull IDocumentNodeItem profileDocument,
+      @NonNull IAssemblyNodeItem profileImportItem,
+      @NonNull IRootAssemblyNodeItem profileItem,
       @NonNull Stack<URI> importHistory,
       @NonNull Catalog resolvedCatalog) throws IOException, ProfileResolutionException {
-    ProfileImport profileImport = (ProfileImport) profileImportItem.getValue();
+    ProfileImport profileImport = ObjectUtils.requireNonNull((ProfileImport) profileImportItem.getValue());
 
     URI importUri = profileImport.getHref();
     if (importUri == null) {
@@ -322,79 +351,116 @@ public class ProfileResolver {
       LOGGER.atDebug().log("resolving profile import '{}'", importUri);
     }
 
-    InputSource source = newImportSource(importUri, profileDocument);
-    URI sourceUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
+    IDocumentNodeItem importedDocument = getImport(importUri, profileItem);
+    URI importedUri = importedDocument.getDocumentUri();
+    assert importedUri != null; // always non-null
+
+    // Import import = Import.
+    // InputSource source = newImportSource(importUri, profileItem);
+    // URI sourceUri = ObjectUtils.notNull(URI.create(source.getSystemId()));
 
     // check for import cycle
     try {
       requireNonCycle(
-          sourceUri,
+          importedUri,
           importHistory);
     } catch (ImportCycleException ex) {
       throw new IOException(ex);
     }
 
     // track the import in the import history
-    importHistory.push(sourceUri);
+    importHistory.push(importedUri);
     try {
-      IDocumentNodeItem document = getDynamicContext().getDocumentLoader().loadAsNodeItem(source);
-      IDocumentNodeItem importedCatalog = resolve(document, importHistory);
+      IDocumentNodeItem importedCatalog = resolve(importedDocument, importHistory);
 
-      // Create a defensive deep copy of the document and associated values, since we will be making
+      // Create a defensive deep copy of the document and associated values, since we
+      // will be making
       // changes to the data.
       try {
-        importedCatalog = DefaultNodeItemFactory.instance().newDocumentNodeItem(
-            importedCatalog.getRootAssemblyNodeItem().getDefinition(),
-            OscalBindingContext.instance().copyBoundObject(importedCatalog.getValue(), null),
-            importedCatalog.getDocumentUri());
+        IRootAssemblyNodeItem importedCatalogRoot = ObjectUtils.requireNonNull(getRoot(importedCatalog, CATALOG));
+        Catalog catalogCopy = (Catalog) OscalBindingContext.instance().deepCopy(
+            ObjectUtils.requireNonNull((IBoundObject) importedCatalogRoot.getValue()),
+            null);
 
-        return new Import(profileDocument, profileImportItem)
-            .resolve(importedCatalog, resolvedCatalog);
+        importedCatalog = INodeItemFactory.instance().newDocumentNodeItem(
+            importedCatalogRoot.getDefinition(),
+            ObjectUtils.requireNonNull(importedCatalog.getDocumentUri()),
+            catalogCopy);
+
+        return new Import(profileItem, profileImportItem).resolve(importedCatalog, resolvedCatalog, uriResolver);
       } catch (BindingException ex) {
         throw new IOException(ex);
       }
     } finally {
       // pop the resolved catalog from the import history
       URI poppedUri = ObjectUtils.notNull(importHistory.pop());
-      assert sourceUri.equals(poppedUri);
+      assert importedUri.equals(poppedUri);
     }
   }
 
-  @NonNull
-  protected InputSource newImportSource(
+  private IDocumentNodeItem getImport(
       @NonNull URI importUri,
-      @NonNull IDocumentNodeItem profileDocument) throws IOException {
+      @NonNull IRootAssemblyNodeItem importingProfile) throws IOException {
 
-    // Get the entity resolver to resolve relative references in the profile
-    EntityResolver resolver = getEntityResolver(profileDocument.getDocumentUri());
+    URI importingDocumentUri = ObjectUtils.requireNonNull(importingProfile.getParentNodeItem().getDocumentUri());
 
-    InputSource source;
+    IDocumentNodeItem retval;
     if (OscalUtils.isInternalReference(importUri)) {
       // handle internal reference
       String uuid = OscalUtils.internalReferenceFragmentToId(importUri);
 
-      IRootAssemblyNodeItem profileItem = profileDocument.getRootAssemblyNodeItem();
-      Profile profile = toProfile(profileItem);
+      Profile profile = INodeItem.toValue(importingProfile);
       Resource resource = profile.getResourceByUuid(ObjectUtils.notNull(UUID.fromString(uuid)));
       if (resource == null) {
         throw new IOException(
             String.format("unable to find the resource identified by '%s' used in profile import", importUri));
       }
 
-      source = OscalUtils.newInputSource(resource, resolver, null);
+      retval = getImport(resource, importingDocumentUri);
     } else {
+      URI uri = importingDocumentUri.resolve(importUri);
+      assert uri != null;
+
+      retval = getDynamicContext().getDocumentLoader().loadAsNodeItem(uri);
+    }
+    return retval;
+  }
+
+  @Nullable
+  private IDocumentNodeItem getImport(
+      @NonNull Resource resource,
+      @NonNull URI baseUri) throws IOException {
+
+    IDocumentLoader loader = getDynamicContext().getDocumentLoader();
+
+    IDocumentNodeItem retval = null;
+    // first try base64 data
+    Base64 base64 = resource.getBase64();
+    ByteBuffer buffer = base64 == null ? null : base64.getValue();
+    if (buffer != null) {
+      URI resourceUri = baseUri.resolve("#" + resource.getUuid());
+      assert resourceUri != null;
+      retval = loader.loadAsNodeItem(resourceUri);
+    }
+
+    if (retval == null) {
+      Rlink rlink = OscalUtils.findMatchingRLink(resource, null);
+      URI uri = rlink == null ? null : rlink.getHref();
+
+      if (uri == null) {
+        throw new IOException(
+            String.format("Unable to determine URI for resource '%s'.", resource.getUuid()));
+      }
+
+      uri = baseUri.resolve(uri);
+      assert uri != null;
       try {
-        source = resolver.resolveEntity(null, importUri.toASCIIString());
-      } catch (SAXException ex) {
-        throw new IOException(ex);
+        retval = loader.loadAsNodeItem(uri);
+      } catch (IOException ex) {
+        throw new IOException(String.format("Unable to load resource '%s'.", uri), ex);
       }
     }
-
-    if (source == null || source.getSystemId() == null) {
-      throw new IOException(String.format("Unable to resolve import '%s'.", importUri.toString()));
-    }
-
-    return source;
+    return retval;
   }
 
   private static void requireNonCycle(@NonNull URI uri, @NonNull Stack<URI> importHistory)
@@ -402,7 +468,7 @@ public class ProfileResolver {
     List<URI> cycle = checkCycle(uri, importHistory);
     if (!cycle.isEmpty()) {
       throw new ImportCycleException(String.format("Importing resource '%s' would result in the import cycle: %s", uri,
-          cycle.stream().map(cycleUri -> cycleUri.toString()).collect(Collectors.joining(" -> ", " -> ", ""))));
+          cycle.stream().map(URI::toString).collect(Collectors.joining(" -> ", " -> ", ""))));
     }
   }
 
@@ -437,12 +503,14 @@ public class ProfileResolver {
     return retval;
   }
 
-  protected void handleMerge(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+  protected void handleMerge(
+      @NonNull Catalog resolvedCatalog,
+      @NonNull IRootAssemblyNodeItem profileItem,
       @NonNull IIndexer importIndex) {
     // handle combine
 
     // handle structuring
-    switch (getStructuringDirective(toProfile(profileDocument))) {
+    switch (getStructuringDirective(toProfile(profileItem))) {
     case AS_IS:
       // do nothing
       break;
@@ -450,13 +518,13 @@ public class ProfileResolver {
       throw new UnsupportedOperationException("custom structuring");
     case FLAT:
     default:
-      structureFlat(resolvedCatalog, profileDocument, importIndex);
+      structureFlat(resolvedCatalog, profileItem, importIndex);
       break;
     }
 
   }
 
-  protected void structureFlat(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+  protected void structureFlat(@NonNull Catalog resolvedCatalog, @NonNull IRootAssemblyNodeItem profileItem,
       @NonNull IIndexer importIndex) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("applying flat structuring directive");
@@ -464,14 +532,17 @@ public class ProfileResolver {
 
     // {
     // // rebuild an index
-    // IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
+    // IDocumentNodeItem resolvedCatalogItem =
+    // DefaultNodeItemFactory.instance().newDocumentNodeItem(
     // new RootAssemblyDefinition(
     // ObjectUtils.notNull(
-    // (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
+    // (IAssemblyClassBinding)
+    // OscalBindingContext.instance().getClassBinding(Catalog.class))),
     // resolvedCatalog,
     // profileDocument.getBaseUri());
     //
-    // // FIXME: need to find a better way to create an index that doesn't auto select groups
+    // // FIXME: need to find a better way to create an index that doesn't auto
+    // select groups
     // IIndexer indexer = new BasicIndexer();
     // ControlSelectionVisitor selectionVisitor
     // = new ControlSelectionVisitor(IControlFilter.ALWAYS_MATCH, indexer);
@@ -479,25 +550,23 @@ public class ProfileResolver {
     // }
 
     // rebuild the document, since the paths have changed
-    IDocumentNodeItem resolvedCatalogItem = DefaultNodeItemFactory.instance().newDocumentNodeItem(
-        new RootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
-        resolvedCatalog,
-        profileDocument.getBaseUri());
+    IDocumentNodeItem resolvedCatalogItem = INodeItemFactory.instance().newDocumentNodeItem(
+        ObjectUtils.requireNonNull(
+            (IBoundDefinitionModelAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
+        ObjectUtils.requireNonNull(profileItem.getBaseUri()),
+        resolvedCatalog);
 
-    FlatteningStructuringVisitor.instance().visitCatalog(resolvedCatalogItem, importIndex);
+    new FlatteningStructuringVisitor(uriResolver).visitCatalog(resolvedCatalogItem, importIndex);
   }
 
   @SuppressWarnings("PMD.ExceptionAsFlowControl") // ok
-  protected void handleModify(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument)
+  protected void handleModify(@NonNull Catalog resolvedCatalog, @NonNull IRootAssemblyNodeItem profileItem)
       throws ProfileResolutionException {
-    IDocumentNodeItem resolvedCatalogDocument = DefaultNodeItemFactory.instance().newDocumentNodeItem(
-        new RootAssemblyDefinition(
-            ObjectUtils.notNull(
-                (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
-        resolvedCatalog,
-        profileDocument.getBaseUri());
+    IDocumentNodeItem resolvedCatalogDocument = INodeItemFactory.instance().newDocumentNodeItem(
+        ObjectUtils.requireNonNull(
+            (IBoundDefinitionModelAssembly) OscalBindingContext.instance().getBoundDefinitionForClass(Catalog.class)),
+        ObjectUtils.requireNonNull(profileItem.getBaseUri()),
+        resolvedCatalog);
 
     try {
       IIndexer indexer = new BasicIndexer();
@@ -505,9 +574,9 @@ public class ProfileResolver {
           ObjectUtils.notNull(EnumSet.of(IEntityItem.ItemType.CONTROL, IEntityItem.ItemType.PARAMETER)));
       visitor.visitCatalog(resolvedCatalogDocument, indexer);
 
-      METAPATH_SET_PARAMETER.evaluate(profileDocument)
+      METAPATH_SET_PARAMETER.evaluate(profileItem)
           .forEach(item -> {
-            IRequiredValueAssemblyNodeItem setParameter = (IRequiredValueAssemblyNodeItem) item;
+            IAssemblyNodeItem setParameter = (IAssemblyNodeItem) item;
             try {
               handleSetParameter(setParameter, indexer);
             } catch (ProfileResolutionEvaluationException ex) {
@@ -519,17 +588,17 @@ public class ProfileResolver {
             }
           });
 
-      METAPATH_ALTER.evaluate(profileDocument)
+      METAPATH_ALTER.evaluate(profileItem)
           .forEach(item -> {
-            handleAlter((IRequiredValueAssemblyNodeItem) item, indexer);
+            handleAlter((IAssemblyNodeItem) item, indexer);
           });
     } catch (ProfileResolutionEvaluationException ex) {
       throw new ProfileResolutionException(ex.getLocalizedMessage(), ex);
     }
   }
 
-  protected void handleSetParameter(IRequiredValueAssemblyNodeItem item, IIndexer indexer) {
-    ProfileSetParameter setParameter = (Modify.ProfileSetParameter) item.getValue();
+  protected void handleSetParameter(IAssemblyNodeItem item, IIndexer indexer) {
+    ProfileSetParameter setParameter = ObjectUtils.requireNonNull((Modify.ProfileSetParameter) item.getValue());
     String paramId = ObjectUtils.requireNonNull(setParameter.getParamId());
     IEntityItem entity = indexer.getEntity(IEntityItem.ItemType.PARAMETER, paramId, false);
     if (entity == null) {
@@ -556,8 +625,9 @@ public class ProfileResolver {
     param.setSelect(setParameter.getSelect());
   }
 
-  protected void handleAlter(IRequiredValueAssemblyNodeItem item, IIndexer indexer) {
-    Modify.Alter alter = (Modify.Alter) item.getValue();
+  @SuppressWarnings("PMD.ExceptionAsFlowControl")
+  protected void handleAlter(IAssemblyNodeItem item, IIndexer indexer) {
+    Modify.Alter alter = ObjectUtils.requireNonNull((Modify.Alter) item.getValue());
     String controlId = ObjectUtils.requireNonNull(alter.getControlId());
     IEntityItem entity = indexer.getEntity(IEntityItem.ItemType.CONTROL, controlId, false);
     if (entity == null) {
@@ -572,7 +642,7 @@ public class ProfileResolver {
 
     METAPATH_ALTER_REMOVE.evaluate(item)
         .forEach(nodeItem -> {
-          IRequiredValueNodeItem removeItem = (IRequiredValueNodeItem) nodeItem;
+          INodeItem removeItem = (INodeItem) nodeItem;
           Modify.Alter.Remove remove = ObjectUtils.notNull((Modify.Alter.Remove) removeItem.getValue());
 
           try {
@@ -597,7 +667,7 @@ public class ProfileResolver {
         });
     METAPATH_ALTER_ADD.evaluate(item)
         .forEach(nodeItem -> {
-          IRequiredValueNodeItem addItem = (IRequiredValueNodeItem) nodeItem;
+          INodeItem addItem = (INodeItem) nodeItem;
           Modify.Alter.Add add = ObjectUtils.notNull((Modify.Alter.Add) addItem.getValue());
           String byId = add.getById();
           try {
@@ -626,13 +696,13 @@ public class ProfileResolver {
         });
   }
 
-  private static void handleReferences(@NonNull Catalog resolvedCatalog, @NonNull IDocumentNodeItem profileDocument,
+  private static void handleReferences(@NonNull Catalog resolvedCatalog, @NonNull IRootAssemblyNodeItem profileItem,
       @NonNull IIndexer index) {
 
     BasicIndexer profileIndex = new BasicIndexer();
 
     new ControlIndexingVisitor(ObjectUtils.notNull(EnumSet.allOf(ItemType.class)))
-        .visitProfile(profileDocument, profileIndex);
+        .visitProfile(profileItem, profileIndex);
 
     // copy roles, parties, and locations with prop name:keep and any referenced
     Metadata resolvedMetadata = resolvedCatalog.getMetadata();
@@ -640,19 +710,19 @@ public class ProfileResolver {
         IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getRoles()).stream()),
             profileIndex.getEntitiesByItemType(IEntityItem.ItemType.ROLE),
-            item -> item.getId())
+            Role::getId)
             .collect(Collectors.toCollection(LinkedList::new)));
     resolvedMetadata.setParties(
         IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getParties()).stream()),
             profileIndex.getEntitiesByItemType(IEntityItem.ItemType.PARTY),
-            item -> item.getUuid())
+            Party::getUuid)
             .collect(Collectors.toCollection(LinkedList::new)));
     resolvedMetadata.setLocations(
         IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolvedMetadata.getLocations()).stream()),
             profileIndex.getEntitiesByItemType(IEntityItem.ItemType.LOCATION),
-            item -> item.getUuid())
+            Location::getUuid)
             .collect(Collectors.toCollection(LinkedList::new)));
 
     // copy resources
@@ -663,7 +733,7 @@ public class ProfileResolver {
     List<Resource> resources = IIndexer.filterDistinct(
         ObjectUtils.notNull(resolvedResources.stream()),
         profileIndex.getEntitiesByItemType(IEntityItem.ItemType.RESOURCE),
-        item -> item.getUuid())
+        Resource::getUuid)
         .collect(Collectors.toCollection(LinkedList::new));
 
     if (!resources.isEmpty()) {
@@ -678,34 +748,9 @@ public class ProfileResolver {
     index.append(profileIndex);
   }
 
-  private class DocumentEntityResolver implements EntityResolver {
+  @FunctionalInterface
+  public interface UriResolver {
     @NonNull
-    private final URI documentUri;
-
-    public DocumentEntityResolver(@NonNull URI documentUri) {
-      this.documentUri = documentUri;
-    }
-
-    @NonNull
-    protected URI getDocumentUri() {
-      return documentUri;
-    }
-
-    @Override
-    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-
-      URI resolvedUri = getDocumentUri().resolve(systemId);
-
-      EntityResolver resolver = getDynamicContext().getDocumentLoader().getEntityResolver();
-
-      InputSource retval;
-      if (resolver == null) {
-        retval = new InputSource(resolvedUri.toASCIIString());
-      } else {
-        retval = resolver.resolveEntity(publicId, resolvedUri.toASCIIString());
-      }
-      return retval;
-    }
-
+    URI resolve(@NonNull URI uri, @NonNull URI source);
   }
 }

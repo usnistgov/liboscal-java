@@ -1,0 +1,22 @@
+a.externalLink[href^=https],a.externalLink[href^=http]  {
+  background: none;
+  padding-right: 0;
+}
+
+a.externalLink[href^=https]::after,a.externalLink[href^=http]::after {
+  font-family: 'Font Awesome 5 Free';
+  display: inline-block;
+  content: "\f35d";
+  font-size: .5rem;
+  font-weight: 900;
+  margin-left: 3px;
+}
+
+footer {
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+code {
+  color: #5f879b;
+}

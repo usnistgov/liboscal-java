@@ -1,41 +1,22 @@
 /*
- * Portions of this software was developed by employees of the National Institute
- * of Standards and Technology (NIST), an agency of the Federal Government and is
- * being made available as a public service. Pursuant to title 17 United States
- * Code Section 105, works of NIST employees are not subject to copyright
- * protection in the United States. This software may be subject to foreign
- * copyright. Permission in the United States and in foreign countries, to the
- * extent that NIST may hold copyright, to use, copy, modify, create derivative
- * works, and distribute this software and its documentation without fee is hereby
- * granted on a non-exclusive basis, provided that this notice and disclaimer
- * of warranty appears in all copies.
- *
- * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
- * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
- * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
- * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
- * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
- * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
- * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
- * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
- * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
- * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
- * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ * SPDX-FileCopyrightText: none
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import gov.nist.secauto.metaschema.binding.io.DefaultBoundLoader;
-import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.ISerializer;
-import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
-import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
+import gov.nist.secauto.metaschema.core.metapath.DynamicContext;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.io.DefaultBoundLoader;
+import gov.nist.secauto.metaschema.databind.io.Format;
+import gov.nist.secauto.metaschema.databind.io.ISerializer;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.profile.resolver.selection.ImportCycleException;
@@ -61,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -73,23 +55,17 @@ import javax.xml.transform.stream.StreamSource;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 class ProfileResolutionTests {
-  private static final String XSLT_PATH = "oscal/src/utils/resolver-pipeline/oscal-profile-test-helper.xsl";
+  private static final String XSLT_PATH = "src/test/resources/profile-test-helper.xsl";
   private static final String PROFILE_UNIT_TEST_PATH
       = "oscal/src/specifications/profile-resolution/profile-resolution-examples";
   private static final String JUNIT_TEST_PATH = "src/test/resources";
   private static final String PROFILE_EXPECTED_PATH = PROFILE_UNIT_TEST_PATH + "/output-expected";
 
-  private static ProfileResolver profileResolver;
   private static Processor processor;
   private static XsltExecutable compairisonXslt;
 
   @BeforeAll
   static void setup() throws SaxonApiException {
-    DynamicContext context = new StaticContext().newDynamicContext();
-    context.setDocumentLoader(new DefaultBoundLoader(OscalBindingContext.instance()));
-    profileResolver = new ProfileResolver();
-    profileResolver.setDynamicContext(context);
-
     processor = new Processor(false);
     XsltCompiler comp = processor.newXsltCompiler();
     compairisonXslt = comp.compile(new StreamSource(new File(XSLT_PATH)));
@@ -103,23 +79,26 @@ class ProfileResolutionTests {
     return compairisonXslt;
   }
 
-  public static ProfileResolver getProfileResolver() {
-    return profileResolver;
+  public static ProfileResolver newProfileResolver(@NonNull URI baseUri) {
+    DynamicContext context = new DynamicContext(OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
+    context.setDocumentLoader(new DefaultBoundLoader(OscalBindingContext.instance()));
+    return new ProfileResolver(context, (uri, src) -> baseUri.resolve(uri));
   }
 
-  private static Catalog resolveProfile(@NonNull Path profileFile)
-      throws FileNotFoundException, IOException, ProfileResolutionException {
-    return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
+  private static Catalog resolveProfile(@NonNull Path profilePath)
+      throws FileNotFoundException, IOException, ProfileResolutionException, URISyntaxException {
+    return resolveProfile(ObjectUtils.notNull(profilePath.toUri().toURL()));
   }
 
   private static Catalog resolveProfile(@NonNull File profileFile)
-      throws FileNotFoundException, IOException, ProfileResolutionException {
-    return (Catalog) getProfileResolver().resolveProfile(profileFile).getValue();
+      throws FileNotFoundException, IOException, ProfileResolutionException, URISyntaxException {
+    return resolveProfile(ObjectUtils.notNull(profileFile.toURI().toURL()));
   }
 
   private static Catalog resolveProfile(@NonNull URL profileUrl)
       throws IOException, ProfileResolutionException, URISyntaxException {
-    return (Catalog) getProfileResolver().resolveProfile(profileUrl).getValue();
+    return (Catalog) INodeItem.toValue(
+        newProfileResolver(ObjectUtils.notNull(profileUrl.toURI())).resolve(profileUrl));
   }
 
   /**
@@ -147,16 +126,16 @@ class ProfileResolutionTests {
 
   @ParameterizedTest
   @CsvFileSource(resources = "/profile-tests.csv", numLinesToSkip = 1)
-  void test(String profileName) throws IOException, SaxonApiException {
+  void test(String profileName) throws IOException, SaxonApiException, URISyntaxException {
     performTest(profileName);
   }
 
   @Test
-  void testSingle() throws IOException, SaxonApiException {
+  void testSingle() throws IOException, SaxonApiException, URISyntaxException {
     performTest("modify-adds");
   }
 
-  void performTest(String profileName) throws IOException, SaxonApiException {
+  void performTest(String profileName) throws IOException, SaxonApiException, URISyntaxException {
     String profileLocation = String.format("%s/%s_profile.xml", PROFILE_UNIT_TEST_PATH, profileName);
 
     File profileFile = new File(profileLocation);
@@ -182,7 +161,8 @@ class ProfileResolutionTests {
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
 
-    // OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog,
+    // OscalBindingContext.instance().newSerializer(Format.YAML,
+    // Catalog.class).serialize(catalog,
     // System.out);
 
     // System.out.println("Pre scrub: " + writer.getBuffer().toString());
@@ -221,7 +201,7 @@ class ProfileResolutionTests {
   }
 
   @Test
-  void testOscalVersion() throws IOException, ProfileResolutionException {
+  void testOscalVersion() throws IOException, ProfileResolutionException, URISyntaxException {
     Path profileFile = Paths.get(JUNIT_TEST_PATH, "content/test-oscal-version-profile.xml");
     assert profileFile != null;
     Catalog catalog = resolveProfile(profileFile);
@@ -230,7 +210,7 @@ class ProfileResolutionTests {
   }
 
   @Test
-  void testImportResourceRelativeLink() throws IOException, ProfileResolutionException {
+  void testImportResourceRelativeLink() throws IOException, ProfileResolutionException, URISyntaxException {
     Path profilePath = Paths.get(JUNIT_TEST_PATH, "content/profile-relative-links-resource.xml");
     assert profilePath != null;
     Catalog resolvedCatalog = resolveProfile(profilePath);
@@ -255,5 +235,15 @@ class ProfileResolutionTests {
     Catalog resolvedCatalog = resolveProfile(url);
 
     assertNotNull(resolvedCatalog);
+  }
+
+  @Test
+  void testMultipleImports() throws IOException, ProfileResolutionException, URISyntaxException {
+    File file = new File("src/test/resources/content/oscal-cli-60-profile.json");
+    Catalog resolvedCatalog = resolveProfile(file);
+    assertAll(
+        () -> assertNotNull(resolvedCatalog),
+        () -> assertEquals(1,
+            resolvedCatalog.getControls().stream().filter(control -> "sc-19".equals(control.getId())).count()));
   }
 }

@@ -1,81 +1,174 @@
 on:
   push:
     branches:
-    - main
+    - release/**
     - develop
-    - release-*
+    - feature/**
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-    - main
+    - release/**
     - develop
-    - release-*
+    - feature/**
+  merge_group:
   workflow_dispatch:
-name: Build and Test Code
+    inputs:
+      linkcheck_fail_on_error:
+        description: 'a boolean flag that determines if bad links found by the link checker fail fast and stop a complete build'
+        required: false
+        default: true
+        type: boolean
+      linkcheck_create_issue:
+        description: 'create new GitHub issue if broken links found'
+        required: false
+        default: false
+        type: boolean
+name: Build and Test
+env:
+  INPUT_FAIL_ON_ERROR: ${{ github.event.inputs.linkcheck_fail_on_error || 'true' }}
+  INPUT_ISSUE_ON_ERROR: ${{ github.event.inputs.linkcheck_create_issue || 'false' }}
+  MAVEN_VERSION: 3.9.8
+  JAVA_DISTRO: 'temurin'
+  JAVA_VERSION_FILE: .java-version
+  # Post Maven artifacts to the artifact repo if the branch is 'develop' or 'release/*'. This avoids publishing artifacts for pull requests
+  COMMIT_MAVEN_ARTIFACTS: ${{ (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/')) && github.repository_owner == 'metaschema-framework' }}
+  # Upload CodeQL results if the branch is 'develop' or 'release/*' or a pull request targeting these branches.
+  UPLOAD_CODEQL: ${{ ((github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/')) || (github.event_name == 'pull_request' && (github.base_ref == 'refs/heads/develop' || startsWith(github.base_ref, 'refs/heads/release/')))) && 'always' || 'never' }}
 jobs:
-  build-artifacts:
-    name: Build Java Artifacts
-    runs-on: ubuntu-latest
+  build-code:
+    name: Code
+    runs-on: ubuntu-20.04
     permissions:
       actions: read
       contents: read
       security-events: write
     steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
-        token: ${{ github.token }}
         submodules: recursive
-        fetch-depth: 0
+        filter: tree:0
+    - name: Checkout maven2 branch
+      if: env.COMMIT_MAVEN_ARTIFACTS == 'true'
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      with:
+        path: maven2
+        ref: main
+        repository: metaschema-framework/maven2
+        token: ${{ secrets.ACCESS_TOKEN }}
+        fetch-depth: 2
+        persist-credentials: true
     # -------------------------
     # Java Environment Setup
     # -------------------------
     - name: Set up Maven
-      uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f
+      uses: stCarolas/setup-maven@d6af6abeda15e98926a57b5aa970a96bb37f97d1
       with:
-        maven-version: 3.9.3
-    - name: Set up JDK 11 (build only)
-      if: ${{ !((github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name == 'develop') }}
-      uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
+        maven-version: ${{ env.MAVEN_VERSION }}
+    - name: Set up JDK
+      uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b
       with:
-        java-version: 11
-        distribution: 'temurin'
+        java-version-file: ${{ env.JAVA_VERSION_FILE }}
+        distribution: ${{ env.JAVA_DISTRO }}
         cache: 'maven'
-    - name: Set up JDK 11 (deploy)
-      if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name == 'develop'
-      uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
-      with:
-        java-version: 11
-        distribution: 'temurin'
-        cache: 'maven'
-        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
-        server-username: MAVEN_USERNAME # env variable for username in deploy
-        server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
-        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-        gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     - name: Initialize CodeQL
-      if: github.event_name == 'push'
-      uses: github/codeql-action/init@e8893c57a1f3a2b659b6b55564fdfdbbd2982911
+      uses: github/codeql-action/init@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169
       with:
         languages: java
     # -------------------------
     # Maven Build
     # -------------------------
     - name: Build and Test Code
-      if: ${{ !((github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name == 'develop') }}
       run: |
-        mvn -B -e -Prelease -Preporting install
-    - name: Build, Test and DEPLOY SNAPSHOT Code
-      if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name == 'develop'
+        mvn -B -e -Prelease -Psnapshots -DaltDeploymentRepository=repo-snapshot::file://${GITHUB_WORKSPACE}/maven2/ -DaltSnapshotDeploymentRepository=repo-snapshot::file://${GITHUB_WORKSPACE}/maven2/ -DrepositoryId=repo-snapshot deploy
+    - name: Deploy Artifacts
+      if: env.COMMIT_MAVEN_ARTIFACTS == 'true'
       run: |
-        mvn -B -e -Pgpg -Prelease -Preporting deploy -Dmaven.deploy.skip=releases
-      env:
-        MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        MVN_COORDS=$(echo '${project.groupId}:${project.artifactId}:${project.version}' | mvn -N -q -DforceStdout help:evaluate)
+        cd maven2
+        echo "Configuring git identity"
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+        echo "Comitting artifacts"
+        git add -A
+        git commit -m "[CI SKIP] Deploying artifacts for $MVN_COORDS."
+        echo "Syncing with latest"
+        git pull -r -s ours
+        echo "Pushing changes"
+        git push --force-with-lease
     - name: Perform CodeQL Analysis
-      if: github.event_name == 'push'
-      uses: github/codeql-action/analyze@e8893c57a1f3a2b659b6b55564fdfdbbd2982911
-    - name: Test Website
+      uses: github/codeql-action/analyze@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169
+      with:
+        upload: ${{ env.UPLOAD_CODEQL }}
+  build-website:
+    name: Website
+    runs-on: ubuntu-20.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      with:
+        submodules: recursive
+        filter: tree:0
+    # -------------------------
+    # Java Environment Setup
+    # -------------------------
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@d6af6abeda15e98926a57b5aa970a96bb37f97d1
+      with:
+        maven-version: ${{ env.MAVEN_VERSION }}
+    - name: Set up JDK
+      uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b
+      with:
+        java-version-file: ${{ env.JAVA_VERSION_FILE }}
+        distribution: ${{ env.JAVA_DISTRO }}
+        cache: 'maven'
+    # -------------------------
+    # Maven Build
+    # -------------------------
+    - name: Build and Test Website
       run: |
-        # this needs to be run as a second build to ensure source is fully generated by the previous step
-        mvn -B -e -Prelease -Preporting install site site:stage
+        mvn -B -e -PCI -Prelease install site site:stage -Dmaven.test.skip=true
+    - name: Zip Artifacts for Upload
+      run: |
+        zip ${{ runner.temp }}/website.zip -r target/staging
+    - name: Upload generated site
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b
+      with:
+        name: website
+        path: |
+          ${{ runner.temp }}/website.zip
+        retention-days: 5
+    - id: linkchecker
+      name: Link Checker
+      uses: lycheeverse/lychee-action@f796c8b7d468feb9b8c0a46da3fac0af6874d374
+      with:
+        args: --verbose --no-progress --accept 200,206,429 './target/staging/**/*.html'  --remap "https://github.com/metaschema-framework/metaschema-java/tree/main/ file://${GITHUB_WORKSPACE}/" --remap "https://metaschema-java.metaschema.dev/ file://${GITHUB_WORKSPACE}/target/staging/" --exclude-mail
+        format: markdown
+        output: html-link-report.md
+        debug: true
+        fail: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
+    - name: Upload link check report
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b
+      with:
+        name: html-link-report
+        path: html-link-report.md
+        retention-days: 5
+    - name: Create issue if bad links detected
+      if: ${{ !cancelled() && env.lychee_exit_code != 0 && env.INPUT_ISSUE_ON_ERROR == 'true' }}
+      uses: peter-evans/create-issue-from-file@e8ef132d6df98ed982188e460ebb3b5d4ef3a9cd
+      with:
+        title: Scheduled Check of Website Content Found Bad Hyperlinks
+        content-filepath: ./lychee/out.md
+        labels: |
+          bug
+          documentation
+    - name: Fail on link check error
+      if: ${{ !cancelled() && env.lychee_exit_code != 0 && env.INPUT_FAIL_ON_ERROR == 'true' }}
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+      with:
+        script: |
+          core.setFailed('Link checker detected broken or invalid links, read attached report.')

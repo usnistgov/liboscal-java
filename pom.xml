@@ -2,70 +2,72 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>gov.nist.secauto</groupId>
+		<groupId>dev.metaschema</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>27</version>
+		<version>6</version>
 	</parent>
 
-	<groupId>gov.nist.secauto.oscal</groupId>
+	<groupId>dev.metaschema.oscal</groupId>
 	<artifactId>liboscal-java</artifactId>
-	<version>3.0.4-SNAPSHOT</version>
+	<version>5.2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>OSCAL Java Library</name>
 	<description>A Java library that parses XML, JSON, and YAML data
 		formatted acording to a Metaschema-based model.
 	</description>
-	<url>https://github.com/usnistgov/liboscal-java</url>
+	<url>${site.url}</url>
 
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/usnistgov/liboscal-java/issues</url>
+		<url>https://github.com/metaschema-framework/liboscal-java/issues</url>
 	</issueManagement>
 
 	<scm>
-		<url>https://github.com/usnistgov/liboscal-java</url>
-		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git</connection>
-		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git</developerConnection>
-	  <tag>HEAD</tag>
-    </scm>
+		<url>${scm.url}/tree/develop</url>
+		<connection>scm:git:git@github.com:metaschema-framework/liboscal-java.git</connection>
+		<developerConnection>scm:git:git@github.com:metaschema-framework/liboscal-java.git</developerConnection>
+		<tag>v5.0.0</tag>
+	</scm>
 
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>central</id>
+            <name>Maven Central Repository</name>
+			<url>https://central.sonatype.com</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
 		</repository>
+		<snapshotRepository>
+			<id>repo-snapshot</id>
+			<url>https://raw.githubusercontent.com/metaschema-framework/maven2/refs/heads/main</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</snapshotRepository>
 		<site>
-			<id>nist-pages</id>
+			<id>pages</id>
 			<url>${site.url}</url>
 		</site>
 	</distributionManagement>
-
 	<licenses>
 		<license>
-			<name>NIST License</name>
-			<url>https://www.nist.gov/director/licensing</url>
+			<name>CC0-1.0</name>
+			<url>https://creativecommons.org/publicdomain/zero/1.0/</url>
 			<distribution>repo</distribution>
-			<comments>NIST software License</comments>
 		</license>
 	</licenses>
-
-	<organization>
-		<name>National Institute of Standards and Technology</name>
-		<url>https://www.nist.gov</url>
-	</organization>
-
 	<developers>
 		<developer>
-			<id>david.waltermire@nist.gov</id>
+			<id>david.waltermire@gsa.gov</id>
 			<name>David Waltermire</name>
-			<email>david.waltermire@nist.gov</email>
-			<organization>National Institute of Standards and Technology
-			</organization>
+			<email>david.waltermire@gsa.gov</email>
+			<organization>General Services Administration</organization>
 			<roles>
 				<role>architect</role>
 				<role>developer</role>
@@ -74,42 +76,11 @@
 		</developer>
 	</developers>
 
-	<mailingLists>
-		<mailingList>
-			<name>OSCAL NIST Team</name>
-			<post>oscal@nist.gov</post>
-		</mailingList>
-		<mailingList>
-			<name>OSCAL Project Development Discussion</name>
-			<post>oscal-dev@nist.gov</post>
-			<subscribe>oscal-dev-join@nist.gov</subscribe>
-			<unsubscribe>oscal-dev-leave@nist.gov</unsubscribe>
-		</mailingList>
-		<mailingList>
-			<name>OSCAL Project Updates</name>
-			<subscribe>oscal-updates-join@nist.gov</subscribe>
-			<unsubscribe>oscal-updates-leave@nist.gov</unsubscribe>
-		</mailingList>
-	</mailingLists>
-
 	<properties>
 		<!-- site configuration -->
-		<site.url>https://pages.nist.gov/liboscal-java/</site.url>
-		<scm.url>https://github.com/usnistgov/liboscal-java</scm.url>
-		<issueManagement.url>https://github.com/usnistgov/liboscal-java/issues</issueManagement.url>
-		<!--
-		================================================================================ -->
-		<!-- Web dependencies version -->
-		<!--
-		================================================================================ -->
-		<anchorJsVesrion>3.2.2</anchorJsVesrion>
-		<bootstrapVersion>4.4.1</bootstrapVersion>
-		<bootswatchVersion>4.4.1</bootswatchVersion>
-		<highlightJsVersion>9.15.7</highlightJsVersion>
-		<highlightJsTheme>github</highlightJsTheme>
-		<jqueryVersion>3.4.1</jqueryVersion>
-		<fontawesomeVersion>5.12.1</fontawesomeVersion>
-		<popperVersion>1.16.0</popperVersion>
+		<site.url>https://liboscal-java.metaschema.dev</site.url>
+		<scm.url>https://github.com/metaschema-framework/liboscal-java</scm.url>
+		<issueManagement.url>https://github.com/metaschema-framework/liboscal-java/issues</issueManagement.url>
 
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -122,20 +93,21 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.12.2</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>2.2.0-SNAPSHOT</dependency.metaschema-framework.version>
 
-		<dependency.auto-service.version>1.1.1</dependency.auto-service.version>
-		<dependency.commons-lang3.version>3.14.0</dependency.commons-lang3.version>
+		<dependency.commons-lang3.version>3.17.0</dependency.commons-lang3.version>
 		<dependency.infinispan.version>13.0.10.Final</dependency.infinispan.version>
-		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
-		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
-		<dependency.log4j2.version>2.22.0</dependency.log4j2.version>
-		<dependency.saxon.version>12.4</dependency.saxon.version>
-		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
-		<dependency.xmlresolver.version>5.2.3</dependency.xmlresolver.version>
+		<dependency.jmock-junit5.version>2.13.1</dependency.jmock-junit5.version>
+		<dependency.lazy4j.version>2.0.0</dependency.lazy4j.version>
+		<dependency.log4j2.version>2.24.3</dependency.log4j2.version>
+		<dependency.saxon.version>12.5</dependency.saxon.version>
+		<dependency.spotbugs-annotations.version>4.8.6</dependency.spotbugs-annotations.version>
+		<dependency.xmlbeans.version>5.3.0</dependency.xmlbeans.version>
+		<dependency.xmlresolver.version>6.0.11</dependency.xmlresolver.version>
+		<dependency.xmlunit.version>2.10.0</dependency.xmlunit.version>
 
-		<plugin.cyclonedx.version>2.7.11</plugin.cyclonedx.version>
-        <plugin.maven-toolchains.version>3.1.0</plugin.maven-toolchains.version>
+		<plugin.cyclonedx.version>2.9.1</plugin.cyclonedx.version>
+    	<plugin.maven-toolchains.version>3.2.0</plugin.maven-toolchains.version>
 
 		<cyclonedx.schema.version>1.3</cyclonedx.schema.version>
 		<oscal-content.commit>main</oscal-content.commit>
@@ -145,36 +117,62 @@
 	</properties>
 
 	<repositories>
+       <repository>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 		<repository>
-			<name>Nexus Snapshots</name>
-			<id>snapshots-repo</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<layout>default</layout>
+			<id>repo-snapshot</id>
+			<name>Local Snapshots</name>
+			<url>https://raw.githubusercontent.com/metaschema-framework/maven2/refs/heads/main</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
+				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
 	</repositories>
 	<pluginRepositories>
+       <pluginRepository>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
 		<pluginRepository>
-			<id>apache.snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<id>repo-snapshot</id>
+			<name>Local Snapshots</name>
+			<url>https://raw.githubusercontent.com/metaschema-framework/maven2/refs/heads/main</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-bom</artifactId>
+				<version>${dependency.log4j2.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
 			<dependency>
 				<groupId>org.xmlresolver</groupId>
 				<artifactId>xmlresolver</artifactId>
@@ -200,21 +198,39 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+            <dependency>
+                <groupId>org.apache.xmlbeans</groupId>
+                <artifactId>xmlbeans</artifactId>
+                <version>${dependency.xmlbeans.version}</version>
+            </dependency>
+
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${dependency.junit5.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
-			<groupId>gov.nist.secauto.metaschema</groupId>
-			<artifactId>metaschema-java-binding</artifactId>
+			<groupId>dev.metaschema.java</groupId>
+			<artifactId>metaschema-core</artifactId>
 			<version>${dependency.metaschema-framework.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.auto.service</groupId>
-			<artifactId>auto-service</artifactId>
-			<optional>true</optional>
-			<version>${dependency.auto-service.version}</version>
+			<groupId>dev.metaschema.java</groupId>
+			<artifactId>metaschema-databind</artifactId>
+			<version>${dependency.metaschema-framework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.metaschema.java</groupId>
+			<artifactId>metaschema-schema-generator</artifactId>
+			<version>${dependency.metaschema-framework.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -229,33 +245,24 @@
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
-
+        <dependency>
+            <groupId>nl.talsmasoftware</groupId>
+            <artifactId>lazy4j</artifactId>
+            <version>${dependency.lazy4j.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-			<version>${dependency.log4j2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<scope>test</scope>
-			<version>${dependency.log4j2.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -273,19 +280,19 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.25.3</version>
+			<version>3.27.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.xmlunit</groupId>
 			<artifactId>xmlunit-core</artifactId>
-			<version>2.9.1</version>
+			<version>${dependency.xmlunit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.xmlunit</groupId>
 			<artifactId>xmlunit-assertj3</artifactId>
-			<version>2.9.1</version>
+			<version>${dependency.xmlunit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -296,47 +303,28 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>${project.build.directory}/generated-resources/oscal</directory>
-				<includes>
-					<include>**/*.json</include>
-				</includes>
-				<targetPath>${resources.jsonschema.path}</targetPath>
-			</resource>
-			<resource>
-				<directory>${project.build.directory}/generated-resources/oscal</directory>
-				<includes>
-					<include>**/*.xsd</include>
-				</includes>
-				<targetPath>${resources.xmlschema.path}</targetPath>
-			</resource>			
-		</resources>
 		<pluginManagement>
 			<plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-toolchains-plugin</artifactId>
-                    <version>${plugin.maven-toolchains.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>toolchain</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <toolchains>
-                            <jdk>
-                                <version>11</version>
-                                <vendor>temurin</vendor>
-                            </jdk>
-                        </toolchains>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-toolchains-plugin</artifactId>
+					<version>${plugin.maven-toolchains.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>toolchain</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<toolchains>
+							<jdk>
+								<version>17</version>
+								<vendor>temurin</vendor>
+							</jdk>
+						</toolchains>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
@@ -344,13 +332,6 @@
 						<excludeRoots>
 							<excludeRoot>target/generated-sources/metaschema</excludeRoot>
 						</excludeRoots>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-site-plugin</artifactId>
-					<configuration>
-						<topSiteURL>${site.url}</topSiteURL>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -388,17 +369,59 @@
 						<excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<sourceDirectories>
+							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+							<sourceDirectory>
+								${project.build.testSourceDirectory}</sourceDirectory>
+						</sourceDirectories>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<configuration>
+						<!-- deploy is handled by the scm plugin -->
+						<skipDeploy>true</skipDeploy>
+						<relativizeSiteLinks>true</relativizeSiteLinks>
+						<generateReports>true</generateReports>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jxr-plugin</artifactId>
+					<version>3.6.0</version>
+					<configuration>
+						<excludes>
+							<exclude>**/module-info.java</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<projectVersionPolicyId>SemVerVersionPolicy</projectVersionPolicyId>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-toolchains-plugin</artifactId>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-toolchains-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>io.github.git-commit-id</groupId>
 				<artifactId>git-commit-id-maven-plugin</artifactId>
-				<version>7.0.0</version>
+				<version>9.0.1</version>
 				<configuration>
 					<useNativeGit>false</useNativeGit>
 				</configuration>
@@ -428,45 +451,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-oscal-xml-schema</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
-							<resources>
-								<resource>
-									<directory>
-										${project.basedir}/oscal/xml/schema</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-oscal-json-schema</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
-							<resources>
-								<resource>
-									<directory>
-										${project.basedir}/oscal/json/schema</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>templating-maven-plugin</artifactId>
 				<version>3.0.0</version>
@@ -482,7 +466,7 @@
 			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
-				<version>1.8.0</version>
+				<version>1.13.0</version>
 				<configuration>
 					<skipCache>true</skipCache>
 					<overwrite>false</overwrite>
@@ -556,18 +540,20 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>gov.nist.secauto.metaschema</groupId>
+				<groupId>dev.metaschema.java</groupId>
 				<artifactId>metaschema-maven-plugin</artifactId>
 				<version>${dependency.metaschema-framework.version}</version>
 				<executions>
 					<execution>
-						<id>default-cli</id>
+						<id>oscal-codegen</id>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
 							<metaschemaDir>
 								${project.basedir}/oscal/src/metaschema</metaschemaDir>
+								<outputDirectory>${project.build.directory}/generated-sources/metaschema</outputDirectory>
 							<configs>
 								<config>
 									${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
@@ -578,7 +564,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>generate-schemas</id>
+						<id>generate-xml-schemas</id>
 						<goals>
 							<goal>generate-schemas</goal>
 						</goals>
@@ -586,10 +572,31 @@
 							<metaschemaDir>
 								${project.basedir}/oscal/src/metaschema</metaschemaDir>
 							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal</outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
 							<includes>
 								<include>oscal_*_metaschema.xml</include>
 							</includes>
+							<formats>
+								<format>xsd</format>
+							</formats>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-json-schemas</id>
+						<goals>
+							<goal>generate-schemas</goal>
+						</goals>
+						<configuration>
+							<metaschemaDir>
+								${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
+							<includes>
+								<include>oscal_*_metaschema.xml</include>
+							</includes>
+							<formats>
+								<format>json</format>
+							</formats>
 						</configuration>
 					</execution>
 				</executions>
@@ -613,7 +620,7 @@
 					</execution>
 					<execution>
 						<id>add-oscal-resources</id>
-						<phase>process-resources</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>add-resource</goal>
 						</goals>
@@ -636,17 +643,70 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<configuration>
-					<ignoredDependencies>
-						<ignoredDependency>com.google.auto.service:auto-service</ignoredDependency>
-					</ignoredDependencies>
 					<usedDependencies>
 						<usedDependency>org.apache.logging.log4j:log4j-core</usedDependency>
 					</usedDependencies>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+            			<id>default</id>
+						<configuration>
+							<linkJavadoc>false</linkJavadoc>
+						</configuration>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 	<profiles>
+		<profile>
+			<id>gpg</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-gpg-plugin</artifactId>
+							<executions>
+								<execution>
+									<id>sign-artifacts</id>
+									<phase>verify</phase>
+									<goals>
+										<goal>sign</goal>
+									</goals>
+									<configuration>
+										<!-- enable, since the default is skip -->
+										<skip>false</skip>
+										<gpgArguments>
+											<arg>--pinentry-mode</arg>
+											<arg>loopback</arg>
+										</gpgArguments>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>release</id>
 			<build>
@@ -654,6 +714,34 @@
 					<plugin>
 						<groupId>org.cyclonedx</groupId>
 						<artifactId>cyclonedx-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>deployment</id>
+			<build>
+				<plugins>
+					<plugin>
+			          <groupId>org.sonatype.central</groupId>
+			          <artifactId>central-publishing-maven-plugin</artifactId>
+			          <version>0.6.0</version>
+			          <extensions>true</extensions>
+			          <configuration>
+			             <publishingServerId>central</publishingServerId>
+			             <autoPublish>false</autoPublish>
+			          </configuration>
+			        </plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>snapshots</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
 					</plugin>
 				</plugins>
 			</build>

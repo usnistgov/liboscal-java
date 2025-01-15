@@ -1,0 +1,29 @@
+{
+  "profile": {
+    "back-matter": {},
+    "uuid": "e057c6c7-c436-44b4-9d75-c503eef04f37",
+    "metadata": {
+      "version": "1.0.0",
+      "oscal-version": "1.1.2",
+      "last-modified": "2024-10-01T23:16:00Z",
+      "title": "Modifications to NIST 800-53"
+    },
+    "imports": [
+      {
+        "href": "https://raw.githubusercontent.com/usnistgov/oscal-content/941c978d14c57379fbf6f7fb388f675067d5bff7/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+        "include-controls": [
+          {
+            "with-ids": ["ac-1"]
+          }
+        ]
+      },
+      {
+        "href": "oscal-cli-60-catalog.json",
+        "include-all": {}
+      }
+    ],
+    "merge": {
+      "as-is": true
+    }
+  }
+}

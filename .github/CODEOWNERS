@@ -6,4 +6,6 @@
 # The sequence matters: later patterns take precedence.
 
 # FILES  OWNERS
-*        @david-waltermire-nist
+*                     @david-waltermire
+/.github              @repo-managers
+/.github/workflows    @workflow-managers

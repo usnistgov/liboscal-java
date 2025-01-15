@@ -1,37 +1,18 @@
 /*
- * Portions of this software was developed by employees of the National Institute
- * of Standards and Technology (NIST), an agency of the Federal Government and is
- * being made available as a public service. Pursuant to title 17 United States
- * Code Section 105, works of NIST employees are not subject to copyright
- * protection in the United States. This software may be subject to foreign
- * copyright. Permission in the United States and in foreign countries, to the
- * extent that NIST may hold copyright, to use, copy, modify, create derivative
- * works, and distribute this software and its documentation without fee is hereby
- * granted on a non-exclusive basis, provided that this notice and disclaimer
- * of warranty appears in all copies.
- *
- * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
- * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
- * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
- * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
- * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
- * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
- * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
- * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
- * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
- * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
- * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ * SPDX-FileCopyrightText: none
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression.ResultType;
-import gov.nist.secauto.metaschema.model.common.metapath.item.INodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.IMetapathExpression;
+import gov.nist.secauto.metaschema.core.metapath.IMetapathExpression.ResultType;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.util.CustomCollectors;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
+import gov.nist.secauto.oscal.lib.model.metadata.IProperty;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
 import org.apache.logging.log4j.Level;
@@ -57,27 +38,21 @@ public interface IIndexer {
     UNKNOWN;
   }
 
-  MetapathExpression HAS_PROP_KEEP_METAPATH = MetapathExpression
-      .compile("prop[@name='keep' and has-oscal-namespace('http://csrc.nist.gov/ns/oscal')]/@value = 'always'");
+  IMetapathExpression HAS_PROP_KEEP_METAPATH = IMetapathExpression.compile(
+      "prop[@name='keep' and has-oscal-namespace('" + IProperty.OSCAL_NAMESPACE + "')]/@value = 'always'",
+      OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
 
-  Predicate<IEntityItem> KEEP_ENTITY_PREDICATE = new Predicate<>() {
-
-    @Override
-    public boolean test(IEntityItem entity) {
-      return entity.getReferenceCount() > 0
-          || (Boolean) ObjectUtils
-              .notNull(IIndexer.HAS_PROP_KEEP_METAPATH.evaluateAs(entity.getInstance(), ResultType.BOOLEAN));
-    }
-
-  };
+  Predicate<IEntityItem> KEEP_ENTITY_PREDICATE = entity -> entity.getReferenceCount() > 0
+      || (Boolean) ObjectUtils
+          .notNull(HAS_PROP_KEEP_METAPATH.evaluateAs(entity.getInstance(), ResultType.BOOLEAN));
 
   static boolean isReferencedEntity(@NonNull IEntityItem entity) {
     return KEEP_ENTITY_PREDICATE.test(entity);
   }
 
   /**
-   * Keep entities that have a reference count greater than zero or are required to be kept based on
-   * the "keep"="always property.
+   * Keep entities that have a reference count greater than zero or are required
+   * to be kept based on the "keep"="always property.
    *
    * @param entities
    *          the entity items to filter
@@ -88,8 +63,8 @@ public interface IIndexer {
   }
 
   /**
-   * Keep entities that have a reference count of zero or are not required to be kept based on the
-   * "keep"="always property.
+   * Keep entities that have a reference count of zero or are not required to be
+   * kept based on the "keep"="always property.
    *
    * @param entities
    *          the entity items to filter
@@ -100,29 +75,33 @@ public interface IIndexer {
   }
 
   /**
-   * Generates a stream of distinct items that have a reference count greater than zero or are
-   * required to be kept based on the "keep"="always property.
+   * Generates a stream of distinct items that have a reference count greater than
+   * zero or are required to be kept based on the "keep"="always property.
    * <p>
-   * Distinct items are determined based on the item's key using the provided {@code keyMapper}.
+   * Distinct items are determined based on the item's key using the provided
+   * {@code keyMapper}.
    *
    * @param <T>
    *          the item type
    * @param <K>
    *          the key type
    * @param resolvedItems
-   *          a series of previously resolved items to add to prepend to the stream
+   *          a series of previously resolved items to add to prepend to the
+   *          stream
    * @param importedEntityItems
    *          a collection of new items to filter then append to the stream
    * @param keyMapper
    *          the key mapping function to determine the item's key
-   * @return the resulting series of items with duplicate items with the same key removed
+   * @return the resulting series of items with duplicate items with the same key
+   *         removed
    */
   // TODO: Is this the right name for this method?
   static <T, K> Stream<T> filterDistinct(
       @NonNull Stream<T> resolvedItems,
       @NonNull Collection<IEntityItem> importedEntityItems,
       @NonNull Function<? super T, ? extends K> keyMapper) {
-    @SuppressWarnings("unchecked") Stream<T> importedStream = getReferencedEntitiesAsStream(importedEntityItems)
+    @SuppressWarnings("unchecked")
+    Stream<T> importedStream = getReferencedEntitiesAsStream(importedEntityItems)
         .map(entity -> (T) entity.getInstanceValue());
 
     return CustomCollectors.distinctByKey(
@@ -161,28 +140,28 @@ public interface IIndexer {
   }
 
   @NonNull
-  IEntityItem addRole(@NonNull IRequiredValueModelNodeItem role);
+  IEntityItem addRole(@NonNull IModelNodeItem<?, ?> role);
 
   @NonNull
-  IEntityItem addLocation(@NonNull IRequiredValueModelNodeItem location);
+  IEntityItem addLocation(@NonNull IModelNodeItem<?, ?> location);
 
   @NonNull
-  IEntityItem addParty(@NonNull IRequiredValueModelNodeItem party);
+  IEntityItem addParty(@NonNull IModelNodeItem<?, ?> party);
 
   @Nullable
-  IEntityItem addGroup(@NonNull IRequiredValueModelNodeItem group);
+  IEntityItem addGroup(@NonNull IModelNodeItem<?, ?> group);
 
   @NonNull
-  IEntityItem addControl(@NonNull IRequiredValueModelNodeItem control);
+  IEntityItem addControl(@NonNull IModelNodeItem<?, ?> control);
 
   @NonNull
-  IEntityItem addParameter(@NonNull IRequiredValueModelNodeItem parameter);
+  IEntityItem addParameter(@NonNull IModelNodeItem<?, ?> parameter);
 
   @Nullable
-  IEntityItem addPart(@NonNull IRequiredValueModelNodeItem part);
+  IEntityItem addPart(@NonNull IModelNodeItem<?, ?> part);
 
   @NonNull
-  IEntityItem addResource(@NonNull IRequiredValueModelNodeItem resource);
+  IEntityItem addResource(@NonNull IModelNodeItem<?, ?> resource);
 
   @NonNull
   Collection<IEntityItem> getEntitiesByItemType(@NonNull IEntityItem.ItemType itemType);
@@ -193,7 +172,8 @@ public interface IIndexer {
   }
 
   /**
-   * Lookup an item of the given {@code itemType} having the given {@code identifier}.
+   * Lookup an item of the given {@code itemType} having the given
+   * {@code identifier}.
    * <p>
    * Will normalize the case of a UUID-based identifier.
    *
@@ -209,7 +189,8 @@ public interface IIndexer {
   }
 
   /**
-   * Lookup an item of the given {@code itemType} having the given {@code identifier}.
+   * Lookup an item of the given {@code itemType} having the given
+   * {@code identifier}.
    * <p>
    * Will normalize the case of a UUID-based the identifier when requested.
    *
@@ -218,7 +199,8 @@ public interface IIndexer {
    * @param identifier
    *          the identifier to lookup
    * @param normalize
-   *          {@code true} if the identifier case should be normalized or {@code false} otherwise
+   *          {@code true} if the identifier case should be normalized or
+   *          {@code false} otherwise
    * @return the matching item or {@code null} if no match was found
    */
   @Nullable

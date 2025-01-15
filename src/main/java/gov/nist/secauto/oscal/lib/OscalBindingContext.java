@@ -1,38 +1,20 @@
 /*
- * Portions of this software was developed by employees of the National Institute
- * of Standards and Technology (NIST), an agency of the Federal Government and is
- * being made available as a public service. Pursuant to title 17 United States
- * Code Section 105, works of NIST employees are not subject to copyright
- * protection in the United States. This software may be subject to foreign
- * copyright. Permission in the United States and in foreign countries, to the
- * extent that NIST may hold copyright, to use, copy, modify, create derivative
- * works, and distribute this software and its documentation without fee is hereby
- * granted on a non-exclusive basis, provided that this notice and disclaimer
- * of warranty appears in all copies.
- *
- * THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, EITHER
- * EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY
- * THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND FREEDOM FROM
- * INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION WILL CONFORM TO THE
- * SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE ERROR FREE.  IN NO EVENT
- * SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT,
- * INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF, RESULTING FROM,
- * OR IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY,
- * CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
- * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT
- * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+ * SPDX-FileCopyrightText: none
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 package gov.nist.secauto.oscal.lib;
 
-import gov.nist.secauto.metaschema.binding.DefaultBindingContext;
-import gov.nist.secauto.metaschema.binding.IBindingMatcher;
-import gov.nist.secauto.metaschema.model.common.constraint.IConstraintSet;
+import gov.nist.secauto.metaschema.core.metapath.StaticContext;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.DefaultBindingContext;
+import gov.nist.secauto.metaschema.databind.IBindingContext;
+import gov.nist.secauto.metaschema.databind.SimpleModuleLoaderStrategy;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
+import gov.nist.secauto.oscal.lib.model.OscalCompleteModule;
 import gov.nist.secauto.oscal.lib.model.PlanOfActionAndMilestones;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
@@ -42,38 +24,79 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Set;
-
-import javax.xml.namespace.QName;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import nl.talsmasoftware.lazy4j.Lazy;
 
 public class OscalBindingContext
     extends DefaultBindingContext {
+
   @NonNull
-  private static final OscalBindingContext SINGLETON = new OscalBindingContext();
+  public static final StaticContext OSCAL_STATIC_METAPATH_CONTEXT = StaticContext.builder()
+      .defaultModelNamespace(OscalModelConstants.NS_OSCAL)
+      .build();
+  private static final Lazy<OscalBindingContext> SINGLETON = Lazy.lazy(OscalBindingContext::new);
 
   @NonNull
   public static OscalBindingContext instance() {
-    return SINGLETON;
+    return ObjectUtils.notNull(SINGLETON.get());
   }
 
   /**
-   * Construct a new OSCAL-flavored binding context with custom constraints.
+   * Get a new builder that can produce a new, configured OSCAL-flavored binding
+   * context.
    *
-   * @param constraintSets
-   *          a set of additional constraints to apply
+   * @return the builder
+   * @since 2.0.0
    */
-  public OscalBindingContext(@NonNull Set<IConstraintSet> constraintSets) {
-    super(constraintSets);
-    registerBindingMatcher(new Matcher());
+  public static IBindingContext.BindingContextBuilder builder() {
+    return new IBindingContext.BindingContextBuilder(OscalBindingContext::new);
+  }
+
+  /**
+   * Get a new OSCAL-flavored {@link IBindingContext} instance, which can be used
+   * to load information that binds a model to a set of Java classes.
+   *
+   * @return a new binding context
+   * @since 2.0.0
+   */
+  @NonNull
+  public static OscalBindingContext newInstance() {
+    return new OscalBindingContext();
+  }
+
+  /**
+   * Get a new OSCAL-flavored {@link IBindingContext} instance, which can be used
+   * to load information that binds a model to a set of Java classes.
+   *
+   * @param strategy
+   *          the loader strategy to use when loading Metaschema modules
+   * @return a new binding context
+   * @since 2.0.0
+   */
+  @NonNull
+  public static OscalBindingContext newInstance(@NonNull IBindingContext.IModuleLoaderStrategy strategy) {
+    return new OscalBindingContext(strategy);
   }
 
   /**
    * Construct a new OSCAL-flavored binding context.
    */
   protected OscalBindingContext() {
-    registerBindingMatcher(new Matcher());
+    this(new SimpleModuleLoaderStrategy());
+  }
+
+  /**
+   * Construct a new OSCAL-flavored binding context.
+   *
+   * @param strategy
+   *          the behavior class to use for loading Metaschema modules
+   * @since 2.0.0
+   */
+  @SuppressWarnings("PMD.ConstructorCallsOverridableMethod") // false positive
+  public OscalBindingContext(@NonNull IBindingContext.IModuleLoaderStrategy strategy) {
+    super(strategy);
+    registerModule(OscalCompleteModule.class);
   }
 
   @NonNull
@@ -180,72 +203,5 @@ public class OscalBindingContext
   @NonNull
   public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull File file) throws IOException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, file);
-  }
-
-  private static final class Matcher implements IBindingMatcher {
-    @Override
-    public Class<?> getBoundClassForXmlQName(QName startElementQName) {
-      Class<?> clazz = null;
-      if ("http://csrc.nist.gov/ns/oscal/1.0".equals(startElementQName.getNamespaceURI())) {
-        switch (startElementQName.getLocalPart()) {
-        case "catalog":
-          clazz = Catalog.class;
-          break;
-        case "profile":
-          clazz = Profile.class;
-          break;
-        case "system-security-plan":
-          clazz = SystemSecurityPlan.class;
-          break;
-        case "component-definition":
-          clazz = ComponentDefinition.class;
-          break;
-        case "assessment-plan":
-          clazz = AssessmentPlan.class;
-          break;
-        case "assessment-results":
-          clazz = AssessmentResults.class;
-          break;
-        case "plan-of-action-and-milestones":
-          clazz = PlanOfActionAndMilestones.class;
-          break;
-        default:
-          throw new UnsupportedOperationException("Unrecognized element name: " + startElementQName.toString());
-        }
-      }
-      return clazz;
-    }
-
-    @Override
-    public Class<?> getBoundClassForJsonName(String name) {
-      Class<?> retval;
-      switch (name) {
-      case "catalog":
-        retval = Catalog.class;
-        break;
-      case "profile":
-        retval = Profile.class;
-        break;
-      case "system-security-plan":
-        retval = SystemSecurityPlan.class;
-        break;
-      case "component-definition":
-        retval = ComponentDefinition.class;
-        break;
-      case "assessment-plan":
-        retval = AssessmentPlan.class;
-        break;
-      case "assessment-results":
-        retval = AssessmentResults.class;
-        break;
-      case "plan-of-action-and-milestones":
-        retval = PlanOfActionAndMilestones.class;
-        break;
-      default:
-        throw new UnsupportedOperationException("Unrecognized field name: " + name);
-      }
-      return retval;
-    }
-
   }
 }

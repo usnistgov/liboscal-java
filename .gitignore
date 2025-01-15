@@ -1,3 +1,4 @@
+# eclipse files
 .classpath
 .project
 .settings
@@ -5,7 +6,15 @@
 .factorypath
 .pmd
 .pmdruleset.xml
+.eclipse-pmd
+.ruleset
+.apt_generated/
+.apt_generated_tests/
+.fbExcludeFilterFile
+
+# Maven files
 target/
 pom.xml.releaseBackup
+pom.xml.versionsBackup
 release.properties
-.fbExcludeFilterFile
+velocity.log*
