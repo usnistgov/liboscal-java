@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
@@ -57,10 +57,11 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
   }
 
   /**
-   * Get the possible item types that can be searched in the order in which the identifier will be
-   * looked up.
+   * Get the possible item types that can be searched in the order in which the
+   * identifier will be looked up.
    * <p>
-   * The {@code reference} object is provided to allow for context sensitive item type tailoring.
+   * The {@code reference} object is provided to allow for context sensitive item
+   * type tailoring.
    *
    * @param reference
    *          the reference object
@@ -79,13 +80,14 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param item
    *          the referenced item
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
+   *          the reference visitor state, which can be used for further
+   *          processing
    * @return {@code true} if the hit was handled or {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
    */
   protected boolean handleIndexHit(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -130,7 +132,7 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    *           if there was an error handing the index hit
    */
   protected void handleUnselected( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -149,12 +151,13 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param item
    *          the referenced item
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
+   *          the reference visitor state, which can be used for further
+   *          processing
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index hit
    */
   protected void handleSelected( // NOPMD noop default
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -162,8 +165,8 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
   }
 
   /**
-   * Handle an index miss for a reference. This occurs when the referenced item was not found in the
-   * index.
+   * Handle an index miss for a reference. This occurs when the referenced item
+   * was not found in the index.
    * <p>
    * Subclasses can override this method to perform extra processing.
    *
@@ -176,13 +179,15 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param identifier
    *          the parsed identifier
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
-   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   *          the reference visitor state, which can be used for further
+   *          processing
+   * @return {@code true} if the reference is handled by this method or
+   *         {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index miss
    */
   protected boolean handleIndexMiss(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
@@ -192,8 +197,9 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
   }
 
   /**
-   * Handle the case where the identifier was not a syntax match for an expected identifier. This can
-   * occur when the reference is malformed, using an unrecognized syntax.
+   * Handle the case where the identifier was not a syntax match for an expected
+   * identifier. This can occur when the reference is malformed, using an
+   * unrecognized syntax.
    * <p>
    * Subclasses can override this method to perform extra processing.
    *
@@ -202,13 +208,15 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param reference
    *          the identifier reference object generating the hit
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
-   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   *          the reference visitor state, which can be used for further
+   *          processing
+   * @return {@code true} if the reference is handled by this method or
+   *         {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the index miss due to a non match
    */
   protected boolean handleIdentifierNonMatch(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE reference,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     // provide no handler by default
@@ -217,12 +225,13 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
 
   @Override
   public boolean handleReference(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE type,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     String referenceText = getReferenceText(type);
 
-    // if the reference text does not exist, ignore the reference; otherwise, handle it.
+    // if the reference text does not exist, ignore the reference; otherwise, handle
+    // it.
     return referenceText == null
         || handleIdentifier(contextItem, type, getIdentifierParser().parse(referenceText), visitorContext);
   }
@@ -237,13 +246,15 @@ public abstract class AbstractCustomReferencePolicy<TYPE> implements ICustomRefe
    * @param identifier
    *          the identifier
    * @param visitorContext
-   *          the reference visitor state, which can be used for further processing
-   * @return {@code true} if the reference is handled by this method or {@code false} otherwise
+   *          the reference visitor state, which can be used for further
+   *          processing
+   * @return {@code true} if the reference is handled by this method or
+   *         {@code false} otherwise
    * @throws ProfileResolutionEvaluationException
    *           if there was an error handing the reference
    */
   protected boolean handleIdentifier(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull TYPE type,
       @Nullable String identifier,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {

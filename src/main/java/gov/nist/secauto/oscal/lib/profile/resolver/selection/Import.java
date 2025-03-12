@@ -29,16 +29,21 @@ package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IDocumentNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.INodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.Metadata;
+import gov.nist.secauto.oscal.lib.model.Metadata.Location;
+import gov.nist.secauto.oscal.lib.model.Metadata.Party;
+import gov.nist.secauto.oscal.lib.model.Metadata.Role;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.ProfileImport;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
@@ -58,23 +63,23 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public class Import {
 
   @NonNull
-  private final IDocumentNodeItem profileDocument;
+  private final IRootAssemblyNodeItem profile;
   @NonNull
-  private final IModelNodeItem profileImportItem;
+  private final IAssemblyNodeItem profileImportItem;
 
   public Import(
-      @NonNull IDocumentNodeItem profileDocument,
-      @NonNull IModelNodeItem profileImportItem) {
+      @NonNull IRootAssemblyNodeItem profile,
+      @NonNull IAssemblyNodeItem profileImportItem) {
 
-    this.profileDocument = profileDocument;
+    this.profile = profile;
     this.profileImportItem = profileImportItem;
   }
 
-  protected IDocumentNodeItem getProfileItem() {
-    return profileDocument;
+  protected IRootAssemblyNodeItem getProfileItem() {
+    return profile;
   }
 
-  protected IModelNodeItem getProfileImportItem() {
+  protected IAssemblyNodeItem getProfileImportItem() {
     return profileImportItem;
   }
 
@@ -83,8 +88,8 @@ public class Import {
     return ObjectUtils.requireNonNull((ProfileImport) profileImportItem.getValue());
   }
 
-  private static Catalog toCatalog(IDocumentNodeItem catalogDocument) {
-    return (Catalog) catalogDocument.getValue();
+  private static Catalog toCatalog(@NonNull IDocumentNodeItem catalogDocument) {
+    return (Catalog) INodeItem.toValue(catalogDocument);
   }
 
   @NonNull
@@ -183,19 +188,19 @@ public class Import {
         IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolved.getRoles()).stream()),
             indexer.getEntitiesByItemType(IEntityItem.ItemType.ROLE),
-            item -> item.getId())
+            Role::getId)
             .collect(Collectors.toCollection(LinkedList::new)));
     resolved.setParties(
         IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolved.getParties()).stream()),
             indexer.getEntitiesByItemType(IEntityItem.ItemType.PARTY),
-            item -> item.getUuid())
+            Party::getUuid)
             .collect(Collectors.toCollection(LinkedList::new)));
     resolved.setLocations(
         IIndexer.filterDistinct(
             ObjectUtils.notNull(CollectionUtil.listOrEmpty(resolved.getLocations()).stream()),
             indexer.getEntitiesByItemType(IEntityItem.ItemType.LOCATION),
-            item -> item.getUuid())
+            Location::getUuid)
             .collect(Collectors.toCollection(LinkedList::new)));
   }
 
@@ -215,7 +220,7 @@ public class Import {
       List<Resource> resources = IIndexer.filterDistinct(
           ObjectUtils.notNull(resolvedResources.stream()),
           indexer.getEntitiesByItemType(IEntityItem.ItemType.RESOURCE),
-          item -> item.getUuid())
+          Resource::getUuid)
           .collect(Collectors.toCollection(LinkedList::new));
 
       if (!resources.isEmpty()) {

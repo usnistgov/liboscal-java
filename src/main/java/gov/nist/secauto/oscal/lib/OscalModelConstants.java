@@ -24,58 +24,56 @@
  * OF THE RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
  */
 
-package gov.nist.secauto.oscal.lib.profile.resolver.selection;
+package gov.nist.secauto.oscal.lib;
 
 import gov.nist.secauto.metaschema.core.util.ObjectUtils;
-import gov.nist.secauto.oscal.lib.model.control.catalog.IControl;
 
-import org.apache.commons.lang3.tuple.Pair;
+import java.net.URI;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import javax.xml.namespace.QName;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public interface IControlSelectionFilter extends Function<IControl, Pair<Boolean, Boolean>> {
+public final class OscalModelConstants {
 
   @NonNull
-  Pair<Boolean, Boolean> NON_MATCH = ObjectUtils.notNull(Pair.of(false, false));
+  public static final String NS_OSCAL = "http://csrc.nist.gov/ns/oscal/1.0";
   @NonNull
-  Pair<Boolean, Boolean> MATCH = ObjectUtils.notNull(Pair.of(true, true));
-
+  public static final URI NS_URI_OSCAL = ObjectUtils.notNull(URI.create(NS_OSCAL));
   @NonNull
-  IControlSelectionFilter ALL_MATCH = control -> MATCH;
-
+  public static final QName QNAME_METADATA = new QName(NS_OSCAL, "metadata");
   @NonNull
-  IControlSelectionFilter NONE_MATCH = control -> NON_MATCH;
-
+  public static final QName QNAME_BACK_MATTER = new QName(NS_OSCAL, "back-matter");
   @NonNull
-  static IControlSelectionFilter matchIds(@NonNull String... identifiers) {
-    return new IControlSelectionFilter() {
-      private final Set<String> keys = Arrays.stream(identifiers).collect(Collectors.toUnmodifiableSet());
+  public static final QName QNAME_PROFILE = new QName(NS_OSCAL, "profile");
+  @NonNull
+  public static final QName QNAME_IMPORT = new QName(NS_OSCAL, "import");
+  @NonNull
+  public static final QName QNAME_TITLE = new QName(NS_OSCAL, "title");
+  @NonNull
+  public static final QName QNAME_PROP = new QName(NS_OSCAL, "prop");
+  @NonNull
+  public static final QName QNAME_LINK = new QName(NS_OSCAL, "link");
+  @NonNull
+  public static final QName QNAME_CITATION = new QName(NS_OSCAL, "citation");
+  @NonNull
+  public static final QName QNAME_TEXT = new QName(NS_OSCAL, "text");
+  @NonNull
+  public static final QName QNAME_PROSE = new QName(NS_OSCAL, "prose");
+  @NonNull
+  public static final QName QNAME_PARAM = new QName(NS_OSCAL, "param");
+  @NonNull
+  public static final QName QNAME_ROLE = new QName(NS_OSCAL, "role");
+  @NonNull
+  public static final QName QNAME_LOCATION = new QName(NS_OSCAL, "location");
+  @NonNull
+  public static final QName QNAME_PARTY = new QName(NS_OSCAL, "party");
+  @NonNull
+  public static final QName QNAME_GROUP = new QName(NS_OSCAL, "group");
+  @NonNull
+  public static final QName QNAME_CONTROL = new QName(NS_OSCAL, "control");
 
-      @Override
-      public @NonNull Pair<Boolean, Boolean> apply(IControl control) {
-        return ObjectUtils.notNull(Pair.of(keys.contains(control.getId()), false));
-      }
-
-    };
+  private OscalModelConstants() {
+    // disable construction
   }
-
-  /**
-   * Determines if the control is matched by this filter. This method returns a
-   * {@link Pair} where the first member of the pair indicates if the control
-   * matches, and the second indicates if the match applies to child controls as
-   * well.
-   *
-   * @param control
-   *          the control to check for a match
-   * @return a pair indicating the status of the match ({@code true} for a match
-   *         or {@code false} otherwise), and if a match applies to child controls
-   */
-  @NonNull
-  @Override
-  Pair<Boolean, Boolean> apply(IControl control);
 }

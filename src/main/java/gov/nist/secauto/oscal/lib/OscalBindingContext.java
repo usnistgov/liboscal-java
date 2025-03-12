@@ -26,9 +26,9 @@
 
 package gov.nist.secauto.oscal.lib;
 
-import gov.nist.secauto.metaschema.binding.DefaultBindingContext;
-import gov.nist.secauto.metaschema.binding.IBindingMatcher;
-import gov.nist.secauto.metaschema.model.common.constraint.IConstraintSet;
+import gov.nist.secauto.metaschema.core.metapath.StaticContext;
+import gov.nist.secauto.metaschema.core.model.IModuleLoader;
+import gov.nist.secauto.metaschema.databind.DefaultBindingContext;
 import gov.nist.secauto.oscal.lib.model.AssessmentPlan;
 import gov.nist.secauto.oscal.lib.model.AssessmentResults;
 import gov.nist.secauto.oscal.lib.model.Catalog;
@@ -42,18 +42,22 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Set;
-
-import javax.xml.namespace.QName;
+import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class OscalBindingContext
     extends DefaultBindingContext {
   @NonNull
+  public static final StaticContext OSCAL_STATIC_METAPATH_CONTEXT = StaticContext.builder()
+      .defaultModelNamespace(OscalModelConstants.NS_URI_OSCAL)
+      .build();
+  @NonNull
   private static final OscalBindingContext SINGLETON = new OscalBindingContext();
 
   @NonNull
+  @SuppressFBWarnings(value = "SING_SINGLETON_GETTER_NOT_SYNCHRONIZED", justification = "class initialization")
   public static OscalBindingContext instance() {
     return SINGLETON;
   }
@@ -61,19 +65,33 @@ public class OscalBindingContext
   /**
    * Construct a new OSCAL-flavored binding context with custom constraints.
    *
-   * @param constraintSets
-   *          a set of additional constraints to apply
+   * @param modulePostProcessors
+   *          a list of module post processors to call after loading a module
    */
-  public OscalBindingContext(@NonNull Set<IConstraintSet> constraintSets) {
-    super(constraintSets);
-    registerBindingMatcher(new Matcher());
+  @SuppressFBWarnings(value = "SING_SINGLETON_HAS_NONPRIVATE_CONSTRUCTOR",
+      justification = "public constructor allows customized use in specialized usecases")
+  public OscalBindingContext(@NonNull List<IModuleLoader.IModulePostProcessor> modulePostProcessors) {
+    super(modulePostProcessors);
+    registerBindingMatcher(Catalog.class);
+    registerBindingMatcher(Profile.class);
+    registerBindingMatcher(SystemSecurityPlan.class);
+    registerBindingMatcher(ComponentDefinition.class);
+    registerBindingMatcher(AssessmentPlan.class);
+    registerBindingMatcher(AssessmentResults.class);
+    registerBindingMatcher(PlanOfActionAndMilestones.class);
   }
 
   /**
    * Construct a new OSCAL-flavored binding context.
    */
   protected OscalBindingContext() {
-    registerBindingMatcher(new Matcher());
+    registerBindingMatcher(Catalog.class);
+    registerBindingMatcher(Profile.class);
+    registerBindingMatcher(SystemSecurityPlan.class);
+    registerBindingMatcher(ComponentDefinition.class);
+    registerBindingMatcher(AssessmentPlan.class);
+    registerBindingMatcher(AssessmentResults.class);
+    registerBindingMatcher(PlanOfActionAndMilestones.class);
   }
 
   @NonNull
@@ -180,72 +198,5 @@ public class OscalBindingContext
   @NonNull
   public PlanOfActionAndMilestones loadPlanOfActionAndMilestones(@NonNull File file) throws IOException {
     return newBoundLoader().load(PlanOfActionAndMilestones.class, file);
-  }
-
-  private static final class Matcher implements IBindingMatcher {
-    @Override
-    public Class<?> getBoundClassForXmlQName(QName startElementQName) {
-      Class<?> clazz = null;
-      if ("http://csrc.nist.gov/ns/oscal/1.0".equals(startElementQName.getNamespaceURI())) {
-        switch (startElementQName.getLocalPart()) {
-        case "catalog":
-          clazz = Catalog.class;
-          break;
-        case "profile":
-          clazz = Profile.class;
-          break;
-        case "system-security-plan":
-          clazz = SystemSecurityPlan.class;
-          break;
-        case "component-definition":
-          clazz = ComponentDefinition.class;
-          break;
-        case "assessment-plan":
-          clazz = AssessmentPlan.class;
-          break;
-        case "assessment-results":
-          clazz = AssessmentResults.class;
-          break;
-        case "plan-of-action-and-milestones":
-          clazz = PlanOfActionAndMilestones.class;
-          break;
-        default:
-          throw new UnsupportedOperationException("Unrecognized element name: " + startElementQName.toString());
-        }
-      }
-      return clazz;
-    }
-
-    @Override
-    public Class<?> getBoundClassForJsonName(String name) {
-      Class<?> retval;
-      switch (name) {
-      case "catalog":
-        retval = Catalog.class;
-        break;
-      case "profile":
-        retval = Profile.class;
-        break;
-      case "system-security-plan":
-        retval = SystemSecurityPlan.class;
-        break;
-      case "component-definition":
-        retval = ComponentDefinition.class;
-        break;
-      case "assessment-plan":
-        retval = AssessmentPlan.class;
-        break;
-      case "assessment-results":
-        retval = AssessmentResults.class;
-        break;
-      case "plan-of-action-and-milestones":
-        retval = PlanOfActionAndMilestones.class;
-        break;
-      default:
-        throw new UnsupportedOperationException("Unrecognized field name: " + name);
-      }
-      return retval;
-    }
-
   }
 }

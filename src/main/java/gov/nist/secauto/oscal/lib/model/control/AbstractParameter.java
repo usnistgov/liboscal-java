@@ -26,10 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.model.control;
 
-import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupMultiline;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.core.datatype.markup.MarkupMultiline;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.ParameterConstraint;
@@ -57,7 +57,7 @@ public abstract class AbstractParameter implements IParameter {
     Stream<String> aggregatesIds = CollectionUtil.listOrEmpty(getProps()).stream()
         .filter(Objects::nonNull)
         .filter(prop -> prop.isNamespaceEqual(IProperty.OSCAL_NAMESPACE) && "aggregates".equals(prop.getName()))
-        .map(prop -> prop.getValue());
+        .map(Property::getValue);
 
     // handle select/choice/insert
     ParameterSelection selection = getSelect();

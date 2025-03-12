@@ -26,8 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IDocumentNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IRootAssemblyNodeItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
 import java.util.Set;
@@ -60,8 +59,7 @@ public class ControlIndexingVisitor
     return null;
   }
 
-  public void visitProfile(@NonNull IDocumentNodeItem profileDocument, @NonNull IIndexer index) {
-    IRootAssemblyNodeItem root = profileDocument.getRootAssemblyNodeItem();
+  public void visitProfile(@NonNull IRootAssemblyNodeItem root, @NonNull IIndexer index) {
     visitMetadata(root, index);
     visitBackMatter(root, index);
   }

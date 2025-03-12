@@ -26,11 +26,12 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.selection;
 
-import gov.nist.secauto.metaschema.model.common.metapath.MetapathExpression;
-import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueAssemblyNodeItem;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.MetapathExpression;
+import gov.nist.secauto.metaschema.core.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IAssemblyNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IIndexer;
@@ -44,14 +45,16 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class ControlSelectionState implements IControlSelectionState {
-  private static final MetapathExpression GROUP_CHILDREN = MetapathExpression.compile("group|descendant::control");
+  private static final MetapathExpression GROUP_CHILDREN = MetapathExpression.compile(
+      "group|descendant::control",
+      OscalBindingContext.OSCAL_STATIC_METAPATH_CONTEXT);
 
   @NonNull
   private final IIndexer index;
   @NonNull
   private final IControlFilter filter;
   @NonNull
-  private final Map<IRequiredValueModelNodeItem, SelectionState> itemSelectionState = new ConcurrentHashMap<>();
+  private final Map<IModelNodeItem<?, ?>, SelectionState> itemSelectionState = new ConcurrentHashMap<>();
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "provides intentional access to index state")
   public ControlSelectionState(@NonNull IIndexer index, @NonNull IControlFilter filter) {
@@ -71,12 +74,12 @@ public class ControlSelectionState implements IControlSelectionState {
   }
 
   @Override
-  public boolean isSelected(@NonNull IRequiredValueModelNodeItem item) {
+  public boolean isSelected(@NonNull IModelNodeItem<?, ?> item) {
     return getSelectionState(item).isSelected();
   }
 
   @NonNull
-  protected SelectionState getSelectionState(@NonNull IRequiredValueModelNodeItem item) {
+  protected SelectionState getSelectionState(@NonNull IModelNodeItem<?, ?> item) {
     SelectionState retval = itemSelectionState.get(item);
     if (retval == null) {
       Object itemValue = ObjectUtils.requireNonNull(item.getValue());
@@ -85,7 +88,7 @@ public class ControlSelectionState implements IControlSelectionState {
         Control control = (Control) itemValue;
 
         // get the parent control if the parent is a control
-        IRequiredValueAssemblyNodeItem parentItem = ObjectUtils.requireNonNull(item.getParentContentNodeItem());
+        IAssemblyNodeItem parentItem = ObjectUtils.requireNonNull(item.getParentContentNodeItem());
         Object parentValue = parentItem.getValue();
         Control parentControl = parentValue instanceof Control ? (Control) parentValue : null;
 
@@ -103,9 +106,9 @@ public class ControlSelectionState implements IControlSelectionState {
 
       } else if (itemValue instanceof CatalogGroup) {
         // get control selection status
-        boolean selected = GROUP_CHILDREN.evaluate(item).asStream()
+        boolean selected = GROUP_CHILDREN.evaluate(item).stream()
             .map(child -> {
-              return getSelectionState((IRequiredValueModelNodeItem) ObjectUtils.requireNonNull(child)).isSelected();
+              return getSelectionState((IModelNodeItem<?, ?>) ObjectUtils.requireNonNull(child)).isSelected();
             })
             .reduce(false, (first, second) -> first || second);
 

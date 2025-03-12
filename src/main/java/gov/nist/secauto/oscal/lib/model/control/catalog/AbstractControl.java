@@ -26,15 +26,16 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.metaschema.binding.io.IDeserializationHandler;
-import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.datatype.markup.MarkupLine;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.io.IDeserializationHandler;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.model.Property;
+import gov.nist.secauto.oscal.lib.model.control.AbstractParameter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -86,7 +87,7 @@ public abstract class AbstractControl
     // get parameters referenced by the control's parameters
     Stream<String> parameterIds = CollectionUtil.listOrEmpty(getParams()).stream()
         .flatMap(ObjectUtils::filterNull)
-        .flatMap(param -> param.getParameterReferences());
+        .flatMap(AbstractParameter::getParameterReferences);
 
     return ObjectUtils.notNull(
         Stream.concat(insertIds, parameterIds).distinct());

@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
@@ -64,15 +64,15 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
     RESULT result = CollectionUtil.listOrEmpty(catalog.getGroups()).stream()
         .filter(Objects::nonNull)
         .map(childGroup -> visitGroup(ObjectUtils.notNull(childGroup), context))
-        .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
+        .reduce(defaultResult(), this::aggregateResult);
     result = CollectionUtil.listOrEmpty(catalog.getControls()).stream()
         .filter(Objects::nonNull)
         .map(childControl -> visitControl(ObjectUtils.notNull(childControl), context))
-        .reduce(result, (previous, current) -> aggregateResult(previous, current));
+        .reduce(result, this::aggregateResult);
     return CollectionUtil.listOrEmpty(catalog.getParams()).stream()
         .filter(Objects::nonNull)
         .map(childParameter -> visitParameter(ObjectUtils.notNull(childParameter), context))
-        .reduce(result, (previous, current) -> aggregateResult(previous, current));
+        .reduce(result, this::aggregateResult);
   }
 
   @Override
@@ -80,15 +80,15 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
     RESULT result = CollectionUtil.listOrEmpty(group.getGroups()).stream()
         .filter(Objects::nonNull)
         .map(childGroup -> visitGroup(ObjectUtils.notNull(childGroup), context))
-        .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
+        .reduce(defaultResult(), this::aggregateResult);
     result = CollectionUtil.listOrEmpty(group.getControls()).stream()
         .filter(Objects::nonNull)
         .map(childControl -> visitControl(ObjectUtils.notNull(childControl), context))
-        .reduce(result, (previous, current) -> aggregateResult(previous, current));
+        .reduce(result, this::aggregateResult);
     return CollectionUtil.listOrEmpty(group.getParams()).stream()
         .filter(Objects::nonNull)
         .map(childParameter -> visitParameter(ObjectUtils.notNull(childParameter), context))
-        .reduce(result, (previous, current) -> aggregateResult(previous, current));
+        .reduce(result, this::aggregateResult);
   }
 
   @Override
@@ -96,11 +96,11 @@ public abstract class AbstractCatalogVisitor<RESULT, CONTEXT> implements ICatalo
     RESULT result = CollectionUtil.listOrEmpty(control.getControls()).stream()
         .filter(Objects::nonNull)
         .map(childControl -> visitControl(ObjectUtils.notNull(childControl), context))
-        .reduce(defaultResult(), (previous, current) -> aggregateResult(previous, current));
+        .reduce(defaultResult(), this::aggregateResult);
     return CollectionUtil.listOrEmpty(control.getParams()).stream()
         .filter(Objects::nonNull)
         .map(childParameter -> visitParameter(ObjectUtils.notNull(childParameter), context))
-        .reduce(result, (previous, current) -> aggregateResult(previous, current));
+        .reduce(result, this::aggregateResult);
   }
 
   @Override

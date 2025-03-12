@@ -26,10 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.util.CustomCollectors;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
@@ -76,7 +76,7 @@ public class PropertyReferencePolicy
 
   @Override
   protected void handleUnselected(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull Property property,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -95,7 +95,7 @@ public class PropertyReferencePolicy
 
   @Override
   protected boolean handleIndexMiss(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull Property property,
       @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,

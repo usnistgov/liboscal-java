@@ -30,9 +30,9 @@ import com.vladsch.flexmark.ast.InlineLinkNode;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
 import com.vladsch.flexmark.util.sequence.CharSubSequence;
 
-import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
+import gov.nist.secauto.metaschema.core.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
 import org.apache.logging.log4j.LogManager;
@@ -74,7 +74,7 @@ public class AnchorReferencePolicy
 
   @Override
   protected void handleUnselected(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull InlineLinkNode link,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -93,7 +93,7 @@ public class AnchorReferencePolicy
 
   @Override
   protected boolean handleIndexMiss(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull InlineLinkNode reference,
       @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
@@ -112,7 +112,7 @@ public class AnchorReferencePolicy
 
   @Override
   protected boolean handleIdentifierNonMatch(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull InlineLinkNode reference,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isDebugEnabled()) {

@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.alter;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
@@ -73,7 +73,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
     static {
       {
         Map<Class<?>, TargetType> map = new ConcurrentHashMap<>();
-        for (TargetType type : TargetType.values()) {
+        for (TargetType type : values()) {
           map.put(type.getClazz(), type);
         }
         CLASS_TO_TYPE = CollectionUtil.unmodifiableMap(map);
@@ -81,7 +81,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
 
       {
         Map<String, TargetType> map = new ConcurrentHashMap<>();
-        for (TargetType type : TargetType.values()) {
+        for (TargetType type : values()) {
           map.put(type.fieldName(), type);
         }
         NAME_TO_TYPE = CollectionUtil.unmodifiableMap(map);
@@ -93,8 +93,8 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
      *
      * @param clazz
      *          the class to identify the target type for
-     * @return the associated target type or {@code null} if the class is not associated with a target
-     *         type
+     * @return the associated target type or {@code null} if the class is not
+     *         associated with a target type
      */
     @Nullable
     public static TargetType forClass(@NonNull Class<?> clazz) {
@@ -112,8 +112,8 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
      *
      * @param name
      *          the field name to identify the target type for
-     * @return the associated target type or {@code null} if the name is not associated with a target
-     *         type
+     * @return the associated target type or {@code null} if the name is not
+     *         associated with a target type
      */
     @Nullable
     public static TargetType forFieldName(@Nullable String name) {
@@ -184,10 +184,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         }
       }
     } else if (handleChildren && handler != null) {
-      // if the child item type is applicable and there is a handler, iterate over children
-      Iterator<T> iter = supplier.get().iterator();
-      while (iter.hasNext()) {
-        T item = iter.next();
+      for (T item : supplier.get()) {
         if (item != null) {
           retval = retval || handler.apply(item);
         }
@@ -264,14 +261,11 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         null,
         context);
 
-    // visit parts
-    retval = retval || handle(
+    return retval || handle(
         TargetType.PART,
         () -> CollectionUtil.listOrEmpty(control.getParts()),
         child -> visitPart(child, context),
         context);
-
-    return retval;
   }
 
   @Override
@@ -285,13 +279,11 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         null,
         context);
 
-    // visit links
-    retval = retval || handle(
+    return retval || handle(
         TargetType.LINK,
         () -> CollectionUtil.listOrEmpty(parameter.getLinks()),
         null,
         context);
-    return retval;
   }
 
   /**
@@ -320,13 +312,11 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         null,
         context);
 
-    // visit parts
-    retval = retval || handle(
+    return retval || handle(
         TargetType.PART,
         () -> CollectionUtil.listOrEmpty(part.getParts()),
         child -> visitPart(child, context),
         context);
-    return retval;
   }
 
   static final class Context {
@@ -394,7 +384,8 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
         @Nullable TargetType itemType) {
 
       // determine the set of effective item types to search for
-      // this helps with short-circuit searching for parts of the graph that cannot match
+      // this helps with short-circuit searching for parts of the graph that cannot
+      // match
       @NonNull Set<TargetType> targetItemTypes = ObjectUtils.notNull(EnumSet.allOf(TargetType.class));
       filterTypes(targetItemTypes, "by-name", NAME_TYPES, objectName, itemType);
       filterTypes(targetItemTypes, "by-class", CLASS_TYPES, objectClass, itemType);
@@ -480,7 +471,7 @@ public class RemoveVisitor implements ICatalogVisitor<Boolean, RemoveVisitor.Con
           ControlPart part = (ControlPart) obj;
           actualName = part.getName();
           actualClass = part.getClazz();
-          actualId = part.getId() == null ? null : part.getId().toString();
+          actualId = part.getId() == null ? null : part.getId();
           actualNamespace = part.getNs() == null ? IProperty.OSCAL_NAMESPACE.toString() : part.getNs().toString();
           break;
         }

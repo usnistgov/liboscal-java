@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

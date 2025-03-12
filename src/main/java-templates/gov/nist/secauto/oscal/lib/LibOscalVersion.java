@@ -25,7 +25,7 @@
  */
 package gov.nist.secauto.oscal.lib;
 
-import gov.nist.secauto.metaschema.model.common.util.IVersionInfo;
+import gov.nist.secauto.metaschema.core.util.IVersionInfo;
 
 public final class LibOscalVersion implements IVersionInfo {
   public static final String NAME = "liboscal-java";

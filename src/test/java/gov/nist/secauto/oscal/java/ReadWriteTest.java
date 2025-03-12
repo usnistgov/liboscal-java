@@ -28,12 +28,14 @@ package gov.nist.secauto.oscal.java;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
-import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.IDeserializer;
-import gov.nist.secauto.metaschema.binding.io.ISerializer;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.model.IBoundObject;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
+import gov.nist.secauto.metaschema.databind.DefaultBindingContext;
+import gov.nist.secauto.metaschema.databind.IBindingContext;
+import gov.nist.secauto.metaschema.databind.io.DeserializationFeature;
+import gov.nist.secauto.metaschema.databind.io.Format;
+import gov.nist.secauto.metaschema.databind.io.IDeserializer;
+import gov.nist.secauto.metaschema.databind.io.ISerializer;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,8 +52,12 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 class ReadWriteTest {
   private static final Logger LOGGER = LogManager.getLogger(ReadWriteTest.class);
 
+  private static final int WARMUP_ITERATIONS = 4;
+  private static final int ITERATIONS = WARMUP_ITERATIONS + 5;
+  // private static final int ITERATIONS = 1;
+
   @NonNull
-  private static <CLASS> CLASS measureDeserializer(
+  private static <CLASS extends IBoundObject> CLASS measureDeserializer(
       @NonNull String format,
       @NonNull Path file,
       @NonNull IDeserializer<CLASS> deserializer,
@@ -65,6 +71,7 @@ class ReadWriteTest {
 
     CLASS retval = null;
     long totalTime = 0;
+    int totalIterations = 0;
     for (int i = 0; i < iterations; i++) {
       long startTime = System.nanoTime();
       retval = deserializer.deserialize(file);
@@ -73,10 +80,15 @@ class ReadWriteTest {
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(String.format("%s read in %d milliseconds from %s", format, timeElapsed, file));
       }
-      totalTime += timeElapsed;
+
+      // skip initial executions, if possible, to allow for JVM warmup
+      if (i >= WARMUP_ITERATIONS) {
+        totalTime += timeElapsed;
+        ++totalIterations;
+      }
     }
-    long average = totalTime / iterations - 1;
-    if (iterations > 1 && LOGGER.isInfoEnabled()) {
+    if (totalIterations > 1 && LOGGER.isInfoEnabled()) {
+      long average = totalTime / totalIterations;
       LOGGER.info(String.format("%s read in %d milliseconds (on average) from %s", format, average, file));
     }
 
@@ -85,13 +97,15 @@ class ReadWriteTest {
     return retval;
   }
 
-  private static <CLASS> void measureSerializer(
+  private static <CLASS extends IBoundObject> void measureSerializer(
       @NonNull CLASS root,
       @NonNull String format,
       @NonNull Path file,
       @NonNull ISerializer<CLASS> serializer,
       int iterations) throws IOException {
+
     long totalTime = 0;
+    int totalIterations = 0;
     for (int i = 0; i < iterations; i++) {
       long startTime = System.nanoTime();
       serializer.serialize(root, file);
@@ -100,33 +114,38 @@ class ReadWriteTest {
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(String.format("%s written in %d milliseconds to %s", format, timeElapsed, file));
       }
-      if (iterations == 1 || i > 0) {
+
+      // skip initial executions, if possible, to allow for JVM warmup
+      if (i >= WARMUP_ITERATIONS) {
         totalTime += timeElapsed;
+        ++totalIterations;
       }
     }
 
-    long average = totalTime / (iterations == 1 ? 1 : iterations - 1);
-    if (iterations > 1 && LOGGER.isInfoEnabled()) {
+    if (totalIterations > 1 && LOGGER.isInfoEnabled()) {
+      long average = totalTime / totalIterations;
       LOGGER.info(String.format("%s written in %d milliseconds (on average) to %s", format, average, file));
     }
   }
 
-  private static <CLASS> void chainReadWrite(
+  private static <CLASS extends IBoundObject> void chainReadWrite(
       @NonNull Path xmlSource,
       @NonNull Class<CLASS> clazz,
       @NonNull Path tempDir,
       int iterations)
       throws IOException {
-    IBindingContext context = IBindingContext.instance();
 
     CLASS obj;
 
     // XML
     {
+      IBindingContext context = new DefaultBindingContext();
       IDeserializer<CLASS> deserializer = context.newDeserializer(Format.XML, clazz);
       deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
       obj = measureDeserializer("XML", xmlSource, deserializer, iterations);
-
+    }
+    {
+      IBindingContext context = new DefaultBindingContext();
       Path out = ObjectUtils.notNull(tempDir.resolve("out.xml"));
       ISerializer<CLASS> serializer = context.newSerializer(Format.XML, clazz);
       measureSerializer(obj, "XML", out, serializer, iterations);
@@ -135,23 +154,33 @@ class ReadWriteTest {
     // JSON
     {
       Path out = ObjectUtils.notNull(tempDir.resolve("out.json"));
-      ISerializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz);
-      measureSerializer(obj, "JSON", out, serializer, iterations);
-
-      IDeserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
-      deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
-      obj = measureDeserializer("JSON", out, deserializer, iterations);
+      {
+        IBindingContext context = new DefaultBindingContext();
+        ISerializer<CLASS> serializer = context.newSerializer(Format.JSON, clazz);
+        measureSerializer(obj, "JSON", out, serializer, iterations);
+      }
+      {
+        IBindingContext context = new DefaultBindingContext();
+        IDeserializer<CLASS> deserializer = context.newDeserializer(Format.JSON, clazz);
+        deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
+        obj = measureDeserializer("JSON", out, deserializer, iterations);
+      }
     }
 
     // YAML
     {
       Path out = ObjectUtils.notNull(tempDir.resolve("out.yaml"));
-      ISerializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz);
-      measureSerializer(obj, "YAML", out, serializer, iterations);
-
-      IDeserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
-      deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
-      measureDeserializer("YAML", out, deserializer, iterations);
+      {
+        IBindingContext context = new DefaultBindingContext();
+        ISerializer<CLASS> serializer = context.newSerializer(Format.YAML, clazz);
+        measureSerializer(obj, "YAML", out, serializer, iterations);
+      }
+      {
+        IBindingContext context = new DefaultBindingContext();
+        IDeserializer<CLASS> deserializer = context.newDeserializer(Format.YAML, clazz);
+        deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
+        measureDeserializer("YAML", out, deserializer, iterations);
+      }
     }
   }
 
@@ -169,6 +198,6 @@ class ReadWriteTest {
     // outDir.mkdirs();
     // Path outPath = outDir.toPath();
     Path outPath = tempDir;
-    chainReadWrite(catalogSourceXml, Catalog.class, outPath, 1);
+    chainReadWrite(catalogSourceXml, Catalog.class, outPath, ITERATIONS);
   }
 }

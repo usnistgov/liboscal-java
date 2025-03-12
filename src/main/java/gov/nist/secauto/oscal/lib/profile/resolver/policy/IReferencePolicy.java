@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.ProfileResolutionEvaluationException;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -37,7 +37,7 @@ public interface IReferencePolicy<T> {
 
     @Override
     public boolean handleReference(
-        @NonNull IRequiredValueModelNodeItem contextItem,
+        @NonNull IModelNodeItem<?, ?> contextItem,
         @NonNull Object reference,
         @NonNull ReferenceCountingVisitor.Context referenceVisitorContext) {
       return true;
@@ -71,7 +71,7 @@ public interface IReferencePolicy<T> {
    *           if there was an error handing the reference
    */
   boolean handleReference(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull T reference,
       @NonNull ReferenceCountingVisitor.Context referenceVisitorContext);
 }

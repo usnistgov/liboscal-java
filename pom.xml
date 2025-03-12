@@ -1,10 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>gov.nist.secauto</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>27</version>
+		<version>28-SNAPSHOT</version>
 	</parent>
 
 	<groupId>gov.nist.secauto.oscal</groupId>
@@ -27,8 +29,8 @@
 		<url>https://github.com/usnistgov/liboscal-java</url>
 		<connection>scm:git:git@github.com:usnistgov/liboscal-java.git</connection>
 		<developerConnection>scm:git:git@github.com:usnistgov/liboscal-java.git</developerConnection>
-	  <tag>HEAD</tag>
-    </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<distributionManagement>
 		<snapshotRepository>
@@ -122,16 +124,17 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency.metaschema-framework.version>0.12.2</dependency.metaschema-framework.version>
+		<dependency.metaschema-framework.version>1.0.0-M2-SNAPSHOT</dependency.metaschema-framework.version>
 
 		<dependency.auto-service.version>1.1.1</dependency.auto-service.version>
 		<dependency.commons-lang3.version>3.14.0</dependency.commons-lang3.version>
 		<dependency.infinispan.version>13.0.10.Final</dependency.infinispan.version>
 		<dependency.jetbrains-annotation.version>23.0.0</dependency.jetbrains-annotation.version>
 		<dependency.jmock-junit5.version>2.12.0</dependency.jmock-junit5.version>
-		<dependency.log4j2.version>2.22.0</dependency.log4j2.version>
+		<dependency.log4j2.version>2.23.1</dependency.log4j2.version>
 		<dependency.saxon.version>12.4</dependency.saxon.version>
-		<dependency.spotbugs-annotations.version>4.7.3</dependency.spotbugs-annotations.version>
+		<dependency.spotbugs-annotations.version>4.8.3</dependency.spotbugs-annotations.version>
+		<dependency.xmlbeans.version>5.2.0</dependency.xmlbeans.version>
 		<dependency.xmlresolver.version>5.2.3</dependency.xmlresolver.version>
 
 		<plugin.cyclonedx.version>2.7.11</plugin.cyclonedx.version>
@@ -200,13 +203,24 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+            <dependency>
+                <groupId>org.apache.xmlbeans</groupId>
+                <artifactId>xmlbeans</artifactId>
+                <version>${dependency.xmlbeans.version}</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
 			<groupId>gov.nist.secauto.metaschema</groupId>
-			<artifactId>metaschema-java-binding</artifactId>
+			<artifactId>metaschema-core</artifactId>
+			<version>${dependency.metaschema-framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>gov.nist.secauto.metaschema</groupId>
+			<artifactId>metaschema-databind</artifactId>
 			<version>${dependency.metaschema-framework.version}</version>
 		</dependency>
 
@@ -244,18 +258,7 @@
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -296,47 +299,28 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>${project.build.directory}/generated-resources/oscal</directory>
-				<includes>
-					<include>**/*.json</include>
-				</includes>
-				<targetPath>${resources.jsonschema.path}</targetPath>
-			</resource>
-			<resource>
-				<directory>${project.build.directory}/generated-resources/oscal</directory>
-				<includes>
-					<include>**/*.xsd</include>
-				</includes>
-				<targetPath>${resources.xmlschema.path}</targetPath>
-			</resource>			
-		</resources>
 		<pluginManagement>
 			<plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-toolchains-plugin</artifactId>
-                    <version>${plugin.maven-toolchains.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>toolchain</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <toolchains>
-                            <jdk>
-                                <version>11</version>
-                                <vendor>temurin</vendor>
-                            </jdk>
-                        </toolchains>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-toolchains-plugin</artifactId>
+					<version>${plugin.maven-toolchains.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>toolchain</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<toolchains>
+							<jdk>
+								<version>11</version>
+								<vendor>temurin</vendor>
+							</jdk>
+						</toolchains>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
@@ -388,13 +372,24 @@
 						<excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<sourceDirectories>
+							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+							<sourceDirectory>
+								${project.build.testSourceDirectory}</sourceDirectory>
+						</sourceDirectories>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-toolchains-plugin</artifactId>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-toolchains-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>io.github.git-commit-id</groupId>
 				<artifactId>git-commit-id-maven-plugin</artifactId>
@@ -423,45 +418,6 @@
 						<configuration>
 							<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
 							<prefix>git</prefix>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-oscal-xml-schema</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
-							<resources>
-								<resource>
-									<directory>
-										${project.basedir}/oscal/xml/schema</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-oscal-json-schema</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
-							<resources>
-								<resource>
-									<directory>
-										${project.basedir}/oscal/json/schema</directory>
-								</resource>
-							</resources>
 						</configuration>
 					</execution>
 				</executions>
@@ -561,13 +517,15 @@
 				<version>${dependency.metaschema-framework.version}</version>
 				<executions>
 					<execution>
-						<id>default-cli</id>
+						<id>oscal-codegen</id>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
 							<metaschemaDir>
 								${project.basedir}/oscal/src/metaschema</metaschemaDir>
+								<outputDirectory>${project.build.directory}/generated-sources/metaschema</outputDirectory>
 							<configs>
 								<config>
 									${project.basedir}/src/main/metaschema-bindings/oscal-metaschema-bindings.xml</config>
@@ -578,7 +536,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>generate-schemas</id>
+						<id>generate-xml-schemas</id>
 						<goals>
 							<goal>generate-schemas</goal>
 						</goals>
@@ -586,10 +544,31 @@
 							<metaschemaDir>
 								${project.basedir}/oscal/src/metaschema</metaschemaDir>
 							<outputDirectory>
-								${project.build.directory}/generated-resources/oscal</outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/xml</outputDirectory>
 							<includes>
 								<include>oscal_*_metaschema.xml</include>
 							</includes>
+							<formats>
+								<format>xsd</format>
+							</formats>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-json-schemas</id>
+						<goals>
+							<goal>generate-schemas</goal>
+						</goals>
+						<configuration>
+							<metaschemaDir>
+								${project.basedir}/oscal/src/metaschema</metaschemaDir>
+							<outputDirectory>
+								${project.build.directory}/generated-resources/oscal/schema/json</outputDirectory>
+							<includes>
+								<include>oscal_*_metaschema.xml</include>
+							</includes>
+							<formats>
+								<format>json</format>
+							</formats>
 						</configuration>
 					</execution>
 				</executions>
@@ -613,7 +592,7 @@
 					</execution>
 					<execution>
 						<id>add-oscal-resources</id>
-						<phase>process-resources</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>add-resource</goal>
 						</goals>

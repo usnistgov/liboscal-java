@@ -26,7 +26,7 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem.ItemType;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -47,7 +47,7 @@ public class ReassignmentIndexer
 
   @Override
   protected AbstractEntityItem.Builder newBuilder(
-      IRequiredValueModelNodeItem item,
+      IModelNodeItem<?, ?> item,
       ItemType itemType,
       String identifier) {
     AbstractEntityItem.Builder builder = super.newBuilder(item, itemType, identifier);

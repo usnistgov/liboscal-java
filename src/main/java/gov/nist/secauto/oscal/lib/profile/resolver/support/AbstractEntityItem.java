@@ -26,8 +26,8 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.support;
 
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 
 import java.net.URI;
 
@@ -38,7 +38,7 @@ public abstract class AbstractEntityItem implements IEntityItem {
   @NonNull
   private final String originalIdentifier;
   @NonNull
-  private IRequiredValueModelNodeItem instance;
+  private IModelNodeItem<?, ?> instance;
   @NonNull
   private final ItemType itemType;
   @NonNull
@@ -66,17 +66,18 @@ public abstract class AbstractEntityItem implements IEntityItem {
   // @NonNull
   // public String getIdentifier() {
   // final String checkedReassignedIdentifier = reassignedIdentifier;
-  // return checkedReassignedIdentifier == null ? originalIdentifier : checkedReassignedIdentifier;
+  // return checkedReassignedIdentifier == null ? originalIdentifier :
+  // checkedReassignedIdentifier;
   // }
 
   @Override
   @NonNull
-  public IRequiredValueModelNodeItem getInstance() {
+  public IModelNodeItem<?, ?> getInstance() {
     return instance;
   }
 
   @Override
-  public void setInstance(IRequiredValueModelNodeItem item) {
+  public void setInstance(IModelNodeItem<?, ?> item) {
     instance = item;
   }
 
@@ -84,7 +85,7 @@ public abstract class AbstractEntityItem implements IEntityItem {
   @NonNull
   @SuppressWarnings("unchecked")
   public <T> T getInstanceValue() {
-    return (T) getInstance().getValue();
+    return ObjectUtils.notNull((T) getInstance().getValue());
   }
 
   @Override
@@ -127,12 +128,12 @@ public abstract class AbstractEntityItem implements IEntityItem {
   static final class Builder {
     private String originalIdentifier;
     private String reassignedIdentifier;
-    private IRequiredValueModelNodeItem instance;
+    private IModelNodeItem<?, ?> instance;
     private ItemType itemType;
     private URI source;
 
     @NonNull
-    public Builder instance(@NonNull IRequiredValueModelNodeItem item, @NonNull ItemType itemType) {
+    public Builder instance(@NonNull IModelNodeItem<?, ?> item, @NonNull ItemType itemType) {
       this.instance = item;
       this.itemType = itemType;
       return this;

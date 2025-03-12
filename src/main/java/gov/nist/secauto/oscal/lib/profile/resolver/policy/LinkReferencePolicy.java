@@ -26,10 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.profile.resolver.policy;
 
-import gov.nist.secauto.metaschema.model.common.metapath.format.IPathFormatter;
-import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueModelNodeItem;
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.CustomCollectors;
+import gov.nist.secauto.metaschema.core.metapath.format.IPathFormatter;
+import gov.nist.secauto.metaschema.core.metapath.item.node.IModelNodeItem;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.CustomCollectors;
 import gov.nist.secauto.oscal.lib.model.Link;
 import gov.nist.secauto.oscal.lib.profile.resolver.support.IEntityItem;
 
@@ -73,7 +73,7 @@ public class LinkReferencePolicy
 
   @Override
   protected void handleUnselected(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull Link link,
       @NonNull IEntityItem item,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
@@ -92,7 +92,7 @@ public class LinkReferencePolicy
 
   @Override
   protected boolean handleIndexMiss(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull Link link,
       @NonNull List<IEntityItem.ItemType> itemTypes,
       @NonNull String identifier,
@@ -113,7 +113,7 @@ public class LinkReferencePolicy
 
   @Override
   protected boolean handleIdentifierNonMatch(
-      @NonNull IRequiredValueModelNodeItem contextItem,
+      @NonNull IModelNodeItem<?, ?> contextItem,
       @NonNull Link reference,
       @NonNull ReferenceCountingVisitor.Context visitorContext) {
     if (LOGGER.isDebugEnabled()) {

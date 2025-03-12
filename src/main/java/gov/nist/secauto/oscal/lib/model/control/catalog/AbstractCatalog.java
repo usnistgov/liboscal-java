@@ -26,9 +26,10 @@
 
 package gov.nist.secauto.oscal.lib.model.control.catalog;
 
-import gov.nist.secauto.metaschema.model.common.util.CollectionUtil;
-import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
+import gov.nist.secauto.metaschema.core.util.CollectionUtil;
+import gov.nist.secauto.metaschema.core.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.AbstractOscalInstance;
+import gov.nist.secauto.oscal.lib.model.control.AbstractParameter;
 
 import java.util.stream.Stream;
 
@@ -45,7 +46,7 @@ public abstract class AbstractCatalog
     return ObjectUtils.notNull(
         CollectionUtil.listOrEmpty(getParams()).stream()
             .flatMap(ObjectUtils::filterNull)
-            .flatMap(param -> param.getParameterReferences())
+            .flatMap(AbstractParameter::getParameterReferences)
             .distinct());
   }
 }
