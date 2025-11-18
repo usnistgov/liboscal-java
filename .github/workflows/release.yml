@@ -12,7 +12,7 @@ jobs:
       actions: read
       contents: write
     steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
       with:
         token: ${{ github.token }}
         submodules: recursive
