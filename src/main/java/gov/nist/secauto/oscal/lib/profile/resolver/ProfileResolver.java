@@ -581,7 +581,7 @@ public class ProfileResolver {
                 remove.getByName(),
                 remove.getByClass(),
                 remove.getById(),
-                remove.getByNs(),
+                remove.getByNs() == null ? null : remove.getByNs().toString(),
                 RemoveVisitor.TargetType.forFieldName(remove.getByItemName()))) {
               throw new ProfileResolutionEvaluationException(
                   String.format("The remove did not match a valid target"));
