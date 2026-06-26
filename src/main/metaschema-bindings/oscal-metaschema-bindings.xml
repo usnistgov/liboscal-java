@@ -51,6 +51,11 @@
 				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.AbstractPart</extend-base-class>
 			</java>
 		</define-assembly-binding>
+		<define-assembly-binding name="select-control-by-id">
+			<java>
+				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.profile.AbstractProfileSelectControlById</extend-base-class>
+			</java>
+		</define-assembly-binding>
 	</metaschema-binding>
 	<metaschema-binding
 		href="../../../oscal/src/metaschema/oscal_catalog_metaschema.xml">
@@ -87,12 +92,6 @@
 		<define-assembly-binding name="group">
 			<java>
 				<use-class-name>ProfileGroup</use-class-name>
-			</java>
-		</define-assembly-binding>
-		<define-assembly-binding name="select-control-by-id">
-			<java>
-				<use-class-name>ProfileSelectControlById</use-class-name>
-				<extend-base-class>gov.nist.secauto.oscal.lib.model.control.profile.AbstractProfileSelectControlById</extend-base-class>
 			</java>
 		</define-assembly-binding>
 		<define-assembly-binding name="set-parameter">
