@@ -27,7 +27,7 @@
 package gov.nist.secauto.oscal.lib.model.control.profile;
 
 import gov.nist.secauto.oscal.lib.model.Matching;
-import gov.nist.secauto.oscal.lib.model.ProfileSelectControlById;
+import gov.nist.secauto.oscal.lib.model.SelectControlById;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -75,8 +75,8 @@ public abstract class AbstractProfileSelectControlById implements IProfileSelect
     }
 
     @NonNull
-    public ProfileSelectControlById build() {
-      ProfileSelectControlById retval = new ProfileSelectControlById();
+    public SelectControlById build() {
+      SelectControlById retval = new SelectControlById();
       retval.setWithChildControls(withChildControls ? "yes" : "no");
       retval.setWithIds(withIds);
       retval.setMatching(matching.stream()
