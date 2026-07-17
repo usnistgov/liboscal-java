@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile xmlns="http://csrc.nist.gov/ns/oscal/1.0"
+    uuid="df19324b-aa44-4e22-a4d2-397bdc6bbaab">
+    <metadata>
+        <title>profile testing removing controls</title>
+        <last-modified>2026-07-13T10:54:16-04:00</last-modified>
+        <version>1.0.0</version>
+        <oscal-version>1.2.2</oscal-version>
+    </metadata>
+    <import href="test-oscal-version-profile.xml">
+      <include-all/>
+	</import>
+	<modify>
+		<alter control-id="b1">
+			<remove by-name="statement"></remove>
+		</alter>
+	</modify>
+</profile>
