@@ -78,7 +78,6 @@ class ExamplesTest {
     serializer.serialize(catalog, ObjectUtils.notNull(outDir.resolve("test-catalog.yaml")));
   }
 
-  @Disabled
   @Test
   void testConstraintValidation()
       throws MalformedURLException, IOException, URISyntaxException, ProfileResolutionException {
