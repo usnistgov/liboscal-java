@@ -182,7 +182,8 @@ class ProfileResolutionTests {
     StringWriter writer = new StringWriter();
     serializer.serialize(catalog, writer);
 
-    // OscalBindingContext.instance().newSerializer(Format.YAML, Catalog.class).serialize(catalog,
+    // OscalBindingContext.instance().newSerializer(Format.YAML,
+    // Catalog.class).serialize(catalog,
     // System.out);
 
     // System.out.println("Pre scrub: " + writer.getBuffer().toString());
@@ -238,12 +239,11 @@ class ProfileResolutionTests {
   }
 
   @Test
-  @Disabled
   void testRemove() throws IOException, ProfileResolutionException, URISyntaxException {
-    URL url = new URL(
-        "https://raw.githubusercontent.com/GSA/fedramp-automation/2229f10cc0b143410522026b793f4947eebb0872/dist/content/baselines/rev4/xml/FedRAMP_rev4_LI-SaaS-baseline_profile.xml");
+    Path path = Paths.get(JUNIT_TEST_PATH, "content/profile-remove.xml");
+    assert path != null;
 
-    Catalog resolvedCatalog = resolveProfile(url);
+    Catalog resolvedCatalog = resolveProfile(path);
     assertNotNull(resolvedCatalog);
   }
 
