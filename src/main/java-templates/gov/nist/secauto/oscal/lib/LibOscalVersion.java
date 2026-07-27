@@ -43,7 +43,7 @@ public final class LibOscalVersion implements IVersionInfo {
 
   @Override
   public String getVersion() {
-    return CLOSEST_TAG;
+    return BUILD_VERSION;
   }
 
   @Override
