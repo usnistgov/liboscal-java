@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://github.com/usnistgov/OSCAL/releases/download/v1.1.1/oscal_complete_schema.xsd" schematypens="http://www.w3.org/2001/XMLSchema" title="OSCAL complete schema" ?>
+<catalog xmlns="http://csrc.nist.gov/ns/oscal/1.0" uuid="37b7acd4-ab3f-4217-99d1-2ab9e490db49">
+    <metadata>
+        <title />
+        <last-modified>2023-02-18T13:06:18Z</last-modified>
+        <version>2023-02-18T13:06:18Z</version>
+        <oscal-version>1.1.1</oscal-version>
+    </metadata>
+    <control id="c1">
+        <title />
+        <control id="c1.1">
+            <title />
+        </control>
+    </control>
+</catalog>

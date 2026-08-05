@@ -213,10 +213,7 @@ public class FilterNonSelectedVisitor
       childResult.applyTo(control);
     } else {
       // remove this control and promote any needed children
-
-      if (SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {
-        retval.removeControl(control);
-      }
+      retval.removeControl(control);
       retval.appendPromoted(ObjectUtils.notNull(childResult));
       index.removeItem(entity);
 
