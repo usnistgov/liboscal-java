@@ -196,6 +196,14 @@ public class ProfileResolver {
   protected IDocumentNodeItem resolveProfile(
       @NonNull IDocumentNodeItem profileDocument,
       @NonNull Stack<URI> importHistory) throws IOException, ProfileResolutionException {
+    return resolveProfile(profileDocument, importHistory, profileDocument.getBaseUri());
+  }
+
+  @NonNull
+  protected IDocumentNodeItem resolveProfile(
+      @NonNull IDocumentNodeItem profileDocument,
+      @NonNull Stack<URI> importHistory,
+      @NonNull URI resolvedCatalogUri) throws IOException, ProfileResolutionException {
     Catalog resolvedCatalog = new Catalog();
 
     generateMetadata(resolvedCatalog, profileDocument);
@@ -210,7 +218,7 @@ public class ProfileResolver {
             ObjectUtils.notNull(
                 (IAssemblyClassBinding) OscalBindingContext.instance().getClassBinding(Catalog.class))),
         resolvedCatalog,
-        profileDocument.getBaseUri());
+        resolvedCatalogUri);
   }
 
   @NonNull
