@@ -31,6 +31,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.item.IRequiredValueMode
 import gov.nist.secauto.metaschema.model.common.metapath.item.IRootAssemblyNodeItem;
 import gov.nist.secauto.metaschema.model.common.util.ObjectUtils;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
+import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.CatalogGroup;
 import gov.nist.secauto.oscal.lib.model.Control;
 import gov.nist.secauto.oscal.lib.model.ControlPart;
@@ -235,6 +236,11 @@ public class FlatteningStructuringVisitor
         childResult.applyRemovesTo(control);
 
         if (parent.getValue() instanceof Control && SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {
+          retval.removeControl(control);
+        }
+        // Cancel promotion of this control if control is already at the top level (control's parent is Catalog)
+        // If already at top level, then promotion is not needed because it was added by Import class
+        if (parent.getValue() instanceof Catalog) {
           retval.removeControl(control);
         }
       } else {
