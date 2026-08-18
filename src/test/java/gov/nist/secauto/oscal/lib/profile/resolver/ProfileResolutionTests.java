@@ -38,6 +38,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.Profile;
 import gov.nist.secauto.oscal.lib.profile.resolver.selection.ImportCycleException;
 
 import net.sf.saxon.s9api.Processor;
@@ -66,6 +67,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneOffset;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -255,5 +258,50 @@ class ProfileResolutionTests {
     Catalog resolvedCatalog = resolveProfile(url);
 
     assertNotNull(resolvedCatalog);
+  }
+
+  // Test for https://github.com/usnistgov/liboscal-java/issues/360
+  // The issue:
+  // 1. Profile imports a catalog using <include-all/>
+  // 2. The catalog contains only controls at the top level, no groups.
+  // If both criteria are met, controls were added multiple times to the resolved
+  // profile because of the promoting controls process, which checks if controls
+  // need to be added again.
+  @Test
+  void testProfileResolverIssue360() throws IOException, ProfileResolutionException, URISyntaxException {
+    // Import profile
+    Path profilePath = Paths.get(JUNIT_TEST_PATH, "content/issue360-profile.xml");
+    assert profilePath != null;
+
+    // Resolve the profile
+    Catalog resolvedCatalog = resolveProfile(profilePath);
+    assertNotNull(resolvedCatalog);
+
+    // Write resolved profile to XML string
+    ISerializer<Catalog> serializer = OscalBindingContext.instance().newSerializer(Format.XML, Catalog.class);
+    String profileXMLString;
+    try (StringWriter writer = new StringWriter()) {
+      serializer.serialize(resolvedCatalog, writer);
+      profileXMLString = writer.toString();
+    }
+
+    // In XML string, count occurrences of control a1
+    Pattern controlAPattern = Pattern.compile("<control[^>]*id=\"a1\"[^>]*>");
+    Matcher matcherA = controlAPattern.matcher(profileXMLString);
+    int countA = 0;
+    while (matcherA.find()) {
+      countA++;
+    }
+
+    // In XML string, count occurrences of control b1
+    Pattern controlBPattern = Pattern.compile("<control[^>]*id=\"b1\"[^>]*>");
+    Matcher matcherB = controlBPattern.matcher(profileXMLString);
+    int countB = 0;
+    while (matcherB.find()) {
+      countB++;
+    }
+
+    assertEquals(1, countA, "Control a1 should appear only once in resolved profile");
+    assertEquals(1, countB, "Control b1 should appear only once in resolved profile");
   }
 }
