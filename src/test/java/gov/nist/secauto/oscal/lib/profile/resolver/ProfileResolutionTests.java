@@ -256,4 +256,13 @@ class ProfileResolutionTests {
 
     assertNotNull(resolvedCatalog);
   }
+
+  @Test
+  void testIssue106Profile() throws IOException, ProfileResolutionException, URISyntaxException {
+    Path profileFile = Paths.get(JUNIT_TEST_PATH, "content/issue106-profile.xml");
+    assert profileFile != null;
+    Catalog catalog = resolveProfile(profileFile);
+    assertNotNull(catalog);
+    assertEquals("1.1.1", catalog.getMetadata().getOscalVersion());
+  }
 }
