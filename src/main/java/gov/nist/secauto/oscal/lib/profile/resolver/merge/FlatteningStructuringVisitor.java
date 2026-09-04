@@ -238,8 +238,10 @@ public class FlatteningStructuringVisitor
         if (parent.getValue() instanceof Control && SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {
           retval.removeControl(control);
         }
-        // Cancel promotion of this control if control is already at the top level (control's parent is Catalog)
-        // If already at top level, then promotion is not needed because it was added by Import class
+        // Cancel promotion of this control if control is already at the top level
+        // (control's parent is Catalog)
+        // If already at top level, then promotion is not needed because it was added by
+        // Import class
         if (parent.getValue() instanceof Catalog) {
           retval.removeControl(control);
         }

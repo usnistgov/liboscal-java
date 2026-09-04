@@ -77,7 +77,8 @@ public interface IControlFilter {
   };
 
   /**
-   * Construct a new filter instance based on the provided profile import statement.
+   * Construct a new filter instance based on the provided profile import
+   * statement.
    *
    * @param profileImport
    *          an OSCAL profile import statement
@@ -95,14 +96,15 @@ public interface IControlFilter {
   }
 
   /**
-   * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
-   * first member of the pair indicates if the control matches, and the second indicates if the match
-   * applies to child controls as well.
+   * Determines if the control is matched by this filter. This method returns a
+   * {@link Pair} where the first member of the pair indicates if the control
+   * matches, and the second indicates if the match applies to child controls as
+   * well.
    *
    * @param control
    *          the control to check for a match
-   * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
-   *         otherwise), and if a match applies to child controls
+   * @return a pair indicating the status of the match ({@code true} for a match
+   *         or {@code false} otherwise), and if a match applies to child controls
    */
   @NonNull
   default Pair<Boolean, Boolean> match(@NonNull IControl control) {
@@ -110,16 +112,17 @@ public interface IControlFilter {
   }
 
   /**
-   * Determines if the control is matched by this filter. This method returns a {@link Pair} where the
-   * first member of the pair indicates if the control matches, and the second indicates if the match
-   * applies to child controls as well.
+   * Determines if the control is matched by this filter. This method returns a
+   * {@link Pair} where the first member of the pair indicates if the control
+   * matches, and the second indicates if the match applies to child controls as
+   * well.
    *
    * @param control
    *          the control to check for a match
    * @param defaultMatch
    *          the match status to use if the filter doesn't have an explicit hit
-   * @return a pair indicating the status of the match ({@code true} for a match or {@code false}
-   *         otherwise), and if a match applies to child controls
+   * @return a pair indicating the status of the match ({@code true} for a match
+   *         or {@code false} otherwise), and if a match applies to child controls
    */
   @NonNull
   Pair<Boolean, Boolean> match(@NonNull IControl control, boolean defaultMatch);
