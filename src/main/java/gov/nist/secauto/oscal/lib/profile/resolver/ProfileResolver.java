@@ -115,7 +115,8 @@ public class ProfileResolver {
   private DynamicContext dynamicContext;
 
   /**
-   * Gets the configured loader or creates a new default loader if no loader was configured.
+   * Gets the configured loader or creates a new default loader if no loader was
+   * configured.
    *
    * @return the bound loader
    */
@@ -340,7 +341,8 @@ public class ProfileResolver {
       IDocumentNodeItem document = getDynamicContext().getDocumentLoader().loadAsNodeItem(source);
       IDocumentNodeItem importedCatalog = resolve(document, importHistory);
 
-      // Create a defensive deep copy of the document and associated values, since we will be making
+      // Create a defensive deep copy of the document and associated values, since we
+      // will be making
       // changes to the data.
       try {
         importedCatalog = DefaultNodeItemFactory.instance().newDocumentNodeItem(

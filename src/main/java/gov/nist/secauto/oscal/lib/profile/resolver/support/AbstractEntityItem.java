@@ -66,7 +66,8 @@ public abstract class AbstractEntityItem implements IEntityItem {
   // @NonNull
   // public String getIdentifier() {
   // final String checkedReassignedIdentifier = reassignedIdentifier;
-  // return checkedReassignedIdentifier == null ? originalIdentifier : checkedReassignedIdentifier;
+  // return checkedReassignedIdentifier == null ? originalIdentifier :
+  // checkedReassignedIdentifier;
   // }
 
   @Override

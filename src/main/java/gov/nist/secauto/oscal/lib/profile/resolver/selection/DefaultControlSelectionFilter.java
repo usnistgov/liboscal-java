@@ -52,7 +52,8 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
   private final List<Selection> selections;
 
   /**
-   * Construct a new selection filter based on the provided list of select criteria.
+   * Construct a new selection filter based on the provided list of select
+   * criteria.
    *
    * @param selections
    *          a list of select criteria
@@ -78,13 +79,14 @@ public class DefaultControlSelectionFilter implements IControlSelectionFilter {
   }
 
   /**
-   * Checks if the provided control identifier matches the criteria defined by this object.
+   * Checks if the provided control identifier matches the criteria defined by
+   * this object.
    *
    * @param id
    *          the control identifier to match
-   * @return a {@link Pair} whose first member is {@code true} for a match or {@code false} otherwise,
-   *         and whose second member is {@code true} if the match applies to any child controls or
-   *         {@code false} otherwise
+   * @return a {@link Pair} whose first member is {@code true} for a match or
+   *         {@code false} otherwise, and whose second member is {@code true} if
+   *         the match applies to any child controls or {@code false} otherwise
    */
   @SuppressWarnings("null")
   @NonNull

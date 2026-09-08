@@ -207,8 +207,10 @@ public class FilterNonSelectedVisitor
       control.setId(entity.getIdentifier());
 
       if (!SelectionStatus.SELECTED.equals(index.getSelectionStatus(parent))) {
-        // promote this control if control is not already at the top level (control's parent is Catalog)
-        // If already at top level, then promotion is not needed because it was added by Import class
+        // promote this control if control is not already at the top level (control's
+        // parent is Catalog)
+        // If already at top level, then promotion is not needed because it was added by
+        // Import class
         if (!(parent.getValue() instanceof Catalog)) {
           retval.promoteControl(control);
         }

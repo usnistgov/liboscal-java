@@ -48,8 +48,8 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   };
 
   /**
-   * A callback used to handle the case where an identifier could not be parsed from the reference
-   * text.
+   * A callback used to handle the case where an identifier could not be parsed
+   * from the reference text.
    *
    * @param policy
    *          the reference policy for this reference
@@ -57,7 +57,8 @@ public interface ICustomReferencePolicyHandler<TYPE> {
    *          the reference object
    * @param visitor
    *          the reference visitor used to resolve referenced objects
-   * @return {@code true} if the reference is considered handled, or {@code false} otherwise
+   * @return {@code true} if the reference is considered handled, or {@code false}
+   *         otherwise
    */
   default boolean handleIdentifierNonMatch(
       @NonNull ICustomReferencePolicy<TYPE> policy,
@@ -67,8 +68,8 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   }
 
   /**
-   * A callback used to handle the case where an identifier could be parsed from the reference text,
-   * but the index didn't contain a matching entity.
+   * A callback used to handle the case where an identifier could be parsed from
+   * the reference text, but the index didn't contain a matching entity.
    *
    * @param policy
    *          the reference policy for this reference
@@ -80,7 +81,8 @@ public interface ICustomReferencePolicyHandler<TYPE> {
    *          the parsed identifier
    * @param visitor
    *          the reference visitor used to resolve referenced objects
-   * @return {@code true} if the reference is considered handled, or {@code false} otherwise
+   * @return {@code true} if the reference is considered handled, or {@code false}
+   *         otherwise
    */
   default boolean handleIndexMiss(
       @NonNull ICustomReferencePolicy<TYPE> policy,
@@ -92,8 +94,8 @@ public interface ICustomReferencePolicyHandler<TYPE> {
   }
 
   /**
-   * A callback used to handle the case where an identifier could be parsed and the index contains a
-   * matching entity.
+   * A callback used to handle the case where an identifier could be parsed and
+   * the index contains a matching entity.
    *
    * @param policy
    *          the reference policy for this reference
@@ -103,7 +105,8 @@ public interface ICustomReferencePolicyHandler<TYPE> {
    *          the entity that is referenced
    * @param visitor
    *          the reference visitor used to resolve referenced objects
-   * @return {@code true} if the reference is considered handled, or {@code false} otherwise
+   * @return {@code true} if the reference is considered handled, or {@code false}
+   *         otherwise
    */
   default boolean handleIndexHit(
       @NonNull ICustomReferencePolicy<TYPE> policy,
