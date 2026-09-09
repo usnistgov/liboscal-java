@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile xmlns="http://csrc.nist.gov/ns/oscal/1.0" uuid="df19334b-aa44-4e22-a4d2-397bdc6bbaab">
+  <metadata>
+    <title>issue 371 profile null entity</title>
+    <last-modified>2026-09-03T15:59:23-04:00</last-modified>
+    <version>1.0.0</version>
+    <oscal-version>1.2.3</oscal-version>
+  </metadata>
+  <import href="issue371-null-error-catalog.xml">
+    <include-controls>
+      <with-id>a1</with-id>
+    </include-controls>
+  </import>
+</profile>
