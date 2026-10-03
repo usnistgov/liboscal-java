@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile xmlns="http://csrc.nist.gov/ns/oscal/1.0"
+         uuid="3f6a8b4e-0f0d-45a2-9a1e-7c3d5a2f8b10">
+   <metadata>
+      <title>Set Parameter Label Only Profile</title>
+      <last-modified>2026-10-03T09:00:00.000000000-04:00</last-modified>
+      <version>1.0.0</version>
+      <oscal-version>1.0.4</oscal-version>
+   </metadata>
+   <import href="set-parameter-catalog.xml">
+      <include-controls>
+         <with-id>control-1</with-id>
+      </include-controls>
+   </import>
+   <merge>
+      <as-is>true</as-is>
+   </merge>
+   <modify>
+      <set-parameter param-id="param-1">
+         <label>profile label</label>
+      </set-parameter>
+   </modify>
+</profile>
