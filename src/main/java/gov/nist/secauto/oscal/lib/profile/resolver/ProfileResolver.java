@@ -552,7 +552,10 @@ public class ProfileResolver {
         ModifyPhaseUtils.merge(param.getConstraints(), setParameter.getConstraints(), ModifyPhaseUtils.identityKey()));
     param.setGuidelines(
         ModifyPhaseUtils.merge(param.getGuidelines(), setParameter.getGuidelines(), ModifyPhaseUtils.identityKey()));
-    param.setValues(new LinkedList<>(setParameter.getValues()));
+    List<String> values = setParameter.getValues();
+    if (values != null && !values.isEmpty()) {
+      param.setValues(new LinkedList<>(values));
+    }
     param.setSelect(setParameter.getSelect());
   }
 

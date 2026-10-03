@@ -38,6 +38,7 @@ import gov.nist.secauto.metaschema.model.common.metapath.DynamicContext;
 import gov.nist.secauto.metaschema.model.common.metapath.StaticContext;
 import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import gov.nist.secauto.oscal.lib.model.Parameter;
 import gov.nist.secauto.oscal.lib.profile.resolver.selection.ImportCycleException;
 
 import net.sf.saxon.s9api.Processor;
@@ -66,6 +67,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneOffset;
+import java.util.Collections;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -227,6 +229,18 @@ class ProfileResolutionTests {
     Catalog catalog = resolveProfile(profileFile);
     assertNotNull(catalog);
     assertEquals("1.0.4", catalog.getMetadata().getOscalVersion());
+  }
+
+  @Test
+  void testSetParameterWithoutValue() throws IOException, ProfileResolutionException {
+    Path profilePath = Paths.get(JUNIT_TEST_PATH, "content/set-parameter-label-only-profile.xml");
+    assert profilePath != null;
+    Catalog resolvedCatalog = resolveProfile(profilePath);
+    assertNotNull(resolvedCatalog);
+
+    Parameter param = resolvedCatalog.getControls().get(0).getParams().get(0);
+    assertEquals("profile label", param.getLabel().toMarkdown().trim());
+    assertEquals(Collections.singletonList("catalog value"), param.getValues());
   }
 
   @Test

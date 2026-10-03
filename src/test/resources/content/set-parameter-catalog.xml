@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="http://csrc.nist.gov/ns/oscal/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://csrc.nist.gov/ns/oscal/1.0 ../../../oscal/xml/schema/oscal_complete_schema.xsd"
+    uuid="8b6cf5bd-1c2c-4b2c-b6f1-6b93e1f1a9c1">
+    <metadata>
+        <title>Set Parameter Test Catalog</title>
+        <last-modified>2026-10-03T09:00:00.000000000-04:00</last-modified>
+        <version>1.0.0</version>
+        <oscal-version>1.0.4</oscal-version>
+    </metadata>
+    <control id="control-1">
+        <title>Test Control</title>
+        <param id="param-1">
+            <label>catalog label</label>
+            <value>catalog value</value>
+        </param>
+        <part name="statement" id="control-1-stmt">
+            <p>This is a test control statement using <insert type="param" id-ref="param-1"/>.</p>
+        </part>
+    </control>
+</catalog>
