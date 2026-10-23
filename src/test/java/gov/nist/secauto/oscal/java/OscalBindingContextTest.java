@@ -66,7 +66,8 @@ class OscalBindingContextTest {
 
   @Test
   void testLoadCatalogYaml(@TempDir Path tempDir) throws IOException {
-    // the YAML catalog is currently malformed, this will create a proper one for this test
+    // the YAML catalog is currently malformed, this will create a proper one for
+    // this test
     Catalog catalog
         = loader.load(ObjectUtils.notNull(
             new File("target/download/content/NIST_SP-800-53_rev5_catalog.yaml").getCanonicalFile()));
