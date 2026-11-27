@@ -76,8 +76,8 @@ public interface IIndexer {
   }
 
   /**
-   * Keep entities that have a reference count greater than zero or are required to be kept based on
-   * the "keep"="always property.
+   * Keep entities that have a reference count greater than zero or are required
+   * to be kept based on the "keep"="always property.
    *
    * @param entities
    *          the entity items to filter
@@ -88,8 +88,8 @@ public interface IIndexer {
   }
 
   /**
-   * Keep entities that have a reference count of zero or are not required to be kept based on the
-   * "keep"="always property.
+   * Keep entities that have a reference count of zero or are not required to be
+   * kept based on the "keep"="always property.
    *
    * @param entities
    *          the entity items to filter
@@ -100,22 +100,25 @@ public interface IIndexer {
   }
 
   /**
-   * Generates a stream of distinct items that have a reference count greater than zero or are
-   * required to be kept based on the "keep"="always property.
+   * Generates a stream of distinct items that have a reference count greater than
+   * zero or are required to be kept based on the "keep"="always property.
    * <p>
-   * Distinct items are determined based on the item's key using the provided {@code keyMapper}.
+   * Distinct items are determined based on the item's key using the provided
+   * {@code keyMapper}.
    *
    * @param <T>
    *          the item type
    * @param <K>
    *          the key type
    * @param resolvedItems
-   *          a series of previously resolved items to add to prepend to the stream
+   *          a series of previously resolved items to add to prepend to the
+   *          stream
    * @param importedEntityItems
    *          a collection of new items to filter then append to the stream
    * @param keyMapper
    *          the key mapping function to determine the item's key
-   * @return the resulting series of items with duplicate items with the same key removed
+   * @return the resulting series of items with duplicate items with the same key
+   *         removed
    */
   // TODO: Is this the right name for this method?
   static <T, K> Stream<T> filterDistinct(
@@ -193,7 +196,8 @@ public interface IIndexer {
   }
 
   /**
-   * Lookup an item of the given {@code itemType} having the given {@code identifier}.
+   * Lookup an item of the given {@code itemType} having the given
+   * {@code identifier}.
    * <p>
    * Will normalize the case of a UUID-based identifier.
    *
@@ -209,7 +213,8 @@ public interface IIndexer {
   }
 
   /**
-   * Lookup an item of the given {@code itemType} having the given {@code identifier}.
+   * Lookup an item of the given {@code itemType} having the given
+   * {@code identifier}.
    * <p>
    * Will normalize the case of a UUID-based the identifier when requested.
    *
@@ -218,7 +223,8 @@ public interface IIndexer {
    * @param identifier
    *          the identifier to lookup
    * @param normalize
-   *          {@code true} if the identifier case should be normalized or {@code false} otherwise
+   *          {@code true} if the identifier case should be normalized or
+   *          {@code false} otherwise
    * @return the matching item or {@code null} if no match was found
    */
   @Nullable

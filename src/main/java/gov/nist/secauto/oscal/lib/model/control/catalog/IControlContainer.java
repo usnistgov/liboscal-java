@@ -48,7 +48,8 @@ public interface IControlContainer {
   boolean addControl(@NonNull Control item);
 
   /**
-   * Remove the first matching {@link Control} item from the underlying collection.
+   * Remove the first matching {@link Control} item from the underlying
+   * collection.
    *
    * @param item
    *          the item to remove
@@ -68,7 +69,8 @@ public interface IControlContainer {
   boolean addParam(@NonNull Parameter item);
 
   /**
-   * Remove the first matching {@link Parameter} item from the underlying collection.
+   * Remove the first matching {@link Parameter} item from the underlying
+   * collection.
    *
    * @param item
    *          the item to remove
@@ -77,7 +79,8 @@ public interface IControlContainer {
   boolean removeParam(@NonNull Parameter item);
 
   /**
-   * Get the parameter identifiers referenced in the object's context, but not by their child objects.
+   * Get the parameter identifiers referenced in the object's context, but not by
+   * their child objects.
    *
    * @return a stream of identifiers
    */

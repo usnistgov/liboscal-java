@@ -95,8 +95,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
      *
      * @param clazz
      *          the class to identify the target type for
-     * @return the associated target type or {@code null} if the class is not associated with a target
-     *         type
+     * @return the associated target type or {@code null} if the class is not
+     *         associated with a target type
      */
     @Nullable
     public static TargetType forClass(@NonNull Class<?> clazz) {
@@ -114,8 +114,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
      *
      * @param name
      *          the field name to identify the target type for
-     * @return the associated target type or {@code null} if the name is not associated with a target
-     *         type
+     * @return the associated target type or {@code null} if the name is not
+     *         associated with a target type
      */
     @Nullable
     public static TargetType forFieldName(@Nullable String name) {
@@ -168,7 +168,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
      *
      * @param name
      *          the name to identify the position for
-     * @return the associated position or {@code null} if the name is not associated with a position
+     * @return the associated position or {@code null} if the name is not associated
+     *         with a position
      */
     @Nullable
     public static Position forName(@Nullable String name) {
@@ -257,8 +258,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
    * <li>the context matches if:
    * <ul>
    * <li>the target item's id matches the "by-id"; or</li>
-   * <li>the "by-id" is not defined and the target item is the control matching the target
-   * context</li>
+   * <li>the "by-id" is not defined and the target item is the control matching
+   * the target context</li>
    * </ul>
    * </li>
    * </ol>
@@ -268,7 +269,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
    * @param targetItem
    *          the current target to process
    * @param titleConsumer
-   *          a consumer to apply a title to or {@code null} if the object has no title field
+   *          a consumer to apply a title to or {@code null} if the object has no
+   *          title field
    * @param paramsSupplier
    *          a supplier for the child {@link Parameter} collection
    * @param propsSupplier
@@ -332,7 +334,8 @@ public class AddVisitor implements ICatalogVisitor<Boolean, AddVisitor.Context> 
   // boolean handleChildren = !Collections.disjoint(context.getTargetItemTypes(),
   // getApplicableTypes(itemType));
   // if (handleChildren && handler != null) {
-  // // if the child item type is applicable and there is a handler, iterate over children
+  // // if the child item type is applicable and there is a handler, iterate over
+  // children
   // Iterator<T> iter = collectionSupplier.get().iterator();
   // while (iter.hasNext()) {
   // T item = iter.next();

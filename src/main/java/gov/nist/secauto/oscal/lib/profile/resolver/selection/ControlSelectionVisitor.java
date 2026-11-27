@@ -47,21 +47,24 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 /**
  * Walks a {@link Catalog} indexing all nodes that can be referenced.
  * <p>
- * For each {@link CatalogGroup}, {@link Control}, and {@link ControlPart}, determine if that object
- * is {@link SelectionStatus#SELECTED} or {@link SelectionStatus#UNSELECTED}.
+ * For each {@link CatalogGroup}, {@link Control}, and {@link ControlPart},
+ * determine if that object is {@link SelectionStatus#SELECTED} or
+ * {@link SelectionStatus#UNSELECTED}.
  * <p>
- * A {@link Control} is {@link SelectionStatus#SELECTED} if it matches the configured
- * {@link IControlFilter}, otherwise it is {@link SelectionStatus#UNSELECTED}.
+ * A {@link Control} is {@link SelectionStatus#SELECTED} if it matches the
+ * configured {@link IControlFilter}, otherwise it is
+ * {@link SelectionStatus#UNSELECTED}.
  * <p>
  * A {@link CatalogGroup} is {@link SelectionStatus#SELECTED} if it contains a
  * {@link SelectionStatus#SELECTED} descendant {@link Control}, otherwise it is
  * {@link SelectionStatus#UNSELECTED}.
  * <p>
- * A {@link ControlPart} is {@link SelectionStatus#SELECTED} if its containing control is
- * {@link SelectionStatus#SELECTED}.
+ * A {@link ControlPart} is {@link SelectionStatus#SELECTED} if its containing
+ * control is {@link SelectionStatus#SELECTED}.
  * <p>
- * All other indexed nodes will have the {@link SelectionStatus#UNKNOWN}, since these nodes require
- * reference counting to determine if they are to be kept or not.
+ * All other indexed nodes will have the {@link SelectionStatus#UNKNOWN}, since
+ * these nodes require reference counting to determine if they are to be kept or
+ * not.
  */
 public class ControlSelectionVisitor
     extends AbstractIndexingVisitor<IControlSelectionState, Boolean> {

@@ -204,7 +204,8 @@ class DefaultControlSelectionFilterTest {
   }
 
   /**
-   * Test the filtering of a single match criteria using "with-ids" and "with-child=yes".
+   * Test the filtering of a single match criteria using "with-ids" and
+   * "with-child=yes".
    */
   @Test
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
